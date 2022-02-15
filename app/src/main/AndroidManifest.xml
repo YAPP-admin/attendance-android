@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Attendance">
         <activity
-            android:name="com.yapp.presentation.ui.MainActivity"
+            android:name="com.yapp.presentation.ui.member.main.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Attendance.NoActionBar">

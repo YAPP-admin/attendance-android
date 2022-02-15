@@ -1,4 +1,4 @@
-package com.yapp.presentation.ui
+package com.yapp.presentation.ui.member.main
 
 import androidx.lifecycle.ViewModel
 
