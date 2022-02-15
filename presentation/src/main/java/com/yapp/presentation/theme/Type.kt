@@ -1,4 +1,4 @@
-package com.yapp.attendance.ui.theme
+package com.yapp.presentation.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
