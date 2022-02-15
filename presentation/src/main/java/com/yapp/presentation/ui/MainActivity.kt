@@ -11,7 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
-import com.yapp.presentation.theme.AttendanceTheme
+import com.jshme.common.theme.AttendanceTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
