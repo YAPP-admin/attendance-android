@@ -1,4 +1,4 @@
-package com.jshme.common
+package com.yapp.common
 
 import org.junit.Test
 

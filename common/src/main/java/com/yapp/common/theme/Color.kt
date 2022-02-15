@@ -1,4 +1,4 @@
-package com.jshme.common.theme
+package com.yapp.common.theme
 
 import androidx.compose.ui.graphics.Color
 

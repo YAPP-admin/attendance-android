@@ -9,7 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
-import com.jshme.common.theme.AttendanceTheme
+import com.yapp.common.theme.AttendanceTheme
 import com.yapp.presentation.ui.member.AttendanceScreen
 
 class MainActivity : ComponentActivity() {
