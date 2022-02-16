@@ -46,10 +46,17 @@ android {
 }
 
 dependencies {
+    implementation(project(":domain"))
+
     implementation(Dependencies.CORE)
     implementation(Dependencies.APP_COMPAT)
     implementation(Dependencies.Ktx.LIFECYCLE)
     implementation(Dependencies.Google.MATERIAL)
+
+    //firebase
+    implementation(platform(Dependencies.Firebase.BOM))
+    implementation(Dependencies.Firebase.ANALYTICS_KTX)
+    implementation(Dependencies.Firebase.CONFIG_KTX)
 
     //compose
     implementation(Dependencies.Compose.UI)
