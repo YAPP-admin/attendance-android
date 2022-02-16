@@ -26,6 +26,7 @@ class FirebaseRemoteConfigs {
                     is Long -> {
                         callback(firebaseRemoteConfig.getLong(value.key) as T)
                     }
+                    //todo: 우선 임시로 이렇게 두고, 자료형 생기면 계속 추가하기
                     else -> throw IllegalAccessError()
                 }
             }
