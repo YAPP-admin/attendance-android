@@ -9,7 +9,7 @@ import com.yapp.presentation.ui.member.main.state.QRMainContract.*
 // hilt 추가해야함.
 class QRMainViewModel(
     firebaseRemoteConfigs: FirebaseRemoteConfigs = FirebaseRemoteConfigs()
-) : BaseViewModel<QRMainUiState, QRMainUiSideEffect, UiEvent>(QRMainUiState()) {
+) : BaseViewModel<QRMainUiState, QRMainUiSideEffect, QRMainUiEvent>(QRMainUiState()) {
 
     init {
         firebaseRemoteConfigs.getValue(RemoteConfigData.MaginotlineTime) {
@@ -17,12 +17,16 @@ class QRMainViewModel(
         }
     }
 
-    fun setSideEffect(effect: QRMainUiSideEffect) {
-        setEffect { effect }
+    fun setEvent(event: QRMainUiEvent) {
+        dispatchEvent(event)
     }
 
-    override fun handleEvent(event: UiEvent) {
-        TODO("Not yet implemented")
+    override fun handleEvent(event: QRMainUiEvent) {
+        when(event) {
+            is QRMainUiEvent.onButtonClicked -> {
+                setEffect { QRMainUiSideEffect.ShowToast }
+            }
+        }
     }
 }
 

@@ -19,5 +19,5 @@ object Configs {
     const val VERSION_CODE              = 100000
     const val VERSION_NAME              = "1.0.0"
 
-    const val COMPOSE_VERSION           = "1.0.1"
+    const val COMPOSE_VERSION           = "1.1.0"
 }

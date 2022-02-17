@@ -16,7 +16,7 @@ fun AttendanceScreen() {
         composable(
             route = "main"
         ) {
-            Main(navController)
+            Main()
         }
     }
 }

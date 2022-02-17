@@ -5,7 +5,7 @@ object Dependencies {
     const val GOOGLE_SERVICES = "com.google.gms:google-services:4.3.10"
 
     object Kotlin {
-        private const val version = "1.5.21"
+        private const val version = "1.6.10"
         private const val coroutineVersion = "1.5.1"
 
         const val GRADLE_PLUGIN = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
@@ -17,7 +17,7 @@ object Dependencies {
     }
 
     object Compose {
-        private const val compose_version = "1.0.5"
+        private const val compose_version = "1.1.0"
         const val UI = "androidx.compose.ui:ui:$compose_version"
         const val MATERIAL = "androidx.compose.material:material:$compose_version"
         const val TOOL_PREVIEW = "androidx.compose.ui:ui-tooling:$compose_version"

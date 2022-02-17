@@ -16,9 +16,6 @@ abstract class BaseViewModel<S : UiState, A : UiSideEffect, E : UiEvent>(
     private val _uiState = MutableStateFlow<S>(initialState)
     val uiState = _uiState.asStateFlow()
 
-    private val _event = MutableEventFlow<E>()
-    val event = _event.asEventFlow()
-
     /**
      * `Channel` replicate SingleLiveEvent behavior.
      */
@@ -29,11 +26,11 @@ abstract class BaseViewModel<S : UiState, A : UiSideEffect, E : UiEvent>(
     private val currentState: S
         get() = _uiState.value
 
-    protected suspend fun setEvent(event: E) {
-        _event.emit(event)
+    fun dispatchEvent(event: E) = viewModelScope.launch {
+        handleEvent(event)
     }
 
-    protected abstract fun handleEvent(event : E)
+    protected abstract fun handleEvent(event: E)
 
     protected fun setState(reduce: S.() -> S) {
         val state = currentState.reduce()

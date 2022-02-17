@@ -28,7 +28,6 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun Main(
-    navController: NavController,
     scaffoldState: ScaffoldState = rememberScaffoldState(),
     scope: CoroutineScope = rememberCoroutineScope(),
     viewModel: QRMainViewModel = hiltViewModel(),
@@ -46,7 +45,7 @@ fun Main(
             Button(
                 modifier = Modifier.wrapContentHeight(),
                 onClick = {
-                    viewModel.setSideEffect(QRMainUiSideEffect.ShowToast)
+                    viewModel.setEvent(QRMainUiEvent.onButtonClicked)
                 }
             ) {
                 Text("Click!")
