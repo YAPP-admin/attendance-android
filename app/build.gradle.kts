@@ -77,4 +77,6 @@ dependencies {
     implementation(platform(Dependencies.Firebase.BOM))
     implementation(Dependencies.Firebase.ANALYTICS_KTX)
     implementation(Dependencies.Firebase.CONFIG_KTX)
+    implementation("com.google.firebase:firebase-firestore:24.0.1")
+    implementation ("com.google.firebase:firebase-firestore-ktx")
 }
