@@ -17,10 +17,6 @@ class QRMainViewModel(
         }
     }
 
-    fun setEvent(event: QRMainUiEvent) {
-        dispatchEvent(event)
-    }
-
     override fun handleEvent(event: QRMainUiEvent) {
         when(event) {
             is QRMainUiEvent.onButtonClicked -> {
