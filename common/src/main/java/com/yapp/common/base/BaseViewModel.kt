@@ -26,6 +26,10 @@ abstract class BaseViewModel<S : UiState, A : UiSideEffect, E : UiEvent>(
     private val currentState: S
         get() = _uiState.value
 
+    open fun setEvent(event: E) {
+        dispatchEvent(event)
+    }
+
     fun dispatchEvent(event: E) = viewModelScope.launch {
         handleEvent(event)
     }
