@@ -41,12 +41,16 @@ abstract class BaseViewModel<S : UiState, A : UiSideEffect, E : UiEvent>(
         _uiState.value = state
     }
 
-    protected fun setEffect(builder: () -> A) {
-        val effectValue = builder()
-        viewModelScope.launch { _effect.send(effectValue) }
+    open fun setEffect(vararg builder: A) {
+        for (effectValue in builder) {
+            viewModelScope.launch { _effect.send(effectValue) }
+        }
     }
 
-    protected suspend fun <T> Flow<TaskResult<T>>.collectWithCallback(onSuccess: suspend (T) -> Unit, onFailed: suspend (String) -> Unit) {
+    protected suspend fun <T> Flow<TaskResult<T>>.collectWithCallback(
+        onSuccess: suspend (T) -> Unit,
+        onFailed: suspend (String) -> Unit
+    ) {
         collect { result ->
             when (result) {
                 is TaskResult.Success -> {
