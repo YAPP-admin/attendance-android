@@ -3,8 +3,9 @@ package com.yapp.common.util
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
+import javax.inject.Inject
 
-class FirebaseRemoteConfigs {
+class FirebaseRemoteConfigs @Inject constructor() {
     //firebase remote config test
     private val firebaseRemoteConfig = Firebase.remoteConfig
     private val configSettings = remoteConfigSettings {
