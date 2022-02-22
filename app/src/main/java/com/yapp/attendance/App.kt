@@ -8,7 +8,7 @@ import com.kakao.sdk.auth.AuthApiClient
 import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.KakaoSdkError
 import com.kakao.sdk.user.UserApiClient
-import com.yapp.presentation.ui.member.main.QRMainActivity
+import com.yapp.presentation.ui.MainActivity
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
@@ -20,7 +20,7 @@ class App : Application() {
     }
 
     private fun initKakao() {
-        KakaoSdk.init(this, "72806b8322ff87c0ab3ec377e4f99e6a")
+        KakaoSdk.init(this, getString(R.string.kakao_app_key))
 
         if (AuthApiClient.instance.hasToken()) {
             UserApiClient.instance.accessTokenInfo { _, error ->
@@ -31,12 +31,13 @@ class App : Application() {
                         Log.e("####", "Error")
                     }
                 } else {
-                    startActivity(
-                        Intent(this, QRMainActivity::class.java).apply {
-                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                        }
-                    )
+                    // Main 이 스플래시일 때 적용하기
+//                    startActivity(
+//                        Intent(this, MainActivity::class.java).apply {
+//                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//                            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+//                        }
+//                    )
                 }
             }
         } else {

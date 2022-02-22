@@ -13,7 +13,7 @@ class QRMainContract {
     ) : UiState
 
     sealed class QRMainUiSideEffect : UiSideEffect {
-        object ShowToast : QRMainUiSideEffect()
+        data class ShowToast(val msg: String) : QRMainUiSideEffect()
     }
 
     sealed class QRMainUiEvent : UiEvent {
