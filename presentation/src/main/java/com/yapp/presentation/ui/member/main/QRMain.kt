@@ -73,6 +73,11 @@ fun Main(
                 Text("Dialog")
             }
 
+            YDSDropDownButton(
+                text = "미통보 지각",
+                onClick = {}
+            )
+
             Row {
                 YDSChoiceButtonContainer(
                     text = "1 hihih",
