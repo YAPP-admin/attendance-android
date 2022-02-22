@@ -75,5 +75,9 @@ object Dependencies {
         const val CONFIG_KTX = "com.google.firebase:firebase-config-ktx"
         const val ANALYTICS_KTX = "com.google.firebase:firebase-analytics-ktx"
     }
+
+    object Kakao {
+        const val USER_LOGIN = "com.kakao.sdk:v2-user:2.8.6"
+    }
 }
 

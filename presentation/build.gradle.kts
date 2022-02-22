@@ -51,8 +51,6 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":common"))
 
-    implementation("com.kakao.sdk:v2-user:2.8.6")
-
     implementation(Dependencies.CORE)
     implementation(Dependencies.APP_COMPAT)
     implementation(Dependencies.Ktx.LIFECYCLE)
