@@ -12,12 +12,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.presentation.ui.member.main.QRMainViewModel
 import com.yapp.presentation.ui.member.main.state.QRMainContract.*
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @Composable
 fun Main(
     scaffoldState: ScaffoldState = rememberScaffoldState(),
+    coroutineScope: CoroutineScope = rememberCoroutineScope(),
     viewModel: QRMainViewModel = hiltViewModel(),
 ) {
     val uiState = viewModel.uiState.collectAsState()
@@ -33,7 +33,11 @@ fun Main(
             Button(
                 modifier = Modifier.wrapContentHeight(),
                 onClick = {
-                    viewModel.setEvent(QRMainUiEvent.onButtonClicked)
+                    // viewModel.setEvent(QRMainUiEvent.OnButtonClicked)
+                    // todo: 이런 경우에는 어떻게 처리해야 할까?
+                    coroutineScope.launch {
+                        scaffoldState.snackbarHostState.showSnackbar("Button Clicked")
+                    }
                 }
             ) {
                 Text("Click!")

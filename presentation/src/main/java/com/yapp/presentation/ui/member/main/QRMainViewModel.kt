@@ -20,7 +20,7 @@ class QRMainViewModel @Inject constructor(
 
     override fun handleEvent(event: QRMainUiEvent) {
         when (event) {
-            is QRMainUiEvent.onButtonClicked -> {
+            is QRMainUiEvent.OnButtonClicked -> {
                 setEffect(QRMainUiSideEffect.ShowToast)
             }
         }

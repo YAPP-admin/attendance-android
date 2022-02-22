@@ -17,6 +17,6 @@ class QRMainContract {
     }
 
     sealed class QRMainUiEvent : UiEvent {
-        object onButtonClicked : QRMainUiEvent()
+        object OnButtonClicked : QRMainUiEvent()
     }
 }

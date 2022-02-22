@@ -36,10 +36,10 @@ class LoginActivity : ComponentActivity() {
 
     private fun observing() {
         lifecycleScope.launch {
-            viewModel.effect.collect {
-                when (it) {
+            viewModel.effect.collect { effect ->
+                when (effect) {
                     is LoginContract.LoginUiSideEffect.ShowToast -> {
-                        Toast.makeText(this@LoginActivity, it.msg, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@LoginActivity, effect.msg, Toast.LENGTH_SHORT).show()
                     }
                     is LoginContract.LoginUiSideEffect.NavigateToQRMainScreen -> {
                         startActivity(
