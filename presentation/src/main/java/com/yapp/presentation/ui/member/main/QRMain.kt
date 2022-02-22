@@ -12,10 +12,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.yapp.presentation.ui.login.state.LoginContract
-import com.yapp.presentation.ui.member.main.QRMainViewModel
-import com.yapp.presentation.ui.member.main.state.QRMainContract
-import com.yapp.presentation.ui.member.main.state.QRMainContract.*
+import com.yapp.presentation.ui.member.main.QRMainContract.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch

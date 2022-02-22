@@ -1,4 +1,4 @@
-package com.yapp.presentation.ui.member.main.state
+package com.yapp.presentation.ui.member.main
 
 import com.yapp.common.base.UiEvent
 import com.yapp.common.base.UiSideEffect

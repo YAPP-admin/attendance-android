@@ -1,10 +1,8 @@
-package com.yapp.presentation.ui.login.state
+package com.yapp.presentation.ui.login
 
 import com.yapp.common.base.UiEvent
 import com.yapp.common.base.UiSideEffect
 import com.yapp.common.base.UiState
-import com.yapp.presentation.ui.login.state.LoginContract.*
-import com.yapp.presentation.ui.member.main.state.QRMainContract
 
 class LoginContract {
     data class LoginUiState(

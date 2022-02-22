@@ -41,7 +41,8 @@ abstract class BaseViewModel<S : UiState, A : UiSideEffect, E : UiEvent>(
         _uiState.value = state
     }
 
-    open fun setEffect(vararg builder: A) {
+    open fun
+            setEffect(vararg builder: A) {
         for (effectValue in builder) {
             viewModelScope.launch { _effect.send(effectValue) }
         }

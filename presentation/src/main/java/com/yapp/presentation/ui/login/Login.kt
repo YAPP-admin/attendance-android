@@ -1,37 +1,36 @@
 package com.yapp.presentation.ui.login
 
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.material.*
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.yapp.common.theme.AttendanceTheme
+import com.yapp.common.util.KakaoTalkLoginProvider
 import com.yapp.presentation.R
-import com.yapp.presentation.ui.login.state.LoginContract.*
+import com.yapp.presentation.ui.login.LoginContract.*
 import kotlinx.coroutines.flow.collect
+import javax.inject.Inject
 
 @Composable
 fun Login(
+    kakaoTalkLoginProvider: KakaoTalkLoginProvider,
     viewModel: LoginViewModel = hiltViewModel(),
     navigateToQRMainScreen: () -> Unit
 ) {
     val context = LocalContext.current
+    val uiState by viewModel.uiState.collectAsState()
+    viewModel.initKakaoLogin(kakaoTalkLoginProvider)
 
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp)
-    ) {
+    AttendanceTheme {
         LaunchedEffect(key1 = viewModel.effect) {
             viewModel.effect.collect { effect ->
                 when (effect) {
@@ -45,8 +44,26 @@ fun Login(
             }
         }
 
-        ConstraintLayout {
-            val (skipButton, kakaoTalkLoginButton, introduce) = createRefs()
+        ConstraintLayout(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp)
+        ) {
+            val (skipButton, kakaoTalkLoginButton, introduce, progressBar) = createRefs()
+
+            if (uiState.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .constrainAs(progressBar) {
+                            start.linkTo(parent.start)
+                            bottom.linkTo(parent.bottom)
+                            end.linkTo(parent.end)
+                            top.linkTo(parent.top)
+                        },
+                    strokeWidth = 5.dp
+                )
+            }
 
             Text(
                 modifier = Modifier

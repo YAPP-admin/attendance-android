@@ -3,7 +3,7 @@ package com.yapp.presentation.ui.member.main
 import com.yapp.common.base.BaseViewModel
 import com.yapp.common.util.FirebaseRemoteConfigs
 import com.yapp.common.util.RemoteConfigData
-import com.yapp.presentation.ui.member.main.state.QRMainContract.*
+import com.yapp.presentation.ui.member.main.QRMainContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
