@@ -1,20 +1,24 @@
 package com.yapp.presentation.ui.login
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintSet
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.util.KakaoTalkLoginProvider
+import com.yapp.common.yds.YDSFullButtonContainer
+import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R
 import com.yapp.presentation.ui.login.LoginContract.*
 import kotlinx.coroutines.flow.collect
@@ -45,22 +49,16 @@ fun Login(
         }
 
         ConstraintLayout(
+            constraintSet = constraintSet(),
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp)
+                .padding(24.dp),
         ) {
-            val (skipButton, kakaoTalkLoginButton, introduce, progressBar) = createRefs()
-
             if (uiState.isLoading) {
                 CircularProgressIndicator(
                     modifier = Modifier
                         .size(50.dp)
-                        .constrainAs(progressBar) {
-                            start.linkTo(parent.start)
-                            bottom.linkTo(parent.bottom)
-                            end.linkTo(parent.end)
-                            top.linkTo(parent.top)
-                        },
+                        .layoutId("progressBar"),
                     strokeWidth = 5.dp
                 )
             }
@@ -68,45 +66,63 @@ fun Login(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .constrainAs(introduce) {
-                        start.linkTo(parent.start)
-                        bottom.linkTo(skipButton.top, 60.dp)
-                        end.linkTo(parent.end)
-                    },
+                    .layoutId("introduce"),
                 text = stringResource(id = R.string.login_attendance_introduce_text)
             )
 
-            Button(
+            YDSFullButtonContainer(
+                text = "건너뛰기",
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .constrainAs(skipButton) {
-                        start.linkTo(parent.start)
-                        bottom.linkTo(kakaoTalkLoginButton.top, 8.dp)
-                        end.linkTo(parent.end)
-                    },
+                    .layoutId("skipButton"),
+                state = YdsButtonState.ENABLED,
                 onClick = {
                     viewModel.setEvent(LoginUiEvent.OnSkipButtonClicked)
                 }
-            ) {
-                Text("넘어가기")
-            }
+            )
 
-            Button(
+            YDSFullButtonContainer(
+                text = stringResource(id = R.string.login_kakao_login_text),
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .constrainAs(kakaoTalkLoginButton) {
-                        start.linkTo(parent.start)
-                        bottom.linkTo(parent.bottom)
-                        end.linkTo(parent.end)
-                    },
+                    .layoutId("kakaoLoginButton"),
+                state = YdsButtonState.ENABLED,
                 onClick = {
                     viewModel.setEvent(LoginUiEvent.OnLoginButtonClicked)
                 }
-            ) {
-                Text(
-                    text = stringResource(id = R.string.login_kakao_login_text)
-                )
-            }
+            )
+        }
+    }
+}
+
+private fun constraintSet(): ConstraintSet {
+    return ConstraintSet {
+        val progressBar = createRefFor("progressBar")
+        val introduce = createRefFor("introduce")
+        val skipButton = createRefFor("skipButton")
+        val kakaoLoginButton = createRefFor("kakaoLoginButton")
+
+        constrain(progressBar) {
+            start.linkTo(parent.start)
+            bottom.linkTo(parent.bottom)
+            end.linkTo(parent.end)
+            top.linkTo(parent.top)
+        }
+
+        constrain(introduce) {
+            start.linkTo(parent.start)
+            bottom.linkTo(skipButton.top, 60.dp)
+            end.linkTo(parent.end)
+        }
+
+        constrain(skipButton) {
+            start.linkTo(parent.start)
+            bottom.linkTo(kakaoLoginButton.top, 8.dp)
+            end.linkTo(parent.end)
+        }
+
+        constrain(kakaoLoginButton) {
+            start.linkTo(parent.start)
+            bottom.linkTo(parent.bottom)
+            end.linkTo(parent.end)
         }
     }
 }

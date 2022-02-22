@@ -20,8 +20,19 @@ class QRMainViewModel @Inject constructor(
 
     override fun handleEvent(event: QRMainUiEvent) {
         when (event) {
-            is QRMainUiEvent.OnButtonClicked -> {
+            is QRMainUiEvent.OnSnackBarButtonClicked -> {
                 setEffect(QRMainUiSideEffect.ShowToast("클릭!"))
+            }
+            is QRMainUiEvent.OnDialogButtonClicked -> {
+                setState { copy(showDialog = true) }
+            }
+
+            is QRMainUiEvent.CloseDialog -> {
+                setState { copy(showDialog = false) }
+            }
+
+            is QRMainUiEvent.OnClickSelectableButtonClicked -> {
+                setState { copy(selectedButtonId = event.num) }
             }
         }
     }
