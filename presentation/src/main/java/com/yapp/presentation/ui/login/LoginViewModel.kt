@@ -22,7 +22,7 @@ class LoginViewModel @Inject constructor() :
                 kakaoTalkLoginProvider?.login(
                     onSuccess = {
                         setEffect(
-                            LoginUiSideEffect.StartQRMainScreen,
+                            LoginUiSideEffect.NavigateToQRMainScreen,
                             LoginUiSideEffect.ShowToast("로그인 성공")
                         )
                     },
@@ -34,7 +34,7 @@ class LoginViewModel @Inject constructor() :
 
             is LoginUiEvent.OnSkipButtonClicked -> {
                 setEffect(
-                    LoginUiSideEffect.StartQRMainScreen
+                    LoginUiSideEffect.NavigateToQRMainScreen
                 )
             }
         }

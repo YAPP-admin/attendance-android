@@ -12,7 +12,7 @@ class LoginContract {
     ) : UiState
 
     sealed class LoginUiSideEffect : UiSideEffect {
-        object StartQRMainScreen : LoginUiSideEffect()
+        object NavigateToQRMainScreen : LoginUiSideEffect()
         data class ShowToast(val msg: String) : LoginUiSideEffect()
     }
 

@@ -41,7 +41,7 @@ class LoginActivity : ComponentActivity() {
                     is LoginContract.LoginUiSideEffect.ShowToast -> {
                         Toast.makeText(this@LoginActivity, it.msg, Toast.LENGTH_SHORT).show()
                     }
-                    is LoginContract.LoginUiSideEffect.StartQRMainScreen -> {
+                    is LoginContract.LoginUiSideEffect.NavigateToQRMainScreen -> {
                         startActivity(
                             Intent(this@LoginActivity, QRMainActivity::class.java)
                         )
