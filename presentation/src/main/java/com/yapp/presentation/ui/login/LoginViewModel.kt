@@ -1,16 +1,41 @@
 package com.yapp.presentation.ui.login
 
 import com.yapp.common.base.BaseViewModel
-import com.yapp.presentation.ui.login.state.LoginContract
+import com.yapp.common.util.KakaoTalkLoginProvider
 import com.yapp.presentation.ui.login.state.LoginContract.*
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class LoginViewModel : BaseViewModel<LoginUiState, LoginUiSideEffect, LoginUiEvent>(
-    LoginUiState()) {
+@HiltViewModel
+class LoginViewModel @Inject constructor() :
+    BaseViewModel<LoginUiState, LoginUiSideEffect, LoginUiEvent>(
+        LoginUiState()
+    ) {
+    private var kakaoTalkLoginProvider: KakaoTalkLoginProvider? = null
+    fun initKakaoLogin(provider: KakaoTalkLoginProvider) {
+        kakaoTalkLoginProvider = provider
+    }
 
     override fun handleEvent(event: LoginUiEvent) {
-        when(event) {
+        when (event) {
             is LoginUiEvent.OnLoginButtonClicked -> {
-                setEffect { LoginUiSideEffect.ShowKakaoTalkLoginPage }
+                kakaoTalkLoginProvider?.login(
+                    onSuccess = {
+                        setEffect(
+                            LoginUiSideEffect.StartQRMainScreen,
+                            LoginUiSideEffect.ShowToast("로그인 성공")
+                        )
+                    },
+                    onFailed = {
+                        setEffect(LoginUiSideEffect.ShowToast("로그인 실패"))
+                    }
+                )
+            }
+
+            is LoginUiEvent.OnSkipButtonClicked -> {
+                setEffect(
+                    LoginUiSideEffect.StartQRMainScreen
+                )
             }
         }
     }
