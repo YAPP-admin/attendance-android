@@ -32,7 +32,10 @@ class App : Application() {
                     }
                 } else {
                     startActivity(
-                        Intent(this, QRMainActivity::class.java)
+                        Intent(this, QRMainActivity::class.java).apply {
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        }
                     )
                 }
             }
