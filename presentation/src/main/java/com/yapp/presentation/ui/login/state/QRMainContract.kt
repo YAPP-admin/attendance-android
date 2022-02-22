@@ -12,10 +12,12 @@ class LoginContract {
     ) : UiState
 
     sealed class LoginUiSideEffect : UiSideEffect {
-        object ShowKakaoTalkLoginPage : LoginUiSideEffect()
+        object StartQRMainScreen : LoginUiSideEffect()
+        data class ShowToast(val msg: String) : LoginUiSideEffect()
     }
 
     sealed class LoginUiEvent : UiEvent {
         object OnLoginButtonClicked : LoginUiEvent()
+        object OnSkipButtonClicked : LoginUiEvent()
     }
 }

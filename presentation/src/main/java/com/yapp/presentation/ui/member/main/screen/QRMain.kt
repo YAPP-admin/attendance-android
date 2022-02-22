@@ -18,7 +18,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun Main(
     scaffoldState: ScaffoldState = rememberScaffoldState(),
-    scope: CoroutineScope = rememberCoroutineScope(),
     viewModel: QRMainViewModel = hiltViewModel(),
 ) {
     val uiState = viewModel.uiState.collectAsState()
@@ -38,12 +37,6 @@ fun Main(
                 }
             ) {
                 Text("Click!")
-            }
-
-            scope.launch {
-                viewModel.effect.collect {
-                    scaffoldState.snackbarHostState.showSnackbar("TEST")
-                }
             }
         }
     }
