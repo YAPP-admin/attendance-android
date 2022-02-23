@@ -11,10 +11,10 @@ android {
 
     defaultConfig {
         applicationId = Configs.APPLICATION_ID
-        minSdk        = Configs.MIN_SDK
-        targetSdk     = Configs.TARGET_SDK
-        versionCode   = Configs.VERSION_CODE
-        versionName   = Configs.VERSION_NAME
+        minSdk = Configs.MIN_SDK
+        targetSdk = Configs.TARGET_SDK
+        versionCode = Configs.VERSION_CODE
+        versionName = Configs.VERSION_NAME
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -77,4 +77,8 @@ dependencies {
     implementation(platform(Dependencies.Firebase.BOM))
     implementation(Dependencies.Firebase.ANALYTICS_KTX)
     implementation(Dependencies.Firebase.CONFIG_KTX)
+
+    implementation(Dependencies.Test.JUNIT)
+    implementation(Dependencies.Test.ANDROID_JUNIT)
+    implementation(Dependencies.Test.ESPRESSO_CORE)
 }
