@@ -20,14 +20,12 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.res.ResourcesCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.theme.*
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.presentation.R
-import kotlin.random.Random
 
 @Composable
 fun MemberScore(
@@ -57,20 +55,6 @@ fun MemberScore(
                     .height(12.dp)
                     .background(color = Gray_200)
             )
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    AttendanceTheme {
-        val randomValueState = remember { mutableStateOf(0) }
-        Column {
-            SemiCircleProgressBar(randomValueState.value.toFloat())
-            RandomDegreeButton {
-                randomValueState.value = it
-            }
         }
     }
 }
@@ -146,23 +130,6 @@ fun SemiCircleProgressBar(score: Float) {
                     scoreTextPaint
                 )
             }
-        }
-    }
-}
-
-@Composable
-fun RandomDegreeButton(onClick: (Int) -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        OutlinedButton(
-            onClick = {
-                onClick(Random.nextInt(0, 180))
-            }) {
-            Text(
-                text = "RandomValue"
-            )
         }
     }
 }
