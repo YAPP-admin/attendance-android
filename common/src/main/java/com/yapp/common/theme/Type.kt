@@ -16,7 +16,7 @@ val Pretendard = FontFamily(
 )
 
 // Set of Material typography styles to start with
-val Typography = Typography(
+val AttendanceTypography = Typography(
     h1 = TextStyle(
         fontFamily = Pretendard,
         fontWeight = FontWeight.Bold,
