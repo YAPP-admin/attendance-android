@@ -67,4 +67,9 @@ dependencies {
     implementation(Dependencies.Compose.NAVIGATION)
     androidTestImplementation(Dependencies.Compose.JUNIT)
     debugImplementation(Dependencies.Compose.TOOL_UI)
+
+    //test
+    testImplementation(Dependencies.Test.JUNIT)
+    androidTestImplementation(Dependencies.Test.ANDROID_JUNIT)
+    androidTestImplementation(Dependencies.Test.ESPRESSO_CORE)
 }
