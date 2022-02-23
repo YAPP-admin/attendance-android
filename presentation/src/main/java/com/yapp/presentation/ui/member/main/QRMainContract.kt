@@ -7,6 +7,8 @@ import com.yapp.common.base.UiState
 class QRMainContract {
     data class QRMainUiState(
         val isLoading: Boolean = true,
+        val showDialog: Boolean = false,
+        val selectedButtonId: Int = 0,
 //todo 변경 필요
         val time: String = "",
         val isAttendanceCompleted: Boolean = false,
@@ -17,6 +19,9 @@ class QRMainContract {
     }
 
     sealed class QRMainUiEvent : UiEvent {
-        object OnButtonClicked : QRMainUiEvent()
+        object OnSnackBarButtonClicked : QRMainUiEvent()
+        object OnDialogButtonClicked : QRMainUiEvent()
+        object CloseDialog: QRMainUiEvent()
+        data class OnClickSelectableButtonClicked(val num: Int): QRMainUiEvent()
     }
 }
