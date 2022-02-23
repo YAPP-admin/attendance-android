@@ -4,7 +4,6 @@ plugins {
     id(Configs.KOTLIN_PARCELIZE)
     id(Configs.KOTLIN_KAPT)
     id(Configs.HILT_ANDROID_PLUGIN)
-    id("com.google.gms.google-services")
 }
 
 android {
@@ -27,13 +26,8 @@ dependencies {
     implementation(Dependencies.Square.RETROFIT_MOSHI)
     implementation(Dependencies.Square.OKHTTP_LOGGING)
     implementation(Dependencies.Square.SERIALIZATION_CONVERTER)
-
-    // Import the BoM for the Firebase platform
-
     androidTestImplementation(project(mapOf("path" to ":")))
     platform("com.google.firebase:firebase-bom:29.1.0")
-    // Declare the dependency for the Cloud Firestore library
-    // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation("com.google.firebase:firebase-firestore:24.0.1")
     implementation ("com.google.firebase:firebase-firestore-ktx")
 }

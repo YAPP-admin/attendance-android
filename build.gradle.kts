@@ -9,7 +9,6 @@ buildscript {
         classpath(Dependencies.Kotlin.SERIALIZATION_PLUGIN)
         classpath(Dependencies.Dagger.HILT_GRADLE_PLUGIN)
         classpath(Dependencies.GOOGLE_SERVICES)
-        classpath("com.google.gms:google-services:4.3.8")
     }
 }
 
