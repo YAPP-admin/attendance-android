@@ -2,9 +2,7 @@ name: Firebase Deploy
 
 on:
   push:
-    branches: [ main, develop, cicd-test ]
-  pull_request:
-    branches: [ main, develop, cicd-test ]
+    branches: [ main, develop ]
 
 jobs:
   build:
