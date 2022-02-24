@@ -3,4 +3,9 @@
   <!-- screen name_description_component name -->
   <string name="login_attendance_introduce_text">3초만에 끝나는\n간편한 출석체크</string>
   <string name="login_kakao_login_text">카카오 로그인</string>
+
+  <string name="admin_main_attend_management_text">출결 관리</string>
+  <string name="admin_main_see_all_session_text">전체 보기</string>
+  <string name="admin_main_confirm_button">확인</string>
+  <string name="admin_main_see_all_score_text">누적 점수 확인하기</string>
 </resources>

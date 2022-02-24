@@ -26,7 +26,7 @@ fun AttendanceScreen(
             Login(
                 kakaoTalkLoginProvider
             ) {
-                navController.navigate("main") {
+                navController.navigate("admin_main") {
                     popUpTo("login") { inclusive = true }
                 }
             }
