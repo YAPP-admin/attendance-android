@@ -48,10 +48,18 @@ android {
 dependencies {
     implementation(project(":domain"))
 
+    implementation(Dependencies.Kakao.USER_LOGIN)
+
     implementation(Dependencies.CORE)
     implementation(Dependencies.APP_COMPAT)
     implementation(Dependencies.Ktx.LIFECYCLE)
     implementation(Dependencies.Google.MATERIAL)
+
+    //hilt
+    implementation(Dependencies.Dagger.HILT_ANDROID)
+    implementation(Dependencies.Dagger.HILT_LIFECYCLE_VIEWMODEL)
+    implementation(Dependencies.Dagger.HILT_NAVIGATION_COMPOSE)
+    kapt(Dependencies.Dagger.HILT_COMPILER)
 
     //firebase
     implementation(platform(Dependencies.Firebase.BOM))
