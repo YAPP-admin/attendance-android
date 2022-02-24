@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.yapp.common.theme.Gray_200
 
 @Composable
 fun YDSDropDownButton(
@@ -27,7 +28,7 @@ fun YDSDropDownButton(
             .padding(horizontal = 8.dp, vertical = 16.dp),
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color(0xffF7F7F9)
+            backgroundColor = Gray_200
         ),
         elevation = null
     ) {
