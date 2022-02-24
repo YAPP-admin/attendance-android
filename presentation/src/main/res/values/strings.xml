@@ -3,4 +3,11 @@
   <!-- screen name_description_component name -->
   <string name="login_attendance_introduce_text">3초만에 끝나는\n간편한 출석체크</string>
   <string name="login_kakao_login_text">카카오 로그인</string>
+
+  <string name="member_score_title">출결 점수 확인</string>
+  <string name="member_score_now_my_score_text">지금 내 점수는</string>
+  <string name="member_score_attend_text">출석</string>
+  <string name="member_score_absent_text">결석</string>
+  <string name="member_score_tardy_text">지각</string>
+
 </resources>

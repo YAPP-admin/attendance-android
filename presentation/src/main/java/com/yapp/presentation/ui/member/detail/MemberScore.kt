@@ -14,11 +14,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.res.ResourcesCompat
@@ -34,7 +36,7 @@ fun MemberScore(
     Scaffold(
         topBar = {
             YDSAppBar(
-                title = "출결 점수 확인",
+                title = stringResource(R.string.member_score_title),
                 onClickBackButton = {}
             )
         },
@@ -42,7 +44,8 @@ fun MemberScore(
             .fillMaxSize()
     ) {
         Column {
-            SemiCircleProgressBar(79f)
+            //todo score 주입 필요!
+            SemiCircleProgressBar(60f)
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -77,10 +80,18 @@ fun SemiCircleProgressBar(score: Float) {
         color = Gray_1000.toArgb()
         typeface = ResourcesCompat.getFont(LocalContext.current, R.font.pretendard_bold)
     }
-
+    
+    val myScoreDescriptionText = stringResource(id = R.string.member_score_now_my_score_text)
     val myScoreDescriptionPaint = Paint().apply {
         textAlign = Paint.Align.CENTER
         textSize = 50f
+        color = Gray_600.toArgb()
+        typeface = ResourcesCompat.getFont(LocalContext.current, R.font.pretendard_medium)
+    }
+
+    val helpIconPaint = Paint().apply {
+        textAlign = Paint.Align.CENTER
+        textSize = 40f
         color = Gray_600.toArgb()
         typeface = ResourcesCompat.getFont(LocalContext.current, R.font.pretendard_medium)
     }
@@ -115,9 +126,8 @@ fun SemiCircleProgressBar(score: Float) {
                     style = Stroke(width = 25f, cap = StrokeCap.Round)
                 )
 
-
                 drawContext.canvas.nativeCanvas.drawText(
-                    "지금 내 점수는",
+                    myScoreDescriptionText,
                     center.x,
                     center.y,
                     myScoreDescriptionPaint
@@ -128,6 +138,20 @@ fun SemiCircleProgressBar(score: Float) {
                     center.x,
                     (center.y * 2) - 10f,
                     scoreTextPaint
+                )
+
+                // 도움말 부분.
+                drawCircle(
+                    color = Gray_600,
+                    center = Offset(x = center.x * (1.4f), y = (center.y * 2) - 35f),
+                    radius = 25f,
+                    style = Stroke(4f)
+                )
+                drawContext.canvas.nativeCanvas.drawText(
+                    "?",
+                    center.x * (1.4f),
+                    (center.y * 2) - 20f,
+                    helpIconPaint
                 )
             }
         }
@@ -146,19 +170,19 @@ fun UserAttendanceTable() {
         horizontalArrangement = Arrangement.Center
     ) {
         AttendanceCell(
-            topText = "출석",
+            topText = stringResource(R.string.member_score_attend_text),
             topIconResId = R.drawable.icon_attend,
             bottomText = "10"
         )
 
         AttendanceCell(
-            topText = "지각",
+            topText = stringResource(R.string.member_score_tardy_text),
             topIconResId = R.drawable.icon_tardy,
             bottomText = "1"
         )
 
         AttendanceCell(
-            topText = "결석",
+            topText = stringResource(R.string.member_score_absent_text),
             topIconResId = R.drawable.icon_absent,
             bottomText = "10"
         )
