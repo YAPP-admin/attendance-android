@@ -30,7 +30,7 @@ fun AttendanceTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Compos
 
     MaterialTheme(
         colors = colors,
-        typography = Typography,
+        typography = AttendanceTypography,
         shapes = Shapes,
         content = content
     )
