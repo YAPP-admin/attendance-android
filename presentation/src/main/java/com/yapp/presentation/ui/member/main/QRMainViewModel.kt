@@ -1,19 +1,19 @@
 package com.yapp.presentation.ui.member.main
 
 import com.yapp.common.base.BaseViewModel
-import com.yapp.common.util.FirebaseRemoteConfigs
-import com.yapp.common.util.RemoteConfigData
+import com.yapp.domain.util.firebase.FirebaseRemoteConfig
+import com.yapp.domain.util.firebase.RemoteConfigData
 import com.yapp.presentation.ui.member.main.QRMainContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class QRMainViewModel @Inject constructor(
-    firebaseRemoteConfigs: FirebaseRemoteConfigs
+    firebaseRemoteConfig: FirebaseRemoteConfig
 ) : BaseViewModel<QRMainUiState, QRMainUiSideEffect, QRMainUiEvent>(QRMainUiState()) {
 
     init {
-        firebaseRemoteConfigs.getValue(RemoteConfigData.MaginotlineTime) {
+        firebaseRemoteConfig.getValue(RemoteConfigData.MaginotlineTime) {
             setState { copy(time = it) }
         }
     }
