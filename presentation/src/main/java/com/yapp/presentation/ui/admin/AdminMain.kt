@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
@@ -175,6 +176,10 @@ fun SessionItem() {
             Text("제목")
         }
 
-        Icon(Icons.Filled.Menu, contentDescription = null)
+        Icon(
+            painter = painterResource(id = R.drawable.icon_arrow_right),
+            contentDescription = null,
+            tint = Color.Unspecified,
+        )
     }
 }
