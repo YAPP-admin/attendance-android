@@ -24,7 +24,7 @@ fun Main(
     Scaffold(
         topBar = {
             YDSAppBar(
-                onClickBackButton = {}
+                "테스트"
             )
         },
         scaffoldState = scaffoldState,
