@@ -40,7 +40,15 @@ fun AttendanceScreen(
         composable(
             route = "detail"
         ) {
-            MemberScore()
+            MemberScore {
+                navController.navigate("help")
+            }
+        }
+        
+        composable(
+            route = "help"
+        ) {
+            Main()
         }
     }
 }

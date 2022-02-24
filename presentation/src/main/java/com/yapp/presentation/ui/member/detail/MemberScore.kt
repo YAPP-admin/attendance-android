@@ -7,7 +7,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -25,13 +27,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.res.ResourcesCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberImagePainter
 import com.yapp.common.theme.*
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.presentation.R
 
 @Composable
 fun MemberScore(
-    viewModel: MemberScoreViewModel = hiltViewModel()
+    viewModel: MemberScoreViewModel = hiltViewModel(),
+    navigateToHelpScreen: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -44,8 +48,23 @@ fun MemberScore(
             .fillMaxSize()
     ) {
         Column {
-            //todo score 주입 필요!
-            SemiCircleProgressBar(60f)
+            Box {
+                Icon(
+                    painter = painterResource(R.drawable.icon_help),
+                    contentDescription = "help icon",
+                    tint = Color.Unspecified,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(top = 18.dp, end = 14.dp)
+                        .clip(CircleShape)
+                        .clickable {
+                            navigateToHelpScreen()
+                        }
+                        .padding(10.dp)
+                )
+                //todo score 주입 필요!
+                SemiCircleProgressBar(60f)
+            }
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -80,18 +99,11 @@ fun SemiCircleProgressBar(score: Float) {
         color = Gray_1000.toArgb()
         typeface = ResourcesCompat.getFont(LocalContext.current, R.font.pretendard_bold)
     }
-    
+
     val myScoreDescriptionText = stringResource(id = R.string.member_score_now_my_score_text)
     val myScoreDescriptionPaint = Paint().apply {
         textAlign = Paint.Align.CENTER
         textSize = 50f
-        color = Gray_600.toArgb()
-        typeface = ResourcesCompat.getFont(LocalContext.current, R.font.pretendard_medium)
-    }
-
-    val helpIconPaint = Paint().apply {
-        textAlign = Paint.Align.CENTER
-        textSize = 40f
         color = Gray_600.toArgb()
         typeface = ResourcesCompat.getFont(LocalContext.current, R.font.pretendard_medium)
     }
@@ -138,20 +150,6 @@ fun SemiCircleProgressBar(score: Float) {
                     center.x,
                     (center.y * 2) - 10f,
                     scoreTextPaint
-                )
-
-                // 도움말 부분. (클릭이벤트 어떻게 해야할지 고민)
-                drawCircle(
-                    color = Gray_600,
-                    center = Offset(x = center.x * (1.4f), y = (center.y * 2) - 35f),
-                    radius = 25f,
-                    style = Stroke(4f)
-                )
-                drawContext.canvas.nativeCanvas.drawText(
-                    "?",
-                    center.x * (1.4f),
-                    (center.y * 2) - 20f,
-                    helpIconPaint
                 )
             }
         }
