@@ -9,11 +9,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class QRMainViewModel @Inject constructor(
-    firebaseRemoteConfigProvider: FirebaseRemoteConfig
+    firebaseRemoteConfig: FirebaseRemoteConfig
 ) : BaseViewModel<QRMainUiState, QRMainUiSideEffect, QRMainUiEvent>(QRMainUiState()) {
 
     init {
-        firebaseRemoteConfigProvider.getValue(RemoteConfigData.MaginotlineTime) {
+        firebaseRemoteConfig.getValue(RemoteConfigData.MaginotlineTime) {
             setState { copy(time = it) }
         }
     }
