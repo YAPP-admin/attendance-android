@@ -1,6 +1,6 @@
 package com.yapp.attendance.di
 
-import com.yapp.common.util.FirebaseRemoteConfigProvider
+import com.yapp.data.firebase.FirebaseRemoteConfigProvider
 import com.yapp.domain.util.firebase.FirebaseRemoteConfig
 import dagger.Binds
 import dagger.Module

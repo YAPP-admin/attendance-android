@@ -1,4 +1,4 @@
-package com.yapp.common.util
+package com.yapp.data.firebase
 
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig

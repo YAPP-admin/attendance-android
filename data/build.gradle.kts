@@ -22,6 +22,11 @@ dependencies {
     implementation(Dependencies.Room.KTX)
     kapt(Dependencies.Room.COMPILER)
 
+    //firebase
+    implementation(platform(Dependencies.Firebase.BOM))
+    implementation(Dependencies.Firebase.ANALYTICS_KTX)
+    implementation(Dependencies.Firebase.CONFIG_KTX)
+
     api(Dependencies.Square.RETROFIT)
     implementation(Dependencies.Square.RETROFIT_MOSHI)
     implementation(Dependencies.Square.OKHTTP_LOGGING)
