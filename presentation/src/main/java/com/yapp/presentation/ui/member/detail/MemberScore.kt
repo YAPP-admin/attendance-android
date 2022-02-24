@@ -140,7 +140,7 @@ fun SemiCircleProgressBar(score: Float) {
                     scoreTextPaint
                 )
 
-                // 도움말 부분.
+                // 도움말 부분. (클릭이벤트 어떻게 해야할지 고민)
                 drawCircle(
                     color = Gray_600,
                     center = Offset(x = center.x * (1.4f), y = (center.y * 2) - 35f),
