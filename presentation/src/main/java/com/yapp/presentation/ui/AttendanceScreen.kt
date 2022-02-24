@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.yapp.common.util.KakaoTalkLoginProvider
+import com.yapp.presentation.ui.admin.AdminMain
 import com.yapp.presentation.ui.login.Login
 import com.yapp.presentation.ui.member.main.Main
 
@@ -32,7 +33,13 @@ fun AttendanceScreen(
         }
 
         composable(
-            route = "main"
+            route = "admin_main"
+        ) {
+            AdminMain()
+        }
+
+        composable(
+            route = "member_main"
         ) {
             Main()
         }
