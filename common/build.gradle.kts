@@ -61,11 +61,6 @@ dependencies {
     implementation(Dependencies.Dagger.HILT_NAVIGATION_COMPOSE)
     kapt(Dependencies.Dagger.HILT_COMPILER)
 
-    //firebase
-    implementation(platform(Dependencies.Firebase.BOM))
-    implementation(Dependencies.Firebase.ANALYTICS_KTX)
-    implementation(Dependencies.Firebase.CONFIG_KTX)
-
     //compose
     implementation(Dependencies.Compose.UI)
     implementation(Dependencies.Compose.MATERIAL)
