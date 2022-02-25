@@ -1,6 +1,7 @@
 package com.yapp.common.yds
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -10,6 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.yapp.common.theme.Gray_200
+import com.yapp.common.theme.Gray_800
+import com.yapp.common.theme.Yapp_Orange
 
 @Composable
 fun YDSFullButtonContainer(
@@ -26,10 +30,45 @@ fun YDSFullButtonContainer(
         colors = when (state) {
             YdsButtonState.DISABLED -> {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xffF7F7F9)
+                    backgroundColor = Gray_200
                 )
             }
+            YdsButtonState.ENABLED,
+            YdsButtonState.PRESSED
+            -> {
+                ButtonDefaults.buttonColors(
+                    backgroundColor = Yapp_Orange
+                )
+            }
+        },
+        elevation = null
+    ) {
+        Text(
+            text = text,
+            color = Color.White
+        )
+    }
+}
+
+@Composable
+fun YDSFitButtonContainer(
+    text: String,
+    modifier: Modifier = Modifier.height(48.dp),
+    state: YdsButtonState,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier
+            .wrapContentWidth(),
+        shape = RoundedCornerShape(10.dp),
+        colors = when (state) {
             YdsButtonState.ENABLED -> {
+                ButtonDefaults.buttonColors(
+                    backgroundColor = Yapp_Orange
+                )
+            }
+            else -> {
                 ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xffFA6027)
                 )
@@ -43,6 +82,7 @@ fun YDSFullButtonContainer(
         )
     }
 }
+
 
 @Composable
 fun YDSChoiceButtonContainer(
@@ -59,12 +99,14 @@ fun YDSChoiceButtonContainer(
         colors = when (state) {
             YdsButtonState.DISABLED -> {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xffF7F7F9)
+                    backgroundColor = Gray_200
                 )
             }
-            YdsButtonState.ENABLED -> {
+            YdsButtonState.ENABLED,
+            YdsButtonState.PRESSED
+            -> {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xffFA6027)
+                    backgroundColor = Yapp_Orange
                 )
             }
         },
@@ -74,9 +116,11 @@ fun YDSChoiceButtonContainer(
             text = text,
             color = when (state) {
                 YdsButtonState.DISABLED -> {
-                    Color(0xff69707B)
+                    Gray_800
                 }
-                YdsButtonState.ENABLED -> {
+                YdsButtonState.ENABLED,
+                YdsButtonState.PRESSED
+                -> {
                     Color.White
                 }
             }
@@ -85,5 +129,5 @@ fun YDSChoiceButtonContainer(
 }
 
 enum class YdsButtonState {
-    ENABLED, DISABLED
+    ENABLED, DISABLED, PRESSED
 }

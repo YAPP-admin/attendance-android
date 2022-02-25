@@ -50,6 +50,7 @@ object Dependencies {
 
     object Google {
         const val MATERIAL = "com.google.android.material:material:1.5.0"
+        const val GSON = "com.google.code.gson:gson:2.8.5"
     }
 
     object Square {
