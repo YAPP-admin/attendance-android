@@ -16,13 +16,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.yapp.common.R
 import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.Gray_1000
+import com.yapp.common.theme.Gray_1200
 
 @Composable
 fun YDSAppBar(
     title: String = "",
+    backgroundColor: Color = Color.White,
     onClickBackButton: (() -> Unit)? = null,
     onClickSettings: (() -> Unit)? = null
 ) {
@@ -32,9 +35,11 @@ fun YDSAppBar(
                 text = title,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
-                color = Gray_1000
+                color = Gray_1200
             )
         },
+        backgroundColor = backgroundColor,
+        elevation = 0.dp,
         navigationIcon = {
             IconButton(onClick = { onClickBackButton?.invoke() }) {
                 Icon(

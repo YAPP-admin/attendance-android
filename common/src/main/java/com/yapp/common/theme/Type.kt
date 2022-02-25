@@ -27,7 +27,7 @@ val AttendanceTypography = Typography(
         fontFamily = Pretendard,
         fontWeight = FontWeight.Medium,
         fontSize = 18.sp,
-        lineHeight =28.sp
+        lineHeight = 28.sp
     ),
     body1 = TextStyle(
         fontFamily = Pretendard,
