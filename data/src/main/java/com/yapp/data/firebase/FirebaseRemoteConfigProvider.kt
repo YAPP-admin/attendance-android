@@ -1,11 +1,13 @@
-package com.yapp.common.util
+package com.yapp.data.firebase
 
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
+import com.yapp.domain.util.firebase.FirebaseRemoteConfig
+import com.yapp.domain.util.firebase.RemoteConfigData
 import javax.inject.Inject
 
-class FirebaseRemoteConfigs @Inject constructor() {
+class FirebaseRemoteConfigProvider @Inject constructor() : FirebaseRemoteConfig {
     //firebase remote config test
     private val firebaseRemoteConfig = Firebase.remoteConfig
     private val configSettings = remoteConfigSettings {
@@ -17,7 +19,7 @@ class FirebaseRemoteConfigs @Inject constructor() {
         firebaseRemoteConfig.setConfigSettingsAsync(configSettings)
     }
 
-    fun <T> getValue(value: RemoteConfigData<T>, callback: (T) -> Unit) {
+    override fun <T> getValue(value: RemoteConfigData<T>, callback: (T) -> Unit) {
         firebaseRemoteConfig.fetchAndActivate().addOnCompleteListener {
             if (it.isSuccessful) {
                 when (value.defaultValue) {
@@ -32,23 +34,5 @@ class FirebaseRemoteConfigs @Inject constructor() {
                 }
             }
         }
-    }
-}
-
-sealed class RemoteConfigData<T> {
-    abstract val key: String
-    abstract val defaultValue: T
-
-    object MaginotlineTime : RemoteConfigData<String>() {
-        override val key: String = ATTENDANCE_MAGINOTLINE_TIME
-        override val defaultValue: String = "fail"
-    }
-
-    companion object {
-        const val ATTENDANCE_MAGINOTLINE_TIME = "attendance_maginotline_time"
-
-        val defaultMaps = mapOf(
-            MaginotlineTime.defaultValue to MaginotlineTime.key
-        )
     }
 }
