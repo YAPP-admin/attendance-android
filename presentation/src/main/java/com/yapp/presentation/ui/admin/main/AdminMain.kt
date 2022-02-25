@@ -61,7 +61,7 @@ fun AdminMain(
                         .padding(horizontal = 24.dp)
                 )
                 ManagementSubTitle()
-                TestSessionItem(uiState.sessions)
+                Sessions(uiState.sessions)
             }
         }
     }
@@ -83,7 +83,7 @@ fun LazyListScope.Spacing() {
     }
 }
 
-fun LazyListScope.TestSessionItem(sessions: List<SessionModel>) {
+fun LazyListScope.Sessions(sessions: List<SessionModel>) {
     items(sessions) { session ->
         SessionItem(session)
     }
