@@ -1,99 +1,118 @@
 package com.yapp.presentation.ui.member.main
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.yapp.common.theme.AttendanceTypography
+import com.yapp.common.theme.Gray_1000
+import com.yapp.common.theme.Gray_600
 import com.yapp.common.yds.*
+import com.yapp.presentation.R
+import com.yapp.presentation.ui.login.Login
+import com.yapp.presentation.ui.member.detail.MemberScore
 import com.yapp.presentation.ui.member.main.MemberMainContract.*
+import com.yapp.presentation.ui.member.todaysession.TodaySession
 import kotlinx.coroutines.flow.collect
+import java.lang.reflect.Member
 
 @Composable
 fun MemberMain(
     scaffoldState: ScaffoldState = rememberScaffoldState(),
     viewModel: MemberMainViewModel = hiltViewModel(),
+    navigateToHelpScreen: () -> Unit
 ) {
+
     val uiState = viewModel.uiState.collectAsState()
 
     Scaffold(
-        topBar = {
-            YDSAppBar(
-                "테스트"
-            )
-        },
         scaffoldState = scaffoldState,
         modifier = Modifier
-            .fillMaxSize()
-    ) {
+            .fillMaxSize(),
+        bottomBar = {
+            BottomNavigationTab(selectedTab = uiState.value.selectedTab)
+        }
+    ) { innerPadding ->
+
         LaunchedEffect(key1 = viewModel.effect) {
-            viewModel.effect.collect { effect ->
-                when (effect) {
-                    is QRMainUiSideEffect.ShowToast -> {
-                        scaffoldState.snackbarHostState.showSnackbar(effect.msg)
-                    }
-                }
-            }
+            viewModel.effect.collect {}
         }
 
-        if (uiState.value.showDialog) {
-            YDSPopupDialog(
-                title = "Test",
-                content = "테스트입니다",
-                negativeButtonText = "취소",
-                positiveButtonText = "확인",
-                onClickNegativeButton = { viewModel.setEvent(QRMainUiEvent.CloseDialog) },
-                onClickPositiveButton = { viewModel.setEvent(QRMainUiEvent.CloseDialog) }
-            )
-        }
+        val modifier = Modifier.padding(innerPadding)
 
-        Column {
-            Text(text = uiState.value.time)
-
-            Button(
-                modifier = Modifier.wrapContentHeight(),
-                onClick = {
-                    viewModel.setEvent(QRMainUiEvent.OnSnackBarButtonClicked)
-                }
-            ) {
-                Text("Snack Bar")
+        when (uiState.value.selectedTab) {
+            MemberMainNavigationItem.SESSION -> {
+                TodaySession(modifier)
             }
-
-            Button(
-                modifier = Modifier.wrapContentHeight(),
-                onClick = {
-                    viewModel.setEvent(QRMainUiEvent.OnDialogButtonClicked)
-                }
-            ) {
-                Text("Dialog")
+            MemberMainNavigationItem.QR_AUTH -> {
+                // QR Screen 추가하는 곳
             }
-
-            YDSDropDownButton(
-                text = "미통보 지각",
-                onClick = {}
-            )
-
-            Row {
-                YDSChoiceButtonContainer(
-                    text = "1 hihih",
-                    state = if (uiState.value.selectedButtonId == 1) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                    onClick = {
-                        viewModel.setEvent(QRMainUiEvent.OnClickSelectableButtonClicked(1))
-                    }
-                )
-                YDSChoiceButtonContainer(
-                    text = "2 hihih",
-                    state = if (uiState.value.selectedButtonId == 2) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                    onClick = {
-                        viewModel.setEvent(QRMainUiEvent.OnClickSelectableButtonClicked(2))
-                    }
-                )
+            MemberMainNavigationItem.ATTENDANCE -> {
+                MemberScore(modifier = modifier) {
+                    navigateToHelpScreen()
+                }
             }
         }
     }
+}
+
+@Composable
+fun BottomNavigationTab(
+    viewModel: MemberMainViewModel = hiltViewModel(),
+    selectedTab: MemberMainNavigationItem
+) {
+    BottomNavigation(
+        backgroundColor = Color.White,
+        modifier = Modifier.height(80.dp)
+    ) {
+        MemberMainNavigationItem.values().forEach { tab ->
+            BottomNavigationItem(
+                icon = {
+                    tab.icon?.let {
+                        Icon(
+                            painterResource(id = it),
+                            contentDescription = null,
+                            tint = Color.Unspecified,
+                        )
+                    }
+                },
+                label = if (tab.title != null) {
+                    {
+                        Text(
+                            text = stringResource(tab.title),
+                            color = Gray_600,
+                            style = AttendanceTypography.caption
+                        )
+                    }
+                } else null,
+                selected = tab == selectedTab,
+                onClick = {
+                    viewModel.setEvent(MemberMainUiEvent.OnClickBottomNavigationTab(tab))
+                },
+                selectedContentColor = Gray_600,
+                unselectedContentColor = Gray_1000,
+            )
+        }
+    }
+}
+
+enum class MemberMainNavigationItem(val icon: Int?, @StringRes val title: Int?) {
+    SESSION(null, R.string.member_main_bottom_navigation_todays_session_text),
+    QR_AUTH(R.drawable.icon_camera, null),
+    ATTENDANCE(null, R.string.member_main_bottom_navigation_attendance_detail_text);
 }

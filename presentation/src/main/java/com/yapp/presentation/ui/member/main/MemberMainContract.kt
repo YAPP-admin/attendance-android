@@ -5,23 +5,18 @@ import com.yapp.common.base.UiSideEffect
 import com.yapp.common.base.UiState
 
 class MemberMainContract {
-    data class QRMainUiState(
+    data class MemberMainUiState(
         val isLoading: Boolean = true,
         val showDialog: Boolean = false,
-        val selectedButtonId: Int = 0,
-//todo 변경 필요
-        val time: String = "",
+        val selectedTab: MemberMainNavigationItem = MemberMainNavigationItem.SESSION,
         val isAttendanceCompleted: Boolean = false,
     ) : UiState
 
-    sealed class QRMainUiSideEffect : UiSideEffect {
-        data class ShowToast(val msg: String) : QRMainUiSideEffect()
+    sealed class MemberMainUiSideEffect : UiSideEffect {
     }
 
-    sealed class QRMainUiEvent : UiEvent {
-        object OnSnackBarButtonClicked : QRMainUiEvent()
-        object OnDialogButtonClicked : QRMainUiEvent()
-        object CloseDialog: QRMainUiEvent()
-        data class OnClickSelectableButtonClicked(val num: Int): QRMainUiEvent()
+    sealed class MemberMainUiEvent : UiEvent {
+        data class OnClickBottomNavigationTab(val tab: MemberMainNavigationItem) :
+            MemberMainUiEvent()
     }
 }

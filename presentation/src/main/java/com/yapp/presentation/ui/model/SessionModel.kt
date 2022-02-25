@@ -11,5 +11,4 @@ data class SessionModel(
     val description: String? = null,
     val date: String
 ) {
-   // fun fromEntity() =
 }

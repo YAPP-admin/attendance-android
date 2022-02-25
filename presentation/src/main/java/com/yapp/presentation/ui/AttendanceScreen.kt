@@ -41,13 +41,7 @@ fun AttendanceScreen(
         composable(
             route = "member_main"
         ) {
-            MemberMain()
-        }
-
-        composable(
-            route = "detail"
-        ) {
-            MemberScore {
+            MemberMain {
                 navController.navigate("help")
             }
         }

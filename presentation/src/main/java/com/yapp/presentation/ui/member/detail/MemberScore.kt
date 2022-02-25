@@ -35,16 +35,16 @@ import com.yapp.presentation.R
 @Composable
 fun MemberScore(
     viewModel: MemberScoreViewModel = hiltViewModel(),
+    modifier: Modifier,
     navigateToHelpScreen: () -> Unit
 ) {
     Scaffold(
         topBar = {
             YDSAppBar(
-                title = stringResource(R.string.member_score_title),
-                onClickBackButton = {}
+                title = stringResource(R.string.member_score_title)
             )
         },
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
     ) {
         Column {
