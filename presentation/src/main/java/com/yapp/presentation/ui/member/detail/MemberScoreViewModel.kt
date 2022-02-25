@@ -1,13 +1,11 @@
 package com.yapp.presentation.ui.member.detail
 
-import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.util.firebase.FirebaseRemoteConfig
 import com.yapp.domain.util.firebase.RemoteConfigData
 import com.yapp.presentation.ui.member.detail.MemberScoreContract.*
-import com.yapp.presentation.ui.member.main.MemberMainContract
-import com.yapp.presentation.ui.model.SessionModel
+import com.yapp.presentation.model.SessionModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

@@ -3,7 +3,7 @@ package com.yapp.presentation.ui.member.detail
 import com.yapp.common.base.UiEvent
 import com.yapp.common.base.UiSideEffect
 import com.yapp.common.base.UiState
-import com.yapp.presentation.ui.model.SessionModel
+import com.yapp.presentation.model.SessionModel
 
 class MemberScoreContract {
     data class MemberScoreUiState(

@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Attendance">
         <activity
-            android:name="com.yapp.presentation.ui.MainActivity"
+            android:name="com.yapp.presentation.ui.splash.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.Attendance.NoActionBar">
             <intent-filter>
@@ -24,15 +24,22 @@
         </activity>
 
         <activity
+            android:name="com.yapp.presentation.ui.MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Attendance.NoActionBar"/>
+
+        <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <!-- Redirect URI: "kakao{NATIVE_APP_KEY}://oauth" -->
-                <data android:host="oauth"
+                <data
+                    android:host="oauth"
                     android:scheme="kakao72806b8322ff87c0ab3ec377e4f99e6a" />
             </intent-filter>
         </activity>

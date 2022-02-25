@@ -1,4 +1,4 @@
-package com.yapp.presentation.ui.model
+package com.yapp.presentation.model
 
 import com.google.gson.annotations.SerializedName
 

@@ -9,6 +9,7 @@ import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.KakaoSdkError
 import com.kakao.sdk.user.UserApiClient
 import com.yapp.presentation.ui.MainActivity
+import com.yapp.presentation.ui.MainActivity.Companion.IS_LOGGED_IN_EXTRA_KEY
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
@@ -22,26 +23,14 @@ class App : Application() {
     private fun initKakao() {
         KakaoSdk.init(this, getString(R.string.kakao_app_key))
 
-        if (AuthApiClient.instance.hasToken()) {
-            UserApiClient.instance.accessTokenInfo { _, error ->
-                if (error != null) {
-                    if (error is KakaoSdkError && error.isInvalidTokenError()) {
-                        Log.e("####", "Login Required")
-                    } else {
-                        Log.e("####", "Error")
-                    }
-                } else {
-                    // Main 이 스플래시일 때 적용하기
-//                    startActivity(
-//                        Intent(this, MainActivity::class.java).apply {
-//                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-//                            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-//                        }
-//                    )
+        UserApiClient.instance.accessTokenInfo { _, error ->
+            startActivity(
+                Intent(this, MainActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    putExtra(IS_LOGGED_IN_EXTRA_KEY, error == null || AuthApiClient.instance.hasToken())
                 }
-            }
-        } else {
-            Log.e("####", "Error")
+            )
         }
     }
 }
