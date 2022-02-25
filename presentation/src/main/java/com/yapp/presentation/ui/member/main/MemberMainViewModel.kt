@@ -10,31 +10,15 @@ import javax.inject.Inject
 @HiltViewModel
 class MemberMainViewModel @Inject constructor(
     firebaseRemoteConfig: FirebaseRemoteConfig
-) : BaseViewModel<QRMainUiState, QRMainUiSideEffect, QRMainUiEvent>(QRMainUiState()) {
+) : BaseViewModel<MemberMainUiState, MemberMainUiSideEffect, MemberMainUiEvent>(MemberMainUiState()) {
 
-    init {
-        firebaseRemoteConfig.getValue(RemoteConfigData.MaginotlineTime) {
-            setState { copy(time = it) }
-        }
-    }
-
-    override fun handleEvent(event: QRMainUiEvent) {
+    override fun handleEvent(event: MemberMainUiEvent) {
         when (event) {
-            is QRMainUiEvent.OnSnackBarButtonClicked -> {
-                setEffect(QRMainUiSideEffect.ShowToast("클릭!"))
-            }
-            is QRMainUiEvent.OnDialogButtonClicked -> {
-                setState { copy(showDialog = true) }
-            }
-
-            is QRMainUiEvent.CloseDialog -> {
-                setState { copy(showDialog = false) }
-            }
-
-            is QRMainUiEvent.OnClickSelectableButtonClicked -> {
-                setState { copy(selectedButtonId = event.num) }
+            is MemberMainUiEvent.OnClickBottomNavigationTab -> {
+                setState { copy(selectedTab = event.tab) }
             }
         }
     }
+
 }
 

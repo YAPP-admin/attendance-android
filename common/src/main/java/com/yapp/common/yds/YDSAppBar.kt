@@ -7,7 +7,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,9 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yapp.common.R
-import com.yapp.common.theme.AttendanceTheme
-import com.yapp.common.theme.Gray_1000
-import com.yapp.common.theme.Gray_1200
+import com.yapp.common.theme.*
 
 @Composable
 fun YDSAppBar(
@@ -35,6 +32,7 @@ fun YDSAppBar(
                 text = title,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
+                style = AttendanceTypography.body1,
                 color = Gray_1200
             )
         },
@@ -42,10 +40,12 @@ fun YDSAppBar(
         elevation = 0.dp,
         navigationIcon = {
             IconButton(onClick = { onClickBackButton?.invoke() }) {
+                // 아이콘 교체 필요!!
                 Icon(
-                    painter = painterResource(R.drawable.ic_arrow_back),
+                    painter = painterResource(R.drawable.icon_arrow_back),
+                    tint = Color.Unspecified,
                     contentDescription = null,
-                    Modifier
+                    modifier = Modifier
                         .alpha(if (onClickBackButton == null) 0f else 1f)
                         .clickable(enabled = onClickBackButton != null) {}
                 )
@@ -54,9 +54,10 @@ fun YDSAppBar(
         actions = {
             IconButton(onClick = { onClickSettings?.invoke() }) {
                 Icon(
-                    Icons.Filled.Settings,
+                    imageVector = Icons.Filled.Settings,
+                    tint = Gray_600,
                     contentDescription = "Setting",
-                    Modifier
+                    modifier = Modifier
                         .alpha(if (onClickSettings == null) 0f else 1f)
                         .clickable(enabled = onClickBackButton != null) {}
                 )
