@@ -1,0 +1,7 @@
+<resources>
+  <string name="attend">출석</string>
+  <string name="absent">결석</string>
+  <string name="tardy">지각</string>
+  <string name="tbd">예정</string>
+
+</resources>

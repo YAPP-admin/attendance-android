@@ -9,6 +9,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -29,8 +31,11 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import com.yapp.common.theme.*
+import com.yapp.common.yds.AttendanceType
 import com.yapp.common.yds.YDSAppBar
+import com.yapp.common.yds.YDSAttendanceList
 import com.yapp.presentation.R
+import com.yapp.presentation.ui.model.SessionModel
 
 @Composable
 fun MemberScore(
@@ -38,6 +43,8 @@ fun MemberScore(
     modifier: Modifier,
     navigateToHelpScreen: () -> Unit
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+
     Scaffold(
         topBar = {
             YDSAppBar(
@@ -47,36 +54,46 @@ fun MemberScore(
         modifier = modifier
             .fillMaxSize()
     ) {
-        Column {
-            Box {
-                Icon(
-                    painter = painterResource(R.drawable.icon_help),
-                    contentDescription = "help icon",
-                    tint = Color.Unspecified,
+        LazyColumn {
+            item {
+                Box {
+                    Icon(
+                        painter = painterResource(R.drawable.icon_help),
+                        contentDescription = "help icon",
+                        tint = Color.Unspecified,
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(top = 18.dp, end = 14.dp)
+                            .clip(CircleShape)
+                            .clickable {
+                                navigateToHelpScreen()
+                            }
+                            .padding(10.dp)
+                    )
+                    //todo score 주입 필요!
+                    SemiCircleProgressBar(60f)
+                }
+                Spacer(
                     modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(top = 18.dp, end = 14.dp)
-                        .clip(CircleShape)
-                        .clickable {
-                            navigateToHelpScreen()
-                        }
-                        .padding(10.dp)
+                        .fillMaxWidth()
+                        .height(4.dp)
                 )
-                //todo score 주입 필요!
-                SemiCircleProgressBar(60f)
+                UserAttendanceTable()
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(12.dp)
+                        .background(color = Gray_200)
+                )
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(28.dp)
+                )
             }
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(4.dp)
-            )
-            UserAttendanceTable()
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(12.dp)
-                    .background(color = Gray_200)
-            )
+            items(uiState.sessions) { session ->
+                AttendUserSession(session)
+            }
         }
     }
 }
@@ -194,7 +211,8 @@ fun RowScope.AttendanceCell(
     bottomText: String
 ) {
     Column(
-        modifier = Modifier.weight(1f),
+        modifier = Modifier
+            .weight(1f),
     ) {
         Row(
             Modifier
@@ -226,6 +244,25 @@ fun RowScope.AttendanceCell(
         )
     }
 }
+
+@Composable
+private fun AttendUserSession(session: SessionModel) {
+    YDSAttendanceList(
+        attendanceType = if (session.sessionId == "2") AttendanceType.TBD else AttendanceType.ATTEND,
+        date = session.date,
+        title = session.title,
+        description = session.description ?: ""
+    )
+
+    Spacer(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(1.dp)
+            .padding(horizontal = 24.dp)
+            .background(Gray_200)
+    )
+}
+
 
 private fun fillColorByUserScore(score: Int): Color {
     return when (score) {

@@ -192,7 +192,7 @@ fun LazyListScope.ManagementSubTitle() {
 }
 
 @Composable
-fun SessionItem(session: SessionModel) {
+private fun SessionItem(session: SessionModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
