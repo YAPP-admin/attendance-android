@@ -25,7 +25,7 @@ app
 presentation
 ├── ...
 ├── src
-│   ├─── modal // presentation entities
+│   ├─── model // presentation entities
 │   │ 
 │   ├── ui   
 │   │   ├── splash
@@ -48,7 +48,7 @@ presentation
 │   │   └─── AttendanceScreen, MainActivity //위 패키지의 부모 화면
 │   │   
 │   │ 
-│   └──────────────────── common  // 리소스, 폰트, 테마, 컴포넌트 정의
+├──────────────────────── common  // 리소스, 폰트, 테마, 컴포넌트 정의
 │                            ├── base
 │                            ├── theme
 domain (wip)                 ├── util		
