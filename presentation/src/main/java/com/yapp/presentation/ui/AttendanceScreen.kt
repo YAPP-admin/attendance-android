@@ -10,15 +10,17 @@ import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.login.Login
 import com.yapp.presentation.ui.member.detail.MemberScore
 import com.yapp.presentation.ui.member.main.MemberMain
+import com.yapp.presentation.ui.splash.Splash
 
 @Composable
 fun AttendanceScreen(
     kakaoTalkLoginProvider: KakaoTalkLoginProvider,
-    navController: NavHostController = rememberNavController()
+    isLoggedIn: Boolean,
+    navController: NavHostController = rememberNavController(),
 ) {
     NavHost(
         navController = navController,
-        startDestination = "login"
+        startDestination = if (isLoggedIn) "member_main" else "login"
     ) {
         composable(
             route = "login"
@@ -45,7 +47,7 @@ fun AttendanceScreen(
                 navController.navigate("help")
             }
         }
-        
+
         composable(
             route = "help"
         ) {}

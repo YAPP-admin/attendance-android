@@ -24,7 +24,7 @@ import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSFitButtonContainer
 import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R.*
-import com.yapp.presentation.ui.model.SessionModel
+import com.yapp.presentation.model.SessionModel
 
 @Composable
 fun AdminMain(

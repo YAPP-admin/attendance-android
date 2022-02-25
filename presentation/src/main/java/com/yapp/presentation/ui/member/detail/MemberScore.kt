@@ -18,7 +18,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -29,13 +28,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.res.ResourcesCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberImagePainter
 import com.yapp.common.theme.*
 import com.yapp.common.yds.AttendanceType
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSAttendanceList
 import com.yapp.presentation.R
-import com.yapp.presentation.ui.model.SessionModel
+import com.yapp.presentation.model.SessionModel
 
 @Composable
 fun MemberScore(
