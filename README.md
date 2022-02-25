@@ -2,6 +2,17 @@
 
 
 
+### Spec
+
+* Clean Architecture with MVI (without Redux)
+* Hilt
+* Coroutine
+* Jetpack Compose
+* Coil 
+* Firestore
+
+
+
 ### Package Structure
 
 ```
@@ -20,17 +31,20 @@ presentation
 │   │   │    ├─── LoginContract // Define login UiState, UiEvent, UiSideEffect
 │   │   │    │     
 │   │   ├─── member
+│   │   │    ├─── splash
 │   │   │    ├─── main // 로그인 후 qr main 화면
 │   │   │    ├─── signup // 이름 설정 및 팀 선택화면    
 │   │   │    ├─── detail // 출결 확인 화면 및 도움말   
 │   │   │    ├─── setting // 멤버 설정 화면
+│   │   │    ├─── todaysession // 오늘의 세션 화면
 │   │   │    └─── AttendanceScreen, MainActivity //위 패키지의 부모 화면
-│   │   │
 │   │   │
 │   │   ├── admin (wip)                 
 │   │   │    ├─── main // 관리자용 메인 화면
 │   │   │    ├─── detail // 누적 점수 확인 및  
-│   │   │    └─── management // 출결 관리 화면   
+│   │   │    └─── management // 출결 관리 화면  
+│   │   │ 
+│   │   ├─── modal // presentation entities
 │   │ 
 │   └──────────────────── common  // 리소스, 폰트, 테마, 컴포넌트 정의
 │                            ├── base
@@ -41,14 +55,15 @@ domain (wip)                 ├── util
 │   ├── main                                      
 │   │   ├── entity                  
 │   │   ├── repository                      
-│   │   ├── usecase    
+│   │   └── usecase    
+│   │  
 data (wip)
 ├── ...
 ├── src
 │   ├── main
 │   │   ├── api                 
 │   │   ├── response                  
-│   │   ├── repositoryImpl      
+│   │   └── repositoryImpl      
 
 ```
 
@@ -73,15 +88,3 @@ data (wip)
    ex) 로그인 패키지: Login(Compose Screen) - LoginContract(UiState, UiEvent, UiSideEffect) - LoginViewModel
 
 3. branch naming - `feature/` 
-
-
-
-### Spec
-
-* Clean Architecture with MVI
-* Hilt
-* Coroutine
-* Jetpack Compose
-* Coil 
-* Firestore
-
