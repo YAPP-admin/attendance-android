@@ -57,8 +57,11 @@ android {
 
 dependencies {
     implementation(project(":presentation"))
+    implementation(project(":common"))
     implementation(project(":domain"))
     implementation(project(":data"))
+
+    implementation(Dependencies.Kakao.USER_LOGIN)
 
     implementation(Dependencies.CORE)
     implementation(Dependencies.APP_COMPAT)
