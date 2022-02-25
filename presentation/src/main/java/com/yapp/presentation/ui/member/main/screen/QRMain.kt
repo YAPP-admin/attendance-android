@@ -39,12 +39,6 @@ fun Main(
             ) {
                 Text("Click!")
             }
-
-            scope.launch {
-                viewModel.effect.collect {
-                    scaffoldState.snackbarHostState.showSnackbar("TEST")
-                }
-            }
         }
     }
 }
