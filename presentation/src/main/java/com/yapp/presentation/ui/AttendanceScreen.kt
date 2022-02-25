@@ -6,10 +6,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.yapp.common.util.KakaoTalkLoginProvider
-import com.yapp.presentation.ui.admin.AdminMain
+import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.login.Login
 import com.yapp.presentation.ui.member.detail.MemberScore
-import com.yapp.presentation.ui.member.main.Main
+import com.yapp.presentation.ui.member.main.MemberMain
 
 @Composable
 fun AttendanceScreen(
@@ -26,7 +26,7 @@ fun AttendanceScreen(
             Login(
                 kakaoTalkLoginProvider
             ) {
-                navController.navigate("admin_main") {
+                navController.navigate("member_main") {
                     popUpTo("login") { inclusive = true }
                 }
             }
@@ -41,7 +41,7 @@ fun AttendanceScreen(
         composable(
             route = "member_main"
         ) {
-            Main()
+            MemberMain()
         }
 
         composable(
@@ -54,8 +54,6 @@ fun AttendanceScreen(
         
         composable(
             route = "help"
-        ) {
-            Main()
-        }
+        ) {}
     }
 }

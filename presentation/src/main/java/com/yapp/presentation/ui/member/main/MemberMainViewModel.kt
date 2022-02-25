@@ -3,12 +3,12 @@ package com.yapp.presentation.ui.member.main
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.util.firebase.FirebaseRemoteConfig
 import com.yapp.domain.util.firebase.RemoteConfigData
-import com.yapp.presentation.ui.member.main.QRMainContract.*
+import com.yapp.presentation.ui.member.main.MemberMainContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class QRMainViewModel @Inject constructor(
+class MemberMainViewModel @Inject constructor(
     firebaseRemoteConfig: FirebaseRemoteConfig
 ) : BaseViewModel<QRMainUiState, QRMainUiSideEffect, QRMainUiEvent>(QRMainUiState()) {
 

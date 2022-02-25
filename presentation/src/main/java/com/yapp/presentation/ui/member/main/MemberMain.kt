@@ -11,13 +11,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.yds.*
-import com.yapp.presentation.ui.member.main.QRMainContract.*
+import com.yapp.presentation.ui.member.main.MemberMainContract.*
 import kotlinx.coroutines.flow.collect
 
 @Composable
-fun Main(
+fun MemberMain(
     scaffoldState: ScaffoldState = rememberScaffoldState(),
-    viewModel: QRMainViewModel = hiltViewModel(),
+    viewModel: MemberMainViewModel = hiltViewModel(),
 ) {
     val uiState = viewModel.uiState.collectAsState()
 

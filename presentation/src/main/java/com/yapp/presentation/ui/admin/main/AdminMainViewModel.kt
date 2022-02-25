@@ -1,10 +1,10 @@
-package com.yapp.presentation.ui.admin
+package com.yapp.presentation.ui.admin.main
 
 import com.google.gson.Gson
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.util.firebase.FirebaseRemoteConfig
 import com.yapp.domain.util.firebase.RemoteConfigData
-import com.yapp.presentation.ui.admin.AdminMainContract.*
+import com.yapp.presentation.ui.admin.main.AdminMainContract.*
 import com.yapp.presentation.ui.model.SessionModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

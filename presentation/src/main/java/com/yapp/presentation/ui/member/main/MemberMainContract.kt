@@ -4,7 +4,7 @@ import com.yapp.common.base.UiEvent
 import com.yapp.common.base.UiSideEffect
 import com.yapp.common.base.UiState
 
-class QRMainContract {
+class MemberMainContract {
     data class QRMainUiState(
         val isLoading: Boolean = true,
         val showDialog: Boolean = false,
