@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Modifier
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
@@ -69,53 +70,72 @@ fun Login(
                 )
             }
 
+            IntroduceTitle()
+            SkipButton()
+            KakaoLoginButton()
+        }
+    }
+}
+
+@Composable
+private fun SkipButton(
+    viewModel: LoginViewModel = hiltViewModel()
+) {
+    YDSFullButtonContainer(
+        text = "건너뛰기",
+        modifier = Modifier
+            .layoutId("skipButton"),
+        state = YdsButtonState.ENABLED,
+        onClick = {
+            viewModel.setEvent(LoginUiEvent.OnSkipButtonClicked)
+        }
+    )
+}
+
+@Composable
+private fun IntroduceTitle() {
+    Text(
+        modifier = Modifier
+            .fillMaxWidth()
+            .layoutId("introduce"),
+        text = stringResource(id = R.string.login_attendance_introduce_text),
+        style = AttendanceTypography.h1
+    )
+}
+
+@Composable
+private fun KakaoLoginButton(
+    viewModel: LoginViewModel = hiltViewModel()
+) {
+    Button(
+        modifier = Modifier
+            .layoutId("kakaoLoginButton")
+            .fillMaxWidth()
+            .height(45.dp),
+        shape = RoundedCornerShape(12.dp),
+        onClick = {
+            viewModel.setEvent(LoginUiEvent.OnLoginButtonClicked)
+        },
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = Color(0xffFEE500)
+        ),
+        elevation = null
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(drawable.icon_kakao),
+                tint = Color.Unspecified,
+                contentDescription = null,
+            )
             Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .layoutId("introduce"),
-                text = stringResource(id = R.string.login_attendance_introduce_text),
-                style = AttendanceTypography.h1
+                text = stringResource(id = R.string.login_kakao_login_text),
+                modifier = Modifier.padding(start = 6.dp),
+                color = Color(0xff191919),
+                style = AttendanceTypography.body1
             )
-
-            YDSFullButtonContainer(
-                text = "건너뛰기",
-                modifier = Modifier
-                    .layoutId("skipButton"),
-                state = YdsButtonState.ENABLED,
-                onClick = {
-                    viewModel.setEvent(LoginUiEvent.OnSkipButtonClicked)
-                }
-            )
-
-            Button(
-                modifier = Modifier
-                    .layoutId("kakaoLoginButton")
-                    .fillMaxWidth()
-                    .height(45.dp),
-                shape = RoundedCornerShape(12.dp),
-                onClick = {
-                    viewModel.setEvent(LoginUiEvent.OnLoginButtonClicked)
-                },
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xffFEE500)
-                ),
-                elevation = null
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                ) {
-                    Icon(
-                        painter = painterResource(drawable.icon_kakao),
-                        tint = Color.Unspecified,
-                        contentDescription = null,
-                    )
-                    Text(
-                        text = stringResource(id = R.string.login_kakao_login_text),
-                        modifier = Modifier.padding(start = 6.dp),
-                        color = Color(0xff191919)
-                    )
-                }
-            }
         }
     }
 }
