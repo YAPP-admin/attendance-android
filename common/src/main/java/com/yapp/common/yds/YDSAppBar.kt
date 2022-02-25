@@ -7,7 +7,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -43,7 +42,7 @@ fun YDSAppBar(
             IconButton(onClick = { onClickBackButton?.invoke() }) {
                 // 아이콘 교체 필요!!
                 Icon(
-                    painter = painterResource(R.drawable.ic_arrow_back),
+                    painter = painterResource(R.drawable.icon_arrow_back),
                     tint = Color.Unspecified,
                     contentDescription = null,
                     modifier = Modifier

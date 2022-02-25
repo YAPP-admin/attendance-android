@@ -3,19 +3,25 @@ package com.yapp.presentation.ui.login
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Modifier
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.yapp.common.R.*
 import com.yapp.common.theme.AttendanceTheme
+import com.yapp.common.theme.AttendanceTypography
+import com.yapp.common.theme.Gray_200
+import com.yapp.common.theme.Yapp_Orange
 import com.yapp.common.util.KakaoTalkLoginProvider
 import com.yapp.common.yds.YDSFullButtonContainer
 import com.yapp.common.yds.YdsButtonState
@@ -67,7 +73,8 @@ fun Login(
                 modifier = Modifier
                     .fillMaxWidth()
                     .layoutId("introduce"),
-                text = stringResource(id = R.string.login_attendance_introduce_text)
+                text = stringResource(id = R.string.login_attendance_introduce_text),
+                style = AttendanceTypography.h1
             )
 
             YDSFullButtonContainer(
@@ -80,15 +87,35 @@ fun Login(
                 }
             )
 
-            YDSFullButtonContainer(
-                text = stringResource(id = R.string.login_kakao_login_text),
+            Button(
                 modifier = Modifier
-                    .layoutId("kakaoLoginButton"),
-                state = YdsButtonState.ENABLED,
+                    .layoutId("kakaoLoginButton")
+                    .fillMaxWidth()
+                    .height(45.dp),
+                shape = RoundedCornerShape(12.dp),
                 onClick = {
                     viewModel.setEvent(LoginUiEvent.OnLoginButtonClicked)
+                },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xffFEE500)
+                ),
+                elevation = null
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    Icon(
+                        painter = painterResource(drawable.icon_kakao),
+                        tint = Color.Unspecified,
+                        contentDescription = null,
+                    )
+                    Text(
+                        text = stringResource(id = R.string.login_kakao_login_text),
+                        modifier = Modifier.padding(start = 6.dp),
+                        color = Color(0xff191919)
+                    )
                 }
-            )
+            }
         }
     }
 }
