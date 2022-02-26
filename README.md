@@ -1,7 +1,6 @@
 # attendance-android
 
 
-
 ### Spec
 
 * Clean Architecture with MVI (without Redux)
@@ -10,7 +9,6 @@
 * Jetpack Compose
 * Coil 
 * Firestore
-
 
 
 ### Package Structure
@@ -89,4 +87,6 @@ data (wip)
 
    ex) 로그인 패키지: Login(Compose Screen) - LoginContract(UiState, UiEvent, UiSideEffect) - LoginViewModel
 
-3. branch naming - `feature/` 
+3. branch naming - `feature/`
+
+

@@ -40,7 +40,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_11.toString()
     }
     buildFeatures {
         compose = true
@@ -80,4 +80,8 @@ dependencies {
     implementation(platform(Dependencies.Firebase.BOM))
     implementation(Dependencies.Firebase.ANALYTICS_KTX)
     implementation(Dependencies.Firebase.CONFIG_KTX)
+
+    testImplementation(Dependencies.Test.JUNIT)
+    testImplementation(Dependencies.Test.ANDROID_JUNIT)
+    testImplementation(Dependencies.Test.ESPRESSO_CORE)
 }
