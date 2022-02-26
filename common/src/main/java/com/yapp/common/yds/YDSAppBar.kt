@@ -52,14 +52,16 @@ fun YDSAppBar(
             }
         },
         actions = {
-            IconButton(onClick = { onClickSettings?.invoke() }) {
+            IconButton(
+                onClick = { onClickSettings?.invoke() },
+                enabled = onClickSettings != null,
+            ) {
                 Icon(
                     imageVector = Icons.Filled.Settings,
                     tint = Gray_600,
                     contentDescription = "Setting",
                     modifier = Modifier
                         .alpha(if (onClickSettings == null) 0f else 1f)
-                        .clickable(enabled = onClickBackButton != null) {}
                 )
             }
         }
