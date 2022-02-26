@@ -8,7 +8,7 @@ class MemberMainContract {
     data class MemberMainUiState(
         val isLoading: Boolean = true,
         val showDialog: Boolean = false,
-        val selectedTab: MemberMainNavigationItem = MemberMainNavigationItem.SESSION,
+        val selectedTab: BottomNavigationItem = BottomNavigationItem.SESSION,
         val isAttendanceCompleted: Boolean = false,
     ) : UiState
 
@@ -16,7 +16,7 @@ class MemberMainContract {
     }
 
     sealed class MemberMainUiEvent : UiEvent {
-        data class OnClickBottomNavigationTab(val tab: MemberMainNavigationItem) :
+        data class OnClickBottomNavigationTab(val tab: BottomNavigationItem) :
             MemberMainUiEvent()
     }
 }
