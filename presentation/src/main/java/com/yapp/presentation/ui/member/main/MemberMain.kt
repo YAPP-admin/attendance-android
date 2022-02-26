@@ -18,6 +18,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.yapp.common.theme.*
 import com.yapp.presentation.R
+import com.yapp.presentation.ui.AttendanceScreenRoute
 import com.yapp.presentation.ui.member.detail.MemberScore
 import com.yapp.presentation.ui.member.todaysession.TodaySession
 import kotlinx.coroutines.flow.collect
@@ -91,8 +92,8 @@ fun BottomNavigationTab(
                 } else null,
                 selected = tab.route == currentRoute,
                 onClick = {
-                    if (tab.route == BottomNavigationItem.QR_AUTH.route) {
-                        navigateToScreen(BottomNavigationItem.QR_AUTH.route)
+                    if (tab.route == AttendanceScreenRoute.QR_AUTH.route) {
+                        navigateToScreen(AttendanceScreenRoute.QR_AUTH.route)
                     } else {
                         navController.navigate(tab.route) {
                             navController.graph.startDestinationRoute?.let { route ->
