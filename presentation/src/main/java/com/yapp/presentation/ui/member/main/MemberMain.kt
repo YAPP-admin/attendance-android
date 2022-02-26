@@ -1,5 +1,6 @@
 package com.yapp.presentation.ui.member.main
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -68,18 +69,19 @@ fun BottomNavigationTab(
 
     BottomNavigation(
         backgroundColor = Color.White,
-        modifier = Modifier.height(80.dp)
+        modifier = Modifier.height(80.dp),
+        elevation = 2.dp
     ) {
         BottomNavigationItem.values().forEach { tab ->
             BottomNavigationItem(
+                modifier = Modifier.padding(8.dp),
                 icon = {
-                    tab.icon?.let {
-                        Icon(
-                            painterResource(id = it),
-                            contentDescription = null,
-                            tint = Color.Unspecified,
-                        )
-                    }
+                    Icon(
+                        painterResource(id = tab.icon),
+                        contentDescription = null,
+                        modifier = Modifier.padding(4.dp),
+                        tint = Color.Unspecified,
+                    )
                 },
                 label = if (tab.title != null) {
                     {
@@ -113,12 +115,20 @@ fun BottomNavigationTab(
     }
 }
 
-enum class BottomNavigationItem(val route: String, val icon: Int?, @StringRes val title: Int?) {
-    SESSION("todays-session", null, R.string.member_main_bottom_navigation_todays_session_text),
+enum class BottomNavigationItem(
+    val route: String,
+    @DrawableRes val icon: Int,
+    @StringRes val title: Int?
+) {
+    SESSION(
+        "today-session",
+        R.drawable.icon_home_enabled,
+        R.string.member_main_bottom_navigation_today_session_text
+    ),
     QR_AUTH("qr-auth", R.drawable.icon_camera, null),
     MEMBER_SCORE(
         "member-score",
-        null,
+        R.drawable.icon_check_disabled,
         R.string.member_main_bottom_navigation_attendance_detail_text
     );
 }
