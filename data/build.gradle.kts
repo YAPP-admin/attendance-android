@@ -32,5 +32,5 @@ dependencies {
     implementation(Dependencies.Square.OKHTTP_LOGGING)
     implementation(Dependencies.Square.SERIALIZATION_CONVERTER)
 
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.2.1")
+    testImplementation(Dependencies.Test.JUNIT)
 }

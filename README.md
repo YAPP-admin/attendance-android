@@ -1,7 +1,6 @@
 # attendance-android
 
 
-
 ### Spec
 
 * Clean Architecture with MVI (without Redux)
@@ -10,7 +9,6 @@
 * Jetpack Compose
 * Coil 
 * Firestore
-
 
 
 ### Package Structure
@@ -25,7 +23,7 @@ app
 presentation
 ├── ...
 ├── src
-│   ├─── modal // presentation entities
+│   ├─── model // presentation entities
 │   │ 
 │   ├── ui   
 │   │   ├── splash
@@ -48,7 +46,7 @@ presentation
 │   │   └─── AttendanceScreen, MainActivity //위 패키지의 부모 화면
 │   │   
 │   │ 
-│   └──────────────────── common  // 리소스, 폰트, 테마, 컴포넌트 정의
+├──────────────────────── common  // 리소스, 폰트, 테마, 컴포넌트 정의
 │                            ├── base
 │                            ├── theme
 domain (wip)                 ├── util		
@@ -89,4 +87,6 @@ data (wip)
 
    ex) 로그인 패키지: Login(Compose Screen) - LoginContract(UiState, UiEvent, UiSideEffect) - LoginViewModel
 
-3. branch naming - `feature/` 
+3. branch naming - `feature/`
+
+
