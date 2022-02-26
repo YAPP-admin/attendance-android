@@ -55,6 +55,7 @@ dependencies {
     implementation(Dependencies.APP_COMPAT)
     implementation(Dependencies.Ktx.LIFECYCLE)
     implementation(Dependencies.Google.MATERIAL)
+    implementation(Dependencies.Google.GSON)
 
     //firebase
     implementation(platform(Dependencies.Firebase.BOM))

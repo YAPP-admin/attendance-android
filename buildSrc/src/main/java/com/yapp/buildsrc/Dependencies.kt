@@ -50,6 +50,7 @@ object Dependencies {
 
     object Google {
         const val MATERIAL = "com.google.android.material:material:1.5.0"
+        const val GSON = "com.google.code.gson:gson:2.8.5"
     }
 
     object Square {
@@ -74,6 +75,10 @@ object Dependencies {
         const val BOM = "com.google.firebase:firebase-bom:29.1.0"
         const val CONFIG_KTX = "com.google.firebase:firebase-config-ktx"
         const val ANALYTICS_KTX = "com.google.firebase:firebase-analytics-ktx"
+    }
+
+    object Kakao {
+        const val USER_LOGIN = "com.kakao.sdk:v2-user:2.8.6"
     }
 }
 
