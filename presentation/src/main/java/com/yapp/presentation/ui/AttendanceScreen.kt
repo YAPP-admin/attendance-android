@@ -10,6 +10,7 @@ import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.login.Login
 import com.yapp.presentation.ui.member.detail.MemberScore
 import com.yapp.presentation.ui.member.main.MemberMain
+import com.yapp.presentation.ui.member.setting.MemberSetting
 import com.yapp.presentation.ui.splash.Splash
 
 @Composable
@@ -43,9 +44,16 @@ fun AttendanceScreen(
         composable(
             route = "member_main"
         ) {
-            MemberMain {
-                navController.navigate("help")
-            }
+            MemberMain(
+                navigateToHelpScreen = { navController.navigate("help") },
+                navigateToMemberSettingScreen = { navController.navigate("member_setting") }
+            )
+        }
+
+        composable(
+            route = "member_setting"
+        ) {
+            MemberSetting()
         }
 
         composable(

@@ -35,7 +35,8 @@ import java.lang.reflect.Member
 fun MemberMain(
     scaffoldState: ScaffoldState = rememberScaffoldState(),
     viewModel: MemberMainViewModel = hiltViewModel(),
-    navigateToHelpScreen: () -> Unit
+    navigateToHelpScreen: () -> Unit,
+    navigateToMemberSettingScreen: () -> Unit,
 ) {
 
     val uiState = viewModel.uiState.collectAsState()
@@ -57,7 +58,7 @@ fun MemberMain(
 
         when (uiState.value.selectedTab) {
             MemberMainNavigationItem.SESSION -> {
-                TodaySession(modifier)
+                TodaySession(modifier, navigateToMemberSettingScreen)
             }
             MemberMainNavigationItem.QR_AUTH -> {
                 // QR Screen 추가하는 곳

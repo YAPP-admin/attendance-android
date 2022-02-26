@@ -24,11 +24,12 @@ import com.yapp.common.yds.YDSAppBar
 @Composable
 fun TodaySession(
     modifier: Modifier = Modifier,
+    navigateToMemberSettingScreen: () -> Unit,
 ) {
     Scaffold(
         topBar = {
             YDSAppBar(
-                onClickSettings = {}
+                onClickSettings = { navigateToMemberSettingScreen.invoke() }
             )
         },
         modifier = modifier
