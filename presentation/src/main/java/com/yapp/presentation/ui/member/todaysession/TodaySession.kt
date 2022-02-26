@@ -40,7 +40,7 @@ fun TodaySession(
                 .verticalScroll(rememberScrollState())
                 .background(
                     brush = Brush.verticalGradient(
-                        colors = listOf(Color.White, Color(0x80CCD2DA))
+                        colors = listOf(Color.White, Color(0xA6CCD2DA))
                     )
                 ),
         ) {
@@ -67,8 +67,7 @@ private fun TodaysAttendance() {
             .padding(24.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(Color.White)
-            .border(BorderStroke(1.dp, Gray_300))
-            .layoutId("attendanceCard", "attendanceCard")
+            .layoutId("attendanceCard", "attendanceCard"),
     ) {
         Text(
             text = "아직 출석 전이예요",
