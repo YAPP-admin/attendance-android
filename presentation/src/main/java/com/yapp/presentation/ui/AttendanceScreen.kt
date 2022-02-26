@@ -8,9 +8,8 @@ import androidx.navigation.compose.rememberNavController
 import com.yapp.common.util.KakaoTalkLoginProvider
 import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.login.Login
-import com.yapp.presentation.ui.member.detail.MemberScore
 import com.yapp.presentation.ui.member.main.MemberMain
-import com.yapp.presentation.ui.splash.Splash
+import com.yapp.presentation.ui.member.signup.Team
 
 @Composable
 fun AttendanceScreen(
@@ -20,7 +19,8 @@ fun AttendanceScreen(
 ) {
     NavHost(
         navController = navController,
-        startDestination = if (isLoggedIn) "member_main" else "login"
+//        startDestination = if (isLoggedIn) "member_main" else "login"
+        startDestination = "team"
     ) {
         composable(
             route = "login"
@@ -51,5 +51,11 @@ fun AttendanceScreen(
         composable(
             route = "help"
         ) {}
+
+        composable(
+            route = "team"
+        ) {
+            Team()
+        }
     }
 }
