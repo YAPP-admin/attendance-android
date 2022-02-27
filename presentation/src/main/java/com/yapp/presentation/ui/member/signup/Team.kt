@@ -1,6 +1,7 @@
 package com.yapp.presentation.ui.member.signup
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -59,9 +60,10 @@ fun Team(
                 text = "확인",
                 modifier = Modifier
                     .padding(bottom = 40.dp)
+                    // 가능하다면 content padding
                     .height(60.dp)
                     .align(Alignment.BottomCenter),
-                state = YdsButtonState.DISABLED,
+                state = if ((uiState.myTeam.team.isNotEmpty()) and (uiState.myTeam.count != -1)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
                 onClick = {},
             )
         }
@@ -71,11 +73,11 @@ fun Team(
 @Composable
 fun TeamOption(uiState: TeamContract.TeamUiState, viewModel: TeamViewModel) {
     LazyRow(
-        contentPadding = PaddingValues(horizontal = 12.dp)
     ) {
         items(items = uiState.teams) { team ->
             YDSChoiceButtonContainer(
                 text = team.team,
+                modifier = Modifier.padding(end = 12.dp),
                 state = if (uiState.myTeam.team == team.team) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
                 onClick = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeam(team.team)) }
             )
@@ -92,12 +94,11 @@ fun TeamNumberOption(uiState: TeamContract.TeamUiState, viewModel: TeamViewModel
     ) {
         Text(text = "하나만 더 알려주세요", style = AttendanceTypography.h3, color = Color.Black)
         Spacer(modifier = Modifier.height(10.dp))
-        LazyRow(
-            contentPadding = PaddingValues(horizontal = 12.dp)
-        ) {
+        LazyRow() {
             items(items = teamOptions) { item ->
                 YDSChoiceButtonContainer(
                     text = "${item + 1}팀",
+                    modifier = Modifier.padding(end = 12.dp),
                     state = if (uiState.myTeam.count == item + 1) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
                     onClick = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeamNumber(item + 1)) }
                 )
