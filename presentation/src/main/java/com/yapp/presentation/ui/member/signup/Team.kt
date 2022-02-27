@@ -18,11 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.flowlayout.FlowRow
 import com.yapp.common.theme.AttendanceTypography
-import com.yapp.common.yds.YDSAppBar
-import com.yapp.common.yds.YDSChoiceButtonContainer
-import com.yapp.common.yds.YDSFullButtonContainer
-import com.yapp.common.yds.YdsButtonState
+import com.yapp.common.yds.*
 import com.yapp.presentation.model.TeamModel
 import com.yapp.presentation.ui.login.LoginContract
 
@@ -56,6 +54,8 @@ fun Team(
                     TeamNumberOption(uiState, viewModel)
                 }
             }
+
+            // 클릭 막아두는거 어떻게?
             YDSFullButtonContainer(
                 text = "확인",
                 modifier = Modifier
@@ -72,9 +72,9 @@ fun Team(
 
 @Composable
 fun TeamOption(uiState: TeamContract.TeamUiState, viewModel: TeamViewModel) {
-    LazyRow(
-    ) {
-        items(items = uiState.teams) { team ->
+    FlowRow() {
+        repeat(uiState.teams.size) { t ->
+            val team = uiState.teams[t]
             YDSChoiceButtonContainer(
                 text = team.team,
                 modifier = Modifier.padding(end = 12.dp),
@@ -89,18 +89,17 @@ fun TeamOption(uiState: TeamContract.TeamUiState, viewModel: TeamViewModel) {
 @Composable
 fun TeamNumberOption(uiState: TeamContract.TeamUiState, viewModel: TeamViewModel) {
     val team = uiState.teams.filter { it.team == uiState.myTeam.team }
-    val teamOptions: List<Int> = List(team[0].count) { it }
     Column(
     ) {
         Text(text = "하나만 더 알려주세요", style = AttendanceTypography.h3, color = Color.Black)
         Spacer(modifier = Modifier.height(10.dp))
-        LazyRow() {
-            items(items = teamOptions) { item ->
+        FlowRow() {
+            repeat(team[0].count) { t ->
                 YDSChoiceButtonContainer(
-                    text = "${item + 1}팀",
+                    text = "${t + 1}팀",
                     modifier = Modifier.padding(end = 12.dp),
-                    state = if (uiState.myTeam.count == item + 1) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                    onClick = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeamNumber(item + 1)) }
+                    state = if (uiState.myTeam.count == t + 1) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+                    onClick = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeamNumber(t + 1)) }
                 )
             }
         }

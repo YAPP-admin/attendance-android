@@ -89,4 +89,7 @@ dependencies {
     testImplementation(Dependencies.Test.JUNIT)
     androidTestImplementation(Dependencies.Test.ANDROID_JUNIT)
     androidTestImplementation(Dependencies.Test.ESPRESSO_CORE)
+
+    // accompanist
+    implementation(Dependencies.Accompanist.FLOW_LAYOUT)
 }
