@@ -71,7 +71,7 @@ private fun Profile() {
             color = Gray_800,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(top = 16.dp),
             textAlign = TextAlign.Center
         )
     }
@@ -90,7 +90,7 @@ private fun Divide() {
 @Composable
 private fun MenuList() {
     Column(
-        modifier = Modifier.padding(top = 28.dp)
+        modifier = Modifier.padding(top = 28.dp, bottom = 28.dp)
     ) {
         Row(
             modifier = Modifier
@@ -122,7 +122,9 @@ private fun MenuList() {
             Image(
                 painter = painterResource(id = R.drawable.icon_arrow_right),
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize().align(Alignment.CenterVertically),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .align(Alignment.CenterVertically),
                 alignment = Alignment.CenterEnd
             )
         }
