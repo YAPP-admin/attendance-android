@@ -26,7 +26,8 @@ import com.yapp.presentation.ui.login.LoginContract
 
 @Composable
 fun Team(
-    viewModel: TeamViewModel = hiltViewModel()
+    viewModel: TeamViewModel = hiltViewModel(),
+    navigateToMainScreen: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -55,7 +56,7 @@ fun Team(
                 }
             }
 
-            // 클릭 막아두는거 어떻게?
+            // 클릭 막아두는거 어떻게 하지
             YDSFullButtonContainer(
                 text = "확인",
                 modifier = Modifier
@@ -64,7 +65,7 @@ fun Team(
                     .height(60.dp)
                     .align(Alignment.BottomCenter),
                 state = if ((uiState.myTeam.team.isNotEmpty()) and (uiState.myTeam.count != -1)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                onClick = {},
+                onClick = { TODO() },
             )
         }
     }
