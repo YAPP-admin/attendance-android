@@ -9,12 +9,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.R
 import com.yapp.common.theme.*
 import com.yapp.common.yds.YDSAppBar
+import com.yapp.presentation.R.*
 
 @Composable
 fun MemberSetting(viewModel: MemberSettingViewModel = hiltViewModel()) {
@@ -23,7 +25,7 @@ fun MemberSetting(viewModel: MemberSettingViewModel = hiltViewModel()) {
     Scaffold(
         topBar = {
             YDSAppBar(
-                title = "설정",
+                title = stringResource(id = string.member_setting_title),
                 onClickBackButton = {}
             )
         },
@@ -99,7 +101,7 @@ private fun MenuList() {
                 .padding(horizontal = 24.dp, vertical = 16.dp)
         ) {
             Text(
-                text = "버전 정보",
+                text = stringResource(id = string.member_setting_version_info_text),
                 color = Gray_1200,
             )
             Text(
@@ -116,7 +118,7 @@ private fun MenuList() {
                 .padding(horizontal = 24.dp, vertical = 16.dp)
         ) {
             Text(
-                text = "개인정보 처리방침",
+                text = stringResource(id = string.member_setting_privacy_policy_text),
                 color = Gray_1200,
             )
             Image(
@@ -130,7 +132,7 @@ private fun MenuList() {
         }
         Spacer(Modifier.height(32.dp))
         Text(
-            text = "로그아웃",
+            text = stringResource(id = string.member_setting_logout_text),
             color = Gray_400,
             modifier = Modifier
                 .fillMaxWidth()
@@ -138,7 +140,7 @@ private fun MenuList() {
                 .padding(horizontal = 24.dp, vertical = 16.dp)
         )
         Text(
-            text = "회원탈퇴",
+            text = stringResource(id = string.member_setting_withdraw_text),
             color = Gray_400,
             modifier = Modifier
                 .fillMaxWidth()
