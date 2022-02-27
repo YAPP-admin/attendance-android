@@ -8,9 +8,14 @@ import com.yapp.presentation.model.TeamModel
 class TeamContract {
     data class TeamUiState(
         val isLoading: Boolean = false,
-        val teams: List<TeamModel> = emptyList()
+        val teams: List<TeamModel> = emptyList(),
+        val myTeam: TeamModel = TeamModel()
     ) : UiState
 
     sealed class TeamSideEffect : UiSideEffect {}
-    sealed class TeamUiEvent : UiEvent {}
+
+    sealed class TeamUiEvent : UiEvent {
+        data class ChooseTeam(val team: String) : TeamUiEvent()
+        data class ChooseTeamNumber(val teamNum: Int) : TeamUiEvent()
+    }
 }

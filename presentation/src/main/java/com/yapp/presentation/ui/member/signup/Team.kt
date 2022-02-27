@@ -2,6 +2,8 @@ package com.yapp.presentation.ui.member.signup
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
@@ -17,8 +19,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.YDSAppBar
+import com.yapp.common.yds.YDSChoiceButtonContainer
 import com.yapp.common.yds.YDSFullButtonContainer
 import com.yapp.common.yds.YdsButtonState
+import com.yapp.presentation.model.TeamModel
 import com.yapp.presentation.ui.login.LoginContract
 
 @Composable
@@ -45,9 +49,9 @@ fun Team(
                 Spacer(modifier = Modifier.height(32.dp))
                 Text(text = "소속 팀을\n알려주세요", style = AttendanceTypography.h1, color = Color.Black)
                 Spacer(modifier = Modifier.height(28.dp))
-                TeamOption()
+                TeamOption(uiState, viewModel)
                 Spacer(modifier = Modifier.height(52.dp))
-                TeamNumberOption()
+//                TeamNumberOption()
             }
             YDSFullButtonContainer(
                 text = "확인",
@@ -62,7 +66,18 @@ fun Team(
 }
 
 @Composable
-fun TeamOption() {
+fun TeamOption(uiState: TeamContract.TeamUiState, viewModel: TeamViewModel) {
+    LazyRow() {
+        items(items = uiState.teams) { team ->
+            YDSChoiceButtonContainer(
+                text = team.team,
+                state = if (uiState.myTeam.team == team.team) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+                onClick = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeam(team.team)) },
+                modifier = Modifier.padding(horizontal = 12.dp)
+            )
+        }
+    }
+
 }
 
 @Composable
