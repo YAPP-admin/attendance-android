@@ -27,6 +27,9 @@ class TeamViewModel @Inject constructor(firebaseRemoteConfig: FirebaseRemoteConf
             is TeamContract.TeamUiEvent.ChooseTeam -> {
                 chooseTeam(event.team)
             }
+            is TeamContract.TeamUiEvent.ChooseTeamNumber -> {
+                chooseTeamNumber(event.teamNum)
+            }
         }
     }
 
@@ -34,6 +37,16 @@ class TeamViewModel @Inject constructor(firebaseRemoteConfig: FirebaseRemoteConf
         val newState = uiState.value.copy(
             myTeam = uiState.value.myTeam.copy(
                 team = team
+            )
+        )
+        setState { newState }
+    }
+
+    private fun chooseTeamNumber(teamNumber: Int) {
+
+        val newState = uiState.value.copy(
+            myTeam = uiState.value.myTeam.copy(
+                count = teamNumber
             )
         )
         setState { newState }

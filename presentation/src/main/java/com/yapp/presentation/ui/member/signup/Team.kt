@@ -51,12 +51,15 @@ fun Team(
                 Spacer(modifier = Modifier.height(28.dp))
                 TeamOption(uiState, viewModel)
                 Spacer(modifier = Modifier.height(52.dp))
-//                TeamNumberOption()
+                if (uiState.myTeam.team.isNotEmpty()) {
+                    TeamNumberOption(uiState, viewModel)
+                }
             }
             YDSFullButtonContainer(
                 text = "확인",
                 modifier = Modifier
                     .padding(bottom = 40.dp)
+                    .height(60.dp)
                     .align(Alignment.BottomCenter),
                 state = YdsButtonState.DISABLED,
                 onClick = {},
@@ -67,13 +70,14 @@ fun Team(
 
 @Composable
 fun TeamOption(uiState: TeamContract.TeamUiState, viewModel: TeamViewModel) {
-    LazyRow() {
+    LazyRow(
+        contentPadding = PaddingValues(horizontal = 12.dp)
+    ) {
         items(items = uiState.teams) { team ->
             YDSChoiceButtonContainer(
                 text = team.team,
                 state = if (uiState.myTeam.team == team.team) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                onClick = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeam(team.team)) },
-                modifier = Modifier.padding(horizontal = 12.dp)
+                onClick = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeam(team.team)) }
             )
         }
     }
@@ -81,5 +85,23 @@ fun TeamOption(uiState: TeamContract.TeamUiState, viewModel: TeamViewModel) {
 }
 
 @Composable
-fun TeamNumberOption() {
+fun TeamNumberOption(uiState: TeamContract.TeamUiState, viewModel: TeamViewModel) {
+    val team = uiState.teams.filter { it.team == uiState.myTeam.team }
+    val teamOptions: List<Int> = List(team[0].count) { it }
+    Column(
+    ) {
+        Text(text = "하나만 더 알려주세요", style = AttendanceTypography.h3, color = Color.Black)
+        Spacer(modifier = Modifier.height(10.dp))
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 12.dp)
+        ) {
+            items(items = teamOptions) { item ->
+                YDSChoiceButtonContainer(
+                    text = "${item + 1}팀",
+                    state = if (uiState.myTeam.count == item + 1) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+                    onClick = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeamNumber(item + 1)) }
+                )
+            }
+        }
+    }
 }
