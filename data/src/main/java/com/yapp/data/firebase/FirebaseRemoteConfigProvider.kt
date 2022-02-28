@@ -26,19 +26,16 @@ class FirebaseRemoteConfigProvider @Inject constructor() : FirebaseRemoteConfig 
         firebaseRemoteConfig.setConfigSettingsAsync(configSettings)
     }
 
-    override suspend fun <T> getValue(value: RemoteConfigData<T>): Flow<T> {
-        return flow{
-            val isActivate = firebaseRemoteConfig.fetchAndActivate().await()
-
-            if(isActivate) {
+    override fun <T> getValue(value: RemoteConfigData<T>, callback: (T) -> Unit) {
+        firebaseRemoteConfig.fetchAndActivate().addOnCompleteListener {
+            if (it.isSuccessful) {
                 when (value.defaultValue) {
                     is String -> {
-                        emit(firebaseRemoteConfig.getString(value.key) as T)
+                        callback(firebaseRemoteConfig.getString(value.key) as T)
                     }
                     is Long -> {
-                        emit(firebaseRemoteConfig.getLong(value.key) as T)
+                        callback(firebaseRemoteConfig.getLong(value.key) as T)
                     }
-                    //todo: 우선 임시로 이렇게 두고, 자료형 생기면 계속 추가하기
                     else -> throw IllegalAccessError()
                 }
             }
