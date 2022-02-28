@@ -34,7 +34,6 @@ dependencies {
     implementation(Dependencies.Square.SERIALIZATION_CONVERTER)
 
     testImplementation(Dependencies.Test.JUNIT)
-    androidTestImplementation(project(mapOf("path" to ":")))
     platform("com.google.firebase:firebase-bom:29.1.0")
     implementation("com.google.firebase:firebase-firestore:24.0.1")
     implementation ("com.google.firebase:firebase-firestore-ktx")
