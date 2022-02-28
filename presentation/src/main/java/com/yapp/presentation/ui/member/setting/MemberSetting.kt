@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -94,6 +95,9 @@ private fun MenuList() {
     Column(
         modifier = Modifier.padding(top = 28.dp, bottom = 28.dp)
     ) {
+        val context = LocalContext.current
+        val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -105,7 +109,7 @@ private fun MenuList() {
                 color = Gray_1200,
             )
             Text(
-                text = "1.01.1",
+                text = versionName,
                 color = Gray_600,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.End
