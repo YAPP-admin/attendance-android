@@ -19,22 +19,17 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val isLoggedIn = intent.getBooleanExtra(IS_LOGGED_IN_EXTRA_KEY, false)
+
         setContent {
             AttendanceTheme {
                 CompositionLocalProvider(
                     LocalOverScrollConfiguration provides null
                 ) {
                     AttendanceScreen(
-                        kakaoTalkLoginProvider,
-                        isLoggedIn = isLoggedIn
+                        kakaoTalkLoginProvider
                     )
                 }
             }
         }
-    }
-
-    companion object {
-        const val IS_LOGGED_IN_EXTRA_KEY = "IS_LOGGED_IN_EXTRA_KEY"
     }
 }

@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Attendance">
         <activity
-            android:name="com.yapp.presentation.ui.splash.SplashActivity"
+            android:name="com.yapp.presentation.ui.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Attendance.NoActionBar">
             <intent-filter>
@@ -22,11 +22,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name="com.yapp.presentation.ui.MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.Attendance.NoActionBar"/>
 
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"

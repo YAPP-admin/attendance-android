@@ -8,9 +8,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class MemberMainViewModel @Inject constructor(
-    firebaseRemoteConfig: FirebaseRemoteConfig
-) : BaseViewModel<MemberMainUiState, MemberMainUiSideEffect, MemberMainUiEvent>(MemberMainUiState()) {
+class MemberMainViewModel @Inject constructor() :
+    BaseViewModel<MemberMainUiState, MemberMainUiSideEffect, MemberMainUiEvent>(MemberMainUiState()) {
 
     override fun handleEvent(event: MemberMainUiEvent) {
         when (event) {
