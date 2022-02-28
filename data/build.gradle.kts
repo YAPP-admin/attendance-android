@@ -13,6 +13,7 @@ android {
 dependencies {
     implementation(project(":domain"))
     implementation(Dependencies.Dagger.HILT_ANDROID)
+    implementation("com.google.firebase:firebase-common-ktx:20.0.0")
     kapt(Dependencies.Dagger.HILT_COMPILER)
 
     implementation(Dependencies.Kotlin.COROUTINE_CORE)
@@ -35,4 +36,7 @@ dependencies {
     platform("com.google.firebase:firebase-bom:29.1.0")
     implementation("com.google.firebase:firebase-firestore:24.0.1")
     implementation ("com.google.firebase:firebase-firestore-ktx")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.2.1")
+
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 }
