@@ -10,9 +10,9 @@ abstract class BaseUseCase<Result, in Params>() {
     abstract suspend operator fun invoke(params: Params): Result
 
     protected fun <T> Flow<T>.toResult() = map {
-        State.Success(it) as State<T>
+        TaskResult.Success(it) as TaskResult<T>
     }.catch { cause: Throwable ->
-        emit(State.Failed(cause))
+        emit(TaskResult.Failed(cause))
     }
 
 }
