@@ -1,0 +1,11 @@
+package com.yapp.domain.repository
+
+import com.yapp.domain.model.MemberEntity
+import com.yapp.domain.util.State
+import kotlinx.coroutines.flow.Flow
+
+
+interface MemberRepository {
+    fun addMember(memberEntity: MemberEntity, generation: String): Flow<Boolean>
+    fun getMember(id: Long, generation: String): Flow<MemberEntity?>
+}
