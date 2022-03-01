@@ -17,6 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.R
 import com.yapp.common.theme.*
 import com.yapp.common.yds.YDSAppBar
+import com.yapp.common.yds.YDSPopupDialog
 import com.yapp.presentation.R.*
 
 @Composable
@@ -151,5 +152,12 @@ private fun MenuList() {
                 .clickable {}
                 .padding(horizontal = 24.dp, vertical = 16.dp)
         )
+//        YDSPopupDialog(
+//            title = stringResource(id = string.member_setting_withdraw_dialog_title_text),
+//            content = stringResource(id = string.member_setting_withdraw_dialog_content_text),
+//            negativeButtonText = stringResource(id = string.member_setting_withdraw_dialog_negative_button),
+//            positiveButtonText = stringResource(id = string.member_setting_withdraw_dialog_positive_button),
+//            onClickNegativeButton = { }) {
+//        }
     }
 }
