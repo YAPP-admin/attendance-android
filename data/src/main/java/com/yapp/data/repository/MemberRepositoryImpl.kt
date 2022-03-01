@@ -16,7 +16,7 @@ class MemberRepositoryImpl @Inject constructor(
     private val fireStore: FirebaseFirestore
 ) : MemberRepository {
 
-    override fun addMember(memberEntity: MemberEntity, generation: String): Flow<Boolean> {
+    override fun setMember(memberEntity: MemberEntity, generation: String): Flow<Boolean> {
         return flow {
             runCatching {
                 fireStore
