@@ -41,7 +41,7 @@ fun YDSAppBar(
         navigationIcon = {
             IconButton(onClick = { onClickBackButton?.invoke() }) {
                 Icon(
-                    painter = painterResource(R.drawable.icon_arrow_back),
+                    painter = painterResource(R.drawable.icon_back),
                     tint = Color.Unspecified,
                     contentDescription = null,
                     modifier = Modifier

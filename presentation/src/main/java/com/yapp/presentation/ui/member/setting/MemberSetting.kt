@@ -65,7 +65,7 @@ private fun Profile() {
         modifier = Modifier.padding(horizontal = 24.dp, vertical = 28.dp)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.illust_setting),
+            painter = painterResource(id = R.drawable.illust_profile),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
@@ -127,7 +127,7 @@ private fun MenuList() {
                 color = Gray_1200,
             )
             Image(
-                painter = painterResource(id = R.drawable.icon_arrow_right),
+                painter = painterResource(id = R.drawable.icon_chevron_right),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize()
