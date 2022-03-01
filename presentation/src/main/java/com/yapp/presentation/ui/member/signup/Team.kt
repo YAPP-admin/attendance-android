@@ -56,12 +56,10 @@ fun Team(
                 }
             }
 
-            // 클릭 막아두는거 어떻게 하지
             YDSFullButtonContainer(
                 text = "확인",
                 modifier = Modifier
                     .padding(bottom = 40.dp)
-                    // 가능하다면 content padding
                     .height(60.dp)
                     .align(Alignment.BottomCenter),
                 state = if ((uiState.myTeam.team.isNotEmpty()) and (uiState.myTeam.count != -1)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
@@ -73,28 +71,33 @@ fun Team(
 
 @Composable
 fun TeamOption(uiState: TeamContract.TeamUiState, viewModel: TeamViewModel) {
-    FlowRow() {
-        repeat(uiState.teams.size) { t ->
-            val team = uiState.teams[t]
-            YDSChoiceButtonContainer(
-                text = team.team,
-                modifier = Modifier.padding(end = 12.dp),
-                state = if (uiState.myTeam.team == team.team) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                onClick = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeam(team.team)) }
-            )
+    val rowNum = 2
+    Column() {
+        repeat(uiState.teams.size / rowNum) { row ->
+            Row() {
+                repeat(rowNum) { index ->
+                    val team = uiState.teams[rowNum * row + index]
+                    YDSChoiceButtonContainer(
+                        text = team.team,
+                        modifier = Modifier.padding(end = 12.dp),
+                        state = if (uiState.myTeam.team == team.team) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+                        onClick = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeam(team.team)) }
+                    )
+                }
+            }
         }
     }
-
 }
 
 @Composable
 fun TeamNumberOption(uiState: TeamContract.TeamUiState, viewModel: TeamViewModel) {
     val team = uiState.teams.filter { it.team == uiState.myTeam.team }
+    val rowNum = 2
     Column(
     ) {
         Text(text = "하나만 더 알려주세요", style = AttendanceTypography.h3, color = Color.Black)
         Spacer(modifier = Modifier.height(10.dp))
-        FlowRow() {
+        Row() {
             repeat(team[0].count) { t ->
                 YDSChoiceButtonContainer(
                     text = "${t + 1}팀",

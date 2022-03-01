@@ -81,8 +81,5 @@ object Dependencies {
         const val USER_LOGIN = "com.kakao.sdk:v2-user:2.8.6"
     }
 
-    object Accompanist {
-        const val FLOW_LAYOUT = "com.google.accompanist:accompanist-flowlayout:0.24.3-alpha"
-    }
 }
 

@@ -19,7 +19,8 @@ fun AttendanceScreen(
 ) {
     NavHost(
         navController = navController,
-        startDestination = if (isLoggedIn) "member_main" else "login"
+//        startDestination = if (isLoggedIn) "member_main" else "login"
+        startDestination = "team"
     ) {
         composable(
             route = "login"
