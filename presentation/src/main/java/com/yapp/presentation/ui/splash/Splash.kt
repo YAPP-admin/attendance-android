@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.airbnb.lottie.compose.*
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yapp.common.R
 import com.yapp.common.theme.Yapp_Orange
 import com.yapp.presentation.ui.splash.SplashContract.*
@@ -20,10 +22,12 @@ fun Splash(
     navigateToMain: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+
     Surface(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Yapp_Orange),
+            .fillMaxSize(),
+        color = Yapp_Orange
     ) {
         when (uiState.loginState) {
             LoginState.NONE -> {

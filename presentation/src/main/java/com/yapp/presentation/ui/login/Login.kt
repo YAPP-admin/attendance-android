@@ -19,15 +19,19 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.layoutId
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.airbnb.lottie.compose.*
 import com.yapp.common.R.*
 import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.util.KakaoTalkLoginProvider
 import com.yapp.common.yds.YDSFullButtonContainer
+import com.yapp.common.yds.YDSProgressBar
 import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R
 import com.yapp.presentation.ui.login.LoginContract.*
+import com.yapp.presentation.ui.splash.SplashContract
 import kotlinx.coroutines.flow.collect
 
 @Composable
@@ -61,20 +65,29 @@ fun Login(
                 .background(Color.White)
                 .padding(24.dp),
         ) {
-            if (uiState.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(50.dp)
-                        .layoutId("progressBar"),
-                    strokeWidth = 5.dp
-                )
-            }
-
             IntroduceTitle()
             SkipButton()
             KakaoLoginButton()
         }
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            YappuImage()
+            if (uiState.isLoading) {
+                YDSProgressBar()
+            }
+        }
     }
+}
+
+@Composable
+private fun YappuImage() {
+    val composition: LottieCompositionResult =
+        rememberLottieComposition(LottieCompositionSpec.RawRes(raw.login_buong))
+    LottieAnimation(composition.value)
 }
 
 @Composable
@@ -142,17 +155,9 @@ private fun KakaoLoginButton(
 
 private fun constraintSet(): ConstraintSet {
     return ConstraintSet {
-        val progressBar = createRefFor("progressBar")
         val introduce = createRefFor("introduce")
         val skipButton = createRefFor("skipButton")
         val kakaoLoginButton = createRefFor("kakaoLoginButton")
-
-        constrain(progressBar) {
-            start.linkTo(parent.start)
-            bottom.linkTo(parent.bottom)
-            end.linkTo(parent.end)
-            top.linkTo(parent.top)
-        }
 
         constrain(introduce) {
             start.linkTo(parent.start)
