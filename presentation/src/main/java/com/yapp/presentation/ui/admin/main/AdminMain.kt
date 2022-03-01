@@ -215,7 +215,7 @@ private fun SessionItem(session: SessionModel) {
 
         if (session.description != null) {
             Icon(
-                painter = painterResource(id = R.drawable.icon_arrow_right),
+                painter = painterResource(id = R.drawable.icon_chevron_right),
                 contentDescription = null,
                 tint = Color.Unspecified,
             )

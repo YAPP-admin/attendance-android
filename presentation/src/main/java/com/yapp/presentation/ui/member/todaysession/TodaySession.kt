@@ -20,15 +20,17 @@ import androidx.constraintlayout.compose.layoutId
 import com.yapp.common.R
 import com.yapp.common.theme.*
 import com.yapp.common.yds.YDSAppBar
+import com.yapp.presentation.ui.AttendanceScreenRoute
 
 @Composable
 fun TodaySession(
     modifier: Modifier = Modifier,
+    navigateToScreen: (String) -> Unit,
 ) {
     Scaffold(
         topBar = {
             YDSAppBar(
-                onClickSettings = {}
+                onClickSettings = { navigateToScreen(AttendanceScreenRoute.MEMBER_SETTING.route) }
             )
         },
         modifier = modifier
@@ -53,7 +55,7 @@ fun TodaySession(
 @Composable
 private fun TodaysAttendance() {
     Image(
-        painter = painterResource(id = R.drawable.illust_member_home),
+        painter = painterResource(id = R.drawable.illust_member_home_disabled),
         contentDescription = null,
         modifier = Modifier
             .layoutId("yappu", "yappu")

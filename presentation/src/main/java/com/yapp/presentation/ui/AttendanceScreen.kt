@@ -6,10 +6,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.yapp.common.util.KakaoTalkLoginProvider
-import com.yapp.presentation.R
 import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.login.Login
 import com.yapp.presentation.ui.member.main.MemberMain
+import com.yapp.presentation.ui.member.setting.MemberSetting
 import com.yapp.presentation.ui.splash.Splash
 
 @Composable
@@ -70,6 +70,12 @@ fun AttendanceScreen(
         ) {}
 
         composable(
+            route = AttendanceScreenRoute.MEMBER_SETTING.route
+        ) {
+            MemberSetting()
+        }
+
+        composable(
             route = AttendanceScreenRoute.HELP.route
         ) {}
     }
@@ -81,5 +87,6 @@ enum class AttendanceScreenRoute(val route: String) {
     QR_AUTH("qr-auth"),
     MEMBER_MAIN("member-main"),
     ADMIN_MAIN("admin-main"),
+    MEMBER_SETTING("member_setting"),
     HELP("help");
 }
