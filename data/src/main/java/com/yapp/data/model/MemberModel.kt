@@ -1,16 +1,16 @@
 package com.yapp.data.model
 
-import com.yapp.data.model.AttendanceTypeModel.Companion.toEntity
+import com.yapp.data.model.AttendanceModel.Companion.toEntity
 import com.yapp.domain.model.MemberEntity
 
 
 internal class MemberModel(
-    val id: Long?,
-    val name: String?,
-    val position: String?,
-    val team: String?,
+    val id: Long? = 0L,
+    val name: String? = "",
+    val position: String? = "",
+    val team: String? = "",
     val isAdmin: Boolean? = false,
-    val attendances: List<AttendanceTypeModel>?
+    val attendances: List<AttendanceModel>? = emptyList()
 ) {
 
     companion object {
@@ -32,8 +32,8 @@ internal class MemberModel(
         return MAX_SCORE - attendances?.map { it.point }!!.sum()
     }
 
-    fun getTodayAttendance(session_id: Int): AttendanceTypeModel {
-        return attendances?.get(session_id) ?: AttendanceTypeModel.Empty
+    fun getTodayAttendance(session_id: Int): AttendanceModel {
+        return attendances?.get(session_id) ?: AttendanceModel()
     }
 
 }
