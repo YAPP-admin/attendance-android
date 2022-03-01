@@ -1,13 +1,7 @@
 package com.yapp.presentation.ui.member.signup
 
-import android.util.Log
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -52,10 +46,18 @@ fun Team(
                     color = Color.Black
                 )
                 Spacer(modifier = Modifier.height(28.dp))
-                TeamOption(uiState, viewModel)
+                TeamOption(
+                    uiState,
+                    onTeamChoosed = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeam(it)) })
                 Spacer(modifier = Modifier.height(52.dp))
                 if (uiState.myTeam.team.isNotEmpty()) {
-                    TeamNumberOption(uiState, viewModel)
+                    TeamNumberOption(
+                        uiState,
+                        onTeamNumberChoosed = {
+                            viewModel.setEvent(
+                                TeamContract.TeamUiEvent.ChooseTeamNumber(it)
+                            )
+                        })
                 }
             }
 
@@ -66,14 +68,14 @@ fun Team(
                     .height(60.dp)
                     .align(Alignment.BottomCenter),
                 state = if ((uiState.myTeam.team.isNotEmpty()) and (uiState.myTeam.count != TEAM_NOT_SELECTED)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                onClick = { TODO() },
+                onClick = { if ((uiState.myTeam.team.isNotEmpty()) and (uiState.myTeam.count != -1)) navigateToMainScreen() },
             )
         }
     }
 }
 
 @Composable
-fun TeamOption(uiState: TeamContract.TeamUiState, viewModel: TeamViewModel) {
+fun TeamOption(uiState: TeamContract.TeamUiState, onTeamChoosed: (String) -> Unit) {
     val rowNum = 2
     Column() {
         repeat(uiState.teams.size / rowNum) { row ->
@@ -84,7 +86,7 @@ fun TeamOption(uiState: TeamContract.TeamUiState, viewModel: TeamViewModel) {
                         text = team.team,
                         modifier = Modifier.padding(end = 12.dp),
                         state = if (uiState.myTeam.team == team.team) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                        onClick = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeam(team.team)) }
+                        onClick = { onTeamChoosed(team.team) }
                     )
                 }
             }
@@ -93,7 +95,7 @@ fun TeamOption(uiState: TeamContract.TeamUiState, viewModel: TeamViewModel) {
 }
 
 @Composable
-fun TeamNumberOption(uiState: TeamContract.TeamUiState, viewModel: TeamViewModel) {
+fun TeamNumberOption(uiState: TeamContract.TeamUiState, onTeamNumberChoosed: (Int) -> Unit) {
     val team = uiState.teams.filter { it.team == uiState.myTeam.team }
     val rowNum = 2
     Column(
@@ -110,7 +112,7 @@ fun TeamNumberOption(uiState: TeamContract.TeamUiState, viewModel: TeamViewModel
                     text = stringResource(R.string.member_signup_team_number, teamNum + 1),
                     modifier = Modifier.padding(end = 12.dp),
                     state = if (uiState.myTeam.count == teamNum + 1) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                    onClick = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeamNumber(teamNum + 1)) }
+                    onClick = { onTeamNumberChoosed(teamNum + 1) }
                 )
             }
         }
