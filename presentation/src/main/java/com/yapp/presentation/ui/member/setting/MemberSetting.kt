@@ -37,7 +37,7 @@ fun MemberSetting(viewModel: MemberSettingViewModel = hiltViewModel()) {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            Box()
+            GroupInfo()
             Profile()
             Divide()
             MenuList()
@@ -46,7 +46,7 @@ fun MemberSetting(viewModel: MemberSettingViewModel = hiltViewModel()) {
 }
 
 @Composable
-private fun Box() {
+private fun GroupInfo() {
     Text(
         text = "YAPP 20기 회원",
         color = Yapp_Orange,
