@@ -55,7 +55,7 @@ fun TodaySession(
 @Composable
 private fun TodaysAttendance() {
     Image(
-        painter = painterResource(id = R.drawable.illust_member_home),
+        painter = painterResource(id = R.drawable.illust_member_home_disabled),
         contentDescription = null,
         modifier = Modifier
             .layoutId("yappu", "yappu")

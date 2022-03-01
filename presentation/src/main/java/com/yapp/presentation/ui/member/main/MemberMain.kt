@@ -126,7 +126,7 @@ enum class BottomNavigationItem(
         R.drawable.icon_home_enabled,
         R.string.member_main_bottom_navigation_today_session_text
     ),
-    QR_AUTH("qr-auth", R.drawable.icon_camera, null),
+    QR_AUTH("qr-auth", R.drawable.icon_qr, null),
     MEMBER_SCORE(
         "member-score",
         R.drawable.icon_check_disabled,
