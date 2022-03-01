@@ -40,7 +40,6 @@ fun YDSAppBar(
         elevation = 0.dp,
         navigationIcon = {
             IconButton(onClick = { onClickBackButton?.invoke() }) {
-                // 아이콘 교체 필요!!
                 Icon(
                     painter = painterResource(R.drawable.icon_arrow_back),
                     tint = Color.Unspecified,

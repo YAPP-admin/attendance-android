@@ -46,7 +46,8 @@ fun MemberScore(
     Scaffold(
         topBar = {
             YDSAppBar(
-                title = stringResource(R.string.member_score_title)
+                title = stringResource(R.string.member_score_title),
+                onClickBackButton = {}
             )
         },
         modifier = modifier

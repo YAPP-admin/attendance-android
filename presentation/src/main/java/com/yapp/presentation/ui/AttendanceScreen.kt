@@ -8,7 +8,6 @@ import androidx.navigation.compose.rememberNavController
 import com.yapp.common.util.KakaoTalkLoginProvider
 import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.login.Login
-import com.yapp.presentation.ui.member.detail.MemberScore
 import com.yapp.presentation.ui.member.main.MemberMain
 import com.yapp.presentation.ui.member.setting.MemberSetting
 import com.yapp.presentation.ui.splash.Splash
@@ -16,48 +15,78 @@ import com.yapp.presentation.ui.splash.Splash
 @Composable
 fun AttendanceScreen(
     kakaoTalkLoginProvider: KakaoTalkLoginProvider,
-    isLoggedIn: Boolean,
     navController: NavHostController = rememberNavController(),
 ) {
     NavHost(
         navController = navController,
-        startDestination = if (isLoggedIn) "member_main" else "login"
+        startDestination = AttendanceScreenRoute.SPLASH.route
     ) {
+
         composable(
-            route = "login"
+            route = AttendanceScreenRoute.LOGIN.route
         ) {
             Login(
                 kakaoTalkLoginProvider
             ) {
-                navController.navigate("member_main") {
-                    popUpTo("login") { inclusive = true }
+                navController.navigate(AttendanceScreenRoute.MEMBER_MAIN.route) {
+                    popUpTo(AttendanceScreenRoute.LOGIN.route) { inclusive = true }
                 }
             }
         }
 
         composable(
-            route = "admin_main"
+            route = AttendanceScreenRoute.SPLASH.route
+        ) {
+            Splash(
+                navigateToLogin = {
+                    navController.navigate(AttendanceScreenRoute.LOGIN.route) {
+                        popUpTo(AttendanceScreenRoute.SPLASH.route) { inclusive = true }
+                    }
+                },
+                navigateToMain = {
+                    navController.navigate(AttendanceScreenRoute.MEMBER_MAIN.route) {
+                        popUpTo(AttendanceScreenRoute.SPLASH.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(
+            route = AttendanceScreenRoute.ADMIN_MAIN.route
         ) {
             AdminMain()
         }
 
         composable(
-            route = "member_main"
+            route = AttendanceScreenRoute.MEMBER_MAIN.route
         ) {
-            MemberMain(
-                navigateToHelpScreen = { navController.navigate("help") },
-                navigateToMemberSettingScreen = { navController.navigate("member_setting") }
-            )
+            MemberMain {
+                navController.navigate(it)
+            }
         }
 
         composable(
-            route = "member_setting"
+            route = AttendanceScreenRoute.QR_AUTH.route
+        ) {}
+
+        composable(
+            route = AttendanceScreenRoute.MEMBER_SETTING.route
         ) {
             MemberSetting()
         }
 
         composable(
-            route = "help"
+            route = AttendanceScreenRoute.HELP.route
         ) {}
     }
+}
+
+enum class AttendanceScreenRoute(val route: String) {
+    SPLASH("splash"),
+    LOGIN("login"),
+    QR_AUTH("qr-auth"),
+    MEMBER_MAIN("member-main"),
+    ADMIN_MAIN("admin-main"),
+    MEMBER_SETTING("member_setting"),
+    HELP("help");
 }
