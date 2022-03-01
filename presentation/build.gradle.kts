@@ -57,6 +57,9 @@ dependencies {
     implementation(Dependencies.Google.MATERIAL)
     implementation(Dependencies.Google.GSON)
 
+    implementation(Dependencies.Kakao.USER_LOGIN)
+    implementation(Dependencies.Lottie.LOTTIE)
+
     //firebase
     implementation(platform(Dependencies.Firebase.BOM))
     implementation(Dependencies.Firebase.ANALYTICS_KTX)

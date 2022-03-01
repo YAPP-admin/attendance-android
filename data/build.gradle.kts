@@ -31,4 +31,6 @@ dependencies {
     implementation(Dependencies.Square.RETROFIT_MOSHI)
     implementation(Dependencies.Square.OKHTTP_LOGGING)
     implementation(Dependencies.Square.SERIALIZATION_CONVERTER)
+
+    testImplementation(Dependencies.Test.JUNIT)
 }

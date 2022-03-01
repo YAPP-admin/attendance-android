@@ -1,5 +1,6 @@
 package com.yapp.presentation.ui.login
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -8,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
@@ -21,15 +23,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.R.*
 import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
-import com.yapp.common.theme.Gray_200
-import com.yapp.common.theme.Yapp_Orange
 import com.yapp.common.util.KakaoTalkLoginProvider
 import com.yapp.common.yds.YDSFullButtonContainer
 import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R
 import com.yapp.presentation.ui.login.LoginContract.*
 import kotlinx.coroutines.flow.collect
-import javax.inject.Inject
 
 @Composable
 fun Login(
@@ -59,6 +58,7 @@ fun Login(
             constraintSet = constraintSet(),
             modifier = Modifier
                 .fillMaxSize()
+                .background(Color.White)
                 .padding(24.dp),
         ) {
             if (uiState.isLoading) {

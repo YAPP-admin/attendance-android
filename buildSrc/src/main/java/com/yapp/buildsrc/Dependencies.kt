@@ -81,5 +81,8 @@ object Dependencies {
         const val USER_LOGIN = "com.kakao.sdk:v2-user:2.8.6"
     }
 
+    object Lottie {
+        const val LOTTIE = "com.airbnb.android:lottie-compose:5.0.1"
+    }
 }
 

@@ -40,9 +40,8 @@ fun YDSAppBar(
         elevation = 0.dp,
         navigationIcon = {
             IconButton(onClick = { onClickBackButton?.invoke() }) {
-                // 아이콘 교체 필요!!
                 Icon(
-                    painter = painterResource(R.drawable.icon_arrow_back),
+                    painter = painterResource(R.drawable.icon_back),
                     tint = Color.Unspecified,
                     contentDescription = null,
                     modifier = Modifier
@@ -52,14 +51,16 @@ fun YDSAppBar(
             }
         },
         actions = {
-            IconButton(onClick = { onClickSettings?.invoke() }) {
+            IconButton(
+                onClick = { onClickSettings?.invoke() },
+                enabled = onClickSettings != null,
+            ) {
                 Icon(
                     imageVector = Icons.Filled.Settings,
                     tint = Gray_600,
                     contentDescription = "Setting",
                     modifier = Modifier
                         .alpha(if (onClickSettings == null) 0f else 1f)
-                        .clickable(enabled = onClickBackButton != null) {}
                 )
             }
         }
