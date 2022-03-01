@@ -15,10 +15,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.*
+import com.yapp.presentation.R
 
 @Composable
 fun Team(
@@ -44,7 +46,11 @@ fun Team(
                     .align(Alignment.TopStart),
             ) {
                 Spacer(modifier = Modifier.height(32.dp))
-                Text(text = "소속 팀을\n알려주세요", style = AttendanceTypography.h1, color = Color.Black)
+                Text(
+                    text = stringResource(R.string.member_signup_choose_team),
+                    style = AttendanceTypography.h1,
+                    color = Color.Black
+                )
                 Spacer(modifier = Modifier.height(28.dp))
                 TeamOption(uiState, viewModel)
                 Spacer(modifier = Modifier.height(52.dp))
@@ -54,7 +60,7 @@ fun Team(
             }
 
             YDSFullButtonContainer(
-                text = "확인",
+                text = stringResource(R.string.member_signup_team_confirm),
                 modifier = Modifier
                     .padding(bottom = 40.dp)
                     .height(60.dp)
@@ -92,12 +98,16 @@ fun TeamNumberOption(uiState: TeamContract.TeamUiState, viewModel: TeamViewModel
     val rowNum = 2
     Column(
     ) {
-        Text(text = "하나만 더 알려주세요", style = AttendanceTypography.h3, color = Color.Black)
+        Text(
+            text = stringResource(R.string.member_signup_choose_team_number),
+            style = AttendanceTypography.h3,
+            color = Color.Black
+        )
         Spacer(modifier = Modifier.height(10.dp))
         Row() {
             repeat(team[0].count) { teamNum ->
                 YDSChoiceButtonContainer(
-                    text = "${teamNum + 1}팀",
+                    text = stringResource(R.string.member_signup_team_number, teamNum + 1),
                     modifier = Modifier.padding(end = 12.dp),
                     state = if (uiState.myTeam.count == teamNum + 1) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
                     onClick = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeamNumber(teamNum + 1)) }
