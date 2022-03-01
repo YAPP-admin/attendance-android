@@ -18,4 +18,14 @@
   <string name="admin_main_see_all_session_text">전체 보기</string>
   <string name="admin_main_confirm_button">확인</string>
   <string name="admin_main_see_all_score_text">누적 점수 확인하기</string>
+
+  <string name="member_setting_title">설정</string>
+  <string name="member_setting_version_info_text">버전 정보</string>
+  <string name="member_setting_privacy_policy_text">개인정보 처리방침</string>
+  <string name="member_setting_logout_text">로그아웃</string>
+  <string name="member_setting_withdraw_text">회원탈퇴</string>
+  <string name="member_setting_withdraw_dialog_title_text">정말 탈퇴하시겠어요?</string>
+  <string name="member_setting_withdraw_dialog_content_text">탈퇴하면 모든 정보가 사라져요</string>
+  <string name="member_setting_withdraw_dialog_negative_button">취소</string>
+  <string name="member_setting_withdraw_dialog_positive_button">탈퇴합니다</string>
 </resources>
