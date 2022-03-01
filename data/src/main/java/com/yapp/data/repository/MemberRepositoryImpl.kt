@@ -19,8 +19,7 @@ class MemberRepositoryImpl @Inject constructor(
     override fun setMember(memberEntity: MemberEntity, generation: String): Flow<Boolean> {
         return flow {
             runCatching {
-                fireStore
-                    .memberRef(generation, memberEntity.id!!)
+                fireStore.memberRef(memberEntity.id!!)
                     .set(memberEntity)
                     .await()
             }.fold(
@@ -37,8 +36,7 @@ class MemberRepositoryImpl @Inject constructor(
     override fun getMember(id: Long, generation: String): Flow<MemberEntity?> {
         return flow {
             runCatching {
-                fireStore
-                    .memberRef(generation, id)
+                fireStore.memberRef(id)
                     .get()
                     .await()
             }.fold(

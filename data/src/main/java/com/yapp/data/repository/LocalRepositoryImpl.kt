@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 class LocalRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
-): LocalRepository {
+) : LocalRepository {
 
     companion object {
         private const val DATASTORE_NAME = "member_information"

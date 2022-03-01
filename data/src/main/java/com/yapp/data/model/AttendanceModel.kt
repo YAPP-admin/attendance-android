@@ -12,7 +12,7 @@ import com.yapp.domain.model.AttendanceTypeEntity
 data class AttendanceModel(val point: Int = 0, val text: String = "EMPTY") {
 
     companion object {
-        fun AttendanceModel.mapTo(): AttendanceTypeEntity {
+        fun AttendanceModel.mapToEntity(): AttendanceTypeEntity {
             return when (this.text) {
                 ABSENT -> AttendanceTypeEntity.Absent
                 REPORTED_ABSENT -> AttendanceTypeEntity.ReportedAbsent

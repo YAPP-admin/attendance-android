@@ -2,8 +2,10 @@ package com.yapp.attendance.di
 
 import android.content.Context
 import com.google.firebase.firestore.FirebaseFirestore
+import com.yapp.data.repository.AdminRepositoryImpl
 import com.yapp.data.repository.LocalRepositoryImpl
 import com.yapp.data.repository.MemberRepositoryImpl
+import com.yapp.domain.repository.AdminRepository
 import com.yapp.domain.repository.LocalRepository
 import com.yapp.domain.repository.MemberRepository
 import dagger.Module
@@ -33,6 +35,13 @@ object DataModule {
         fireStore: FirebaseFirestore
     ): MemberRepository {
         return MemberRepositoryImpl(fireStore)
+    }
+
+    @Provides
+    fun provideAdminRepository(
+        fireStore: FirebaseFirestore
+    ): AdminRepository {
+        return AdminRepositoryImpl(fireStore)
     }
 
 }

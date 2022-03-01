@@ -1,10 +1,10 @@
 package com.yapp.data.model
 
-import com.yapp.data.model.AttendanceModel.Companion.mapTo
+import com.yapp.data.model.AttendanceModel.Companion.mapToEntity
 import com.yapp.domain.model.MemberEntity
 
 
-internal class MemberModel(
+class MemberModel(
     val id: Long? = 0L,
     val name: String? = "",
     val position: String? = "",
@@ -16,24 +16,14 @@ internal class MemberModel(
     companion object {
         fun MemberModel.mapTo(): MemberEntity {
             return MemberEntity(
-                id = id,
-                name = name,
-                position = position,
-                team = team,
-                isAdmin = isAdmin,
-                attendances = attendances?.map { it.mapTo() }
+                id = id ?: -1,
+                name = name ?: "",
+                position = position ?: "",
+                team = team ?: "",
+                isAdmin = isAdmin ?: false,
+                attendances = attendances?.map { it.mapToEntity() } ?: emptyList()
             )
         }
-
-        const val MAX_SCORE = 100
-    }
-
-    fun getTotalAttendanceScore(): Int {
-        return MAX_SCORE - attendances?.map { it.point }!!.sum()
-    }
-
-    fun getTodayAttendance(session_id: Int): AttendanceModel {
-        return attendances?.get(session_id) ?: AttendanceModel()
     }
 
 }

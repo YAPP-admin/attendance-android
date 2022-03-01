@@ -24,7 +24,7 @@ import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSFitButtonContainer
 import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R.*
-import com.yapp.presentation.model.SessionModel
+import com.yapp.presentation.model.Session
 
 @Composable
 fun AdminMain(
@@ -83,7 +83,7 @@ fun LazyListScope.Spacing() {
     }
 }
 
-fun LazyListScope.Sessions(sessions: List<SessionModel>) {
+fun LazyListScope.Sessions(sessions: List<Session>) {
     items(sessions) { session ->
         SessionItem(session)
     }
@@ -192,7 +192,7 @@ fun LazyListScope.ManagementSubTitle() {
 }
 
 @Composable
-private fun SessionItem(session: SessionModel) {
+private fun SessionItem(session: Session) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -204,16 +204,16 @@ private fun SessionItem(session: SessionModel) {
         Row {
             Text(
                 text = session.date,
-                color = if (session.description == null) Gray_400 else Gray_1200,
+                color = if (session.description.isNotBlank()) Gray_400 else Gray_1200,
                 modifier = Modifier.width(64.dp)
             )
             Text(
                 text = session.title,
-                color = if (session.description == null) Gray_400 else Gray_1200,
+                color = if (session.description.isNotBlank()) Gray_400 else Gray_1200,
             )
         }
 
-        if (session.description != null) {
+        if (session.description.isNotBlank()) {
             Icon(
                 painter = painterResource(id = R.drawable.icon_chevron_right),
                 contentDescription = null,

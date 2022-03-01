@@ -2,8 +2,8 @@ package com.yapp.domain.model
 
 
 typealias MemberId = Long
-internal class TeamEntity(
-    val platform: String?,
+class TeamEntity(
+    val platform: String,
     val teamNumber: String,
-    val members: List<MemberId>?
+    val members: List<MemberId>
 )

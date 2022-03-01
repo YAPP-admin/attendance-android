@@ -4,6 +4,7 @@ plugins {
     id(Configs.KOTLIN_PARCELIZE)
     id(Configs.KOTLIN_KAPT)
     id(Configs.HILT_ANDROID_PLUGIN)
+    id("kotlinx-serialization")
 }
 
 android {
@@ -36,8 +37,8 @@ dependencies {
     testImplementation(Dependencies.Test.JUNIT)
     platform("com.google.firebase:firebase-bom:29.1.0")
     implementation("com.google.firebase:firebase-firestore:24.0.1")
-    implementation ("com.google.firebase:firebase-firestore-ktx")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.2.1")
+    implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.2.1")
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 }
