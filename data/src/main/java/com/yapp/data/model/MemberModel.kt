@@ -1,6 +1,6 @@
 package com.yapp.data.model
 
-import com.yapp.data.model.AttendanceModel.Companion.toEntity
+import com.yapp.data.model.AttendanceModel.Companion.mapTo
 import com.yapp.domain.model.MemberEntity
 
 
@@ -14,14 +14,14 @@ internal class MemberModel(
 ) {
 
     companion object {
-        fun MemberModel.toEntity(): MemberEntity {
+        fun MemberModel.mapTo(): MemberEntity {
             return MemberEntity(
                 id = id,
                 name = name,
                 position = position,
                 team = team,
                 isAdmin = isAdmin,
-                attendances = attendances?.map { it.toEntity() }
+                attendances = attendances?.map { it.mapTo() }
             )
         }
 
