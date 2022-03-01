@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import com.yapp.common.util.KakaoTalkLoginProvider
 import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.login.Login
+import com.yapp.presentation.ui.member.help.Help
 import com.yapp.presentation.ui.member.main.MemberMain
 import com.yapp.presentation.ui.member.setting.MemberSetting
 import com.yapp.presentation.ui.splash.Splash
@@ -77,7 +78,9 @@ fun AttendanceScreen(
 
         composable(
             route = AttendanceScreenRoute.HELP.route
-        ) {}
+        ) {
+            Help()
+        }
     }
 }
 

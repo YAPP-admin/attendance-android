@@ -155,6 +155,7 @@ private fun ChildNavigation(
             route = BottomNavigationItem.MEMBER_SCORE.route
         ) {
             MemberScore(modifier = modifier) {
+                navigateToScreen(AttendanceScreenRoute.HELP.route)
             }
         }
     }
