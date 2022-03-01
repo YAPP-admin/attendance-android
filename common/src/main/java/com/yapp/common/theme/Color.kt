@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Color
 
 
 val Yapp_Orange         = Color(0XFFFA6027)
+val Yapp_OrangeAlpha    = Color(0X1AFA6027)
 val Yapp_OrangePressed  = Color(0XFFFF7744)
 val Yapp_Yellow         = Color(0XFFFFD74B)
 val Yapp_Gradient       = Brush.linearGradient(

@@ -53,7 +53,8 @@ fun MemberMain(
 
             ChildNavigation(
                 childNavController,
-                modifier
+                modifier,
+                navigateToScreen
             )
         }
     }
@@ -137,14 +138,16 @@ enum class BottomNavigationItem(
 @Composable
 private fun ChildNavigation(
     navController: NavHostController,
-    modifier: Modifier
+    modifier: Modifier,
+    navigateToScreen: (String) -> Unit
 ) {
     NavHost(navController, startDestination = BottomNavigationItem.SESSION.route) {
         composable(
             route = BottomNavigationItem.SESSION.route
         ) {
             TodaySession(
-                modifier = modifier
+                modifier = modifier,
+                navigateToScreen = navigateToScreen
             )
         }
 

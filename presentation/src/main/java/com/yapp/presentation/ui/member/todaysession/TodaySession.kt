@@ -20,15 +20,17 @@ import androidx.constraintlayout.compose.layoutId
 import com.yapp.common.R
 import com.yapp.common.theme.*
 import com.yapp.common.yds.YDSAppBar
+import com.yapp.presentation.ui.AttendanceScreenRoute
 
 @Composable
 fun TodaySession(
     modifier: Modifier = Modifier,
+    navigateToScreen: (String) -> Unit,
 ) {
     Scaffold(
         topBar = {
             YDSAppBar(
-                onClickSettings = {}
+                onClickSettings = { navigateToScreen(AttendanceScreenRoute.MEMBER_SETTING.route) }
             )
         },
         modifier = modifier
