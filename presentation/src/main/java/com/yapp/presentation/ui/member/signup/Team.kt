@@ -15,14 +15,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.flowlayout.FlowRow
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.*
-import com.yapp.presentation.model.TeamModel
-import com.yapp.presentation.ui.login.LoginContract
 
 @Composable
 fun Team(
@@ -30,6 +26,7 @@ fun Team(
     navigateToMainScreen: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val TEAM_NOT_SELECTED = -1
 
     Scaffold(
         topBar = { YDSAppBar(onClickBackButton = {}) },
@@ -62,7 +59,7 @@ fun Team(
                     .padding(bottom = 40.dp)
                     .height(60.dp)
                     .align(Alignment.BottomCenter),
-                state = if ((uiState.myTeam.team.isNotEmpty()) and (uiState.myTeam.count != -1)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+                state = if ((uiState.myTeam.team.isNotEmpty()) and (uiState.myTeam.count != TEAM_NOT_SELECTED)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
                 onClick = { TODO() },
             )
         }
@@ -98,12 +95,12 @@ fun TeamNumberOption(uiState: TeamContract.TeamUiState, viewModel: TeamViewModel
         Text(text = "하나만 더 알려주세요", style = AttendanceTypography.h3, color = Color.Black)
         Spacer(modifier = Modifier.height(10.dp))
         Row() {
-            repeat(team[0].count) { t ->
+            repeat(team[0].count) { teamNum ->
                 YDSChoiceButtonContainer(
-                    text = "${t + 1}팀",
+                    text = "${teamNum + 1}팀",
                     modifier = Modifier.padding(end = 12.dp),
-                    state = if (uiState.myTeam.count == t + 1) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                    onClick = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeamNumber(t + 1)) }
+                    state = if (uiState.myTeam.count == teamNum + 1) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+                    onClick = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeamNumber(teamNum + 1)) }
                 )
             }
         }

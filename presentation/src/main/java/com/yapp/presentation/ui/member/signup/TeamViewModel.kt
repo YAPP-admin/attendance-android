@@ -17,7 +17,7 @@ class TeamViewModel @Inject constructor(firebaseRemoteConfig: FirebaseRemoteConf
     init {
         firebaseRemoteConfig.getValue(RemoteConfigData.AttendanceSelectTeams) { json ->
             val teams = Gson().fromJson(json, Array<TeamModel>::class.java).toList()
-            setState { copy(isLoading = false, teams = teams) }
+            setState { copy(teams = teams) }
         }
 
     }
@@ -25,30 +25,11 @@ class TeamViewModel @Inject constructor(firebaseRemoteConfig: FirebaseRemoteConf
     override fun handleEvent(event: TeamContract.TeamUiEvent) {
         when (event) {
             is TeamContract.TeamUiEvent.ChooseTeam -> {
-                chooseTeam(event.team)
+                setState { copy(myTeam = uiState.value.myTeam.copy(team = event.team)) }
             }
             is TeamContract.TeamUiEvent.ChooseTeamNumber -> {
-                chooseTeamNumber(event.teamNum)
+                setState { copy(myTeam = uiState.value.myTeam.copy(count = event.teamNum)) }
             }
         }
-    }
-
-    private fun chooseTeam(team: String) {
-        val newState = uiState.value.copy(
-            myTeam = uiState.value.myTeam.copy(
-                team = team
-            )
-        )
-        setState { newState }
-    }
-
-    private fun chooseTeamNumber(teamNumber: Int) {
-
-        val newState = uiState.value.copy(
-            myTeam = uiState.value.myTeam.copy(
-                count = teamNumber
-            )
-        )
-        setState { newState }
     }
 }
