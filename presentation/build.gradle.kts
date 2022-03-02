@@ -11,8 +11,8 @@ android {
     compileSdk = Configs.COMPILE_SDK
 
     defaultConfig {
-        minSdk        = Configs.MIN_SDK
-        targetSdk     = Configs.TARGET_SDK
+        minSdk = Configs.MIN_SDK
+        targetSdk = Configs.TARGET_SDK
     }
 
     buildTypes {
@@ -84,6 +84,34 @@ dependencies {
 
     //coil
     implementation(Dependencies.Coil.COIL)
+
+//    //CameraX
+//    val camerax_version = "1.0.2"
+//    implementation("androidx.camera:camera-core:${camerax_version}")
+//    implementation("androidx.camera:camera-camera2:${camerax_version}")
+//    implementation("androidx.camera:camera-lifecycle:${camerax_version}")
+//    implementation("androidx.camera:camera-view:1.1.0-beta02")
+
+    // CameraX core library using the camera2 implementation
+    val camerax_version = "1.0.2"
+    // The following line is optional, as the core library is included indirectly by camera-camera2
+    implementation("androidx.camera:camera-core:${camerax_version}")
+    implementation("androidx.camera:camera-camera2:${camerax_version}")
+    // If you want to additionally use the CameraX Lifecycle library
+    implementation("androidx.camera:camera-lifecycle:${camerax_version}")
+    // If you want to additionally use the CameraX VideoCapture library
+    implementation("androidx.camera:camera-video:1.1.0-beta01")
+    // If you want to additionally use the CameraX View class
+    implementation("androidx.camera:camera-view:1.1.0-beta01")
+    // If you want to additionally use the CameraX Extensions library
+    implementation("androidx.camera:camera-extensions:1.1.0-beta01")
+
+
+    //Zxing
+    implementation("com.google.zxing:core:3.4.1")
+
+    implementation("com.google.mlkit:barcode-scanning:17.0.2")
+    //implementation("com.google.accompanist-permissions:0.19.0")
 
     //test
     testImplementation(Dependencies.Test.JUNIT)
