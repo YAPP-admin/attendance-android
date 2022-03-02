@@ -56,6 +56,7 @@ dependencies {
     implementation(Dependencies.Ktx.LIFECYCLE)
     implementation(Dependencies.Google.MATERIAL)
     implementation(Dependencies.Google.GSON)
+    implementation(Dependencies.Google.SYSTEM_UI_CONTROLLER)
 
     implementation(Dependencies.Kakao.USER_LOGIN)
     implementation(Dependencies.Lottie.LOTTIE)

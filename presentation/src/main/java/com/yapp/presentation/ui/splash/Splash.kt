@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.airbnb.lottie.compose.*
 import com.yapp.common.R
@@ -20,39 +19,31 @@ fun Splash(
     navigateToMain: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
     Surface(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Yapp_Orange),
+            .fillMaxSize(),
+        color = Yapp_Orange
     ) {
-        when (uiState.loginState) {
-            LoginState.NONE -> {
-                Image(
-                    painter = painterResource(id = R.drawable.icon_splash),
-                    contentDescription = null,
-                )
-            }
-            else -> {
-                SplashLoader(
-                    uiState.loginState,
-                    navigateToLogin,
-                    navigateToMain
-                )
-            }
-        }
+        SplashLoader(
+            uiState.loginState,
+            navigateToLogin,
+            navigateToMain
+        )
     }
 }
 
 @Composable
 fun SplashLoader(loginState: LoginState, navigateToLogin: () -> Unit, navigateToMain: () -> Unit) {
-    val composition: LottieCompositionResult =
+    val composition: LottieCompositionResult? =
         when (loginState) {
             LoginState.SUCCESS -> rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.slpash_buong))
-            else -> rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.splash_buong_move))
+            LoginState.REQUIRED -> rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.splash_buong_move))
+            else -> null
         }
 
     val progress by animateLottieCompositionAsState(
-        composition.value,
+        composition?.value,
         iterations = 1
     )
 
@@ -66,7 +57,7 @@ fun SplashLoader(loginState: LoginState, navigateToLogin: () -> Unit, navigateTo
     }
 
     LottieAnimation(
-        composition.value,
+        composition?.value,
         progress,
     )
 }
