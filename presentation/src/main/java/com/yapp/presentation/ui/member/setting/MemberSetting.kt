@@ -30,9 +30,7 @@ fun MemberSetting(
         topBar = {
             YDSAppBar(
                 title = stringResource(id = string.member_setting_title),
-                onClickBackButton = {
-                    onClickBackButton()
-                }
+                onClickBackButton = onClickBackButton
             )
         },
         modifier = Modifier.fillMaxSize(),
