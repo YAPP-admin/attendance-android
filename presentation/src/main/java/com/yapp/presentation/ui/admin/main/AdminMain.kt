@@ -36,7 +36,6 @@ fun AdminMain(
     Scaffold(
         topBar = {
             YDSAppBar(
-                onClickBackButton = {},
                 onClickSettings = {}
             )
         },

@@ -15,14 +15,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.R
 import com.yapp.common.theme.*
-import com.yapp.common.yds.YDSAppBar
-import com.yapp.common.yds.YDSPopupDialog
+import com.yapp.common.yds.*
 import com.yapp.presentation.R.*
 
 @Composable
 fun MemberSetting(
     viewModel: MemberSettingViewModel = hiltViewModel(),
     onClickBackButton: () -> Unit,
+    onClickAdminButton: () -> Unit,
 ) {
     val uiState = viewModel.uiState.collectAsState()
 
@@ -42,6 +42,7 @@ fun MemberSetting(
         ) {
             GroupInfo()
             Profile()
+            ChangeAdminButton(onClickAdminButton)
             Divide()
             MenuList()
         }
@@ -80,6 +81,17 @@ private fun Profile() {
                 .padding(top = 16.dp),
             textAlign = TextAlign.Center
         )
+    }
+}
+
+@Composable
+private fun ChangeAdminButton(onClickAdminButton: () -> Unit) {
+    YDSButtonMedium(
+        text = "관리자 계정으로 전환하기",
+        state = YdsButtonState.ENABLED,
+        modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 28.dp)
+    ) {
+        onClickAdminButton()
     }
 }
 

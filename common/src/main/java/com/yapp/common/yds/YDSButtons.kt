@@ -11,10 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.yapp.common.theme.Gray_1200
-import com.yapp.common.theme.Gray_200
-import com.yapp.common.theme.Gray_800
-import com.yapp.common.theme.Yapp_Orange
+import com.yapp.common.theme.*
 import java.lang.IllegalStateException
 
 @Composable
@@ -85,7 +82,8 @@ fun YDSButtonMedium(
     ) {
         Text(
             text = text,
-            color = Color.White
+            color = Color.White,
+            style = AttendanceTypography.body1
         )
     }
 }
@@ -94,11 +92,12 @@ fun YDSButtonMedium(
 fun YDSButtonRegular(
     text: String,
     state: YdsButtonState,
+    modifier: Modifier,
     onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,
-        modifier = Modifier
+        modifier = modifier
             .wrapContentWidth()
             .height(48.dp),
         shape = RoundedCornerShape(10.dp),
@@ -151,7 +150,8 @@ fun YDSButtonSmall(
     ) {
         Text(
             text = text,
-            color = Color.White
+            color = Color.White,
+            style = AttendanceTypography.body2
         )
     }
 }
@@ -186,6 +186,7 @@ fun YDSChoiceButton(
     ) {
         Text(
             text = text,
+            style = AttendanceTypography.body1,
             color = when (state) {
                 YdsButtonState.DISABLED -> {
                     Gray_800

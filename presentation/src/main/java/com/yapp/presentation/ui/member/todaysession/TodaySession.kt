@@ -8,6 +8,7 @@ import androidx.compose.material.LocalContentColor
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -76,6 +77,7 @@ private fun TodaysAttendance() {
             .background(Color.White)
             .padding(20.dp)
             .layoutId("attendanceCard", "attendanceCard"),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             imageVector = ImageVector.vectorResource(R.drawable.icon_check),

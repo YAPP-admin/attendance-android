@@ -58,7 +58,7 @@ fun YDSAppBar(
             Text(
                 text = title,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .wrapContentWidth()
                     .padding(start = 20.dp),
                 style = AttendanceTypography.h3,
                 color = Gray_1200

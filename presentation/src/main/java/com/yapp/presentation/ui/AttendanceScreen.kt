@@ -78,9 +78,15 @@ fun AttendanceScreen(
         composable(
             route = AttendanceScreenRoute.MEMBER_SETTING.route
         ) {
-            MemberSetting {
-                navController.popBackStack()
-            }
+            MemberSetting(
+                onClickBackButton = {
+                    navController.popBackStack()
+                },
+                onClickAdminButton = {
+                    navController.navigate(AttendanceScreenRoute.ADMIN_MAIN.route) {
+                        popUpTo(AttendanceScreenRoute.MEMBER_SETTING.route) { inclusive = true }
+                    }
+                })
         }
 
         composable(
