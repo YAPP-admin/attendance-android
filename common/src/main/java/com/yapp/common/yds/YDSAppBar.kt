@@ -31,8 +31,7 @@ fun YDSAppBar(
             Text(
                 text = title,
                 modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                style = AttendanceTypography.body1,
+                style = AttendanceTypography.h3,
                 color = Gray_1200
             )
         },
