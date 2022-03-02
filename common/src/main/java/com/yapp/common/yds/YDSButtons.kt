@@ -11,12 +11,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.yapp.common.theme.Gray_1200
 import com.yapp.common.theme.Gray_200
 import com.yapp.common.theme.Gray_800
 import com.yapp.common.theme.Yapp_Orange
+import java.lang.IllegalStateException
 
 @Composable
-fun YDSFullButtonContainer(
+fun YDSButtonLarge(
     text: String,
     modifier: Modifier = Modifier,
     state: YdsButtonState,
@@ -25,7 +27,8 @@ fun YDSFullButtonContainer(
     Button(
         onClick = onClick,
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .height(60.dp),
         shape = RoundedCornerShape(10.dp),
         colors = when (state) {
             YdsButtonState.DISABLED -> {
@@ -51,16 +54,53 @@ fun YDSFullButtonContainer(
 }
 
 @Composable
-fun YDSFitButtonContainer(
+fun YDSButtonMedium(
     text: String,
-    modifier: Modifier = Modifier.height(48.dp),
+    modifier: Modifier = Modifier,
     state: YdsButtonState,
     onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,
         modifier = modifier
-            .wrapContentWidth(),
+            .fillMaxWidth()
+            .height(48.dp),
+        shape = RoundedCornerShape(10.dp),
+        colors = when (state) {
+            YdsButtonState.ENABLED -> {
+                ButtonDefaults.buttonColors(
+                    backgroundColor = Gray_1200
+                )
+            }
+            YdsButtonState.PRESSED -> {
+                ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xff42454A)
+                )
+            }
+            YdsButtonState.DISABLED -> {
+                throw IllegalStateException()
+            }
+        },
+        elevation = null
+    ) {
+        Text(
+            text = text,
+            color = Color.White
+        )
+    }
+}
+
+@Composable
+fun YDSButtonRegular(
+    text: String,
+    state: YdsButtonState,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .wrapContentWidth()
+            .height(48.dp),
         shape = RoundedCornerShape(10.dp),
         colors = when (state) {
             YdsButtonState.ENABLED -> {
@@ -83,9 +123,41 @@ fun YDSFitButtonContainer(
     }
 }
 
+@Composable
+fun YDSButtonSmall(
+    text: String,
+    state: YdsButtonState,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .wrapContentWidth()
+            .height(32.dp),
+        shape = RoundedCornerShape(10.dp),
+        colors = when (state) {
+            YdsButtonState.ENABLED -> {
+                ButtonDefaults.buttonColors(
+                    backgroundColor = Yapp_Orange
+                )
+            }
+            else -> {
+                ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xffFA6027)
+                )
+            }
+        },
+        elevation = null
+    ) {
+        Text(
+            text = text,
+            color = Color.White
+        )
+    }
+}
 
 @Composable
-fun YDSChoiceButtonContainer(
+fun YDSChoiceButton(
     text: String,
     modifier: Modifier = Modifier,
     state: YdsButtonState,

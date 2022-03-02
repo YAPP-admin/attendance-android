@@ -21,7 +21,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.R
 import com.yapp.common.theme.*
 import com.yapp.common.yds.YDSAppBar
-import com.yapp.common.yds.YDSFitButtonContainer
+import com.yapp.common.yds.YDSButtonRegular
+import com.yapp.common.yds.YDSButtonSmall
 import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R.*
 import com.yapp.presentation.model.SessionModel
@@ -170,10 +171,9 @@ fun LazyListScope.TodaySession() {
                     text = "YAPP 오리엔테이션",
                     style = AttendanceTypography.h3
                 )
-                YDSFitButtonContainer(
+                YDSButtonSmall(
                     text = stringResource(id = string.admin_main_confirm_button),
                     state = YdsButtonState.ENABLED,
-                    modifier = Modifier.height(33.dp)
                 ) { }
             }
         }

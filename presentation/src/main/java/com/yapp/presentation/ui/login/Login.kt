@@ -26,7 +26,7 @@ import com.yapp.common.R.*
 import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.util.KakaoTalkLoginProvider
-import com.yapp.common.yds.YDSFullButtonContainer
+import com.yapp.common.yds.YDSButtonLarge
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R
@@ -94,7 +94,7 @@ private fun YappuImage() {
 private fun SkipButton(
     viewModel: LoginViewModel = hiltViewModel()
 ) {
-    YDSFullButtonContainer(
+    YDSButtonLarge(
         text = "건너뛰기",
         modifier = Modifier
             .layoutId("skipButton"),
