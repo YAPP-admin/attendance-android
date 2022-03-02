@@ -35,14 +35,15 @@ fun Splash(
 
 @Composable
 fun SplashLoader(loginState: LoginState, navigateToLogin: () -> Unit, navigateToMain: () -> Unit) {
-    val composition: LottieCompositionResult =
+    val composition: LottieCompositionResult? =
         when (loginState) {
             LoginState.SUCCESS -> rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.slpash_buong))
-            else -> rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.splash_buong_move))
+            LoginState.REQUIRED -> rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.splash_buong_move))
+            else -> null
         }
 
     val progress by animateLottieCompositionAsState(
-        composition.value,
+        composition?.value,
         iterations = 1
     )
 
@@ -56,7 +57,7 @@ fun SplashLoader(loginState: LoginState, navigateToLogin: () -> Unit, navigateTo
     }
 
     LottieAnimation(
-        composition.value,
+        composition?.value,
         progress,
     )
 }
