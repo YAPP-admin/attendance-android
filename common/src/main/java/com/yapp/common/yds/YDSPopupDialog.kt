@@ -11,10 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.yapp.common.theme.AttendanceTypography
-import com.yapp.common.theme.Etc_Red
-import com.yapp.common.theme.Gray_200
-import com.yapp.common.theme.Gray_800
+import com.yapp.common.theme.*
 
 @Composable
 fun YDSPopupDialog(
@@ -24,13 +21,14 @@ fun YDSPopupDialog(
     positiveButtonText: String,
     onClickNegativeButton: () -> Unit,
     onClickPositiveButton: () -> Unit,
+    onDismiss: () -> Unit
 ) {
-    Dialog(onDismissRequest = { }) {
+    Dialog(onDismissRequest = { onDismiss() }) {
         Surface(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 32.dp, end = 32.dp)
-                .wrapContentHeight(),
+                .fillMaxSize()
+                .wrapContentHeight()
+                .padding(8.dp),
             shape = RoundedCornerShape(10.dp),
             color = Color.White
         ) {
@@ -40,12 +38,14 @@ fun YDSPopupDialog(
             ) {
                 Text(
                     text = title,
-                    style = AttendanceTypography.h3
+                    style = AttendanceTypography.h3,
+                    color = Gray_1200
                 )
                 Text(
                     text = content,
                     modifier = Modifier.padding(top = 8.dp),
-                    style = AttendanceTypography.body1
+                    style = AttendanceTypography.body1,
+                    color = Gray_800
                 )
 
                 Row(
@@ -55,6 +55,7 @@ fun YDSPopupDialog(
                         onClick = onClickNegativeButton,
                         modifier = Modifier
                             .weight(1f)
+                            .height(46.dp)
                             .padding(end = 6.dp),
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = Gray_200,
@@ -64,6 +65,7 @@ fun YDSPopupDialog(
                     ) {
                         Text(
                             text = negativeButtonText,
+                            style = AttendanceTypography.body1,
                             color = Gray_800
                         )
                     }
@@ -72,6 +74,7 @@ fun YDSPopupDialog(
                         onClick = onClickPositiveButton,
                         modifier = Modifier
                             .weight(1f)
+                            .height(46.dp)
                             .padding(start = 6.dp),
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = Etc_Red,
@@ -81,6 +84,7 @@ fun YDSPopupDialog(
                     ) {
                         Text(
                             text = positiveButtonText,
+                            style = AttendanceTypography.body1,
                             color = Color.White
                         )
                     }
