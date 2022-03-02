@@ -8,6 +8,9 @@
   <string name="member_main_bottom_navigation_qr_text">QR</string>
   <string name="member_main_bottom_navigation_attendance_detail_text">출결 확인</string>
 
+  <string name="today_session_attendance_before_text">아직 출석 전이에요</string>
+  <string name="today_session_attendance_after_text">출석을 완료했어요</string>
+
   <string name="member_score_title">출결 점수 확인</string>
   <string name="member_score_now_my_score_text">지금 내 점수는</string>
   <string name="member_score_attend_text">출석</string>

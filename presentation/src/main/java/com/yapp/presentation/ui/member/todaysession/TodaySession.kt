@@ -3,24 +3,27 @@ package com.yapp.presentation.ui.member.todaysession
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.Role.Companion.Image
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.layoutId
 import com.yapp.common.R
 import com.yapp.common.theme.*
 import com.yapp.common.yds.YDSAppBar
+import com.yapp.presentation.R.*
 import com.yapp.presentation.ui.AttendanceScreenRoute
+import com.yapp.presentation.ui.member.main.BottomNavigationItem
 
 @Composable
 fun TodaySession(
@@ -30,7 +33,9 @@ fun TodaySession(
     Scaffold(
         topBar = {
             YDSAppBar(
-                onClickSettings = { navigateToScreen(AttendanceScreenRoute.MEMBER_SETTING.route) }
+                onClickSettings = {
+                    navigateToScreen(AttendanceScreenRoute.MEMBER_SETTING.route)
+                }
             )
         },
         modifier = modifier
@@ -69,12 +74,18 @@ private fun TodaysAttendance() {
             .padding(24.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(Color.White)
+            .padding(20.dp)
             .layoutId("attendanceCard", "attendanceCard"),
     ) {
+        Icon(
+            imageVector = ImageVector.vectorResource(R.drawable.icon_check),
+            contentDescription = null,
+            modifier = Modifier.padding(end = 8.dp),
+            tint = Color.Unspecified
+        )
         Text(
-            text = "아직 출석 전이예요",
+            text = stringResource(id = string.today_session_attendance_before_text),
             color = Gray_600,
-            modifier = Modifier.padding(20.dp)
         )
     }
 }
