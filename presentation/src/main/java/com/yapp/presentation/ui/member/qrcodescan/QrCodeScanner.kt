@@ -2,7 +2,6 @@ package com.yapp.presentation.ui.member.qrcodescan
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.Rect
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.Toast
@@ -11,12 +10,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
+import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
@@ -29,21 +28,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.google.common.util.concurrent.ListenableFuture
-import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.presentation.R
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 @Composable
-fun QrCodeScan(
+fun QrCodeScanner(
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
@@ -74,48 +71,10 @@ fun QrCodeScan(
         if (hasCamPermission) {
             Surface {
                 CameraPreview()
-
-                ConstraintLayout(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                ) {
-                    val (informText, closeIcon, qrAreaIcon) = createRefs()
-                    InformText(
-                        modifier.constrainAs(informText) {
-                            bottom.linkTo(qrAreaIcon.top, 40.dp)
-                            absoluteLeft.linkTo(parent.absoluteLeft)
-                            absoluteRight.linkTo(parent.absoluteRight)
-                        }
-                    )
-                    IconButton(
-                        modifier = modifier
-                            .constrainAs(closeIcon) {
-                                top.linkTo(parent.top, 14.dp)
-                                absoluteRight.linkTo(parent.absoluteRight, 14.dp)
-                            },
-                        onClick = {
-                            navController.popBackStack()
-                        }
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.icon_close),
-                            tint = Color.Unspecified,
-                            contentDescription = null
-                        )
-                    }
-                    Icon(
-                        modifier = modifier.constrainAs(qrAreaIcon) {
-                            top.linkTo(parent.top)
-                            bottom.linkTo(parent.bottom)
-                            absoluteRight.linkTo(parent.absoluteRight)
-                            absoluteLeft.linkTo(parent.absoluteLeft)
-                        },
-                        painter = painterResource(id = R.drawable.icon_qr_area),
-                        tint = Color.Unspecified,
-                        contentDescription = null
-                    )
-                }
+                ScannerDecoration(
+                    modifier = modifier,
+                    navController = navController
+                )
             }
         }
     }
@@ -125,7 +84,7 @@ fun QrCodeScan(
 fun CameraPreview() {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    var preview by remember { mutableStateOf<androidx.camera.core.Preview?>(null) }
+    var preview by remember { mutableStateOf<Preview?>(null) }
     var code = remember { mutableStateOf("") }
 
     Surface {
@@ -157,13 +116,13 @@ fun CameraPreview() {
                     }
                     val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
                     val barcodeAnalyzer =
-                        QrCodeAnalyzer(readableRectArea = Rect(0, 0, 100, 100)) { barcodes ->
-                            barcodes.forEach { barcode ->
-                                barcode.rawValue?.let { barcodeValue ->
-                                    Log.d("QrCode", "Code Scan Result: $barcodeValue")
-                                    //Log.d("QrCode", "Points: ${barcode.cornerPoints}")
-                                    code.value = barcodeValue
-                                    Toast.makeText(context, barcodeValue, Toast.LENGTH_SHORT).show()
+                        QrCodeAnalyzer { qrCodes ->
+                            qrCodes.forEach { qrCode ->
+                                qrCode.rawValue?.let { qrCodeValue ->
+                                    Log.d("QrCodeAnalyzer", "QrCodeAnalyzer Result: $qrCodeValue")
+                                    //Log.d("QrCodeAnalyzer", "Points: ${qrCode.cornerPoints}")
+                                    code.value = qrCodeValue
+                                    Toast.makeText(context, qrCodeValue, Toast.LENGTH_SHORT).show()
                                 }
                             }
                         }
@@ -183,10 +142,58 @@ fun CameraPreview() {
                             imageAnalysis
                         )
                     } catch (e: Exception) {
-                        Log.d("QrCodeScan", "CameraPreview: ${e.printStackTrace()}")
+                        Log.d("QrCodeAnalyzer", "CameraPreview: ${e.printStackTrace()}")
                     }
                 }, ContextCompat.getMainExecutor(context))
             }
+        )
+    }
+}
+
+@Composable
+fun ScannerDecoration(
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+    ) {
+        val (informText, closeIcon, qrAreaIcon) = createRefs()
+        InformText(
+            modifier.constrainAs(informText) {
+                bottom.linkTo(qrAreaIcon.top, 40.dp)
+                absoluteLeft.linkTo(parent.absoluteLeft)
+                absoluteRight.linkTo(parent.absoluteRight)
+            }
+        )
+        IconButton(
+            modifier = modifier
+                .constrainAs(closeIcon) {
+                    top.linkTo(parent.top, 14.dp)
+                    absoluteRight.linkTo(parent.absoluteRight, 14.dp)
+                },
+            onClick = {
+                navController.popBackStack()
+            }
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.icon_close),
+                tint = Color.Unspecified,
+                contentDescription = null
+            )
+        }
+        Icon(
+            modifier = modifier.constrainAs(qrAreaIcon) {
+                top.linkTo(parent.top)
+                bottom.linkTo(parent.bottom)
+                absoluteRight.linkTo(parent.absoluteRight)
+                absoluteLeft.linkTo(parent.absoluteLeft)
+            },
+            painter = painterResource(id = R.drawable.icon_qr_area),
+            tint = Color.Unspecified,
+            contentDescription = null
         )
     }
 }
@@ -208,13 +215,5 @@ fun InformText(modifier: Modifier = Modifier) {
             color = Color.White,
             style = AttendanceTypography.body1
         )
-    }
-}
-
-@Preview
-@Composable
-fun InformTextPreview() {
-    AttendanceTheme {
-        InformText()
     }
 }

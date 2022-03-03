@@ -1,7 +1,6 @@
 package com.yapp.presentation.ui.member.qrcodescan
 
 import android.annotation.SuppressLint
-import android.graphics.Rect
 import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
@@ -12,7 +11,6 @@ import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.TimeUnit
 
 class QrCodeAnalyzer(
-    private val readableRectArea: Rect,
     private val onQrCodeDetected: (barcodes: List<Barcode>) -> Unit,
 ) : ImageAnalysis.Analyzer {
     private var lastAnalyzedTimeStamp = 0L
@@ -22,20 +20,20 @@ class QrCodeAnalyzer(
         val currentTimeStamp = System.currentTimeMillis()
         if (currentTimeStamp - lastAnalyzedTimeStamp >= TimeUnit.SECONDS.toMillis(1)) {
             imageProxy.image?.let { imageToAnalyze ->
-                imageToAnalyze.cropRect = readableRectArea
+                //imageToAnalyze.cropRect = readableRectArea
                 val options = BarcodeScannerOptions.Builder()
                     .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
                     .build()
-                val barcodeScanner = BarcodeScanning.getClient(options)
+                val qrCodeScanner = BarcodeScanning.getClient(options)
                 val imageToProcess =
                     InputImage.fromMediaImage(imageToAnalyze, imageProxy.imageInfo.rotationDegrees)
 
-                barcodeScanner.process(imageToProcess)
-                    .addOnSuccessListener { barcodes ->
-                        if (barcodes.isNotEmpty()) {
-                            onQrCodeDetected(barcodes)
+                qrCodeScanner.process(imageToProcess)
+                    .addOnSuccessListener { qrCodes ->
+                        if (qrCodes.isNotEmpty()) {
+                            onQrCodeDetected(qrCodes)
                         } else {
-                            Log.d("QrCodeAnalyzer", "analyze: No barcode Scanned")
+                            Log.d("QrCodeAnalyzer", "QrCodeAnalyzer: No barcode Scanned")
                         }
                     }
                     .addOnFailureListener { exception ->

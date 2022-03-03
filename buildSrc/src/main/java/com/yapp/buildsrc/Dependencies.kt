@@ -85,5 +85,19 @@ object Dependencies {
     object Lottie {
         const val LOTTIE = "com.airbnb.android:lottie-compose:5.0.1"
     }
+
+    object CameraX {
+        private const val camerax_version = "1.0.2"
+        const val CORE = "androidx.camera:camera-core:${camerax_version}"
+        const val CAMERA2 = "androidx.camera:camera-camera2:${camerax_version}"
+        const val LIFECYCLE = "androidx.camera:camera-lifecycle:${camerax_version}"
+        const val VIDEO = "androidx.camera:camera-video:1.1.0-beta02"
+        const val VIEW = "androidx.camera:camera-view:1.1.0-beta02"
+        const val EXTENSION = "androidx.camera:camera-extensions:1.1.0-beta02"
+    }
+
+    object MlKit {
+        const val ML_KIT = "com.google.mlkit:barcode-scanning:17.0.2"
+    }
 }
 
