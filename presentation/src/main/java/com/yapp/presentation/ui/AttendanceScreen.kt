@@ -24,6 +24,7 @@ fun AttendanceScreen(
     NavHost(
         navController = navController,
         startDestination = AttendanceScreenRoute.SPLASH.route
+
     ) {
         composable(
             route = AttendanceScreenRoute.LOGIN.route

@@ -61,7 +61,7 @@ fun Team(
                 }
             }
 
-            YDSFullButtonContainer(
+            YDSButtonLarge(
                 text = stringResource(R.string.member_signup_team_confirm),
                 modifier = Modifier
                     .padding(bottom = 40.dp)
@@ -82,7 +82,7 @@ fun TeamOption(uiState: TeamContract.TeamUiState, onTeamChoosed: (String) -> Uni
             Row() {
                 repeat(rowNum) { index ->
                     val team = uiState.teams[rowNum * row + index]
-                    YDSChoiceButtonContainer(
+                    YDSChoiceButton(
                         text = team.team,
                         modifier = Modifier.padding(end = 12.dp),
                         state = if (uiState.myTeam.team == team.team) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
@@ -108,7 +108,7 @@ fun TeamNumberOption(uiState: TeamContract.TeamUiState, onTeamNumberChoosed: (In
         Spacer(modifier = Modifier.height(10.dp))
         Row() {
             repeat(team[0].count) { teamNum ->
-                YDSChoiceButtonContainer(
+                YDSChoiceButton(
                     text = stringResource(R.string.member_signup_team_number, teamNum + 1),
                     modifier = Modifier.padding(end = 12.dp),
                     state = if (uiState.myTeam.count == teamNum + 1) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
