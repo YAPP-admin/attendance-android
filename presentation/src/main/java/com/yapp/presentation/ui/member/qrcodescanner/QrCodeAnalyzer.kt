@@ -1,4 +1,4 @@
-package com.yapp.presentation.ui.member.qrcodescan
+package com.yapp.presentation.ui.member.qrcodescanner
 
 import android.annotation.SuppressLint
 import android.util.Log

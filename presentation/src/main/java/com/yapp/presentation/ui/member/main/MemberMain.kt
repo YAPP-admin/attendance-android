@@ -22,11 +22,8 @@ import com.yapp.common.theme.*
 import com.yapp.presentation.R
 import com.yapp.presentation.ui.AttendanceScreenRoute
 import com.yapp.presentation.ui.member.detail.MemberScore
-import com.yapp.presentation.ui.member.main.MemberMainContract.*
-import com.yapp.presentation.ui.member.qrcodescan.QrCodeScan
 import com.yapp.presentation.ui.member.todaysession.TodaySession
 import kotlinx.coroutines.flow.collect
-import java.lang.reflect.Member
 
 @Composable
 fun MemberMain(
