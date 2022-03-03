@@ -46,7 +46,7 @@ fun MemberScore(
     Scaffold(
         topBar = {
             YDSAppBar(
-                title = stringResource(R.string.member_score_title)
+                title = stringResource(R.string.member_score_title),
             )
         },
         modifier = modifier
@@ -54,23 +54,9 @@ fun MemberScore(
     ) {
         LazyColumn {
             item {
-                Box {
-                    Icon(
-                        painter = painterResource(R.drawable.icon_help),
-                        contentDescription = "help icon",
-                        tint = Color.Unspecified,
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(top = 18.dp, end = 14.dp)
-                            .clip(CircleShape)
-                            .clickable {
-                                navigateToHelpScreen()
-                            }
-                            .padding(10.dp)
-                    )
-                    //todo score 주입 필요!
-                    SemiCircleProgressBar(60f)
-                }
+                HelpIcon(navigateToHelpScreen)
+                //todo score 주입 필요!
+                SemiCircleProgressBar(60f)
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -93,6 +79,29 @@ fun MemberScore(
                 AttendUserSession(session)
             }
         }
+    }
+}
+
+@Composable
+private fun HelpIcon(navigateToHelpScreen: () -> Unit) {
+    Box(
+        modifier = Modifier.fillMaxWidth().wrapContentHeight()
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.icon_help),
+            contentDescription = "help icon",
+            tint = Color.Unspecified,
+            modifier = Modifier
+                .wrapContentWidth()
+                .wrapContentHeight()
+                .align(Alignment.TopEnd)
+                .padding(top = 18.dp, end = 14.dp)
+                .clip(CircleShape)
+                .clickable {
+                    navigateToHelpScreen()
+                }
+                .padding(10.dp),
+        )
     }
 }
 
@@ -128,7 +137,7 @@ fun SemiCircleProgressBar(score: Float) {
     ) {
         BoxWithConstraints(
             modifier = Modifier
-                .padding(start = 64.dp, top = 24.dp, end = 64.dp),
+                .padding(start = 64.dp, end = 64.dp),
         ) {
             androidx.compose.foundation.Canvas(
                 modifier = Modifier

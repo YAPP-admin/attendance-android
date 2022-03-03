@@ -51,6 +51,7 @@ object Dependencies {
     object Google {
         const val MATERIAL = "com.google.android.material:material:1.5.0"
         const val GSON = "com.google.code.gson:gson:2.8.5"
+        const val SYSTEM_UI_CONTROLLER = "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
     }
 
     object Square {
@@ -79,6 +80,10 @@ object Dependencies {
 
     object Kakao {
         const val USER_LOGIN = "com.kakao.sdk:v2-user:2.8.6"
+    }
+
+    object Lottie {
+        const val LOTTIE = "com.airbnb.android:lottie-compose:5.0.1"
     }
 }
 
