@@ -13,6 +13,7 @@ import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.login.Login
 import com.yapp.presentation.ui.member.main.MemberMain
 import com.yapp.presentation.ui.member.setting.MemberSetting
+import com.yapp.presentation.ui.member.signup.Name
 import com.yapp.presentation.ui.splash.Splash
 
 @Composable
@@ -22,8 +23,9 @@ fun AttendanceScreen(
 ) {
     NavHost(
         navController = navController,
-        startDestination = AttendanceScreenRoute.SPLASH.route
+        startDestination = AttendanceScreenRoute.NAME.route
     ) {
+
         composable(
             route = AttendanceScreenRoute.LOGIN.route
         ) {
@@ -91,7 +93,14 @@ fun AttendanceScreen(
 
         composable(
             route = AttendanceScreenRoute.HELP.route
-        ) {}
+        ) {
+        }
+
+        composable(
+            route = AttendanceScreenRoute.NAME.route
+        ) {
+            Name() }
+
     }
 }
 
@@ -102,6 +111,7 @@ enum class AttendanceScreenRoute(val route: String) {
     MEMBER_MAIN("member-main"),
     ADMIN_MAIN("admin-main"),
     MEMBER_SETTING("member_setting"),
+    NAME("name"),
     HELP("help");
 }
 
