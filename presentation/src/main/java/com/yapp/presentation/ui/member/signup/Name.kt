@@ -1,5 +1,6 @@
 package com.yapp.presentation.ui.member.signup
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,13 +12,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.yapp.common.theme.AttendanceTypography
-import com.yapp.common.theme.Gray_200
+import com.yapp.common.theme.*
 import com.yapp.common.theme.Gray_800
-import com.yapp.common.theme.Yapp_Orange
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.presentation.R
 
@@ -69,14 +71,18 @@ fun Title() {
 
 @Composable
 fun InputName() {
-
     var text by remember { mutableStateOf("") }
 
     BasicTextField(
         value = text,
         onValueChange = { text = it },
         singleLine = true,
-        textStyle = AttendanceTypography.body1,
+        textStyle = TextStyle(
+            fontWeight = FontWeight.Normal,
+            fontSize = 16.sp,
+            letterSpacing = 0.5.sp,
+            color = Gray_800
+        ),
         cursorBrush = SolidColor(Yapp_Orange),
         decorationBox = { innerTextField ->
             Column(
@@ -84,24 +90,17 @@ fun InputName() {
                     .fillMaxWidth()
                     .background(color = Gray_200, shape = RoundedCornerShape(50.dp))
             ) {
-
-                Spacer(modifier = Modifier.height(20.dp))
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Spacer(modifier = Modifier.width(20.dp))
+                Box(modifier = Modifier.padding(20.dp)) {
                     if (text.isBlank()) {
                         Text(
                             text = stringResource(id = R.string.name_example_hint),
-                            color = Gray_200,
+                            color = Gray_400,
                             style = AttendanceTypography.body1
                         )
-                    }
-                    else {
+                    } else {
                         innerTextField()
                     }
-                    Spacer(modifier = Modifier.width(20.dp))
                 }
-                Spacer(modifier = Modifier.height(20.dp))
-
             }
         }
     )

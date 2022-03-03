@@ -6,7 +6,8 @@ import com.yapp.common.base.UiState
 
 class NameContract {
     data class NameUiState(
-        val isLoading: Boolean = false
+        val isLoading: Boolean = false,
+        val name: String = ""
     ) : UiState
 
     sealed class NameSideEffect : UiSideEffect {}
