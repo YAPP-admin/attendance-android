@@ -18,4 +18,8 @@
   <string name="admin_main_see_all_session_text">전체 보기</string>
   <string name="admin_main_confirm_button">확인</string>
   <string name="admin_main_see_all_score_text">누적 점수 확인하기</string>
+
+  <string name="member_qr_time_inform_text">2시 5분까지 출석 체크를 완료해 주세요!</string>
+  <string name="member_qr_late_inform_text">이후 출석은 지각으로 처리돼요</string>
+
 </resources>

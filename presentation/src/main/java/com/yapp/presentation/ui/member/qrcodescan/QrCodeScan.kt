@@ -16,18 +16,24 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.Icon
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.google.common.util.concurrent.ListenableFuture
+import com.yapp.common.theme.AttendanceTypography
+import com.yapp.presentation.R
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import kotlin.reflect.typeOf
 
 @Composable
 fun QrCodeScan(
@@ -58,9 +64,31 @@ fun QrCodeScan(
             .fillMaxWidth()
     ) {
         if (hasCamPermission) {
-            CameraPreview()
-        } else {
-            launcher.launch(Manifest.permission.CAMERA)
+            Surface {
+                CameraPreview()
+
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_absent),
+                    tint = Color.Unspecified,
+                    contentDescription = null
+                )
+
+                Text(
+                    text = stringResource(id = R.string.member_qr_time_inform_text),
+                    style = AttendanceTypography.body1
+                )
+
+                Text(
+                    text = stringResource(id = R.string.member_qr_late_inform_text),
+                    style = AttendanceTypography.body1
+                )
+
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_qr_area),
+                    tint = Color.Unspecified,
+                    contentDescription = null
+                )
+            }
         }
     }
 }
@@ -72,60 +100,65 @@ fun CameraPreview() {
     var preview by remember { mutableStateOf<Preview?>(null) }
     var code = remember { mutableStateOf("") }
 
-    AndroidView(
-        factory = { androidViewContext ->
-            PreviewView(androidViewContext).apply {
-                this.scaleType = PreviewView.ScaleType.FILL_CENTER
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                )
-                implementationMode = PreviewView.ImplementationMode.COMPATIBLE
-            }
-        },
-        modifier = Modifier.fillMaxSize(),
-        update = { previewView ->
-            val cameraSelector = CameraSelector.Builder()
-                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
-                .build()
-            val cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
-            val cameraProviderFuture: ListenableFuture<ProcessCameraProvider> =
-                ProcessCameraProvider.getInstance(context)
-
-            cameraProviderFuture.addListener({
-                preview = Preview.Builder().build().also {
-                    it.setSurfaceProvider(previewView.surfaceProvider)
-                }
-                val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-                val barcodeAnalyzer = QrCodeAnalyzer(readableRectArea = Rect(0, 0, 100, 100)) { barcodes ->
-                    barcodes.forEach { barcode ->
-                        barcode.rawValue?.let { barcodeValue ->
-                            Log.d("barcode", "Code Scan Result: $barcodeValue")
-                            code.value = barcodeValue
-                            Toast.makeText(context, barcodeValue, Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
-                val imageAnalysis: ImageAnalysis = ImageAnalysis.Builder()
-                    .setBackpressureStrategy(STRATEGY_KEEP_ONLY_LATEST)
-                    .build()
-                    .also {
-                        it.setAnalyzer(cameraExecutor, barcodeAnalyzer)
-                    }
-
-                try {
-                    cameraProvider.unbindAll()
-                    cameraProvider.bindToLifecycle(
-                        lifecycleOwner,
-                        cameraSelector,
-                        preview,
-                        imageAnalysis
+    Surface {
+        AndroidView(
+            factory = { androidViewContext ->
+                PreviewView(androidViewContext).apply {
+                    this.scaleType = PreviewView.ScaleType.FILL_CENTER
+                    layoutParams = ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT,
                     )
-                } catch (e: Exception) {
-                    Log.d("QrCodeScan", "CameraPreview: ${e.printStackTrace()}")
+                    implementationMode = PreviewView.ImplementationMode.COMPATIBLE
                 }
-            }, ContextCompat.getMainExecutor(context))
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
+            update = { previewView ->
+                val cameraSelector = CameraSelector.Builder()
+                    .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                    .build()
+                val cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
+                val cameraProviderFuture: ListenableFuture<ProcessCameraProvider> =
+                    ProcessCameraProvider.getInstance(context)
 
-        }
-    )
+                cameraProviderFuture.addListener({
+                    preview = Preview.Builder().build().also {
+                        it.setSurfaceProvider(previewView.surfaceProvider)
+                    }
+                    val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+                    val barcodeAnalyzer =
+                        QrCodeAnalyzer(readableRectArea = Rect(0, 0, 100, 100)) { barcodes ->
+                            barcodes.forEach { barcode ->
+                                barcode.rawValue?.let { barcodeValue ->
+                                    Log.d("QrCode", "Code Scan Result: $barcodeValue")
+                                    //Log.d("QrCode", "Points: ${barcode.cornerPoints}")
+                                    code.value = barcodeValue
+                                    Toast.makeText(context, barcodeValue, Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+                    val imageAnalysis: ImageAnalysis = ImageAnalysis.Builder()
+                        .setBackpressureStrategy(STRATEGY_KEEP_ONLY_LATEST)
+                        .build()
+                        .also {
+                            it.setAnalyzer(cameraExecutor, barcodeAnalyzer)
+                        }
+
+                    try {
+                        cameraProvider.unbindAll()
+                        cameraProvider.bindToLifecycle(
+                            lifecycleOwner,
+                            cameraSelector,
+                            preview,
+                            imageAnalysis
+                        )
+                    } catch (e: Exception) {
+                        Log.d("QrCodeScan", "CameraPreview: ${e.printStackTrace()}")
+                    }
+                }, ContextCompat.getMainExecutor(context))
+            }
+        )
+    }
 }
