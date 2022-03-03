@@ -13,17 +13,20 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-@Module
 @InstallIn(SingletonComponent::class)
+@Module
 object DataModule {
 
     @Provides
+    @Singleton
     fun provideFirestoreInstance(): FirebaseFirestore {
         return FirebaseFirestore.getInstance()
     }
 
     @Provides
+    @Singleton
     fun provideLocalRepository(
         @ApplicationContext context: Context
     ): LocalRepository {
@@ -31,6 +34,7 @@ object DataModule {
     }
 
     @Provides
+    @Singleton
     fun provideMemberRepository(
         fireStore: FirebaseFirestore
     ): MemberRepository {
@@ -38,6 +42,7 @@ object DataModule {
     }
 
     @Provides
+    @Singleton
     fun provideAdminRepository(
         fireStore: FirebaseFirestore
     ): AdminRepository {
