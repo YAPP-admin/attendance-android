@@ -12,6 +12,7 @@ import com.yapp.common.util.KakaoTalkLoginProvider
 import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.login.Login
 import com.yapp.presentation.ui.member.main.MemberMain
+import com.yapp.presentation.ui.member.qrcodescan.QrCodeScan
 import com.yapp.presentation.ui.member.setting.MemberSetting
 import com.yapp.presentation.ui.splash.Splash
 
@@ -73,7 +74,11 @@ fun AttendanceScreen(
 
         composable(
             route = AttendanceScreenRoute.QR_AUTH.route
-        ) {}
+        ) {
+            QrCodeScan(
+                navController = navController
+            )
+        }
 
         composable(
             route = AttendanceScreenRoute.MEMBER_SETTING.route

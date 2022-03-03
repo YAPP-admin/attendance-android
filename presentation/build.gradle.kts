@@ -104,11 +104,11 @@ dependencies {
     // If you want to additionally use the CameraX Lifecycle library
     implementation("androidx.camera:camera-lifecycle:${camerax_version}")
     // If you want to additionally use the CameraX VideoCapture library
-    implementation("androidx.camera:camera-video:1.1.0-beta01")
+    implementation("androidx.camera:camera-video:1.1.0-beta02")
     // If you want to additionally use the CameraX View class
-    implementation("androidx.camera:camera-view:1.1.0-beta01")
+    implementation("androidx.camera:camera-view:1.1.0-beta02")
     // If you want to additionally use the CameraX Extensions library
-    implementation("androidx.camera:camera-extensions:1.1.0-beta01")
+    implementation("androidx.camera:camera-extensions:1.1.0-beta02")
 
 
     //Zxing

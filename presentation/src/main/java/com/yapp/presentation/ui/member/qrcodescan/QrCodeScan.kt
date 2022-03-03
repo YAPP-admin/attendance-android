@@ -11,25 +11,32 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
-import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import com.google.common.util.concurrent.ListenableFuture
+import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.presentation.R
 import java.util.concurrent.ExecutorService
@@ -37,7 +44,8 @@ import java.util.concurrent.Executors
 
 @Composable
 fun QrCodeScan(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavController
 ) {
     val context = LocalContext.current
     var hasCamPermission by remember {
@@ -67,27 +75,47 @@ fun QrCodeScan(
             Surface {
                 CameraPreview()
 
-                Icon(
-                    painter = painterResource(id = R.drawable.icon_absent),
-                    tint = Color.Unspecified,
-                    contentDescription = null
-                )
-
-                Text(
-                    text = stringResource(id = R.string.member_qr_time_inform_text),
-                    style = AttendanceTypography.body1
-                )
-
-                Text(
-                    text = stringResource(id = R.string.member_qr_late_inform_text),
-                    style = AttendanceTypography.body1
-                )
-
-                Icon(
-                    painter = painterResource(id = R.drawable.icon_qr_area),
-                    tint = Color.Unspecified,
-                    contentDescription = null
-                )
+                ConstraintLayout(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                ) {
+                    val (informText, closeIcon, qrAreaIcon) = createRefs()
+                    InformText(
+                        modifier.constrainAs(informText) {
+                            bottom.linkTo(qrAreaIcon.top, 40.dp)
+                            absoluteLeft.linkTo(parent.absoluteLeft)
+                            absoluteRight.linkTo(parent.absoluteRight)
+                        }
+                    )
+                    IconButton(
+                        modifier = modifier
+                            .constrainAs(closeIcon) {
+                                top.linkTo(parent.top, 14.dp)
+                                absoluteRight.linkTo(parent.absoluteRight, 14.dp)
+                            },
+                        onClick = {
+                            navController.popBackStack()
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.icon_close),
+                            tint = Color.Unspecified,
+                            contentDescription = null
+                        )
+                    }
+                    Icon(
+                        modifier = modifier.constrainAs(qrAreaIcon) {
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                            absoluteRight.linkTo(parent.absoluteRight)
+                            absoluteLeft.linkTo(parent.absoluteLeft)
+                        },
+                        painter = painterResource(id = R.drawable.icon_qr_area),
+                        tint = Color.Unspecified,
+                        contentDescription = null
+                    )
+                }
             }
         }
     }
@@ -97,7 +125,7 @@ fun QrCodeScan(
 fun CameraPreview() {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    var preview by remember { mutableStateOf<Preview?>(null) }
+    var preview by remember { mutableStateOf<androidx.camera.core.Preview?>(null) }
     var code = remember { mutableStateOf("") }
 
     Surface {
@@ -124,7 +152,7 @@ fun CameraPreview() {
                     ProcessCameraProvider.getInstance(context)
 
                 cameraProviderFuture.addListener({
-                    preview = Preview.Builder().build().also {
+                    preview = androidx.camera.core.Preview.Builder().build().also {
                         it.setSurfaceProvider(previewView.surfaceProvider)
                     }
                     val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
@@ -160,5 +188,33 @@ fun CameraPreview() {
                 }, ContextCompat.getMainExecutor(context))
             }
         )
+    }
+}
+
+@Composable
+fun InformText(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = stringResource(id = R.string.member_qr_time_inform_text),
+            color = Color.White,
+            style = AttendanceTypography.body1,
+        )
+
+        Text(
+            text = stringResource(id = R.string.member_qr_late_inform_text),
+            color = Color.White,
+            style = AttendanceTypography.body1
+        )
+    }
+}
+
+@Preview
+@Composable
+fun InformTextPreview() {
+    AttendanceTheme {
+        InformText()
     }
 }
