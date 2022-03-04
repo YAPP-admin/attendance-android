@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.theme.AttendanceTypography
+import com.yapp.common.theme.Gray_1200
 import com.yapp.common.yds.*
 import com.yapp.presentation.R
 
@@ -43,7 +44,7 @@ fun Team(
                 Text(
                     text = stringResource(R.string.member_signup_choose_team),
                     style = AttendanceTypography.h1,
-                    color = Color.Black
+                    color = Gray_1200
                 )
                 Spacer(modifier = Modifier.height(28.dp))
                 TeamOption(
@@ -102,7 +103,7 @@ fun TeamNumberOption(uiState: TeamContract.TeamUiState, onTeamNumberClicked: (In
         Text(
             text = stringResource(R.string.member_signup_choose_team_number),
             style = AttendanceTypography.h3,
-            color = Color.Black
+            color = Gray_1200
         )
         Spacer(modifier = Modifier.height(10.dp))
         Row() {
