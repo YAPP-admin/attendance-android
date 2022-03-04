@@ -23,20 +23,35 @@ import com.yapp.common.theme.*
 import com.yapp.common.theme.Gray_800
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSButtonLarge
+import com.yapp.common.yds.YDSPopupDialog
 import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R
+
 
 @Composable
 fun Name(
     viewModel: NameViewModel = hiltViewModel(),
+    onClickBackBtn: () -> Unit,
     onClickNextBtn: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    var showDialog by remember { mutableStateOf(false) }
 
     Scaffold(
-        topBar = { YDSAppBar(onClickBackButton = {}) },
+        topBar = { YDSAppBar(onClickBackButton = { showDialog = !showDialog }) },
         modifier = Modifier.fillMaxSize()
     ) {
+        if (showDialog) {
+            YDSPopupDialog(
+                title = stringResource(id = R.string.name_cancel_dialog_title),
+                content = stringResource(id = R.string.name_cancel_dialog_subtitle),
+                negativeButtonText = stringResource(id = R.string.name_cancel_dialog_no),
+                positiveButtonText = stringResource(id = R.string.name_cancel_dialog_cancel),
+                onClickPositiveButton = { onClickBackBtn() },
+                onClickNegativeButton = { showDialog = !showDialog },
+                onDismiss = { showDialog = !showDialog }
+            )
+        }
 
         Box(
             modifier = Modifier
@@ -45,9 +60,13 @@ fun Name(
         ) {
             Column() {
                 Title()
-                InputName()
+                InputName(
+                    name = uiState.name,
+                    onInputName = { viewModel.setEvent(NameContract.NameUiEvent.InputName(it)) }
+                )
             }
             NextButton(
+                name = uiState.name,
                 modifier = Modifier.align(Alignment.BottomCenter),
                 onClickNextBtn = onClickNextBtn
             )
@@ -78,12 +97,11 @@ fun Title() {
 }
 
 @Composable
-fun InputName() {
-    var text by remember { mutableStateOf("") }
+fun InputName(name: String, onInputName: (String) -> Unit) {
 
     BasicTextField(
-        value = text,
-        onValueChange = { text = it },
+        value = name,
+        onValueChange = { onInputName(it); Log.d("onValueChange", it) },
         singleLine = true,
         textStyle = TextStyle(
             fontWeight = FontWeight.Normal,
@@ -99,7 +117,7 @@ fun InputName() {
                     .background(color = Gray_200, shape = RoundedCornerShape(50.dp))
             ) {
                 Box(modifier = Modifier.padding(20.dp)) {
-                    if (text.isBlank()) {
+                    if (name.isBlank()) {
                         Text(
                             text = stringResource(id = R.string.name_example_hint),
                             color = Gray_400,
@@ -115,23 +133,13 @@ fun InputName() {
 }
 
 @Composable
-fun NextButton(modifier: Modifier, onClickNextBtn: () -> Unit) {
-    /* TODO : 키보드 따라서 버튼 이동*/
+fun NextButton(name: String, modifier: Modifier, onClickNextBtn: () -> Unit) {
     Column(modifier = modifier) {
         YDSButtonLarge(
             text = stringResource(id = R.string.name_next_button),
-            state = YdsButtonState.ENABLED,
+            state = if (name.isEmpty()) YdsButtonState.DISABLED else YdsButtonState.ENABLED,
             onClick = { onClickNextBtn() }
         )
         Spacer(modifier = Modifier.height(40.dp))
     }
-}
-
-@Preview(
-    widthDp = 320,
-)
-@Composable
-fun P() {
-
-
 }

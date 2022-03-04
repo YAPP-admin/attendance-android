@@ -99,7 +99,9 @@ fun AttendanceScreen(
         composable(
             route = AttendanceScreenRoute.NAME.route
         ) {
-            Name() { navController.navigate(AttendanceScreenRoute.MEMBER_MAIN.route) }
+            Name(
+                onClickBackBtn = { navController.navigate(AttendanceScreenRoute.LOGIN.route) },
+                onClickNextBtn = {})
         }
 
     }

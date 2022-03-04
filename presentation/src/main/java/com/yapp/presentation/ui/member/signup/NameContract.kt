@@ -11,5 +11,7 @@ class NameContract {
     ) : UiState
 
     sealed class NameSideEffect : UiSideEffect {}
-    sealed class NameUiEvent : UiEvent {}
+    sealed class NameUiEvent : UiEvent {
+        data class InputName(val name:String) : NameUiEvent()
+    }
 }

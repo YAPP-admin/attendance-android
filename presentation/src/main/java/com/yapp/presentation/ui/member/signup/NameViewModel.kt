@@ -1,5 +1,6 @@
 package com.yapp.presentation.ui.member.signup
 
+import android.util.Log
 import com.yapp.common.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -10,7 +11,12 @@ class NameViewModel @Inject constructor() :
         NameContract.NameUiState()
     ) {
     override fun handleEvent(event: NameContract.NameUiEvent) {
-        TODO("Not yet implemented")
+        when (event) {
+            is NameContract.NameUiEvent.InputName -> {
+                Log.d("#viewmodel", event.name)
+                setState { copy(name = event.name) }
+            }
+        }
     }
 
 }
