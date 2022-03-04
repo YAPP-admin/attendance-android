@@ -41,7 +41,11 @@
   <string name="help_basic_info_score_text">%s점</string>
   <string name="help_detail_info_title_text">읽어보세요!</string>
   <string name="help_detail_info_content1_text">출결 점수는 100점에서 시작해요</string>
-  <string name="help_detail_info_content2_text">지각 및 결석 사유는 하루 전까지 알려주세요</string>
+  <string name="help_detail_info_content2_start_text">지각 및 결석 사유는\ </string>
+  <string name="help_detail_info_content2_bold_text">하루 전까지</string>
+  <string name="help_detail_info_content2_end_text">\ 알려주세요</string>
   <string name="help_detail_info_content3_text">아르바이트, 인턴, 직장인 우대사항은 없어요</string>
-  <string name="help_detail_info_content4_text">점수가 70점 미만이 되는 회원은 운영진의 심의 하에 제명될 수 있으니 출결에 유의해주세요</string>
+  <string name="help_detail_info_content4_start_text">점수가 </string>
+  <string name="help_detail_info_content4_bold_text">\ 70점 미만</string>
+  <string name="help_detail_info_content4_end_text">이 되는 회원은 운영진의 심의 하에 제명될 수 있으니 출결에 유의해주세요</string>
 </resources>

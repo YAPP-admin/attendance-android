@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -102,15 +103,39 @@ private fun DetailInfo() {
             fontWeight = FontWeight.Bold,
             fontSize = 14.sp
         )
-        DetailInfoItem(stringResource(id = R.string.help_detail_info_content1_text))
-        DetailInfoItem(stringResource(id = R.string.help_detail_info_content2_text))
-        DetailInfoItem(stringResource(id = R.string.help_detail_info_content3_text))
-        DetailInfoItem(stringResource(id = R.string.help_detail_info_content4_text))
+        DetailInfoItem(buildAnnotatedString { append(stringResource(id = R.string.help_detail_info_content1_text)) })
+        DetailInfoItem(
+            buildAnnotatedString {
+                append(stringResource(id = R.string.help_detail_info_content2_start_text))
+                withStyle(
+                    style = SpanStyle(
+                        fontWeight = FontWeight.Bold,
+                        color = Gray_800
+                    )
+                ) {
+                    append(stringResource(id = R.string.help_detail_info_content2_bold_text))
+                }
+                append(stringResource(id = R.string.help_detail_info_content2_end_text))
+            })
+        DetailInfoItem(buildAnnotatedString { append(stringResource(id = R.string.help_detail_info_content3_text)) })
+        DetailInfoItem(
+            buildAnnotatedString {
+                append(stringResource(id = R.string.help_detail_info_content4_start_text))
+                withStyle(
+                    style = SpanStyle(
+                        fontWeight = FontWeight.Bold,
+                        color = Gray_800
+                    )
+                ) {
+                    append(stringResource(id = R.string.help_detail_info_content4_bold_text))
+                }
+                append(stringResource(id = R.string.help_detail_info_content4_end_text))
+            })
     }
 }
 
 @Composable
-private fun DetailInfoItem(text: String) {
+private fun DetailInfoItem(text: AnnotatedString) {
     Row {
         Text(   // 이미지로 교체 예정
             modifier = Modifier.padding(horizontal = 5.dp),
