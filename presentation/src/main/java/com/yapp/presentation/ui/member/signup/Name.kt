@@ -8,6 +8,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -21,11 +22,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.theme.*
 import com.yapp.common.theme.Gray_800
 import com.yapp.common.yds.YDSAppBar
+import com.yapp.common.yds.YDSButtonLarge
+import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R
 
 @Composable
 fun Name(
-    viewModel: NameViewModel = hiltViewModel()
+    viewModel: NameViewModel = hiltViewModel(),
+    onClickNextBtn: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -43,6 +47,10 @@ fun Name(
                 Title()
                 InputName()
             }
+            NextButton(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                onClickNextBtn = onClickNextBtn
+            )
         }
     }
 }
@@ -104,6 +112,19 @@ fun InputName() {
             }
         }
     )
+}
+
+@Composable
+fun NextButton(modifier: Modifier, onClickNextBtn: () -> Unit) {
+    /* TODO : 키보드 따라서 버튼 이동*/
+    Column(modifier = modifier) {
+        YDSButtonLarge(
+            text = stringResource(id = R.string.name_next_button),
+            state = YdsButtonState.ENABLED,
+            onClick = { onClickNextBtn() }
+        )
+        Spacer(modifier = Modifier.height(40.dp))
+    }
 }
 
 @Preview(

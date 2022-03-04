@@ -99,7 +99,8 @@ fun AttendanceScreen(
         composable(
             route = AttendanceScreenRoute.NAME.route
         ) {
-            Name() }
+            Name() { navController.navigate(AttendanceScreenRoute.MEMBER_MAIN.route) }
+        }
 
     }
 }
