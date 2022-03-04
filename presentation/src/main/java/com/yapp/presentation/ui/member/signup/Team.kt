@@ -16,6 +16,7 @@ import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.theme.Gray_1200
 import com.yapp.common.yds.*
 import com.yapp.presentation.R
+import com.yapp.presentation.model.TeamModel
 
 @Composable
 fun Team(
@@ -23,7 +24,6 @@ fun Team(
     navigateToMainScreen: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val TEAM_NOT_SELECTED = -1
 
     Scaffold(
         topBar = { YDSAppBar(onClickBackButton = {}) },
@@ -68,8 +68,8 @@ fun Team(
                     .padding(bottom = 40.dp)
                     .height(60.dp)
                     .align(Alignment.BottomCenter),
-                state = if ((uiState.selectedTeam.teamType.isNotEmpty()) and (uiState.selectedTeam.teamNum != TEAM_NOT_SELECTED)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                onClick = { if ((uiState.selectedTeam.teamType.isNotEmpty()) and (uiState.selectedTeam.teamNum != -1)) navigateToMainScreen() },
+                state = if ((uiState.selectedTeam.teamType.isNotEmpty()) and (uiState.selectedTeam.teamNum != TeamModel.TEAM_NOT_SELECTED)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+                onClick = { if ((uiState.selectedTeam.teamType.isNotEmpty()) and (uiState.selectedTeam.teamNum != TeamModel.TEAM_NOT_SELECTED)) navigateToMainScreen() },
             )
         }
     }

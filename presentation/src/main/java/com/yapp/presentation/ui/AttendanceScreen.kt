@@ -96,9 +96,9 @@ fun AttendanceScreen(
         ) {}
 
         composable(
-            route = "team"
+            route = AttendanceScreenRoute.SIGNUP_TEAM.route
         ) {
-            Team(navigateToMainScreen = { navController.navigate("member_main") })
+            Team(navigateToMainScreen = { navController.navigate(AttendanceScreenRoute.MEMBER_MAIN.route) })
         }
     }
 }
@@ -110,6 +110,7 @@ enum class AttendanceScreenRoute(val route: String) {
     MEMBER_MAIN("member-main"),
     ADMIN_MAIN("admin-main"),
     MEMBER_SETTING("member_setting"),
+    SIGNUP_TEAM("team"),
     HELP("help");
 }
 

@@ -7,4 +7,8 @@ data class TeamModel(
     val teamType: String = "",
     @SerializedName("count")
     val teamNum: Int = -1
-)
+) {
+    companion object {
+        const val TEAM_NOT_SELECTED = -1
+    }
+}
