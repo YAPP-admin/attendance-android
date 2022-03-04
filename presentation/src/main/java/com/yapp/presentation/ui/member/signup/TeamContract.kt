@@ -9,13 +9,13 @@ class TeamContract {
     data class TeamUiState(
         val isLoading: Boolean = false,
         val teams: List<TeamModel> = emptyList(),
-        val myTeam: TeamModel = TeamModel()
+        val selectedTeam: TeamModel = TeamModel()
     ) : UiState
 
     sealed class TeamSideEffect : UiSideEffect {}
 
     sealed class TeamUiEvent : UiEvent {
-        data class ChooseTeam(val team: String) : TeamUiEvent()
+        data class ChooseTeam(val teamType: String) : TeamUiEvent()
         data class ChooseTeamNumber(val teamNum: Int) : TeamUiEvent()
     }
 }

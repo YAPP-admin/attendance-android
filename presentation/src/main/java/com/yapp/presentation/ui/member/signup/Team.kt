@@ -48,12 +48,12 @@ fun Team(
                 Spacer(modifier = Modifier.height(28.dp))
                 TeamOption(
                     uiState,
-                    onTeamChoosed = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeam(it)) })
+                    onTeamTypeClicked = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeam(it)) })
                 Spacer(modifier = Modifier.height(52.dp))
-                if (uiState.myTeam.team.isNotEmpty()) {
+                if (uiState.selectedTeam.teamType.isNotEmpty()) {
                     TeamNumberOption(
                         uiState,
-                        onTeamNumberChoosed = {
+                        onTeamNumberClicked = {
                             viewModel.setEvent(
                                 TeamContract.TeamUiEvent.ChooseTeamNumber(it)
                             )
@@ -67,15 +67,15 @@ fun Team(
                     .padding(bottom = 40.dp)
                     .height(60.dp)
                     .align(Alignment.BottomCenter),
-                state = if ((uiState.myTeam.team.isNotEmpty()) and (uiState.myTeam.count != TEAM_NOT_SELECTED)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                onClick = { if ((uiState.myTeam.team.isNotEmpty()) and (uiState.myTeam.count != -1)) navigateToMainScreen() },
+                state = if ((uiState.selectedTeam.teamType.isNotEmpty()) and (uiState.selectedTeam.teamNum != TEAM_NOT_SELECTED)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+                onClick = { if ((uiState.selectedTeam.teamType.isNotEmpty()) and (uiState.selectedTeam.teamNum != -1)) navigateToMainScreen() },
             )
         }
     }
 }
 
 @Composable
-fun TeamOption(uiState: TeamContract.TeamUiState, onTeamChoosed: (String) -> Unit) {
+fun TeamOption(uiState: TeamContract.TeamUiState, onTeamTypeClicked: (String) -> Unit) {
     val rowNum = 2
     Column() {
         repeat(uiState.teams.size / rowNum) { row ->
@@ -83,10 +83,10 @@ fun TeamOption(uiState: TeamContract.TeamUiState, onTeamChoosed: (String) -> Uni
                 repeat(rowNum) { index ->
                     val team = uiState.teams[rowNum * row + index]
                     YDSChoiceButton(
-                        text = team.team,
+                        text = team.teamType,
                         modifier = Modifier.padding(end = 12.dp),
-                        state = if (uiState.myTeam.team == team.team) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                        onClick = { onTeamChoosed(team.team) }
+                        state = if (uiState.selectedTeam.teamType == team.teamType) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+                        onClick = { onTeamTypeClicked(team.teamType) }
                     )
                 }
             }
@@ -95,9 +95,8 @@ fun TeamOption(uiState: TeamContract.TeamUiState, onTeamChoosed: (String) -> Uni
 }
 
 @Composable
-fun TeamNumberOption(uiState: TeamContract.TeamUiState, onTeamNumberChoosed: (Int) -> Unit) {
-    val team = uiState.teams.filter { it.team == uiState.myTeam.team }
-    val rowNum = 2
+fun TeamNumberOption(uiState: TeamContract.TeamUiState, onTeamNumberClicked: (Int) -> Unit) {
+    val selectedTeamType = uiState.teams.filter { it.teamType == uiState.selectedTeam.teamType }
     Column(
     ) {
         Text(
@@ -107,12 +106,12 @@ fun TeamNumberOption(uiState: TeamContract.TeamUiState, onTeamNumberChoosed: (In
         )
         Spacer(modifier = Modifier.height(10.dp))
         Row() {
-            repeat(team[0].count) { teamNum ->
+            repeat(selectedTeamType[0].teamNum) { teamNum ->
                 YDSChoiceButton(
                     text = stringResource(R.string.member_signup_team_number, teamNum + 1),
                     modifier = Modifier.padding(end = 12.dp),
-                    state = if (uiState.myTeam.count == teamNum + 1) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                    onClick = { onTeamNumberChoosed(teamNum + 1) }
+                    state = if (uiState.selectedTeam.teamNum == teamNum + 1) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+                    onClick = { onTeamNumberClicked(teamNum + 1) }
                 )
             }
         }

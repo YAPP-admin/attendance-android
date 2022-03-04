@@ -25,10 +25,10 @@ class TeamViewModel @Inject constructor(firebaseRemoteConfig: FirebaseRemoteConf
     override fun handleEvent(event: TeamContract.TeamUiEvent) {
         when (event) {
             is TeamContract.TeamUiEvent.ChooseTeam -> {
-                setState { copy(myTeam = uiState.value.myTeam.copy(team = event.team)) }
+                setState { copy(selectedTeam = uiState.value.selectedTeam.copy(teamType = event.teamType)) }
             }
             is TeamContract.TeamUiEvent.ChooseTeamNumber -> {
-                setState { copy(myTeam = uiState.value.myTeam.copy(count = event.teamNum)) }
+                setState { copy(selectedTeam = uiState.value.selectedTeam.copy(teamNum = event.teamNum)) }
             }
         }
     }

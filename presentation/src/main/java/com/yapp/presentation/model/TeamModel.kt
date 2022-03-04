@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class TeamModel(
     @SerializedName("team")
-    val team: String = "",
-    val count: Int = -1
+    val teamType: String = "",
+    @SerializedName("count")
+    val teamNum: Int = -1
 )
