@@ -30,4 +30,18 @@
   <string name="member_setting_withdraw_dialog_positive_button">탈퇴합니다</string>
 
   <string name="help_title">도움말</string>
+  <string name="help_basic_info_yapp_text">YAPP</string>
+  <string name="help_basic_info_title_text">의 구성원은\n모든 세션에 필수적으로 참여해야 해요!</string>
+  <string name="help_basic_info_content_text">지각과 결석 규칙에 대해 알려드릴게요</string>
+  <string name="help_basic_info_type_text">의 경우</string>
+  <string name="help_basic_info_type_pre_notice_text">사전 통보</string>
+  <string name="help_basic_info_type_not_notice_text">미통보</string>
+  <string name="help_basic_info_tardy_text">지각</string>
+  <string name="help_basic_info_absent_text">결석</string>
+  <string name="help_basic_info_score_text">%s점</string>
+  <string name="help_detail_info_title_text">읽어보세요!</string>
+  <string name="help_detail_info_content1_text">출결 점수는 100점에서 시작해요</string>
+  <string name="help_detail_info_content2_text">지각 및 결석 사유는 하루 전까지 알려주세요</string>
+  <string name="help_detail_info_content3_text">아르바이트, 인턴, 직장인 우대사항은 없어요</string>
+  <string name="help_detail_info_content4_text">점수가 70점 미만이 되는 회원은 운영진의 심의 하에 제명될 수 있으니 출결에 유의해주세요</string>
 </resources>
