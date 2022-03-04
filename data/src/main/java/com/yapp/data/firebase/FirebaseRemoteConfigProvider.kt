@@ -33,33 +33,39 @@ class FirebaseRemoteConfigProvider @Inject constructor() : FirebaseRemoteConfig 
     }
 
     override suspend fun getMaginotlineTime(): Flow<String> {
-        return getValue(RemoteConfigData.MaginotlineTime)
-            .map { string -> string }
-    }
-
-    override suspend fun getSessionList(): Flow<List<SessionEntity>> {
-        return getValue(RemoteConfigData.SessionList)
-            .map { jsonString ->
-                Json.decodeFromString<List<SessionModel>>(jsonString)
-                    .map { model -> model.mapToEntity() }
-            }
-    }
-
-    override suspend fun getConfig(): Flow<ConfigEntity> {
-        return getValue(RemoteConfigData.Config)
-            .map { jsonString ->
-                Json.decodeFromString<ConfigModel>(jsonString)
-                    .mapToEntity()
-            }
-    }
-
-    override suspend fun <T> getValue(value: RemoteConfigData<T>): Flow<String> {
         return flow {
             val hadActive = firebaseRemoteConfig.fetchAndActivate().await()
 
             if (hadActive) {
-                emit(firebaseRemoteConfig.getString(value.key))
+                emit(firebaseRemoteConfig.getString(RemoteConfigData.MaginotlineTime.key))
             }
         }
     }
+
+    override suspend fun getSessionList(): Flow<List<SessionEntity>> {
+        return flow {
+            val hadActive = firebaseRemoteConfig.fetchAndActivate().await()
+
+            if (hadActive) {
+                emit(firebaseRemoteConfig.getString(RemoteConfigData.Config.key))
+            }
+        }.map { jsonString ->
+            Json.decodeFromString<List<SessionModel>>(jsonString)
+                .map { model -> model.mapToEntity() }
+        }
+    }
+
+    override suspend fun getConfig(): Flow<ConfigEntity> {
+        return flow {
+            val hadActive = firebaseRemoteConfig.fetchAndActivate().await()
+
+            if (hadActive) {
+                emit(firebaseRemoteConfig.getString(RemoteConfigData.Config.key))
+            }
+        }.map { jsonString ->
+            Json.decodeFromString<ConfigModel>(jsonString)
+                .mapToEntity()
+        }
+    }
+
 }

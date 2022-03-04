@@ -8,5 +8,4 @@ interface FirebaseRemoteConfig {
     suspend fun getMaginotlineTime(): Flow<String>
     suspend fun getSessionList(): Flow<List<SessionEntity>>
     suspend fun getConfig(): Flow<ConfigEntity>
-    suspend fun <T> getValue(value: RemoteConfigData<T>): Flow<Any>
 }

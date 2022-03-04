@@ -25,10 +25,10 @@ class LocalRepositoryImpl @Inject constructor(
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(DATASTORE_NAME)
 
-    override fun getMemberId(): Flow<Long> {
+    override fun getMemberId(): Flow<Long?> {
         return context.dataStore.data
             .map { preferences ->
-                preferences[MEMBER_ID] ?: 0L
+                preferences[MEMBER_ID]
             }
     }
 
