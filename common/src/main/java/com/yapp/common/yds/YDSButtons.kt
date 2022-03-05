@@ -30,7 +30,7 @@ fun YDSButtonLarge(
         colors = when (state) {
             YdsButtonState.DISABLED -> {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = Gray_200
+                    backgroundColor = Gray_400
                 )
             }
             YdsButtonState.ENABLED,
