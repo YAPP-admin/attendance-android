@@ -75,9 +75,9 @@ fun AttendanceScreen(
         composable(
             route = AttendanceScreenRoute.QR_AUTH.route
         ) {
-            QrCodeScanner(
-                navController = navController
-            )
+            QrCodeScanner {
+                navController.popBackStack()
+            }
         }
 
         composable(

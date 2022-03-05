@@ -15,6 +15,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -32,17 +33,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.navigation.NavController
-import com.google.common.util.concurrent.ListenableFuture
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.presentation.R
-import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 @Composable
 fun QrCodeScanner(
     modifier: Modifier = Modifier,
-    navController: NavController
+    moveBackToPreviousScreen: () -> Unit
 ) {
     val context = LocalContext.current
     var hasCamPermission by remember {
@@ -73,9 +71,11 @@ fun QrCodeScanner(
                 CameraPreview()
                 ScannerDecoration(
                     modifier = modifier,
-                    navController = navController
+                    moveBackToPreviousScreen = moveBackToPreviousScreen
                 )
             }
+        } else {
+            Log.d("Permission", "no permission")
         }
     }
 }
@@ -85,13 +85,13 @@ fun CameraPreview() {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     var preview by remember { mutableStateOf<Preview?>(null) }
-    var code = remember { mutableStateOf("") }
+    var code by remember { mutableStateOf("") }
 
     Surface {
         AndroidView(
             factory = { androidViewContext ->
                 PreviewView(androidViewContext).apply {
-                    this.scaleType = PreviewView.ScaleType.FILL_CENTER
+                    scaleType = PreviewView.ScaleType.FILL_CENTER
                     layoutParams = ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -99,38 +99,44 @@ fun CameraPreview() {
                     implementationMode = PreviewView.ImplementationMode.COMPATIBLE
                 }
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(),
+            modifier = Modifier.fillMaxSize(),
             update = { previewView ->
                 val cameraSelector = CameraSelector.Builder()
                     .requireLensFacing(CameraSelector.LENS_FACING_BACK)
                     .build()
-                val cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
-                val cameraProviderFuture: ListenableFuture<ProcessCameraProvider> =
-                    ProcessCameraProvider.getInstance(context)
+                val cameraExecutor = Executors.newSingleThreadExecutor()
+                val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
 
                 cameraProviderFuture.addListener({
-                    preview = androidx.camera.core.Preview.Builder().build().also {
-                        it.setSurfaceProvider(previewView.surfaceProvider)
+                    preview = Preview.Builder().build().apply {
+                        setSurfaceProvider(previewView.surfaceProvider)
                     }
-                    val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+                    val cameraProvider = cameraProviderFuture.get()
                     val barcodeAnalyzer =
-                        QrCodeAnalyzer { qrCodes ->
-                            qrCodes.forEach { qrCode ->
-                                qrCode.rawValue?.let { qrCodeValue ->
-                                    Log.d("QrCodeAnalyzer", "QrCodeAnalyzer Result: $qrCodeValue")
-                                    //Log.d("QrCodeAnalyzer", "Points: ${qrCode.cornerPoints}")
-                                    code.value = qrCodeValue
-                                    Toast.makeText(context, qrCodeValue, Toast.LENGTH_SHORT).show()
+                        QrCodeAnalyzer(
+                            onQrCodeDetected = { qrCodes ->
+                                qrCodes.forEach { qrCode ->
+                                    qrCode.rawValue?.let { qrCodeValue ->
+                                        // todo: qrCode.cornerPoints 범위 내에서 인식된 것인지 확인
+                                        // todo: code 확인해서 DB 반영
+                                        code = qrCodeValue
+                                        Toast.makeText(context, code, Toast.LENGTH_SHORT).show()
+                                    }
                                 }
+                            },
+                            onFailToAnalysis = { exception ->
+                                Toast.makeText(
+                                    context,
+                                    "문제가 발생했습니다 코드를 다시 스캔해 주세요\n$exception",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
-                        }
-                    val imageAnalysis: ImageAnalysis = ImageAnalysis.Builder()
+                        )
+                    val imageAnalysis = ImageAnalysis.Builder()
                         .setBackpressureStrategy(STRATEGY_KEEP_ONLY_LATEST)
                         .build()
-                        .also {
-                            it.setAnalyzer(cameraExecutor, barcodeAnalyzer)
+                        .apply {
+                            setAnalyzer(cameraExecutor, barcodeAnalyzer)
                         }
 
                     try {
@@ -141,8 +147,8 @@ fun CameraPreview() {
                             preview,
                             imageAnalysis
                         )
-                    } catch (e: Exception) {
-                        Log.d("QrCodeAnalyzer", "CameraPreview: ${e.printStackTrace()}")
+                    } catch (exception: Exception) {
+                        Toast.makeText(context, "문제가 발생했습니다\n$exception", Toast.LENGTH_SHORT).show()
                     }
                 }, ContextCompat.getMainExecutor(context))
             }
@@ -153,7 +159,7 @@ fun CameraPreview() {
 @Composable
 fun ScannerDecoration(
     modifier: Modifier = Modifier,
-    navController: NavController
+    moveBackToPreviousScreen: () -> Unit
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -174,9 +180,7 @@ fun ScannerDecoration(
                     top.linkTo(parent.top, 14.dp)
                     absoluteRight.linkTo(parent.absoluteRight, 14.dp)
                 },
-            onClick = {
-                navController.popBackStack()
-            }
+            onClick = moveBackToPreviousScreen
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.icon_close),

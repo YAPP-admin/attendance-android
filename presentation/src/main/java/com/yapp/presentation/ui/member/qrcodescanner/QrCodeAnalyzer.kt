@@ -1,7 +1,6 @@
 package com.yapp.presentation.ui.member.qrcodescanner
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
@@ -12,15 +11,16 @@ import java.util.concurrent.TimeUnit
 
 class QrCodeAnalyzer(
     private val onQrCodeDetected: (barcodes: List<Barcode>) -> Unit,
+    private val onFailToAnalysis: (exception: Exception) -> Unit
 ) : ImageAnalysis.Analyzer {
+    private val SCAN_DURATION = 3L
     private var lastAnalyzedTimeStamp = 0L
 
     @SuppressLint("UnsafeOptInUsageError")
     override fun analyze(imageProxy: ImageProxy) {
         val currentTimeStamp = System.currentTimeMillis()
-        if (currentTimeStamp - lastAnalyzedTimeStamp >= TimeUnit.SECONDS.toMillis(1)) {
+        if (currentTimeStamp - lastAnalyzedTimeStamp >= TimeUnit.SECONDS.toMillis(SCAN_DURATION)) {
             imageProxy.image?.let { imageToAnalyze ->
-                //imageToAnalyze.cropRect = readableRectArea
                 val options = BarcodeScannerOptions.Builder()
                     .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
                     .build()
@@ -32,12 +32,10 @@ class QrCodeAnalyzer(
                     .addOnSuccessListener { qrCodes ->
                         if (qrCodes.isNotEmpty()) {
                             onQrCodeDetected(qrCodes)
-                        } else {
-                            Log.d("QrCodeAnalyzer", "QrCodeAnalyzer: No barcode Scanned")
                         }
                     }
                     .addOnFailureListener { exception ->
-                        Log.d("QrCodeAnalyzer", "QrCodeAnalyzer: exception $exception")
+                        onFailToAnalysis(exception)
                     }
                     .addOnCompleteListener {
                         imageProxy.close()
