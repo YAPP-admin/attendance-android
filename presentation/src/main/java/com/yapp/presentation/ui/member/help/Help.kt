@@ -207,7 +207,7 @@ fun RowScope.ScoreRuleCell(
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .background(Gray_200)
-                .padding(11.5.dp),
+                .padding(12.dp),
             text = topText,
             color = Gray_600,
             textAlign = TextAlign.Center,
