@@ -7,12 +7,22 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import java.nio.channels.Channel
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class QrCodeAnalyzer(
-    private val onQrCodeDetected: (barcodes: List<Barcode>) -> Unit,
-    private val onFailToAnalysis: (exception: Exception) -> Unit
-) : ImageAnalysis.Analyzer {
+interface QrCodeAnalyzerInterface
+
+object QrStateProvider {
+    @OptIn(ObsoleteCoroutinesApi::class)
+    internal val qrState = ConflatedBroadcastChannel<Boolean>()
+}
+
+class QrCodeAnalyzer @Inject constructor(
+    val qrStateProvider: QrStateProvider
+): ImageAnalysis.Analyzer, QrCodeAnalyzerInterface {
     private val SCAN_DURATION = 3L
     private var lastAnalyzedTimeStamp = 0L
 
@@ -31,11 +41,13 @@ class QrCodeAnalyzer(
                 qrCodeScanner.process(imageToProcess)
                     .addOnSuccessListener { qrCodes ->
                         if (qrCodes.isNotEmpty()) {
-                            onQrCodeDetected(qrCodes)
+                            qrStateProvider.qrState.send(true)
+                         //   onQrCodeDetected(qrCodes)
                         }
                     }
                     .addOnFailureListener { exception ->
-                        onFailToAnalysis(exception)
+                        qrStateProvider.qrState.send(false)
+                        //   onFailToAnalysis(exception)
                     }
                     .addOnCompleteListener {
                         imageProxy.close()

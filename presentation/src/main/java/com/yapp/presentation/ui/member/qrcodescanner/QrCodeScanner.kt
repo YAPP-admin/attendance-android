@@ -40,7 +40,8 @@ import java.util.concurrent.Executors
 @Composable
 fun QrCodeScanner(
     modifier: Modifier = Modifier,
-    moveBackToPreviousScreen: () -> Unit
+    moveBackToPreviousScreen: () -> Unit,
+
 ) {
     val context = LocalContext.current
     var hasCamPermission by remember {
