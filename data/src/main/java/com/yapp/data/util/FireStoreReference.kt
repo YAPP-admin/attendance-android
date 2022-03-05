@@ -1,15 +1,14 @@
 package com.yapp.data.util
 
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 
 
-fun FirebaseFirestore.memberRef(memberId: Long): DocumentReference {
+fun FirebaseFirestore.memberRef(): CollectionReference {
     return this.collection("member")
-        .document(memberId.toString())
 }
 
-fun FirebaseFirestore.adminRef(memberId: Long): DocumentReference {
+fun FirebaseFirestore.adminRef(): CollectionReference {
     return this.collection("admin")
-        .document(memberId.toString())
 }

@@ -16,10 +16,11 @@ class MemberRepositoryImpl @Inject constructor(
     private val fireStore: FirebaseFirestore
 ) : MemberRepository {
 
-    override fun setMember(memberEntity: MemberEntity, generation: String): Flow<Boolean> {
+    override fun setMember(memberEntity: MemberEntity): Flow<Boolean> {
         return flow {
             runCatching {
-                fireStore.memberRef(memberEntity.id!!)
+                fireStore.memberRef()
+                    .document(memberEntity.id.toString())
                     .set(memberEntity)
                     .await()
             }.fold(
@@ -33,10 +34,11 @@ class MemberRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getMember(id: Long, generation: String): Flow<MemberEntity?> {
+    override fun getMember(id: Long): Flow<MemberEntity?> {
         return flow {
             runCatching {
-                fireStore.memberRef(id)
+                fireStore.memberRef()
+                    .document(id.toString())
                     .get()
                     .await()
             }.fold(
