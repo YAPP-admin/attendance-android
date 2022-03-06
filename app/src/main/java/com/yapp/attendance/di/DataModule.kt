@@ -5,9 +5,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.yapp.data.repository.AdminRepositoryImpl
 import com.yapp.data.repository.LocalRepositoryImpl
 import com.yapp.data.repository.MemberRepositoryImpl
+import com.yapp.data.repository.TeamRepositoryImpl
 import com.yapp.domain.repository.AdminRepository
 import com.yapp.domain.repository.LocalRepository
 import com.yapp.domain.repository.MemberRepository
+import com.yapp.domain.repository.TeamRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -47,6 +49,14 @@ object DataModule {
         fireStore: FirebaseFirestore
     ): AdminRepository {
         return AdminRepositoryImpl(fireStore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTeamRepository(
+        fireStore: FirebaseFirestore
+    ) : TeamRepository {
+        return TeamRepositoryImpl(fireStore)
     }
 
 }

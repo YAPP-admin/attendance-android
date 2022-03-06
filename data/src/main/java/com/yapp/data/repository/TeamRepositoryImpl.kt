@@ -15,6 +15,7 @@ import javax.inject.Inject
 class TeamRepositoryImpl @Inject constructor(
     private val fireStore: FirebaseFirestore
 ) : TeamRepository {
+
     override fun getTeamMembers(team: String): Flow<List<MemberEntity>> {
         return flow {
             val documents = fireStore.memberRef()
