@@ -16,7 +16,7 @@ import kotlinx.serialization.Serializable
 data class AttendanceModel(
     @SerialName("session_id")
     val sessionId: Int? = -1,
-    val type: AttendanceTypeModel = (AttendanceTypeModel(0, "df"))
+    val type: AttendanceTypeModel = (AttendanceTypeModel(0, "EMPTY"))
 ) {
 
     companion object {

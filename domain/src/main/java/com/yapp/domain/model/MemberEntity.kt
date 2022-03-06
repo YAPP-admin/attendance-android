@@ -1,10 +1,12 @@
 package com.yapp.domain.model
 
+import com.yapp.domain.model.types.PositionTypeEntity
+
 class MemberEntity(
     val id: Long,
     val name: String,
-    val position: String,
-    val team: String,
+    val position: PositionTypeEntity,
+    val team: TeamEntity,
     val isAdmin: Boolean,
     val attendances: List<AttendanceEntity>
 )

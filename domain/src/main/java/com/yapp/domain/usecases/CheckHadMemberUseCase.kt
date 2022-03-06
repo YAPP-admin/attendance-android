@@ -4,6 +4,8 @@ import com.yapp.domain.model.AttendanceEntity
 import com.yapp.domain.model.AttendanceEntity.Companion.MAX_SESSION
 import com.yapp.domain.model.AttendanceTypeEntity
 import com.yapp.domain.model.MemberEntity
+import com.yapp.domain.model.TeamEntity
+import com.yapp.domain.model.types.PositionTypeEntity
 import com.yapp.domain.repository.AdminRepository
 import com.yapp.domain.repository.LocalRepository
 import com.yapp.domain.repository.MemberRepository
@@ -56,8 +58,8 @@ class SignUpUseCase @Inject constructor(
     class Params(
         val id: Long,
         val name: String,
-        val position: String,
-        val team: String
+        val position: PositionTypeEntity,
+        val team: TeamEntity
     )
 
 }

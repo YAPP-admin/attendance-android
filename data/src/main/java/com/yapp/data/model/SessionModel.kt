@@ -8,18 +8,18 @@ import kotlinx.serialization.Serializable
 @Serializable
 class SessionModel(
     @SerialName("session_id")
-    val sessionId: Int?,
-    val title: String?,
-    val date: String?,
-    val description: String?
+    val sessionId: Int? = null,
+    val title: String? = null,
+    val date: String? = null,
+    val description: String? = null
 ) {
     companion object {
         fun SessionModel.mapToEntity(): SessionEntity {
             return SessionEntity(
-                sessionId = sessionId ?: -1,
-                title = title ?: "",
-                date = date ?: "",
-                description = description ?: ""
+                sessionId = sessionId!!,
+                title = title!!,
+                date = date!!,
+                description = description!!
             )
         }
     }

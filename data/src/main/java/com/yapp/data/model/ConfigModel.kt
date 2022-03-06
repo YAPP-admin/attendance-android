@@ -7,18 +7,18 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class ConfigModel(
-    val generation: Int?,
+    val generation: Int? = null,
     @SerialName("session_count")
-    val sessionCount: Int?,
+    val sessionCount: Int? = null,
     @SerialName("admin_password")
-    val adminPassword: String?
+    val adminPassword: String? = null
 ) {
     companion object {
         fun ConfigModel.mapToEntity(): ConfigEntity {
             return ConfigEntity(
-                generation = generation ?: -1,
-                sessionCount = sessionCount ?: -1,
-                adminPassword = adminPassword ?: ""
+                generation = generation!!,
+                sessionCount = sessionCount!!,
+                adminPassword = adminPassword!!
             )
         }
     }

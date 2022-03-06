@@ -1,9 +1,10 @@
 package com.yapp.domain.model
 
+import com.yapp.domain.model.types.PlatformTypeEntity
+
 
 typealias MemberId = Long
-class TeamEntity(
-    val platform: String,
-    val teamNumber: String,
-    val members: List<MemberId>
+data class TeamEntity(
+    val platform: PlatformTypeEntity,
+    val teamNumber: String
 )
