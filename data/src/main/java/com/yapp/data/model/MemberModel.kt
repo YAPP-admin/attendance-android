@@ -1,13 +1,10 @@
 package com.yapp.data.model
 
 import com.yapp.data.model.AttendanceModel.Companion.mapToEntity
-import com.yapp.data.model.AttendanceTypeModel.Companion.mapToEntity
-import com.yapp.data.model.MemberModel.Companion.mapTo
 import com.yapp.data.model.TeamModel.Companion.mapToEntity
 import com.yapp.data.model.types.PositionTypeModel
 import com.yapp.data.model.types.PositionTypeModel.Companion.mapToEntity
 import com.yapp.domain.model.MemberEntity
-import com.yapp.domain.model.TeamEntity
 
 
 class MemberModel(

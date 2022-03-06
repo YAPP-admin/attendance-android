@@ -8,7 +8,7 @@ enum class PositionTypeModel {
 
     companion object {
         fun PositionTypeModel.mapToEntity(): PositionTypeEntity {
-            return when(this) {
+            return when (this) {
                 FRONTEND -> PositionTypeEntity.FRONTEND
                 BACKEND -> PositionTypeEntity.BACKEND
                 DESIGNER -> PositionTypeEntity.DESIGNER

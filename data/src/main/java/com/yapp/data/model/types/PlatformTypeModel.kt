@@ -3,7 +3,7 @@ package com.yapp.data.model.types
 import com.yapp.domain.model.types.PlatformTypeEntity
 
 
-enum class PlatformTypeModel{
+enum class PlatformTypeModel {
     ANDROID, IOS, WEB;
 
     companion object {
