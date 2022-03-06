@@ -15,15 +15,15 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class AttendanceModel(
     @SerialName("session_id")
-    val sessionId: Int? = -1,
-    val type: AttendanceTypeModel = (AttendanceTypeModel(0, "EMPTY"))
+    val sessionId: Int? = null,
+    val type: AttendanceTypeModel? = null
 ) {
 
     companion object {
         fun AttendanceModel.mapToEntity(): AttendanceEntity {
             return AttendanceEntity(
                 sessionId = this.sessionId!!,
-                type = this.type.mapToEntity()
+                type = this.type!!.mapToEntity()
             )
         }
     }
