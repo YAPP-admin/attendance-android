@@ -13,7 +13,7 @@ class AdminRepositoryImpl @Inject constructor(
     private val fireStore: FirebaseFirestore
 ) : AdminRepository {
 
-    override suspend fun checkMemberIsAdmin(memberId: Long): Flow<Boolean> {
+    override suspend fun checkAdmin(memberId: Long): Flow<Boolean> {
         return flow {
             val document = fireStore.adminRef()
                 .document(memberId.toString())
