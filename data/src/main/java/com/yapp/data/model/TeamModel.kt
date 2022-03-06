@@ -12,7 +12,7 @@ typealias MemberId = Long
 @Serializable
 data class TeamModel(
     val platform: PlatformTypeModel? = null,
-    @SerialName("serial_name")
+    @SerialName("team_number")
     val teamNumber: String? = null
 ) {
     companion object {
