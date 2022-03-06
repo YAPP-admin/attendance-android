@@ -32,10 +32,10 @@ class LocalRepositoryImpl @Inject constructor(
             }
     }
 
-    override fun setMemberId(id: Long): Flow<Boolean> {
+    override fun setMemberId(memberId: Long): Flow<Boolean> {
         return flow {
             context.dataStore.edit { preferences ->
-                preferences[MEMBER_ID] = id
+                preferences[MEMBER_ID] = memberId
             }
 
             emit(true)

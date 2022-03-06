@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface LocalRepository {
     fun getMemberId(): Flow<Long?>
-    fun setMemberId(id: Long): Flow<Boolean>
+    fun setMemberId(memberId: Long): Flow<Boolean>
 }
