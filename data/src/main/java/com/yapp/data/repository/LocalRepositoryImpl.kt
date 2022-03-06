@@ -34,18 +34,11 @@ class LocalRepositoryImpl @Inject constructor(
 
     override fun setMemberId(id: Long): Flow<Boolean> {
         return flow {
-            runCatching {
-                context.dataStore.edit { preferences ->
-                    preferences[MEMBER_ID] = id
-                }
-            }.fold(
-                onSuccess = {
-                    emit(true)
-                },
-                onFailure = {
-                    emit(false)
-                }
-            )
+            context.dataStore.edit { preferences ->
+                preferences[MEMBER_ID] = id
+            }
+
+            emit(true)
         }
     }
 }

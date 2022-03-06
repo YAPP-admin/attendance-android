@@ -15,43 +15,27 @@ class AdminRepositoryImpl @Inject constructor(
 
     override suspend fun checkMemberIsAdmin(memberId: Long): Flow<Boolean> {
         return flow {
-            runCatching {
-                fireStore.adminRef()
-                    .document(memberId.toString())
-                    .get()
-                    .await()
-            }.fold(
-                onSuccess = { document ->
-                    if (document.exists()) {
-                        emit(true)
-                    } else {
-                        emit(false)
-                        return@flow
-                    }
-                },
-                onFailure = {
-                    emit(false)
-                    return@flow
-                }
-            )
+            val document = fireStore.adminRef()
+                .document(memberId.toString())
+                .get()
+                .await()
+
+            if (document.exists()) {
+                emit(true)
+            } else {
+                emit(false)
+            }
         }
     }
 
     override suspend fun setAdmin(memberId: Long): Flow<Boolean> {
         return flow {
-            runCatching {
-                fireStore.adminRef()
-                    .document(memberId.toString())
-                    .set(memberId)
-                    .await()
-            }.fold(
-                onSuccess = {
-                    emit(true)
-                },
-                onFailure = {
-                    emit(false)
-                }
-            )
+            fireStore.adminRef()
+                .document(memberId.toString())
+                .set(memberId)
+                .await()
+
+            emit(true)
         }
     }
 }
