@@ -1,8 +1,7 @@
 package com.yapp.presentation.model
 
-import com.yapp.domain.model.ConfigEntity
 import com.yapp.domain.model.MemberEntity
-import com.yapp.presentation.model.AttendanceType.Companion.mapTo
+import com.yapp.presentation.model.Attendance.Companion.mapTo
 import com.yapp.presentation.model.collections.AttendanceList
 
 

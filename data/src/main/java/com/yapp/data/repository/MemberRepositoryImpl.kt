@@ -4,7 +4,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.yapp.data.model.MemberModel
 import com.yapp.data.model.MemberModel.Companion.mapTo
 import com.yapp.data.util.memberRef
-import com.yapp.domain.model.AttendanceTypeEntity
 import com.yapp.domain.model.MemberEntity
 import com.yapp.domain.repository.MemberRepository
 import kotlinx.coroutines.flow.*
@@ -42,4 +41,5 @@ class MemberRepositoryImpl @Inject constructor(
             return@flow
         }
     }
+
 }

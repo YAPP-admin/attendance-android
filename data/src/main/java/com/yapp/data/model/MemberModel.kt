@@ -1,6 +1,7 @@
 package com.yapp.data.model
 
 import com.yapp.data.model.AttendanceModel.Companion.mapToEntity
+import com.yapp.data.model.AttendanceTypeModel.Companion.mapToEntity
 import com.yapp.domain.model.MemberEntity
 
 

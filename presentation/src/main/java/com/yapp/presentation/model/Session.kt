@@ -1,8 +1,6 @@
 package com.yapp.presentation.model
 
-import com.yapp.domain.model.MemberEntity
 import com.yapp.domain.model.SessionEntity
-import com.yapp.presentation.model.AttendanceType.Companion.mapTo
 
 
 data class Session(

@@ -1,27 +1,25 @@
 package com.yapp.presentation.model.collections
 
-import com.yapp.domain.model.AttendanceTypeEntity
-import com.yapp.presentation.model.AttendanceType
-import com.yapp.presentation.model.AttendanceType.Companion.mapTo
+import com.yapp.presentation.model.Attendance
 
 
 class AttendanceList private constructor(
-    private val value: List<AttendanceType>
+    private val value: List<Attendance>
 ) {
     companion object {
-        fun of(attendances: List<AttendanceType>): AttendanceList {
+        fun of(attendances: List<Attendance>): AttendanceList {
             return AttendanceList(attendances.toList())
         }
 
         const val MAX_SCORE = 100
     }
 
-    fun getTodayAttendance(sessionId: Int): AttendanceType {
+    fun getTodayAttendance(sessionId: Int): Attendance {
         return value[sessionId]
     }
 
     fun getTotalAttendanceScore(): Int {
-        return MAX_SCORE - value.sumOf { it.point }
+        return MAX_SCORE - value.sumOf { it.attendanceType.point }
     }
 
 }

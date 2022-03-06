@@ -6,5 +6,5 @@ class MemberEntity(
     val position: String,
     val team: String,
     val isAdmin: Boolean,
-    val attendances: List<AttendanceTypeEntity>
+    val attendances: List<AttendanceEntity>
 )
