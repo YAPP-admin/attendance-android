@@ -4,7 +4,11 @@ package com.yapp.domain.model
 data class AttendanceEntity(
     val sessionId: Int,
     val type: AttendanceTypeEntity
-)
+) {
+    companion object {
+        const val MAX_SESSION = 20
+    }
+}
 
 sealed class AttendanceTypeEntity(val point: Int, val text: String) {
     object Absent : AttendanceTypeEntity(point = -20, text = "미통보 결석")
