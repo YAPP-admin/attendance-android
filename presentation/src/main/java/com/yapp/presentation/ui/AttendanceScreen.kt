@@ -97,10 +97,10 @@ fun AttendanceScreen(
         }
 
         composable(
-            route = AttendanceScreenRoute.NAME.route
+            route = AttendanceScreenRoute.SIGNUP_NAME.route
         ) {
             Name(
-                onClickBackBtn = { navController.navigate(AttendanceScreenRoute.LOGIN.route) },
+                onClickBackBtn = { navController.popBackStack() },
                 onClickNextBtn = {})
         }
 
@@ -114,7 +114,7 @@ enum class AttendanceScreenRoute(val route: String) {
     MEMBER_MAIN("member-main"),
     ADMIN_MAIN("admin-main"),
     MEMBER_SETTING("member_setting"),
-    NAME("name"),
+    SIGNUP_NAME("name"),
     HELP("help");
 }
 
