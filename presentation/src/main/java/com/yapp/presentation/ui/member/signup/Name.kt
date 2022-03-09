@@ -1,6 +1,5 @@
 package com.yapp.presentation.ui.member.signup
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,11 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.theme.*
 import com.yapp.common.theme.Gray_800
@@ -78,8 +73,6 @@ fun Name(
 fun Title() {
     Column() {
 
-        var text by remember { mutableStateOf("") }
-
         Spacer(modifier = Modifier.height(32.dp))
         Text(
             text = stringResource(id = R.string.name_title),
@@ -101,14 +94,9 @@ fun InputName(name: String, onInputName: (String) -> Unit) {
 
     BasicTextField(
         value = name,
-        onValueChange = { onInputName(it); Log.d("onValueChange", it) },
+        onValueChange = { onInputName(it);},
         singleLine = true,
-        textStyle = TextStyle(
-            fontWeight = FontWeight.Normal,
-            fontSize = 16.sp,
-            letterSpacing = 0.5.sp,
-            color = Gray_800
-        ),
+        textStyle = AttendanceTypography.body2.copy(color = Gray_800),
         cursorBrush = SolidColor(Yapp_Orange),
         decorationBox = { innerTextField ->
             Column(
