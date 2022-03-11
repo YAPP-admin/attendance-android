@@ -9,6 +9,7 @@ import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
 import androidx.compose.runtime.CompositionLocalProvider
 import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.util.KakaoTalkLoginProvider
+import com.yapp.common.util.KeyboardVisibilityUtils
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -19,6 +20,7 @@ class MainActivity : ComponentActivity() {
 
     @OptIn(ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContent {
             AttendanceTheme {

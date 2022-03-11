@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yapp.common.theme.Yapp_Orange
 import com.yapp.common.util.KakaoTalkLoginProvider
+import com.yapp.common.util.KeyboardVisibilityUtils
 import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.login.Login
 import com.yapp.presentation.ui.member.main.MemberMain
@@ -23,7 +24,7 @@ fun AttendanceScreen(
 ) {
     NavHost(
         navController = navController,
-        startDestination = AttendanceScreenRoute.SPLASH.route
+        startDestination = AttendanceScreenRoute.SIGNUP_NAME.route
     ) {
 
         composable(
