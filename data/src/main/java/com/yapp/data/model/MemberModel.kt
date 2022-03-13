@@ -7,7 +7,7 @@ import com.yapp.data.model.types.PositionTypeModel.Companion.mapToEntity
 import com.yapp.domain.model.MemberEntity
 
 
-class MemberModel(
+data class MemberModel(
     val id: Long? = null,
     val name: String? = null,
     val position: PositionTypeModel? = null,

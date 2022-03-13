@@ -34,10 +34,10 @@ class MemberRepositoryImpl @Inject constructor(
 
             if (document.exists()) {
                 emit(document.toObject(MemberModel::class.java)?.mapTo())
+                return@flow
             }
 
             emit(null)
-            return@flow
         }
     }
 

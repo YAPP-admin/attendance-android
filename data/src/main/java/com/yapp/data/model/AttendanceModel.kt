@@ -31,7 +31,7 @@ data class AttendanceModel(
 }
 
 @Serializable
-data class AttendanceTypeModel(val point: Int = 0, val text: String = "EMPTY") {
+data class AttendanceTypeModel(val point: Int = 0, val text: String = EMPTY) {
 
     companion object {
         fun AttendanceTypeModel.mapToEntity(): AttendanceTypeEntity {
@@ -42,7 +42,7 @@ data class AttendanceTypeModel(val point: Int = 0, val text: String = "EMPTY") {
                 LATE -> AttendanceTypeEntity.Late
                 REPORTED_LATE -> AttendanceTypeEntity.ReportedLate
                 EMPTY -> AttendanceTypeEntity.Empty
-                else -> error("알수 없는 AttendanceType입니다.")
+                else -> error("알 수 없는 AttendanceType입니다.")
             }
         }
     }

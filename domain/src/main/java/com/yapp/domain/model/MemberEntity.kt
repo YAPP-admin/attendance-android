@@ -2,7 +2,7 @@ package com.yapp.domain.model
 
 import com.yapp.domain.model.types.PositionTypeEntity
 
-class MemberEntity(
+data class MemberEntity(
     val id: Long,
     val name: String,
     val position: PositionTypeEntity,

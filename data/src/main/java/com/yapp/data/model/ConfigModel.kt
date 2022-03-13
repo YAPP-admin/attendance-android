@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-class ConfigModel(
+data class ConfigModel(
     val generation: Int? = null,
     @SerialName("session_count")
     val sessionCount: Int? = null,

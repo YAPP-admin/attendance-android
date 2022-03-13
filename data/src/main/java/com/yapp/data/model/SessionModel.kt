@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-class SessionModel(
+data class SessionModel(
     @SerialName("session_id")
     val sessionId: Int? = null,
     val title: String? = null,

@@ -36,9 +36,9 @@ class CheckLocalMemberUseCase @Inject constructor(
 class SignUpUseCase @Inject constructor(
     private val memberRepository: MemberRepository,
     private val adminRepository: AdminRepository
-) : BaseUseCase<Flow<TaskResult<Boolean>>, SignUpUseCase.Params>() {
+) : BaseUseCase<Flow<TaskResult<Unit>>, SignUpUseCase.Params>() {
 
-    override suspend fun invoke(params: Params): Flow<TaskResult<Boolean>> {
+    override suspend fun invoke(params: Params): Flow<TaskResult<Unit>> {
         return adminRepository.checkAdmin(params.id)
             .flatMapLatest { isAdmin ->
                 val member = MemberEntity(

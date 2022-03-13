@@ -1,7 +1,7 @@
 package com.yapp.domain.model
 
 
-class SessionEntity(
+data class SessionEntity(
     val sessionId: Int,
     val title: String,
     val date: String,

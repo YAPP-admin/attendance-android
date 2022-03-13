@@ -20,11 +20,7 @@ class AdminRepositoryImpl @Inject constructor(
                 .get()
                 .await()
 
-            if (document.exists()) {
-                emit(true)
-            } else {
-                emit(false)
-            }
+            emit(document.exists())
         }
     }
 

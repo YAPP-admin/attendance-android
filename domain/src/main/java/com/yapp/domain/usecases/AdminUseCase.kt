@@ -9,9 +9,9 @@ import javax.inject.Inject
 
 class JoinAdminUseCase @Inject constructor(
     private val adminRepository: AdminRepository
-) : BaseUseCase<Flow<TaskResult<Boolean>>, JoinAdminUseCase.Params>() {
+) : BaseUseCase<Flow<TaskResult<Unit>>, JoinAdminUseCase.Params>() {
 
-    override suspend fun invoke(params: Params): Flow<TaskResult<Boolean>> {
+    override suspend fun invoke(params: Params): Flow<TaskResult<Unit>> {
         return adminRepository.setAdmin(params.memberId)
             .toResult()
     }
