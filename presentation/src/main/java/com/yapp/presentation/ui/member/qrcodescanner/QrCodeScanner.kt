@@ -164,8 +164,7 @@ fun ScannerDecoration(
 ) {
     ConstraintLayout(
         modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
+            .fillMaxSize()
     ) {
         val (informText, closeIcon, qrAreaIcon) = createRefs()
         InformText(
