@@ -17,7 +17,7 @@ class MemberModel(
 ) {
 
     companion object {
-        fun MemberModel.mapTo(): MemberEntity {
+        fun MemberModel.mapToEntity(): MemberEntity {
             return MemberEntity(
                 id = id!!,
                 name = name!!,
