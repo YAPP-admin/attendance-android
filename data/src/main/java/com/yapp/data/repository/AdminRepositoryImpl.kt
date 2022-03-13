@@ -28,14 +28,12 @@ class AdminRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun setAdmin(memberId: Long): Flow<Boolean> {
+    override suspend fun setAdmin(memberId: Long): Flow<Unit> {
         return flow {
             fireStore.adminRef()
                 .document(memberId.toString())
                 .set(memberId)
                 .await()
-
-            emit(true)
         }
     }
 }

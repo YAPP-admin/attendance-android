@@ -16,14 +16,12 @@ class MemberRepositoryImpl @Inject constructor(
     private val fireStore: FirebaseFirestore
 ) : MemberRepository {
 
-    override fun setMember(memberEntity: MemberEntity): Flow<Boolean> {
+    override fun setMember(memberEntity: MemberEntity): Flow<Unit> {
         return flow {
             fireStore.memberRef()
                 .document(memberEntity.id.toString())
                 .set(memberEntity)
                 .await()
-
-            emit(true)
         }
     }
 

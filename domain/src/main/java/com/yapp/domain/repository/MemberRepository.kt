@@ -5,6 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 
 interface MemberRepository {
-    fun setMember(memberEntity: MemberEntity): Flow<Boolean>
+    fun setMember(memberEntity: MemberEntity): Flow<Unit>
     fun getMember(id: Long): Flow<MemberEntity?>
 }
