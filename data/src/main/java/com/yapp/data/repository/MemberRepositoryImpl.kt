@@ -2,7 +2,7 @@ package com.yapp.data.repository
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.yapp.data.model.MemberModel
-import com.yapp.data.model.MemberModel.Companion.mapTo
+import com.yapp.data.model.MemberModel.Companion.mapToEntity
 import com.yapp.data.util.memberRef
 import com.yapp.domain.model.MemberEntity
 import com.yapp.domain.repository.MemberRepository
@@ -33,7 +33,7 @@ class MemberRepositoryImpl @Inject constructor(
                 .await()
 
             if (document.exists()) {
-                emit(document.toObject(MemberModel::class.java)?.mapTo())
+                emit(document.toObject(MemberModel::class.java)?.mapToEntity())
                 return@flow
             }
 
