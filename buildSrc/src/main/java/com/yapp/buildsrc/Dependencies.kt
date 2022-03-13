@@ -3,6 +3,7 @@ object Dependencies {
     const val APP_COMPAT = "androidx.appcompat:appcompat:1.4.1"
     const val INJECT = "javax.inject:javax.inject:1"
     const val GOOGLE_SERVICES = "com.google.gms:google-services:4.3.10"
+    const val DATA_STORE = "androidx.datastore:datastore-preferences:1.0.0"
 
     object Kotlin {
         private const val version = "1.6.10"
@@ -14,6 +15,7 @@ object Dependencies {
 
         const val COROUTINE_CORE = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion"
         const val COROUTINE_ANDROID = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
+        const val COROUTINE_PLAY_SERVICE = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.2.1"
     }
 
     object Compose {
@@ -73,9 +75,12 @@ object Dependencies {
     }
 
     object Firebase {
+        const val COMMON = "com.google.firebase:firebase-common-ktx:20.0.0"
         const val BOM = "com.google.firebase:firebase-bom:29.1.0"
         const val CONFIG_KTX = "com.google.firebase:firebase-config-ktx"
         const val ANALYTICS_KTX = "com.google.firebase:firebase-analytics-ktx"
+        const val FIRESTORE = "com.google.firebase:firebase-firestore:24.0.1"
+        const val FIRESTORE_KTX = "com.google.firebase:firebase-firestore-ktx"
     }
 
     object Kakao {

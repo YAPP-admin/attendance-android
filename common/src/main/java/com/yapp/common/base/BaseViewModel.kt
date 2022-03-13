@@ -49,7 +49,7 @@ abstract class BaseViewModel<S : UiState, A : UiSideEffect, E : UiEvent>(
 
     protected suspend fun <T> Flow<TaskResult<T>>.collectWithCallback(
         onSuccess: suspend (T) -> Unit,
-        onFailed: suspend (String) -> Unit
+        onFailed: suspend (Throwable) -> Unit
     ) {
         collect { result ->
             when (result) {
@@ -58,7 +58,7 @@ abstract class BaseViewModel<S : UiState, A : UiSideEffect, E : UiEvent>(
                 }
 
                 is TaskResult.Failed -> {
-                    onFailed.invoke(result.message)
+                    onFailed.invoke(result.throwable)
                 }
             }
         }
