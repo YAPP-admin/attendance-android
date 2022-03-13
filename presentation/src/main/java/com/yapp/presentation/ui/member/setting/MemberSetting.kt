@@ -4,8 +4,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -16,19 +15,22 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.R
 import com.yapp.common.theme.*
-import com.yapp.common.yds.YDSAppBar
-import com.yapp.common.yds.YDSPopupDialog
+import com.yapp.common.yds.*
 import com.yapp.presentation.R.*
 
 @Composable
-fun MemberSetting(viewModel: MemberSettingViewModel = hiltViewModel()) {
+fun MemberSetting(
+    viewModel: MemberSettingViewModel = hiltViewModel(),
+    onClickBackButton: () -> Unit,
+    onClickAdminButton: () -> Unit,
+) {
     val uiState = viewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
             YDSAppBar(
                 title = stringResource(id = string.member_setting_title),
-                onClickBackButton = {}
+                onClickBackButton = onClickBackButton
             )
         },
         modifier = Modifier.fillMaxSize(),
@@ -40,6 +42,7 @@ fun MemberSetting(viewModel: MemberSettingViewModel = hiltViewModel()) {
         ) {
             GroupInfo()
             Profile()
+            ChangeAdminButton(onClickAdminButton)
             Divide()
             MenuList()
         }
@@ -82,6 +85,17 @@ private fun Profile() {
 }
 
 @Composable
+private fun ChangeAdminButton(onClickAdminButton: () -> Unit) {
+    YDSButtonMedium(
+        text = "관리자 계정으로 전환하기",
+        state = YdsButtonState.ENABLED,
+        modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 28.dp)
+    ) {
+        onClickAdminButton()
+    }
+}
+
+@Composable
 private fun Divide() {
     Spacer(
         modifier = Modifier
@@ -93,6 +107,21 @@ private fun Divide() {
 
 @Composable
 private fun MenuList() {
+    var showDialog by remember { mutableStateOf(false) }
+
+    if (showDialog) {
+        YDSPopupDialog(
+            title = stringResource(id = string.member_setting_withdraw_dialog_title_text),
+            content = stringResource(id = string.member_setting_withdraw_dialog_content_text),
+            negativeButtonText = stringResource(id = string.member_setting_withdraw_dialog_negative_button),
+            positiveButtonText = stringResource(id = string.member_setting_withdraw_dialog_positive_button),
+            onClickPositiveButton = { showDialog = !showDialog },
+            onClickNegativeButton = { showDialog = !showDialog },
+            onDismiss = { showDialog = !showDialog }
+        )
+    }
+
+
     Column(
         modifier = Modifier.padding(top = 28.dp, bottom = 28.dp)
     ) {
@@ -149,15 +178,10 @@ private fun MenuList() {
             color = Gray_400,
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {}
-                .padding(horizontal = 24.dp, vertical = 16.dp)
+                .clickable {
+                    showDialog = !showDialog
+                }
+                .padding(horizontal = 24.dp, vertical = 16.dp),
         )
-//        YDSPopupDialog(
-//            title = stringResource(id = string.member_setting_withdraw_dialog_title_text),
-//            content = stringResource(id = string.member_setting_withdraw_dialog_content_text),
-//            negativeButtonText = stringResource(id = string.member_setting_withdraw_dialog_negative_button),
-//            positiveButtonText = stringResource(id = string.member_setting_withdraw_dialog_positive_button),
-//            onClickNegativeButton = { }) {
-//        }
     }
 }

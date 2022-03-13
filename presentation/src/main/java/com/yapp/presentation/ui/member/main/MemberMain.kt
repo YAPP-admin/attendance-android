@@ -7,8 +7,9 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -78,17 +79,17 @@ fun BottomNavigationTab(
                 modifier = Modifier.padding(8.dp),
                 icon = {
                     Icon(
-                        painterResource(id = tab.icon),
+                        imageVector = ImageVector.vectorResource(id = tab.icon),
                         contentDescription = null,
                         modifier = Modifier.padding(4.dp),
-                        tint = Color.Unspecified,
+                        tint = if (tab == BottomNavigationItem.QR_AUTH) Color.Unspecified else LocalContentColor.current,
                     )
                 },
                 label = if (tab.title != null) {
                     {
                         Text(
                             text = stringResource(tab.title),
-                            color = Gray_600,
+                            color = if(tab.route == currentRoute) Gray_1000 else Gray_600,
                             style = AttendanceTypography.caption
                         )
                     }
@@ -109,8 +110,8 @@ fun BottomNavigationTab(
                         }
                     }
                 },
-                selectedContentColor = Gray_600,
-                unselectedContentColor = Gray_1000,
+                selectedContentColor = Yapp_Orange,
+                unselectedContentColor = Gray_600,
             )
         }
     }
@@ -123,13 +124,13 @@ enum class BottomNavigationItem(
 ) {
     SESSION(
         "today-session",
-        R.drawable.icon_home_enabled,
+        R.drawable.icon_bottom_navigation_home,
         R.string.member_main_bottom_navigation_today_session_text
     ),
     QR_AUTH("qr-auth", R.drawable.icon_qr, null),
     MEMBER_SCORE(
         "member-score",
-        R.drawable.icon_check_disabled,
+        R.drawable.icon_bottom_navigation_check,
         R.string.member_main_bottom_navigation_attendance_detail_text
     );
 }
@@ -155,6 +156,7 @@ private fun ChildNavigation(
             route = BottomNavigationItem.MEMBER_SCORE.route
         ) {
             MemberScore(modifier = modifier) {
+                navigateToScreen(AttendanceScreenRoute.HELP.route)
             }
         }
     }

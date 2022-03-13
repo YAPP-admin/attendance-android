@@ -19,14 +19,23 @@ sealed class RemoteConfigData<T> {
         override val defaultValue: String = ""
     }
 
+    object AttendanceSelectTeams : RemoteConfigData<String>() {
+        override val key: String = ATTENDANCE_SELECT_TEAMS
+        override val defaultValue: String = ""
+    }
+
+
+
     companion object {
         private const val ATTENDANCE_MAGINOTLINE_TIME = "attendance_maginotline_time"
         private const val ATTENDANCE_SESSION_LIST = "attendance_session_list"
+        private const val ATTENDANCE_SELECT_TEAMS = "attendance_select_teams"
         private const val ATTENDANCE_CONFIG = "config"
 
         val defaultMaps = mapOf(
             MaginotlineTime.defaultValue to MaginotlineTime.key,
             SessionList.defaultValue to SessionList.key,
+            AttendanceSelectTeams.defaultValue to AttendanceSelectTeams.key
             Config.defaultValue to Config.key
         )
     }
