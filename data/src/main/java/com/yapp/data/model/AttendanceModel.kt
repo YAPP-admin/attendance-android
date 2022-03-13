@@ -1,11 +1,5 @@
 package com.yapp.data.model
 
-import com.yapp.data.Constants.ABSENT
-import com.yapp.data.Constants.EMPTY
-import com.yapp.data.Constants.LATE
-import com.yapp.data.Constants.NORMAL
-import com.yapp.data.Constants.REPORTED_ABSENT
-import com.yapp.data.Constants.REPORTED_LATE
 import com.yapp.data.model.AttendanceTypeModel.Companion.mapToEntity
 import com.yapp.domain.model.AttendanceEntity
 import com.yapp.domain.model.AttendanceTypeEntity
@@ -34,6 +28,13 @@ data class AttendanceModel(
 data class AttendanceTypeModel(val point: Int = 0, val text: String = EMPTY) {
 
     companion object {
+        private const val ABSENT = "미통보 결석"
+        private const val REPORTED_ABSENT = "결석"
+        private const val NORMAL = "출석"
+        private const val LATE = "미통보 지각"
+        private const val REPORTED_LATE = "지각"
+        private const val EMPTY = "EMPTY"
+
         fun AttendanceTypeModel.mapToEntity(): AttendanceTypeEntity {
             return when (this.text) {
                 ABSENT -> AttendanceTypeEntity.Absent
