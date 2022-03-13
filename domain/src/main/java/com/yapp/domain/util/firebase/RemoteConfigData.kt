@@ -35,7 +35,7 @@ sealed class RemoteConfigData<T> {
         val defaultMaps = mapOf(
             MaginotlineTime.defaultValue to MaginotlineTime.key,
             SessionList.defaultValue to SessionList.key,
-            AttendanceSelectTeams.defaultValue to AttendanceSelectTeams.key
+            AttendanceSelectTeams.defaultValue to AttendanceSelectTeams.key,
             Config.defaultValue to Config.key
         )
     }

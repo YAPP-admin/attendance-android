@@ -15,10 +15,6 @@ class TeamViewModel @Inject constructor(firebaseRemoteConfig: FirebaseRemoteConf
     ) {
 
     init {
-        firebaseRemoteConfig.getValue(RemoteConfigData.AttendanceSelectTeams) { json ->
-            val teams = Gson().fromJson(json, Array<TeamModel>::class.java).toList()
-            setState { copy(teams = teams) }
-        }
 
     }
 
