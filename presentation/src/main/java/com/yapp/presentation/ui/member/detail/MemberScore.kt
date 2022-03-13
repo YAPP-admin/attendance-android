@@ -33,7 +33,7 @@ import com.yapp.common.yds.AttendanceType
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSAttendanceList
 import com.yapp.presentation.R
-import com.yapp.presentation.model.SessionModel
+import com.yapp.presentation.model.Session
 
 @Composable
 fun MemberScore(
@@ -253,9 +253,9 @@ fun RowScope.AttendanceCell(
 }
 
 @Composable
-private fun AttendUserSession(session: SessionModel) {
+private fun AttendUserSession(session: Session) {
     YDSAttendanceList(
-        attendanceType = if (session.sessionId == "2") AttendanceType.TBD else AttendanceType.ATTEND,
+        attendanceType = if (session.sessionId == 2) AttendanceType.TBD else AttendanceType.ATTEND,
         date = session.date,
         title = session.title,
         description = session.description ?: ""

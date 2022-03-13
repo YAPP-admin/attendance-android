@@ -1,12 +1,12 @@
 <resources>
-  <!-- convention -->
-  <!-- screen name_description_component name -->
-  <string name="login_attendance_introduce_text">3초만에 끝나는\n간편한 출석체크</string>
-  <string name="login_kakao_login_text">카카오 로그인</string>
+    <!-- convention -->
+    <!-- screen name_description_component name -->
+    <string name="login_attendance_introduce_text">3초만에 끝나는\n간편한 출석체크</string>
+    <string name="login_kakao_login_text">카카오 로그인</string>
 
-  <string name="member_main_bottom_navigation_today_session_text">오늘 세션</string>
-  <string name="member_main_bottom_navigation_qr_text">QR</string>
-  <string name="member_main_bottom_navigation_attendance_detail_text">출결 확인</string>
+    <string name="member_main_bottom_navigation_today_session_text">오늘 세션</string>
+    <string name="member_main_bottom_navigation_qr_text">QR</string>
+    <string name="member_main_bottom_navigation_attendance_detail_text">출결 확인</string>
 
   <string name="today_session_attendance_before_text">아직 출석 전이에요</string>
   <string name="today_session_attendance_after_text">출석을 완료했어요</string>
@@ -17,10 +17,24 @@
   <string name="member_score_absent_text">결석</string>
   <string name="member_score_tardy_text">지각</string>
 
-  <string name="admin_main_attend_management_text">출결 관리</string>
-  <string name="admin_main_see_all_session_text">전체 보기</string>
-  <string name="admin_main_confirm_button">확인</string>
-  <string name="admin_main_see_all_score_text">누적 점수 확인하기</string>
+    <string name="admin_main_attend_management_text">출결 관리</string>
+    <string name="admin_main_see_all_session_text">전체 보기</string>
+    <string name="admin_main_confirm_button">확인</string>
+    <string name="admin_main_see_all_score_text">누적 점수 확인하기</string>
+
+    <string name="member_signup_choose_team">소속 팀을\n알려주세요</string>
+    <string name="member_signup_choose_team_number">하나만 더 알려주세요</string>
+    <string name="member_signup_team_number">%d팀</string>
+    <string name="member_signup_team_confirm">확인</string>
+
+  <string name="name_title">이름을 작성해주세요</string>
+  <string name="name_subtitle">실명을 작성해야 출석을 확인할 수 있어요</string>
+  <string name="name_example_hint">ex. 야뿌</string>
+  <string name="name_next_button">다음</string>
+  <string name="name_cancel_dialog_title">입력을 취소할까요?</string>
+  <string name="name_cancel_dialog_subtitle">언제든 다시 돌아올 수 있어요</string>
+  <string name="name_cancel_dialog_no">아니오</string>
+  <string name="name_cancel_dialog_cancel">취소합니다</string>
 
   <string name="member_setting_title">설정</string>
   <string name="member_setting_version_info_text">버전 정보</string>
@@ -35,4 +49,24 @@
   <string name="member_qr_time_inform_text">2시 5분까지 출석 체크를 완료해 주세요!</string>
   <string name="member_qr_late_inform_text">이후 출석은 지각으로 처리돼요</string>
 
+
+  <string name="help_title">도움말</string>
+  <string name="help_basic_info_yapp_text">YAPP</string>
+  <string name="help_basic_info_title_text">의 구성원은\n모든 세션에 필수적으로 참여해야 해요!</string>
+  <string name="help_basic_info_content_text">지각과 결석 규칙에 대해 알려드릴게요</string>
+  <string name="help_basic_info_type_text">의 경우</string>
+  <string name="help_basic_info_type_pre_notice_text">사전 통보</string>
+  <string name="help_basic_info_type_not_notice_text">미통보</string>
+  <string name="help_basic_info_tardy_text">지각</string>
+  <string name="help_basic_info_absent_text">결석</string>
+  <string name="help_basic_info_score_text">%s점</string>
+  <string name="help_detail_info_title_text">읽어보세요!</string>
+  <string name="help_detail_info_content1_text">출결 점수는 100점에서 시작해요</string>
+  <string name="help_detail_info_content2_start_text">지각 및 결석 사유는\ </string>
+  <string name="help_detail_info_content2_bold_text">하루 전까지</string>
+  <string name="help_detail_info_content2_end_text">\ 알려주세요</string>
+  <string name="help_detail_info_content3_text">아르바이트, 인턴, 직장인 우대사항은 없어요</string>
+  <string name="help_detail_info_content4_start_text">점수가 </string>
+  <string name="help_detail_info_content4_bold_text">\ 70점 미만</string>
+  <string name="help_detail_info_content4_end_text">이 되는 회원은 운영진의 심의 하에 제명될 수 있으니 출결에 유의해주세요</string>
 </resources>

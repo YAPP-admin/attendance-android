@@ -9,11 +9,15 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yapp.common.theme.Yapp_Orange
 import com.yapp.common.util.KakaoTalkLoginProvider
+import com.yapp.common.util.KeyboardVisibilityUtils
 import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.login.Login
+import com.yapp.presentation.ui.member.help.Help
 import com.yapp.presentation.ui.member.main.MemberMain
 import com.yapp.presentation.ui.member.qrcodescanner.QrCodeScanner
+import com.yapp.presentation.ui.member.signup.Team
 import com.yapp.presentation.ui.member.setting.MemberSetting
+import com.yapp.presentation.ui.member.signup.Name
 import com.yapp.presentation.ui.splash.Splash
 
 @Composable
@@ -96,7 +100,23 @@ fun AttendanceScreen(
 
         composable(
             route = AttendanceScreenRoute.HELP.route
-        ) {}
+        ) {
+            Help()
+        }
+
+        composable(
+            route = AttendanceScreenRoute.SIGNUP_NAME.route
+        ) {
+            Name(
+                onClickBackBtn = { navController.popBackStack() },
+                onClickNextBtn = { navController.navigate(AttendanceScreenRoute.SIGNUP_TEAM.route) })
+        }
+
+        composable(
+            route = AttendanceScreenRoute.SIGNUP_TEAM.route
+        ) {
+            Team(navigateToMainScreen = { navController.navigate(AttendanceScreenRoute.MEMBER_MAIN.route) })
+        }
     }
 }
 
@@ -107,6 +127,8 @@ enum class AttendanceScreenRoute(val route: String) {
     MEMBER_MAIN("member-main"),
     ADMIN_MAIN("admin-main"),
     MEMBER_SETTING("member_setting"),
+    SIGNUP_NAME("name"),
+    SIGNUP_TEAM("team"),
     HELP("help");
 }
 

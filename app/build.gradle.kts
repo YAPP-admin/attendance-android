@@ -73,6 +73,9 @@ dependencies {
     implementation(Dependencies.Dagger.HILT_NAVIGATION_COMPOSE)
     kapt(Dependencies.Dagger.HILT_COMPILER)
 
+    implementation(Dependencies.Firebase.FIRESTORE)
+    implementation(Dependencies.Firebase.FIRESTORE_KTX)
+
     implementation(Dependencies.Kotlin.COROUTINE_CORE)
     implementation(Dependencies.Kotlin.COROUTINE_ANDROID)
 
