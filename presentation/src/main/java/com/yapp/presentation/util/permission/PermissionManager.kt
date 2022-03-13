@@ -1,11 +1,11 @@
 package com.yapp.presentation.util.permission
 
+import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 
 object PermissionManager {
     fun requestPermission(
-        context: AppCompatActivity,
+        context: Context,
         vararg permissionType: PermissionType,
         permissionCallback: (state: PermissionState) -> Unit
     ) {
@@ -13,7 +13,7 @@ object PermissionManager {
     }
 
     private fun launchPermissionActivity(
-        context: AppCompatActivity,
+        context: Context,
         type: Array<out PermissionType>,
         permissionCallback: (state: PermissionState) -> Unit
     ) {

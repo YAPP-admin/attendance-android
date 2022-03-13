@@ -10,8 +10,12 @@ class QrCodeContract {
     ) : UiState
 
     sealed class QrCodeUiSideEffect : UiSideEffect {
+        object ShowQrScannerView : QrCodeUiSideEffect()
+        object ShowPermissionDialog : QrCodeUiSideEffect()
     }
 
     sealed class QrCodeUiEvent : UiEvent {
+        object CameraPermissionGranted : QrCodeUiEvent()
+        object CameraPermissionDenied : QrCodeUiEvent()
     }
 }

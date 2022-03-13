@@ -2,7 +2,6 @@ package com.yapp.presentation.ui.member.qrcodescanner
 
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
@@ -44,6 +43,7 @@ fun QrCodeScanner(
     moveBackToPreviousScreen: () -> Unit,
 ) {
     val context = LocalContext.current
+    val uiState = viewModel.uiState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -51,14 +51,29 @@ fun QrCodeScanner(
             .fillMaxWidth()
     ) {
         PermissionManager.requestPermission(
-            context as AppCompatActivity,
+            context,
             PermissionType.CAMERA
         ) { permissionState ->
             when (permissionState) {
-                PermissionState.GRANTED -> {}
-                PermissionState.NEED_DESCRIPTION -> {}
-                PermissionState.DENIED -> {}
+                PermissionState.GRANTED -> {
+                    viewModel.setEvent(QrCodeContract.QrCodeUiEvent.CameraPermissionGranted)
+                }
+                PermissionState.NEED_DESCRIPTION -> {
+                    viewModel.setEvent(QrCodeContract.QrCodeUiEvent.CameraPermissionDenied)
+                }
+                PermissionState.DENIED -> {
+                    viewModel.setEvent(QrCodeContract.QrCodeUiEvent.CameraPermissionDenied)
+                }
             }
+        }
+
+        if (uiState.value.isGrantedCameraPermission) {
+            Scanner(
+                modifier = modifier,
+                moveBackToPreviousScreen = moveBackToPreviousScreen
+            )
+        } else {
+            Toast.makeText(context, "카메라 권한을 허용해 주세요", Toast.LENGTH_SHORT).show()
         }
     }
 }

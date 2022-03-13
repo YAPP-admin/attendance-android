@@ -39,6 +39,11 @@
                     android:scheme="kakao72806b8322ff87c0ab3ec377e4f99e6a" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.yapp.presentation.util.permission.PermissionActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Attendance.NoActionBar" />
     </application>
 
 </manifest>
