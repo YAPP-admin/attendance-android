@@ -11,8 +11,8 @@ android {
     compileSdk = Configs.COMPILE_SDK
 
     defaultConfig {
-        minSdk        = Configs.MIN_SDK
-        targetSdk     = Configs.TARGET_SDK
+        minSdk = Configs.MIN_SDK
+        targetSdk = Configs.TARGET_SDK
     }
 
     buildTypes {
@@ -88,6 +88,17 @@ dependencies {
 
     //coil
     implementation(Dependencies.Coil.COIL)
+
+    // CameraX
+    implementation(Dependencies.CameraX.CORE)
+    implementation(Dependencies.CameraX.CAMERA2)
+    implementation(Dependencies.CameraX.LIFECYCLE)
+    implementation(Dependencies.CameraX.VIDEO)
+    implementation(Dependencies.CameraX.VIEW)
+    implementation(Dependencies.CameraX.EXTENSION)
+
+    //ML Kit
+    implementation(Dependencies.MlKit.ML_KIT)
 
     //test
     testImplementation(Dependencies.Test.JUNIT)

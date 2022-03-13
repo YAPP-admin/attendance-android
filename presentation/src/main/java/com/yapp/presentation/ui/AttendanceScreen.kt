@@ -14,6 +14,7 @@ import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.login.Login
 import com.yapp.presentation.ui.member.help.Help
 import com.yapp.presentation.ui.member.main.MemberMain
+import com.yapp.presentation.ui.member.qrcodescanner.QrCodeScanner
 import com.yapp.presentation.ui.member.signup.Team
 import com.yapp.presentation.ui.member.setting.MemberSetting
 import com.yapp.presentation.ui.member.signup.Name
@@ -27,9 +28,7 @@ fun AttendanceScreen(
     NavHost(
         navController = navController,
         startDestination = AttendanceScreenRoute.SPLASH.route
-
     ) {
-
         composable(
             route = AttendanceScreenRoute.LOGIN.route
         ) {
@@ -79,7 +78,11 @@ fun AttendanceScreen(
 
         composable(
             route = AttendanceScreenRoute.QR_AUTH.route
-        ) {}
+        ) {
+            QrCodeScanner {
+                navController.popBackStack()
+            }
+        }
 
         composable(
             route = AttendanceScreenRoute.MEMBER_SETTING.route
