@@ -1,6 +1,6 @@
 package com.yapp.attendance.di
 
-import com.yapp.attendance.util.DispatcherProvider
+import com.yapp.domain.util.DispatcherProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

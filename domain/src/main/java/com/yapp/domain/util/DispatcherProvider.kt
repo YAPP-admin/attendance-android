@@ -1,4 +1,4 @@
-package com.yapp.attendance.util
+package com.yapp.domain.util
 
 import kotlinx.coroutines.CoroutineDispatcher
 
