@@ -14,20 +14,24 @@ android {
 dependencies {
     implementation(project(":domain"))
     implementation(Dependencies.Dagger.HILT_ANDROID)
-    implementation("com.google.firebase:firebase-common-ktx:20.0.0")
     kapt(Dependencies.Dagger.HILT_COMPILER)
 
     implementation(Dependencies.Kotlin.COROUTINE_CORE)
     implementation(Dependencies.Kotlin.SERIALIZATION)
 
+    implementation(Dependencies.DATA_STORE)
     api(Dependencies.Room.ROOM)
     implementation(Dependencies.Room.KTX)
     kapt(Dependencies.Room.COMPILER)
 
     //firebase
+    implementation(Dependencies.Firebase.COMMON)
     implementation(platform(Dependencies.Firebase.BOM))
     implementation(Dependencies.Firebase.ANALYTICS_KTX)
     implementation(Dependencies.Firebase.CONFIG_KTX)
+    implementation(Dependencies.Firebase.FIRESTORE)
+    implementation(Dependencies.Firebase.FIRESTORE_KTX)
+    implementation(Dependencies.Kotlin.COROUTINE_PLAY_SERVICE)
 
     api(Dependencies.Square.RETROFIT)
     implementation(Dependencies.Square.RETROFIT_MOSHI)
@@ -35,10 +39,4 @@ dependencies {
     implementation(Dependencies.Square.SERIALIZATION_CONVERTER)
 
     testImplementation(Dependencies.Test.JUNIT)
-    platform("com.google.firebase:firebase-bom:29.1.0")
-    implementation("com.google.firebase:firebase-firestore:24.0.1")
-    implementation("com.google.firebase:firebase-firestore-ktx")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.2.1")
-
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
 }
