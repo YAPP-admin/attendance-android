@@ -1,16 +1,13 @@
 package com.yapp.presentation.ui.member.qrcodescanner
 
-import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.channels.consume
+import com.yapp.common.base.BaseViewModel
 import javax.inject.Inject
 
 class QrCodeViewModel @Inject constructor(
-    val qrStateProvider: QrStateProvider
-) :ViewModel() {
+) : BaseViewModel<QrCodeContract.QrCodeUiState, QrCodeContract.QrCodeUiSideEffect, QrCodeContract.QrCodeUiEvent>(
+    QrCodeContract.QrCodeUiState()
+) {
+    override fun handleEvent(event: QrCodeContract.QrCodeUiEvent) {
 
-    init {
-        qrStateProvider.qrState.consume {
-
-        }
     }
 }

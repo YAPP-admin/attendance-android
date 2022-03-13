@@ -1,12 +1,8 @@
 package com.yapp.presentation.ui.member.qrcodescanner
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.util.Log
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
@@ -33,51 +29,51 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.presentation.R
+import com.yapp.presentation.util.permission.PermissionManager
+import com.yapp.presentation.util.permission.PermissionState
+import com.yapp.presentation.util.permission.PermissionType
 import java.util.concurrent.Executors
 
 @Composable
 fun QrCodeScanner(
+    viewModel: QrCodeViewModel = hiltViewModel(),
     modifier: Modifier = Modifier,
     moveBackToPreviousScreen: () -> Unit,
-
 ) {
     val context = LocalContext.current
-    var hasCamPermission by remember {
-        mutableStateOf(
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.CAMERA
-            ) == PackageManager.PERMISSION_GRANTED
-        )
-    }
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = { isGranted ->
-            hasCamPermission = isGranted
-        }
-    )
-    LaunchedEffect(key1 = true) {
-        launcher.launch(Manifest.permission.CAMERA)
-    }
 
     Column(
         modifier = Modifier
             .fillMaxHeight()
             .fillMaxWidth()
     ) {
-        if (hasCamPermission) {
-            Surface {
-                CameraPreview()
-                ScannerDecoration(
-                    modifier = modifier,
-                    moveBackToPreviousScreen = moveBackToPreviousScreen
-                )
+        PermissionManager.requestPermission(
+            context as AppCompatActivity,
+            PermissionType.CAMERA
+        ) { permissionState ->
+            when (permissionState) {
+                PermissionState.GRANTED -> {}
+                PermissionState.NEED_DESCRIPTION -> {}
+                PermissionState.DENIED -> {}
             }
-        } else {
-            Log.d("Permission", "no permission")
         }
+    }
+}
+
+@Composable
+fun Scanner(
+    modifier: Modifier = Modifier,
+    moveBackToPreviousScreen: () -> Unit,
+) {
+    Surface {
+        CameraPreview()
+        ScannerDecoration(
+            modifier = modifier,
+            moveBackToPreviousScreen = moveBackToPreviousScreen
+        )
     }
 }
 
