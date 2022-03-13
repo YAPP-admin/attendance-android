@@ -31,7 +31,7 @@ data class AttendanceModel(
 }
 
 @Serializable
-data class AttendanceTypeModel(val point: Int = 0, val text: String = "EMPTY") {
+data class AttendanceTypeModel(val point: Int = 0, val text: String = AttendanceTypeEntity.Empty.text) {
 
     companion object {
         fun AttendanceTypeModel.mapToEntity(): AttendanceTypeEntity {
