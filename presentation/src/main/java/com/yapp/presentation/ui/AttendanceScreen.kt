@@ -12,7 +12,9 @@ import com.yapp.common.util.KakaoTalkLoginProvider
 import com.yapp.common.util.KeyboardVisibilityUtils
 import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.login.Login
+import com.yapp.presentation.ui.member.help.Help
 import com.yapp.presentation.ui.member.main.MemberMain
+import com.yapp.presentation.ui.member.signup.Team
 import com.yapp.presentation.ui.member.setting.MemberSetting
 import com.yapp.presentation.ui.member.signup.Name
 import com.yapp.presentation.ui.splash.Splash
@@ -25,6 +27,7 @@ fun AttendanceScreen(
     NavHost(
         navController = navController,
         startDestination = AttendanceScreenRoute.SPLASH.route
+
     ) {
 
         composable(
@@ -95,6 +98,7 @@ fun AttendanceScreen(
         composable(
             route = AttendanceScreenRoute.HELP.route
         ) {
+            Help()
         }
 
         composable(
@@ -102,9 +106,14 @@ fun AttendanceScreen(
         ) {
             Name(
                 onClickBackBtn = { navController.popBackStack() },
-                onClickNextBtn = {})
+                onClickNextBtn = { navController.navigate(AttendanceScreenRoute.SIGNUP_TEAM.route) })
         }
 
+        composable(
+            route = AttendanceScreenRoute.SIGNUP_TEAM.route
+        ) {
+            Team(navigateToMainScreen = { navController.navigate(AttendanceScreenRoute.MEMBER_MAIN.route) })
+        }
     }
 }
 
@@ -116,6 +125,7 @@ enum class AttendanceScreenRoute(val route: String) {
     ADMIN_MAIN("admin-main"),
     MEMBER_SETTING("member_setting"),
     SIGNUP_NAME("name"),
+    SIGNUP_TEAM("team"),
     HELP("help");
 }
 

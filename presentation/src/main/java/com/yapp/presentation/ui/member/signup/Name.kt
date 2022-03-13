@@ -5,10 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -103,32 +100,29 @@ fun Title() {
 
 @Composable
 fun InputName(name: String, onInputName: (String) -> Unit) {
-
-    BasicTextField(
+    TextField(
         value = name,
         onValueChange = { onInputName(it); },
         singleLine = true,
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = Gray_200, shape = RoundedCornerShape(50.dp)),
+        placeholder = {
+            Text(
+                text = stringResource(id = R.string.name_example_hint),
+                color = Gray_400,
+                style = AttendanceTypography.body1
+            )
+        },
         textStyle = AttendanceTypography.body2.copy(color = Gray_800),
-        cursorBrush = SolidColor(Yapp_Orange),
-        decorationBox = { innerTextField ->
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = Gray_200, shape = RoundedCornerShape(50.dp))
-            ) {
-                Box(modifier = Modifier.padding(20.dp)) {
-                    if (name.isBlank()) {
-                        Text(
-                            text = stringResource(id = R.string.name_example_hint),
-                            color = Gray_400,
-                            style = AttendanceTypography.body1
-                        )
-                    } else {
-                        innerTextField()
-                    }
-                }
-            }
-        }
+        colors = TextFieldDefaults.textFieldColors(
+            textColor = Color.Gray,
+            disabledTextColor = Color.Transparent,
+            backgroundColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent
+        )
     )
 }
 
@@ -155,6 +149,7 @@ fun NextButton(
         }
     }
 }
+
 
 @Composable
 fun OnKeyboardNextButton(

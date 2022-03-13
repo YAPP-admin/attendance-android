@@ -11,6 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.yapp.common.theme.Gray_200
+import com.yapp.common.theme.Gray_400
+import com.yapp.common.theme.Gray_800
+import com.yapp.common.theme.Yapp_Orange
 import com.yapp.common.theme.*
 import java.lang.IllegalStateException
 
