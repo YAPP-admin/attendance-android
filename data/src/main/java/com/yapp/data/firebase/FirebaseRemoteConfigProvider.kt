@@ -7,10 +7,13 @@ import com.yapp.data.model.ConfigModel
 import com.yapp.data.model.ConfigModel.Companion.mapToEntity
 import com.yapp.data.model.SessionModel
 import com.yapp.data.model.SessionModel.Companion.mapToEntity
+import com.yapp.data.model.TeamModel
+import com.yapp.data.model.TeamModel.Companion.mapToEntity
 import com.yapp.domain.model.ConfigEntity
 import com.yapp.domain.model.SessionEntity
-import com.yapp.domain.util.firebase.FirebaseRemoteConfig
-import com.yapp.domain.util.firebase.RemoteConfigData
+import com.yapp.domain.firebase.FirebaseRemoteConfig
+import com.yapp.domain.firebase.RemoteConfigData
+import com.yapp.domain.model.TeamEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -65,6 +68,19 @@ class FirebaseRemoteConfigProvider @Inject constructor() : FirebaseRemoteConfig 
         }.map { jsonString ->
             Json.decodeFromString<ConfigModel>(jsonString)
                 .mapToEntity()
+        }
+    }
+
+    override suspend fun getTeamList(): Flow<List<TeamEntity>> {
+        return flow {
+            val hadActive = firebaseRemoteConfig.fetchAndActivate().await()
+
+            if(hadActive) {
+                emit(firebaseRemoteConfig.getString(RemoteConfigData.AttendanceSelectTeams.key))
+            }
+        }.map { jsonString ->
+            Json.decodeFromString<List<TeamModel>>(jsonString)
+                .map { model-> model.mapToEntity() }
         }
     }
 

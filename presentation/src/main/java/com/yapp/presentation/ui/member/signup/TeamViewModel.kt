@@ -1,30 +1,42 @@
 package com.yapp.presentation.ui.member.signup
 
-import com.google.gson.Gson
+import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
-import com.yapp.domain.util.firebase.FirebaseRemoteConfig
-import com.yapp.domain.util.firebase.RemoteConfigData
-import com.yapp.presentation.model.TeamModel
+import com.yapp.domain.usecases.GetTeamListUseCase
+import com.yapp.presentation.model.Team.Companion.mapTo
+import com.yapp.presentation.model.type.PlatformType
+import com.yapp.presentation.ui.member.signup.TeamContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TeamViewModel @Inject constructor(firebaseRemoteConfig: FirebaseRemoteConfig) :
-    BaseViewModel<TeamContract.TeamUiState, TeamContract.TeamSideEffect, TeamContract.TeamUiEvent>(
-        TeamContract.TeamUiState()
-    ) {
+class TeamViewModel @Inject constructor(
+    private val getTeamListUseCase: GetTeamListUseCase
+) : BaseViewModel<TeamUiState, TeamSideEffect, TeamUiEvent>(TeamUiState()) {
 
     init {
+        viewModelScope.launch {
+            getTeamListUseCase.invoke(GetTeamListUseCase.Params())
+                .collectWithCallback(
+                    onSuccess = { teamEntities ->
+                        setState { copy(teams = teamEntities.map { it.mapTo() }) }
+                    },
+                    onFailed = {
+                        //에러 핸들링 필요합니다
+                    }
+                )
+        }
 
     }
 
-    override fun handleEvent(event: TeamContract.TeamUiEvent) {
+    override fun handleEvent(event: TeamUiEvent) {
         when (event) {
-            is TeamContract.TeamUiEvent.ChooseTeam -> {
-                setState { copy(selectedTeam = uiState.value.selectedTeam.copy(teamType = event.teamType)) }
+            is TeamUiEvent.ChooseTeam -> {
+                setState { copy(selectedTeam = uiState.value.selectedTeam?.copy(platform = PlatformType.of(event.platformType))) }
             }
-            is TeamContract.TeamUiEvent.ChooseTeamNumber -> {
-                setState { copy(selectedTeam = uiState.value.selectedTeam.copy(teamNum = event.teamNum)) }
+            is TeamUiEvent.ChooseTeamNumber -> {
+                setState { copy(selectedTeam = uiState.value.selectedTeam.copy(number = event.teamNum)) }
             }
         }
     }

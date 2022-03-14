@@ -8,7 +8,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -16,7 +15,6 @@ import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.theme.Gray_1200
 import com.yapp.common.yds.*
 import com.yapp.presentation.R
-import com.yapp.presentation.model.TeamModel
 
 @Composable
 fun Team(
@@ -51,7 +49,7 @@ fun Team(
                     uiState,
                     onTeamTypeClicked = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeam(it)) })
                 Spacer(modifier = Modifier.height(52.dp))
-                if (uiState.selectedTeam.teamType.isNotEmpty()) {
+                if (uiState.selectedTeam.platform != null) {
                     TeamNumberOption(
                         uiState,
                         onTeamNumberClicked = {
@@ -68,8 +66,8 @@ fun Team(
                     .padding(bottom = 40.dp)
                     .height(60.dp)
                     .align(Alignment.BottomCenter),
-                state = if ((uiState.selectedTeam.teamType.isNotEmpty()) and (uiState.selectedTeam.teamNum != TeamModel.TEAM_NOT_SELECTED)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                onClick = { if ((uiState.selectedTeam.teamType.isNotEmpty()) and (uiState.selectedTeam.teamNum != TeamModel.TEAM_NOT_SELECTED)) navigateToMainScreen() },
+                state = if ((uiState.selectedTeam.platform != null) and (uiState.selectedTeam.number != null)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+                onClick = { if ((uiState.selectedTeam.platform != null) and (uiState.selectedTeam.number != null)) navigateToMainScreen() },
             )
         }
     }
@@ -84,10 +82,10 @@ fun TeamOption(uiState: TeamContract.TeamUiState, onTeamTypeClicked: (String) ->
                 repeat(rowNum) { index ->
                     val team = uiState.teams[rowNum * row + index]
                     YDSChoiceButton(
-                        text = team.teamType,
+                        text = team.platform!!.name,
                         modifier = Modifier.padding(end = 12.dp),
-                        state = if (uiState.selectedTeam.teamType == team.teamType) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                        onClick = { onTeamTypeClicked(team.teamType) }
+                        state = if (uiState.selectedTeam.platform == team.platform) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+                        onClick = { onTeamTypeClicked(team.platform.name) }
                     )
                 }
             }
@@ -97,7 +95,7 @@ fun TeamOption(uiState: TeamContract.TeamUiState, onTeamTypeClicked: (String) ->
 
 @Composable
 fun TeamNumberOption(uiState: TeamContract.TeamUiState, onTeamNumberClicked: (Int) -> Unit) {
-    val selectedTeamType = uiState.teams.filter { it.teamType == uiState.selectedTeam.teamType }
+    val selectedTeamType = uiState.teams.filter { it.platform == uiState.selectedTeam.platform }
     Column(
     ) {
         Text(
@@ -107,11 +105,11 @@ fun TeamNumberOption(uiState: TeamContract.TeamUiState, onTeamNumberClicked: (In
         )
         Spacer(modifier = Modifier.height(10.dp))
         Row() {
-            repeat(selectedTeamType[0].teamNum) { teamNum ->
+            repeat(selectedTeamType[0].number!!) { teamNum ->
                 YDSChoiceButton(
                     text = stringResource(R.string.member_signup_team_number, teamNum + 1),
                     modifier = Modifier.padding(end = 12.dp),
-                    state = if (uiState.selectedTeam.teamNum == teamNum + 1) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+                    state = if (uiState.selectedTeam.number == teamNum + 1) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
                     onClick = { onTeamNumberClicked(teamNum + 1) }
                 )
             }
