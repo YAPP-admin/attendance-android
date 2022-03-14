@@ -11,15 +11,15 @@ typealias MemberId = Long
 
 @Serializable
 data class TeamModel(
+    @SerialName("team")
     val platform: PlatformTypeModel? = null,
-    @SerialName("team_number")
-    val teamNumber: String? = null
+    val number: Int? = null
 ) {
     companion object {
         fun TeamModel.mapToEntity(): TeamEntity {
             return TeamEntity(
                 platform = platform!!.mapToEntity(),
-                teamNumber = teamNumber!!,
+                number = number!!,
             )
         }
     }
