@@ -1,4 +1,4 @@
-package com.yapp.domain.util.firebase
+package com.yapp.domain.firebase
 
 sealed class RemoteConfigData<T> {
     abstract val key: String
