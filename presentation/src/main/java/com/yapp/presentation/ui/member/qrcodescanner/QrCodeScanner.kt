@@ -1,5 +1,8 @@
 package com.yapp.presentation.ui.member.qrcodescanner
 
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.camera.core.CameraSelector
@@ -28,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.YDSPopupDialog
@@ -92,9 +96,17 @@ fun QrCodeScanner(
             content = stringResource(id = R.string.member_qr_permission_dialog_content_text),
             negativeButtonText = stringResource(id = R.string.member_qr_permission_dialog_negative_text),
             positiveButtonText = stringResource(id = R.string.member_qr_permission_dialog_positive_text),
-            onClickPositiveButton = { showDialog = !showDialog },
-            onClickNegativeButton = { showDialog = !showDialog },
-            onDismiss = { showDialog = !showDialog }
+            onClickPositiveButton = {
+                val intent = Intent(
+                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    Uri.parse("package:" + context.packageName)
+                )
+                intent.addCategory(Intent.CATEGORY_DEFAULT)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(context, intent, null)
+            },
+            onClickNegativeButton = { moveBackToPreviousScreen() },
+            onDismiss = { moveBackToPreviousScreen() }
         )
     }
 }
