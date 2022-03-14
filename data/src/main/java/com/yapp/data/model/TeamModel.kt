@@ -7,12 +7,11 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 
-typealias MemberId = Long
-
 @Serializable
 data class TeamModel(
     @SerialName("team")
     val platform: PlatformTypeModel? = null,
+    @SerialName("count")
     val number: Int? = null
 ) {
     companion object {
