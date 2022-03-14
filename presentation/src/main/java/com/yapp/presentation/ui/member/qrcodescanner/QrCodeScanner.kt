@@ -30,10 +30,12 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.theme.AttendanceTypography
+import com.yapp.common.yds.YDSPopupDialog
 import com.yapp.presentation.R
 import com.yapp.presentation.util.permission.PermissionManager
 import com.yapp.presentation.util.permission.PermissionState
 import com.yapp.presentation.util.permission.PermissionType
+import kotlinx.coroutines.flow.collect
 import java.util.concurrent.Executors
 
 @Composable
@@ -43,51 +45,56 @@ fun QrCodeScanner(
     moveBackToPreviousScreen: () -> Unit,
 ) {
     val context = LocalContext.current
-    val uiState = viewModel.uiState.collectAsState()
+    var showQrScanner by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth()
-    ) {
-        PermissionManager.requestPermission(
-            context,
-            PermissionType.CAMERA
-        ) { permissionState ->
-            when (permissionState) {
-                PermissionState.GRANTED -> {
-                    viewModel.setEvent(QrCodeContract.QrCodeUiEvent.CameraPermissionGranted)
-                }
-                PermissionState.NEED_DESCRIPTION -> {
-                    viewModel.setEvent(QrCodeContract.QrCodeUiEvent.CameraPermissionDenied)
-                }
-                PermissionState.DENIED -> {
-                    viewModel.setEvent(QrCodeContract.QrCodeUiEvent.CameraPermissionDenied)
-                }
+    LaunchedEffect(key1 = viewModel.effect) {
+        viewModel.effect.collect {}
+    }
+
+    PermissionManager.requestPermission(
+        context,
+        PermissionType.CAMERA
+    ) { permissionState ->
+        when (permissionState) {
+            PermissionState.GRANTED -> {
+                showQrScanner = true
+                showDialog = false
+            }
+            PermissionState.NEED_DESCRIPTION -> {
+                showQrScanner = false
+                showDialog = true
+            }
+            PermissionState.DENIED -> {
+                showQrScanner = false
+                showDialog = true
             }
         }
+    }
 
-        if (uiState.value.isGrantedCameraPermission) {
-            Scanner(
+    if (showQrScanner) {
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+        ) {
+            CameraPreview()
+            ScannerDecoration(
                 modifier = modifier,
                 moveBackToPreviousScreen = moveBackToPreviousScreen
             )
-        } else {
-            Toast.makeText(context, "카메라 권한을 허용해 주세요", Toast.LENGTH_SHORT).show()
         }
     }
-}
 
-@Composable
-fun Scanner(
-    modifier: Modifier = Modifier,
-    moveBackToPreviousScreen: () -> Unit,
-) {
-    Surface {
-        CameraPreview()
-        ScannerDecoration(
-            modifier = modifier,
-            moveBackToPreviousScreen = moveBackToPreviousScreen
+    if (showDialog) {
+        YDSPopupDialog(
+            title = stringResource(id = R.string.member_qr_permission_dialog_title_text),
+            content = stringResource(id = R.string.member_qr_permission_dialog_content_text),
+            negativeButtonText = stringResource(id = R.string.member_qr_permission_dialog_negative_text),
+            positiveButtonText = stringResource(id = R.string.member_qr_permission_dialog_positive_text),
+            onClickPositiveButton = { showDialog = !showDialog },
+            onClickNegativeButton = { showDialog = !showDialog },
+            onDismiss = { showDialog = !showDialog }
         )
     }
 }
