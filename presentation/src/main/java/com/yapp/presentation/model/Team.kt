@@ -11,7 +11,7 @@ data class Team(
     companion object {
         fun TeamEntity.mapTo(): Team {
             return Team(
-                platform = PlatformType.valueOf(platform.name),
+                platform = PlatformType.of(platform),
                 number = number
             )
         }
