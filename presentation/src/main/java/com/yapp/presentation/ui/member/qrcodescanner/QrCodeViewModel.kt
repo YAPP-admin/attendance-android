@@ -10,18 +10,7 @@ class QrCodeViewModel @Inject constructor(
 ) {
     override fun handleEvent(event: QrCodeUiEvent) {
         when (event) {
-            QrCodeUiEvent.CameraPermissionGranted -> {
-                setState {
-                    copy(isGrantedCameraPermission = true)
-                }
-            }
 
-            QrCodeUiEvent.CameraPermissionDenied -> {
-                setState {
-                    copy(isGrantedCameraPermission = false)
-                }
-            }
         }
-
     }
 }
