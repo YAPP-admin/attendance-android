@@ -1,6 +1,7 @@
 package com.yapp.attendance.di
 
 import com.yapp.domain.firebase.FirebaseRemoteConfig
+import com.yapp.domain.usecases.GetSessionListUseCase
 import com.yapp.domain.usecases.GetTeamListUseCase
 import dagger.Module
 import dagger.Provides
@@ -15,6 +16,11 @@ object DomainModule {
     @Provides
     fun provideGetTeamListUseCase(firebaseRemoteConfig: FirebaseRemoteConfig): GetTeamListUseCase {
         return GetTeamListUseCase(firebaseRemoteConfig)
+    }
+
+    @Provides
+    fun provideGetSessionListUseCase(firebaseRemoteConfig: FirebaseRemoteConfig): GetSessionListUseCase {
+        return GetSessionListUseCase(firebaseRemoteConfig)
     }
 
 }
