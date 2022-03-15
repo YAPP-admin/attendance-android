@@ -22,7 +22,7 @@ class CheckLocalMemberUseCase @Inject constructor(
     private val localRepository: LocalRepository
 ) : BaseUseCase<Flow<TaskResult<Boolean>>, CheckLocalMemberUseCase.Params>() {
 
-    override suspend fun invoke(params: Params): Flow<TaskResult<Boolean>> {
+    override suspend fun invoke(params: Params?): Flow<TaskResult<Boolean>> {
         return localRepository.getMemberId()
             .map { id ->
                 id != null
@@ -38,8 +38,8 @@ class SignUpUseCase @Inject constructor(
     private val adminRepository: AdminRepository
 ) : BaseUseCase<Flow<TaskResult<Unit>>, SignUpUseCase.Params>() {
 
-    override suspend fun invoke(params: Params): Flow<TaskResult<Unit>> {
-        return adminRepository.checkAdmin(params.id)
+    override suspend fun invoke(params: Params?): Flow<TaskResult<Unit>> {
+        return adminRepository.checkAdmin(params!!.id)
             .flatMapLatest { isAdmin ->
                 val member = MemberEntity(
                     id = params.id,

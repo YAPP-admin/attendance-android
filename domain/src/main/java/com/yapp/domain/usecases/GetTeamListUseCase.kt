@@ -12,7 +12,7 @@ class GetTeamListUseCase @Inject constructor(
     private val firebaseRemoteConfig: FirebaseRemoteConfig
 ) : BaseUseCase<Flow<TaskResult<List<TeamEntity>>>, GetTeamListUseCase.Params>() {
 
-    override suspend fun invoke(params: Params): Flow<TaskResult<List<TeamEntity>>> {
+    override suspend fun invoke(params: Params?): Flow<TaskResult<List<TeamEntity>>> {
         return firebaseRemoteConfig.getTeamList()
             .toResult()
     }
