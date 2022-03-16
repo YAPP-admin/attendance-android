@@ -7,7 +7,8 @@ import com.yapp.common.base.UiState
 
 class ManagementContract {
     data class ManagementState(
-        val isLoading: Boolean = false
+        val isLoading: Boolean = false,
+        val title: String = ""
     ): UiState
 
     sealed class ManagementEvent : UiEvent
