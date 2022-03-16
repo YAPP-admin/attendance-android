@@ -42,6 +42,7 @@ import com.yapp.presentation.util.permission.PermissionType
 import kotlinx.coroutines.flow.collect
 import java.util.concurrent.Executors
 
+
 @Composable
 fun QrCodeScanner(
     viewModel: QrCodeViewModel = hiltViewModel(),
@@ -145,14 +146,11 @@ fun CameraPreview() {
                     val cameraProvider = cameraProviderFuture.get()
                     val barcodeAnalyzer =
                         QrCodeAnalyzer(
-                            onQrCodeDetected = { qrCodes ->
-                                qrCodes.forEach { qrCode ->
-                                    qrCode.rawValue?.let { qrCodeValue ->
-                                        // todo: qrCode.cornerPoints 범위 내에서 인식된 것인지 확인
-                                        // todo: code 확인해서 DB 반영
-                                        code = qrCodeValue
-                                        Toast.makeText(context, code, Toast.LENGTH_SHORT).show()
-                                    }
+                            onQrCodeDetected = { qrCode ->
+                                qrCode.rawValue?.let { qrCodeValue ->
+                                    // todo: code 확인해서 DB 반영
+                                    code = qrCodeValue
+                                    Toast.makeText(context, code, Toast.LENGTH_SHORT).show()
                                 }
                             },
                             onFailToAnalysis = { exception ->
