@@ -1,11 +1,10 @@
 package com.yapp.attendance.di
 
 import com.yapp.data.firebase.FirebaseRemoteConfigProvider
-import com.yapp.domain.util.firebase.FirebaseRemoteConfig
+import com.yapp.domain.firebase.FirebaseRemoteConfig
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
