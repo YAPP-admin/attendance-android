@@ -20,16 +20,14 @@ import javax.inject.Inject
 class CheckLocalMemberUseCase @Inject constructor(
     private val memberRepository: MemberRepository,
     private val localRepository: LocalRepository
-) : BaseUseCase<Flow<TaskResult<Boolean>>, CheckLocalMemberUseCase.Params>() {
+) : BaseUseCase<Flow<TaskResult<Boolean>>, Unit>() {
 
-    override suspend fun invoke(params: Params?): Flow<TaskResult<Boolean>> {
+    override suspend fun invoke(params: Unit?): Flow<TaskResult<Boolean>> {
         return localRepository.getMemberId()
             .map { id ->
                 id != null
             }.toResult()
     }
-
-    class Params()
 
 }
 

@@ -10,13 +10,11 @@ import javax.inject.Inject
 
 class GetTeamListUseCase @Inject constructor(
     private val firebaseRemoteConfig: FirebaseRemoteConfig
-) : BaseUseCase<Flow<TaskResult<List<TeamEntity>>>, GetTeamListUseCase.Params>() {
+) : BaseUseCase<@JvmSuppressWildcards Flow<TaskResult<List<TeamEntity>>>, Unit>() {
 
-    override suspend fun invoke(params: Params?): Flow<TaskResult<List<TeamEntity>>> {
+    override suspend fun invoke(params: Unit?): Flow<TaskResult<List<TeamEntity>>> {
         return firebaseRemoteConfig.getTeamList()
             .toResult()
     }
-
-    class Params
 
 }

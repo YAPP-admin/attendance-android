@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
 
-abstract class BaseUseCase<Result, in Params>() {
+abstract class BaseUseCase<Result, in Params : Any?>() {
 
     abstract suspend operator fun invoke(params: Params? = null): Result
 

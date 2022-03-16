@@ -16,15 +16,16 @@ class AdminMainViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getSessionListUseCase().collectWithCallback(
-                onSuccess = { entities ->
-                    val sessions = entities.map { entity -> entity.mapTo() }
-                    setState { copy(isLoading = false, sessions = sessions) }
-                },
-                onFailed = {
-                    // TODO 에러핸들링 필요합니다.
-                }
-            )
+            getSessionListUseCase()
+                .collectWithCallback(
+                    onSuccess = { entities ->
+                        val sessions = entities.map { entity -> entity.mapTo() }
+                        setState { copy(isLoading = false, sessions = sessions) }
+                    },
+                    onFailed = {
+                        // TODO 에러핸들링 필요합니다.
+                    }
+                )
         }
     }
 
@@ -35,4 +36,5 @@ class AdminMainViewModel @Inject constructor(
     override fun handleEvent(event: AdminMainUiEvent) {
         TODO("Not yet implemented")
     }
+
 }

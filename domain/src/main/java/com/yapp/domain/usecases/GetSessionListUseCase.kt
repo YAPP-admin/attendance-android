@@ -10,12 +10,11 @@ import javax.inject.Inject
 
 class GetSessionListUseCase @Inject constructor(
     private val firebaseRemoteConfig: FirebaseRemoteConfig
-) : BaseUseCase<Flow<TaskResult<List<SessionEntity>>>, GetSessionListUseCase.Params>() {
+) : BaseUseCase<@JvmSuppressWildcards Flow<TaskResult<List<SessionEntity>>>, Unit>() {
 
-    override suspend fun invoke(params: Params?): Flow<TaskResult<List<SessionEntity>>> {
+    override suspend fun invoke(params: Unit?): Flow<TaskResult<List<SessionEntity>>> {
         return firebaseRemoteConfig.getSessionList()
             .toResult()
     }
 
-    class Params
 }
