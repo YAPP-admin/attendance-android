@@ -1,8 +1,8 @@
 package com.yapp.presentation.model.type
 
 
-enum class PlatformType {
-    ANDROID, IOS, WEB, ALL_ROUNDER;
+enum class PlatformType(val type: String) {
+    ANDROID("Android"), IOS("iOS"), WEB("Web"), ALL_ROUNDER("All-Rounder");
 
     companion object {
         fun of(value: String): PlatformType {
