@@ -25,7 +25,7 @@ data class AttendanceModel(
 }
 
 @Serializable
-data class AttendanceTypeModel(val point: Int = 0, val text: String = EMPTY) {
+data class AttendanceTypeModel(val point: Int = 0, val text: String = ABSENT) {
 
     companion object {
         private const val ABSENT = "미통보 결석"
@@ -33,7 +33,6 @@ data class AttendanceTypeModel(val point: Int = 0, val text: String = EMPTY) {
         private const val NORMAL = "출석"
         private const val LATE = "미통보 지각"
         private const val REPORTED_LATE = "지각"
-        private const val EMPTY = "EMPTY"
 
         fun AttendanceTypeModel.mapToEntity(): AttendanceTypeEntity {
             return when (this.text) {
@@ -42,7 +41,6 @@ data class AttendanceTypeModel(val point: Int = 0, val text: String = EMPTY) {
                 NORMAL -> AttendanceTypeEntity.Normal
                 LATE -> AttendanceTypeEntity.Late
                 REPORTED_LATE -> AttendanceTypeEntity.ReportedLate
-                EMPTY -> AttendanceTypeEntity.Empty
                 else -> error("알 수 없는 AttendanceType입니다.")
             }
         }
