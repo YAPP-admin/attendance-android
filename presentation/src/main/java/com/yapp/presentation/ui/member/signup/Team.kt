@@ -82,10 +82,10 @@ fun TeamOption(uiState: TeamContract.TeamUiState, onTeamTypeClicked: (String) ->
                 repeat(rowNum) { index ->
                     val team = uiState.teams[rowNum * row + index]
                     YDSChoiceButton(
-                        text = team.platform!!.name,
+                        text = team.platform!!.type,
                         modifier = Modifier.padding(end = 12.dp),
                         state = if (uiState.selectedTeam.platform == team.platform) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                        onClick = { onTeamTypeClicked(team.platform.name) }
+                        onClick = { onTeamTypeClicked(team.platform.type) }
                     )
                 }
             }
