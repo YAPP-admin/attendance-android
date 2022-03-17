@@ -12,7 +12,6 @@ data class MemberModel(
     val name: String? = null,
     val position: PositionTypeModel? = null,
     val team: TeamModel? = null,
-    val isAdmin: Boolean? = null,
     val attendances: List<AttendanceModel>? = null
 ) {
 
@@ -23,7 +22,6 @@ data class MemberModel(
                 name = name!!,
                 position = position!!.mapToEntity(),
                 team = team!!.mapToEntity(),
-                isAdmin = isAdmin!!,
                 attendances = attendances?.map { it.mapToEntity() }!!
             )
         }

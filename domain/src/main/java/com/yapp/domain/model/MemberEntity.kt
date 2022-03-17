@@ -7,6 +7,5 @@ data class MemberEntity(
     val name: String,
     val position: PositionTypeEntity,
     val team: TeamEntity,
-    val isAdmin: Boolean,
     val attendances: List<AttendanceEntity>
 )

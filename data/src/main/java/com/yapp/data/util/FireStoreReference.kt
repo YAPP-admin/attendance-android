@@ -7,7 +7,3 @@ import com.google.firebase.firestore.FirebaseFirestore
 fun FirebaseFirestore.memberRef(): CollectionReference {
     return this.collection("member")
 }
-
-fun FirebaseFirestore.adminRef(): CollectionReference {
-    return this.collection("admin")
-}

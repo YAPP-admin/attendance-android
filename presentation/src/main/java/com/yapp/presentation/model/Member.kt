@@ -12,7 +12,6 @@ data class Member(
     val name: String,
     val position: PositionType,
     val team: Team,
-    val isAdmin: Boolean,
     val attendances: AttendanceList
 ) {
     companion object {
@@ -22,7 +21,6 @@ data class Member(
                 name = name,
                 position = PositionType.valueOf(position.name),
                 team = team.mapTo(),
-                isAdmin = isAdmin,
                 attendances = AttendanceList.of(attendances.map { it.mapTo() })
             )
         }
