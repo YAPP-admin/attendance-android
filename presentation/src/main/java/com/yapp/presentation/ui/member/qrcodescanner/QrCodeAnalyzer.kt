@@ -36,14 +36,13 @@ class QrCodeAnalyzer @Inject constructor(
                     (imageProxy.width - availableAreaEdge) / 2,
                     (imageProxy.height + availableAreaEdge) / 2,
                     (imageProxy.width + availableAreaEdge) / 2
-                ) // 대략적으로 화면 높이의 절반 길이의 정사각형 안으로 들어와야 스캔되도록 구현함
+                ) // 대략 화면 높이의 절반 길이의 정사각형 안으로 들어와야 스캔되도록 구현함
                 // todo: 정확히 스캔 범위 내로 들어와야 스캔되도록 수정
 
                 qrCodeScanner.process(imageToProcess)
                     .addOnSuccessListener { qrCodes ->
                         if (qrCodes.size == 1) {
                             val detectedCode = qrCodes[0]
-
                             if (availableArea.contains(detectedCode.boundingBox!!)) {
                                 onQrCodeDetected(detectedCode)
                             }

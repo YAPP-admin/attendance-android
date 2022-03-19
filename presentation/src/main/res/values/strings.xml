@@ -48,11 +48,11 @@
 
     <string name="member_qr_time_inform_text">2시 5분까지 출석 체크를 완료해 주세요!</string>
     <string name="member_qr_late_inform_text">이후 출석은 지각으로 처리돼요</string>
+    <string name="member_qr_complete_inform_text">이미 출석을 완료했어요</string>
     <string name="member_qr_permission_dialog_title_text">카메라 권한이 필요합니다</string>
     <string name="member_qr_permission_dialog_content_text">월활한 출석 체크를 위해 [설정] - [권한]에서 카메라 권한을  \'허용\'으로 활성화해 주세요</string>
     <string name="member_qr_permission_dialog_negative_text">취소</string>
     <string name="member_qr_permission_dialog_positive_text">설정</string>
-
 
     <string name="help_title">도움말</string>
     <string name="help_basic_info_yapp_text">YAPP</string>

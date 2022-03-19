@@ -3,6 +3,7 @@ package com.yapp.presentation.ui.member.qrcodescanner
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.camera.core.CameraSelector
@@ -11,10 +12,9 @@ import androidx.camera.core.ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
@@ -22,18 +22,22 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.mlkit.vision.barcode.common.Barcode
 import com.yapp.common.theme.AttendanceTypography
+import com.yapp.common.theme.Gray_Box
 import com.yapp.common.yds.YDSPopupDialog
 import com.yapp.presentation.R
 import com.yapp.presentation.util.permission.PermissionManager
@@ -42,6 +46,11 @@ import com.yapp.presentation.util.permission.PermissionType
 import kotlinx.coroutines.flow.collect
 import java.util.concurrent.Executors
 
+enum class CheckState {
+    BEFORE,
+    SUCCESS,
+    COMPLETE
+}
 
 @Composable
 fun QrCodeScanner(
@@ -52,9 +61,14 @@ fun QrCodeScanner(
     val context = LocalContext.current
     var showQrScanner by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
+    val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(key1 = viewModel.effect) {
-        viewModel.effect.collect {}
+        viewModel.effect.collect { effect ->
+            when (effect) {
+
+            }
+        }
     }
 
     PermissionManager.requestPermission(
@@ -83,11 +97,74 @@ fun QrCodeScanner(
                 .fillMaxWidth()
                 .fillMaxHeight()
         ) {
-            CameraPreview()
+            CameraPreview { code ->
+                try {
+                    val sessionId = QrParserUtil.getSessionIdFromBarcode(code)
+                    viewModel.setEvent(QrCodeContract.QrCodeUiEvent.QRCodeScanned(sessionId))
+                    Toast.makeText(context, sessionId.toString(), Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Toast.makeText(context, "잘못된 코드입니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
             ScannerDecoration(
                 modifier = modifier,
                 moveBackToPreviousScreen = moveBackToPreviousScreen
             )
+        }
+    }
+
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+    ) {
+        val (noticeText, checkIcon, completeNoticeBox) = createRefs()
+        val guideline = createGuidelineFromTop(fraction = 0.5f)
+
+        when (uiState.checkState) {
+            CheckState.BEFORE -> {
+                NoticeText(
+                    modifier.constrainAs(noticeText) {
+                        bottom.linkTo(guideline, 162.dp)
+                        absoluteLeft.linkTo(parent.absoluteLeft)
+                        absoluteRight.linkTo(parent.absoluteRight)
+                    }
+                )
+            }
+            CheckState.SUCCESS -> {
+                Icon(
+                    modifier = modifier.constrainAs(checkIcon) {
+                        absoluteLeft.linkTo(parent.absoluteLeft)
+                        absoluteRight.linkTo(parent.absoluteRight)
+                    },
+                    painter = painterResource(id = R.drawable.icon_property_enabled),
+                    tint = Color.Unspecified,
+                    contentDescription = null
+                )
+            }
+            CheckState.COMPLETE -> {
+                Box(
+                    modifier = Modifier
+                        .constrainAs(completeNoticeBox) {
+                            bottom.linkTo(guideline, 162.dp)
+                            absoluteLeft.linkTo(parent.absoluteLeft)
+                            absoluteRight.linkTo(parent.absoluteRight)
+                        }
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .padding(horizontal = 24.dp)
+                        .clip(shape = RoundedCornerShape(10.dp))
+                        .background(color = Gray_Box)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.member_qr_complete_inform_text),
+                        color = Color.White,
+                        style = AttendanceTypography.body1,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+            }
         }
     }
 
@@ -113,11 +190,12 @@ fun QrCodeScanner(
 }
 
 @Composable
-fun CameraPreview() {
+fun CameraPreview(
+    afterDetectedCode: (code: Barcode) -> Unit
+) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     var preview by remember { mutableStateOf<Preview?>(null) }
-    var code by remember { mutableStateOf("") }
 
     Surface {
         AndroidView(
@@ -146,12 +224,8 @@ fun CameraPreview() {
                     val cameraProvider = cameraProviderFuture.get()
                     val barcodeAnalyzer =
                         QrCodeAnalyzer(
-                            onQrCodeDetected = { qrCode ->
-                                qrCode.rawValue?.let { qrCodeValue ->
-                                    // todo: code 확인해서 DB 반영
-                                    code = qrCodeValue
-                                    Toast.makeText(context, code, Toast.LENGTH_SHORT).show()
-                                }
+                            onQrCodeDetected = { code ->
+                                afterDetectedCode(code)
                             },
                             onFailToAnalysis = { exception ->
                                 Toast.makeText(
@@ -194,14 +268,7 @@ fun ScannerDecoration(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        val (informText, closeIcon, qrAreaIcon) = createRefs()
-        InformText(
-            modifier.constrainAs(informText) {
-                bottom.linkTo(qrAreaIcon.top, 40.dp)
-                absoluteLeft.linkTo(parent.absoluteLeft)
-                absoluteRight.linkTo(parent.absoluteRight)
-            }
-        )
+        val (closeIcon, qrAreaIcon) = createRefs()
         IconButton(
             modifier = modifier
                 .constrainAs(closeIcon) {
@@ -231,7 +298,7 @@ fun ScannerDecoration(
 }
 
 @Composable
-fun InformText(modifier: Modifier = Modifier) {
+fun NoticeText(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
