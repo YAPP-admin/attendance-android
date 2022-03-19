@@ -1,5 +1,6 @@
 package com.yapp.presentation.ui.member.qrcodescanner
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
@@ -11,9 +12,7 @@ import androidx.camera.core.ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
@@ -21,13 +20,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -36,7 +33,7 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.yapp.common.theme.AttendanceTypography
-import com.yapp.common.theme.Gray_Box
+import com.yapp.common.util.AttendanceQrCodeParser
 import com.yapp.common.yds.YDSPopupDialog
 import com.yapp.common.yds.YDSToast
 import com.yapp.presentation.R
@@ -45,12 +42,6 @@ import com.yapp.presentation.util.permission.PermissionState
 import com.yapp.presentation.util.permission.PermissionType
 import kotlinx.coroutines.flow.collect
 import java.util.concurrent.Executors
-
-enum class CheckState {
-    BEFORE,
-    SUCCESS,
-    COMPLETE
-}
 
 @Composable
 fun QrCodeScanner(
@@ -99,8 +90,8 @@ fun QrCodeScanner(
         ) {
             CameraPreview { code ->
                 try {
-                    val sessionId = QrParserUtil.getSessionIdFromBarcode(code)
-                    viewModel.setEvent(QrCodeContract.QrCodeUiEvent.QRCodeScanned(sessionId))
+                    val sessionId = AttendanceQrCodeParser.getSessionIdFromBarcode(code.rawValue)
+                    viewModel.setEvent(QrCodeContract.QrCodeUiEvent.SuccessToCheck(sessionId))
                     Toast.makeText(context, sessionId.toString(), Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
                     Toast.makeText(context, "잘못된 코드입니다.", Toast.LENGTH_SHORT).show()
@@ -111,47 +102,49 @@ fun QrCodeScanner(
                 moveBackToPreviousScreen = moveBackToPreviousScreen
             )
         }
-    }
 
-    ConstraintLayout(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-    ) {
-        val (noticeText, checkIcon, completeNoticeBox) = createRefs()
-        val guideline = createGuidelineFromTop(fraction = 0.5f)
+        ConstraintLayout(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+        ) {
+            val (noticeText, checkIcon, completeNoticeBox) = createRefs()
+            val guideline = createGuidelineFromTop(fraction = 0.5f)
 
-        when (uiState.checkState) {
-            CheckState.BEFORE -> {
-                NoticeText(
-                    modifier.constrainAs(noticeText) {
-                        bottom.linkTo(guideline, 162.dp)
-                        absoluteLeft.linkTo(parent.absoluteLeft)
-                        absoluteRight.linkTo(parent.absoluteRight)
-                    }
-                )
-            }
-            CheckState.SUCCESS -> {
-                Icon(
-                    modifier = modifier.constrainAs(checkIcon) {
-                        absoluteLeft.linkTo(parent.absoluteLeft)
-                        absoluteRight.linkTo(parent.absoluteRight)
-                    },
-                    painter = painterResource(id = R.drawable.icon_property_enabled),
-                    tint = Color.Unspecified,
-                    contentDescription = null
-                )
-            }
-            CheckState.COMPLETE -> {
-                YDSToast(
-                    modifier = Modifier
-                        .constrainAs(completeNoticeBox) {
+            when (uiState.attendanceState) {
+                QrCodeContract.AttendanceState.STAND_BY -> {
+                    NoticeText(
+                        modifier.constrainAs(noticeText) {
                             bottom.linkTo(guideline, 162.dp)
                             absoluteLeft.linkTo(parent.absoluteLeft)
                             absoluteRight.linkTo(parent.absoluteRight)
+                        }
+                    )
+                }
+                QrCodeContract.AttendanceState.SUCCESS -> {
+                    Icon(
+                        modifier = modifier.constrainAs(checkIcon) {
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                            absoluteLeft.linkTo(parent.absoluteLeft)
+                            absoluteRight.linkTo(parent.absoluteRight)
                         },
-                    text = stringResource(id = R.string.member_qr_complete_inform_text)
-                )
+                        painter = painterResource(id = R.drawable.icon_property_enabled),
+                        tint = Color.Unspecified,
+                        contentDescription = null
+                    )
+                }
+                QrCodeContract.AttendanceState.COMPLETE -> {
+                    YDSToast(
+                        modifier = Modifier
+                            .constrainAs(completeNoticeBox) {
+                                bottom.linkTo(guideline, 162.dp)
+                                absoluteLeft.linkTo(parent.absoluteLeft)
+                                absoluteRight.linkTo(parent.absoluteRight)
+                            },
+                        text = stringResource(id = R.string.member_qr_complete_inform_text)
+                    )
+                }
             }
         }
     }
@@ -162,15 +155,7 @@ fun QrCodeScanner(
             content = stringResource(id = R.string.member_qr_permission_dialog_content_text),
             negativeButtonText = stringResource(id = R.string.member_qr_permission_dialog_negative_text),
             positiveButtonText = stringResource(id = R.string.member_qr_permission_dialog_positive_text),
-            onClickPositiveButton = {
-                val intent = Intent(
-                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                    Uri.parse("package:" + context.packageName)
-                )
-                intent.addCategory(Intent.CATEGORY_DEFAULT)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                startActivity(context, intent, null)
-            },
+            onClickPositiveButton = { intentToAppSetting(context) },
             onClickNegativeButton = { moveBackToPreviousScreen() },
             onDismiss = { moveBackToPreviousScreen() }
         )
@@ -252,17 +237,13 @@ fun ScannerDecoration(
     modifier: Modifier = Modifier,
     moveBackToPreviousScreen: () -> Unit
 ) {
-    ConstraintLayout(
-        modifier = Modifier
-            .fillMaxSize()
+    Box(
+        modifier = modifier
     ) {
-        val (closeIcon, qrAreaIcon) = createRefs()
         IconButton(
             modifier = modifier
-                .constrainAs(closeIcon) {
-                    top.linkTo(parent.top, 14.dp)
-                    absoluteRight.linkTo(parent.absoluteRight, 14.dp)
-                },
+                .align(Alignment.TopEnd)
+                .padding(top = 14.dp, end = 14.dp),
             onClick = moveBackToPreviousScreen
         ) {
             Icon(
@@ -272,12 +253,7 @@ fun ScannerDecoration(
             )
         }
         Icon(
-            modifier = modifier.constrainAs(qrAreaIcon) {
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-                absoluteRight.linkTo(parent.absoluteRight)
-                absoluteLeft.linkTo(parent.absoluteLeft)
-            },
+            modifier = modifier.align(Alignment.Center),
             painter = painterResource(id = R.drawable.icon_qr_area),
             tint = Color.Unspecified,
             contentDescription = null
@@ -303,4 +279,14 @@ fun NoticeText(modifier: Modifier = Modifier) {
             style = AttendanceTypography.body1
         )
     }
+}
+
+fun intentToAppSetting(context: Context) {
+    val intent = Intent(
+        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+        Uri.parse("package:" + context.packageName)
+    )
+    intent.addCategory(Intent.CATEGORY_DEFAULT)
+    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+    startActivity(context, intent, null)
 }

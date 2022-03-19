@@ -15,7 +15,10 @@ class QrCodeAnalyzer @Inject constructor(
     private val onQrCodeDetected: (Barcode) -> Unit,
     private val onFailToAnalysis: (Exception) -> Unit
 ) : ImageAnalysis.Analyzer {
-    private val SCAN_DURATION = 1L
+    companion object {
+        const val SCAN_DURATION = 1L
+    }
+
     private var lastAnalyzedTimeStamp = 0L
 
     @SuppressLint("UnsafeOptInUsageError")
