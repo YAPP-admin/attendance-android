@@ -18,10 +18,11 @@ import com.yapp.common.theme.Gray_Box
 
 @Composable
 fun YDSToast(
+    modifier: Modifier = Modifier,
     text: String
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(48.dp)
             .padding(horizontal = 24.dp)

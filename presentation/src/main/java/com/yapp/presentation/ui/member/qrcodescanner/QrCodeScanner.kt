@@ -3,7 +3,6 @@ package com.yapp.presentation.ui.member.qrcodescanner
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
-import android.util.Log
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.camera.core.CameraSelector
@@ -39,6 +38,7 @@ import com.google.mlkit.vision.barcode.common.Barcode
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.theme.Gray_Box
 import com.yapp.common.yds.YDSPopupDialog
+import com.yapp.common.yds.YDSToast
 import com.yapp.presentation.R
 import com.yapp.presentation.util.permission.PermissionManager
 import com.yapp.presentation.util.permission.PermissionState
@@ -143,27 +143,15 @@ fun QrCodeScanner(
                 )
             }
             CheckState.COMPLETE -> {
-                Box(
+                YDSToast(
                     modifier = Modifier
                         .constrainAs(completeNoticeBox) {
                             bottom.linkTo(guideline, 162.dp)
                             absoluteLeft.linkTo(parent.absoluteLeft)
                             absoluteRight.linkTo(parent.absoluteRight)
-                        }
-                        .fillMaxWidth()
-                        .height(48.dp)
-                        .padding(horizontal = 24.dp)
-                        .clip(shape = RoundedCornerShape(10.dp))
-                        .background(color = Gray_Box)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.member_qr_complete_inform_text),
-                        color = Color.White,
-                        style = AttendanceTypography.body1,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
+                        },
+                    text = stringResource(id = R.string.member_qr_complete_inform_text)
+                )
             }
         }
     }

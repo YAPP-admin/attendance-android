@@ -18,10 +18,11 @@ import com.yapp.common.theme.Yapp_OrangeAlpha
 
 @Composable
 fun YDSBox(
+    modifier: Modifier = Modifier,
     text: String
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(48.dp)
             .padding(horizontal = 24.dp)
