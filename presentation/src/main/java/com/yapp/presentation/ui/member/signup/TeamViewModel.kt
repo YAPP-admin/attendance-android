@@ -11,13 +11,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TeamViewModel @Inject constructor(
+class TeamViewModel @Inject constructor (
     private val getTeamListUseCase: GetTeamListUseCase
 ) : BaseViewModel<TeamUiState, TeamSideEffect, TeamUiEvent>(TeamUiState()) {
 
     init {
         viewModelScope.launch {
-            getTeamListUseCase.invoke(GetTeamListUseCase.Params())
+            getTeamListUseCase()
                 .collectWithCallback(
                     onSuccess = { teamEntities ->
                         setState { copy(teams = teamEntities.map { it.mapTo() }) }
@@ -33,11 +33,12 @@ class TeamViewModel @Inject constructor(
     override fun handleEvent(event: TeamUiEvent) {
         when (event) {
             is TeamUiEvent.ChooseTeam -> {
-                setState { copy(selectedTeam = uiState.value.selectedTeam?.copy(platform = PlatformType.of(event.platformType))) }
+                setState { copy(selectedTeam = uiState.value.selectedTeam.copy(platform = PlatformType.of(event.platformType))) }
             }
             is TeamUiEvent.ChooseTeamNumber -> {
                 setState { copy(selectedTeam = uiState.value.selectedTeam.copy(number = event.teamNum)) }
             }
         }
     }
+
 }

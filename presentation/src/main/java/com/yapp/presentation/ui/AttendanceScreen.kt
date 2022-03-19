@@ -36,7 +36,7 @@ fun AttendanceScreen(
             Login(
                 kakaoTalkLoginProvider
             ) {
-                navController.navigate(AttendanceScreenRoute.MEMBER_MAIN.route) {
+                navController.navigate(AttendanceScreenRoute.SIGNUP_NAME.route) {
                     popUpTo(AttendanceScreenRoute.LOGIN.route) { inclusive = true }
                 }
             }
