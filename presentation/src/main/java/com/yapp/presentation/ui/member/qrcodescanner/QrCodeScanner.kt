@@ -33,7 +33,6 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.yapp.common.theme.AttendanceTypography
-import com.yapp.common.util.AttendanceQrCodeParser
 import com.yapp.common.yds.YDSPopupDialog
 import com.yapp.common.yds.YDSToast
 import com.yapp.presentation.R
@@ -57,7 +56,9 @@ fun QrCodeScanner(
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collect { effect ->
             when (effect) {
-
+                is QrCodeContract.QrCodeUiSideEffect.ShowToast -> {
+                    Toast.makeText(context, effect.msg, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -88,14 +89,8 @@ fun QrCodeScanner(
                 .fillMaxWidth()
                 .fillMaxHeight()
         ) {
-            CameraPreview { code ->
-                try {
-                    val sessionId = AttendanceQrCodeParser.getSessionIdFromBarcode(code.rawValue)
-                    viewModel.setEvent(QrCodeContract.QrCodeUiEvent.SuccessToCheck(sessionId))
-                    Toast.makeText(context, sessionId.toString(), Toast.LENGTH_SHORT).show()
-                } catch (e: Exception) {
-                    Toast.makeText(context, "잘못된 코드입니다.", Toast.LENGTH_SHORT).show()
-                }
+            CameraPreview { qrCode ->
+                viewModel.setEvent(QrCodeContract.QrCodeUiEvent.ScanQrCode(qrCode.rawValue))
             }
             ScannerDecoration(
                 modifier = modifier,
@@ -281,7 +276,7 @@ fun NoticeText(modifier: Modifier = Modifier) {
     }
 }
 
-fun intentToAppSetting(context: Context) {
+private fun intentToAppSetting(context: Context) {
     val intent = Intent(
         Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
         Uri.parse("package:" + context.packageName)

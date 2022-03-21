@@ -14,7 +14,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.yapp.common.theme.AttendanceTypography
-import com.yapp.common.theme.Gray_Box
 
 @Composable
 fun YDSToast(
@@ -27,7 +26,7 @@ fun YDSToast(
             .height(48.dp)
             .padding(horizontal = 24.dp)
             .clip(shape = RoundedCornerShape(10.dp))
-            .background(color = Gray_Box)
+            .background(color = Color(0XCC2C2F35))
     ) {
         Text(
             text = text,
