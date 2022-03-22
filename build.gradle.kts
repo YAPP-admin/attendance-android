@@ -1,3 +1,4 @@
+
 buildscript {
     repositories {
         google()
@@ -5,6 +6,7 @@ buildscript {
     }
     dependencies {
         classpath("com.android.tools.build:gradle:7.0.4")
+        classpath(Dependencies.Firebase.CRASHLYTICS_GRADLE)
         classpath(Dependencies.Kotlin.GRADLE_PLUGIN)
         classpath(Dependencies.Kotlin.SERIALIZATION_PLUGIN)
         classpath(Dependencies.Dagger.HILT_GRADLE_PLUGIN)
