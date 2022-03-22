@@ -100,7 +100,14 @@ fun AttendanceScreen(
                     navController.navigate(AttendanceScreenRoute.ADMIN_MAIN.route) {
                         popUpTo(AttendanceScreenRoute.MEMBER_SETTING.route) { inclusive = true }
                     }
-                })
+                },
+                onClickLogoutButton = {
+                    navController.navigate(AttendanceScreenRoute.LOGIN.route) {
+                        // 모든 스택을 다 제거해야함.
+                        popUpTo(AttendanceScreenRoute.MEMBER_SETTING.route)
+                    }
+                }
+            )
         }
 
         composable(
@@ -124,8 +131,8 @@ fun AttendanceScreen(
         ) {
             Team(navigateToMainScreen = {
                 navController.navigate(AttendanceScreenRoute.MEMBER_MAIN.route) {
-                    popUpTo(AttendanceScreenRoute.SIGNUP_NAME.route) { inclusive = true }
-                    popUpTo(AttendanceScreenRoute.SIGNUP_TEAM.route) { inclusive = true }
+                    popUpTo(AttendanceScreenRoute.SIGNUP_NAME.route)
+                    popUpTo(AttendanceScreenRoute.SIGNUP_TEAM.route)
                 }
             })
         }
