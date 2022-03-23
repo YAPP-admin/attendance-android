@@ -24,12 +24,13 @@ import com.yapp.presentation.R
 @Composable
 fun Team(
     viewModel: TeamViewModel = hiltViewModel(),
-    navigateToMainScreen: () -> Unit
+    onClickBackButton: () -> Unit,
+    onClickNextButton: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
-        topBar = { YDSAppBar(onClickBackButton = {}) },
+        topBar = { YDSAppBar(onClickBackButton = { onClickBackButton() }) },
         modifier = Modifier
             .fillMaxSize()
     ) {
@@ -69,8 +70,13 @@ fun Team(
                     .padding(bottom = 40.dp)
                     .height(60.dp)
                     .align(Alignment.BottomCenter),
+<<<<<<< HEAD
                 state = if ((uiState.selectedTeam.type != null) and (uiState.selectedTeam.number != null)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
                 onClick = { if ((uiState.selectedTeam.type != null) and (uiState.selectedTeam.number != null)) navigateToMainScreen() },
+=======
+                state = if ((uiState.selectedTeam.platform != null) and (uiState.selectedTeam.number != null)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+                onClick = { if ((uiState.selectedTeam.platform != null) and (uiState.selectedTeam.number != null)) onClickNextButton() },
+>>>>>>> b017619 (뒤로가기 기능 수정)
             )
         }
     }
