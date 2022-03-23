@@ -44,21 +44,23 @@ fun Management(
                 }
             )
         },
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
     ) {
         LazyColumn(
-            modifier = Modifier
-                .padding(horizontal = 24.dp)
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             item {
-                Spacer(modifier = Modifier.height(28.dp))
-                AttendCountText(memberCount = 0)
-                Spacer(modifier = Modifier.height(28.dp))
+                Column(modifier = Modifier.padding(24.dp)) {
+                    Spacer(modifier = Modifier.height(28.dp))
+                    AttendCountText(memberCount = 0)
+                    Spacer(modifier = Modifier.height(28.dp))
+                }
             }
             item {
-
+                ExpandableTeam(teamName = "All-Rounder팀")
+                ExpandableTeam(teamName = "Android 1팀")
+                ExpandableTeam(teamName = "Android 2팀")
+                ExpandableTeam(teamName = "IOS 1팀")
             }
         }
     }
@@ -106,7 +108,7 @@ fun ExpandableTeam(
                 .width(0.dp)
                 .weight(0.9F)
                 .fillMaxHeight()
-                .padding(vertical = 20.dp),
+                .padding(top = 20.dp, bottom = 20.dp, start = 20.dp),
             text = teamName,
             textAlign = TextAlign.Start,
             style = AttendanceTypography.h3,
