@@ -1,11 +1,12 @@
-package com.yapp.presentation.ui.member.signup
+package com.yapp.presentation.ui.member.signup.team
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.usecases.GetTeamListUseCase
 import com.yapp.presentation.model.Team.Companion.mapTo
 import com.yapp.presentation.model.type.TeamType
-import com.yapp.presentation.ui.member.signup.TeamContract.*
+import com.yapp.presentation.ui.member.signup.team.TeamContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

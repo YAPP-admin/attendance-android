@@ -1,4 +1,4 @@
-package com.yapp.presentation.ui.member.signup
+package com.yapp.presentation.ui.member.signup.name
 
 import com.yapp.common.base.UiEvent
 import com.yapp.common.base.UiSideEffect

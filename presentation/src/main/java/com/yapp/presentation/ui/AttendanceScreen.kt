@@ -19,8 +19,7 @@ import com.yapp.presentation.ui.member.qrcodescanner.QrCodeScanner
 import com.yapp.presentation.ui.member.score.detail.SessionDetail
 import com.yapp.presentation.ui.member.score.detail.SessionDetailNavParam
 import com.yapp.presentation.ui.member.setting.MemberSetting
-import com.yapp.presentation.ui.member.signup.Name
-import com.yapp.presentation.ui.member.signup.Team
+import com.yapp.presentation.ui.member.signup.name.Name
 import com.yapp.presentation.ui.splash.Splash
 
 @Composable
@@ -29,7 +28,7 @@ fun AttendanceScreen(
 ) {
     NavHost(
         navController = navController,
-        startDestination = AttendanceScreenRoute.SPLASH.route
+        startDestination = AttendanceScreenRoute.SIGNUP_NAME.route
     ) {
         composable(
             route = AttendanceScreenRoute.LOGIN.route
@@ -190,12 +189,10 @@ enum class AttendanceScreenRoute(val route: String) {
     QR_AUTH("qr-auth"),
     MEMBER_MAIN("member-main"),
     ADMIN_MAIN("admin-main"),
-    MEMBER_SETTING("member-setting"),
-    SIGNUP_NAME("name"),
-    SIGNUP_TEAM("team"),
-    HELP("help"),
-    ADMIN_TOTAL_SCORE("admin-total-score"),
-    SESSION_DETAIL("session-detail");
+    MEMBER_SETTING("member_setting"),
+    SIGNUP_NAME("signup-name"),
+    SIGNUP_TEAM("signup-team"),
+    HELP("help");
 }
 
 // status bar color 한번에 지정할 수 있는 방법 찾아보기 !

@@ -1,4 +1,4 @@
-package com.yapp.presentation.ui.member.signup
+package com.yapp.presentation.ui.member.signup.name
 
 import android.util.Log
 import com.yapp.common.base.BaseViewModel
@@ -13,7 +13,6 @@ class NameViewModel @Inject constructor() :
     override fun handleEvent(event: NameContract.NameUiEvent) {
         when (event) {
             is NameContract.NameUiEvent.InputName -> {
-                Log.d("#viewmodel", event.name)
                 setState { copy(name = event.name) }
             }
         }

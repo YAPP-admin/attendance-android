@@ -1,5 +1,9 @@
-package com.yapp.presentation.ui.member.signup
+package com.yapp.presentation.ui.member.signup.team
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -8,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -49,15 +54,13 @@ fun Team(
                     uiState,
                     onTeamTypeClicked = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeam(it)) })
                 Spacer(modifier = Modifier.height(52.dp))
-                if (uiState.selectedTeam.type != null) {
-                    TeamNumberOption(
-                        uiState,
-                        onTeamNumberClicked = {
-                            viewModel.setEvent(
-                                TeamContract.TeamUiEvent.ChooseTeamNumber(it)
-                            )
-                        })
-                }
+                TeamNumberOption(
+                    uiState,
+                    onTeamNumberClicked = {
+                        viewModel.setEvent(
+                            TeamContract.TeamUiEvent.ChooseTeamNumber(it)
+                        )
+                    })
             }
 
             YDSButtonLarge(
@@ -95,24 +98,35 @@ fun TeamOption(uiState: TeamContract.TeamUiState, onTeamTypeClicked: (String) ->
 
 @Composable
 fun TeamNumberOption(uiState: TeamContract.TeamUiState, onTeamNumberClicked: (Int) -> Unit) {
-    val selectedTeamType = uiState.teams.filter { it.type == uiState.selectedTeam.type }
-    Column(
+    val selectedTeamType = uiState.teams.filter { it.platform == uiState.selectedTeam.platform }
+    val density = LocalDensity.current
+    AnimatedVisibility(
+        visible = uiState.selectedTeam.platform != null,
+        enter = slideInVertically { with(density) { -40.dp.roundToPx() } }
+                + expandVertically(expandFrom = Alignment.CenterVertically)
+                + fadeIn(initialAlpha = 0.3f)
     ) {
-        Text(
-            text = stringResource(R.string.member_signup_choose_team_number),
-            style = AttendanceTypography.h3,
-            color = Gray_1200
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Row() {
-            repeat(selectedTeamType[0].number!!) { teamNum ->
-                YDSChoiceButton(
-                    text = stringResource(R.string.member_signup_team_number, teamNum + 1),
-                    modifier = Modifier.padding(end = 12.dp),
-                    state = if (uiState.selectedTeam.number == teamNum + 1) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                    onClick = { onTeamNumberClicked(teamNum + 1) }
-                )
+        Column(
+        ) {
+            Text(
+                text = stringResource(R.string.member_signup_choose_team_number),
+                style = AttendanceTypography.h3,
+                color = Gray_1200
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Row() {
+                if (selectedTeamType.isNotEmpty()) {
+                    repeat(selectedTeamType[0].number!!) { teamNum ->
+                        YDSChoiceButton(
+                            text = stringResource(R.string.member_signup_team_number, teamNum + 1),
+                            modifier = Modifier.padding(end = 12.dp),
+                            state = if (uiState.selectedTeam.number == teamNum + 1) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+                            onClick = { onTeamNumberClicked(teamNum + 1) }
+                        )
+                    }
+                }
             }
         }
     }
+
 }
