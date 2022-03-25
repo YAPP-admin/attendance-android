@@ -1,5 +1,6 @@
 package com.yapp.presentation.ui.member.qrcodescanner
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
@@ -11,10 +12,7 @@ import androidx.camera.core.ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
@@ -33,8 +31,10 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.mlkit.vision.barcode.common.Barcode
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.YDSPopupDialog
+import com.yapp.common.yds.YDSToast
 import com.yapp.presentation.R
 import com.yapp.presentation.util.permission.PermissionManager
 import com.yapp.presentation.util.permission.PermissionState
@@ -51,9 +51,16 @@ fun QrCodeScanner(
     val context = LocalContext.current
     var showQrScanner by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
+    val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(key1 = viewModel.effect) {
-        viewModel.effect.collect {}
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is QrCodeContract.QrCodeUiSideEffect.ShowToast -> {
+                    Toast.makeText(context, effect.msg, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     PermissionManager.requestPermission(
@@ -82,11 +89,58 @@ fun QrCodeScanner(
                 .fillMaxWidth()
                 .fillMaxHeight()
         ) {
-            CameraPreview()
+            CameraPreview { qrCode ->
+                viewModel.setEvent(QrCodeContract.QrCodeUiEvent.ScanQrCode(qrCode.rawValue))
+            }
             ScannerDecoration(
                 modifier = modifier,
                 moveBackToPreviousScreen = moveBackToPreviousScreen
             )
+        }
+
+        ConstraintLayout(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+        ) {
+            val (noticeText, checkIcon, completeNoticeBox) = createRefs()
+            val guideline = createGuidelineFromTop(fraction = 0.5f)
+
+            when (uiState.attendanceState) {
+                QrCodeContract.AttendanceState.STAND_BY -> {
+                    NoticeText(
+                        modifier.constrainAs(noticeText) {
+                            bottom.linkTo(guideline, 162.dp)
+                            absoluteLeft.linkTo(parent.absoluteLeft)
+                            absoluteRight.linkTo(parent.absoluteRight)
+                        }
+                    )
+                }
+                QrCodeContract.AttendanceState.SUCCESS -> {
+                    Icon(
+                        modifier = modifier.constrainAs(checkIcon) {
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                            absoluteLeft.linkTo(parent.absoluteLeft)
+                            absoluteRight.linkTo(parent.absoluteRight)
+                        },
+                        painter = painterResource(id = R.drawable.icon_property_enabled),
+                        tint = Color.Unspecified,
+                        contentDescription = null
+                    )
+                }
+                QrCodeContract.AttendanceState.COMPLETE -> {
+                    YDSToast(
+                        modifier = Modifier
+                            .constrainAs(completeNoticeBox) {
+                                bottom.linkTo(guideline, 162.dp)
+                                absoluteLeft.linkTo(parent.absoluteLeft)
+                                absoluteRight.linkTo(parent.absoluteRight)
+                            },
+                        text = stringResource(id = R.string.member_qr_complete_inform_text)
+                    )
+                }
+            }
         }
     }
 
@@ -96,15 +150,7 @@ fun QrCodeScanner(
             content = stringResource(id = R.string.member_qr_permission_dialog_content_text),
             negativeButtonText = stringResource(id = R.string.member_qr_permission_dialog_negative_text),
             positiveButtonText = stringResource(id = R.string.member_qr_permission_dialog_positive_text),
-            onClickPositiveButton = {
-                val intent = Intent(
-                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                    Uri.parse("package:" + context.packageName)
-                )
-                intent.addCategory(Intent.CATEGORY_DEFAULT)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                startActivity(context, intent, null)
-            },
+            onClickPositiveButton = { intentToAppSetting(context) },
             onClickNegativeButton = { moveBackToPreviousScreen() },
             onDismiss = { moveBackToPreviousScreen() }
         )
@@ -112,11 +158,12 @@ fun QrCodeScanner(
 }
 
 @Composable
-fun CameraPreview() {
+fun CameraPreview(
+    afterDetectedCode: (code: Barcode) -> Unit
+) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     var preview by remember { mutableStateOf<Preview?>(null) }
-    var code by remember { mutableStateOf("") }
 
     Surface {
         AndroidView(
@@ -145,15 +192,8 @@ fun CameraPreview() {
                     val cameraProvider = cameraProviderFuture.get()
                     val barcodeAnalyzer =
                         QrCodeAnalyzer(
-                            onQrCodeDetected = { qrCodes ->
-                                qrCodes.forEach { qrCode ->
-                                    qrCode.rawValue?.let { qrCodeValue ->
-                                        // todo: qrCode.cornerPoints 범위 내에서 인식된 것인지 확인
-                                        // todo: code 확인해서 DB 반영
-                                        code = qrCodeValue
-                                        Toast.makeText(context, code, Toast.LENGTH_SHORT).show()
-                                    }
-                                }
+                            onQrCodeDetected = { code ->
+                                afterDetectedCode(code)
                             },
                             onFailToAnalysis = { exception ->
                                 Toast.makeText(
@@ -192,24 +232,13 @@ fun ScannerDecoration(
     modifier: Modifier = Modifier,
     moveBackToPreviousScreen: () -> Unit
 ) {
-    ConstraintLayout(
-        modifier = Modifier
-            .fillMaxSize()
+    Box(
+        modifier = modifier
     ) {
-        val (informText, closeIcon, qrAreaIcon) = createRefs()
-        InformText(
-            modifier.constrainAs(informText) {
-                bottom.linkTo(qrAreaIcon.top, 40.dp)
-                absoluteLeft.linkTo(parent.absoluteLeft)
-                absoluteRight.linkTo(parent.absoluteRight)
-            }
-        )
         IconButton(
             modifier = modifier
-                .constrainAs(closeIcon) {
-                    top.linkTo(parent.top, 14.dp)
-                    absoluteRight.linkTo(parent.absoluteRight, 14.dp)
-                },
+                .align(Alignment.TopEnd)
+                .padding(top = 14.dp, end = 14.dp),
             onClick = moveBackToPreviousScreen
         ) {
             Icon(
@@ -219,12 +248,7 @@ fun ScannerDecoration(
             )
         }
         Icon(
-            modifier = modifier.constrainAs(qrAreaIcon) {
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-                absoluteRight.linkTo(parent.absoluteRight)
-                absoluteLeft.linkTo(parent.absoluteLeft)
-            },
+            modifier = modifier.align(Alignment.Center),
             painter = painterResource(id = R.drawable.icon_qr_area),
             tint = Color.Unspecified,
             contentDescription = null
@@ -233,7 +257,7 @@ fun ScannerDecoration(
 }
 
 @Composable
-fun InformText(modifier: Modifier = Modifier) {
+fun NoticeText(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -250,4 +274,14 @@ fun InformText(modifier: Modifier = Modifier) {
             style = AttendanceTypography.body1
         )
     }
+}
+
+private fun intentToAppSetting(context: Context) {
+    val intent = Intent(
+        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+        Uri.parse("package:" + context.packageName)
+    )
+    intent.addCategory(Intent.CATEGORY_DEFAULT)
+    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+    startActivity(context, intent, null)
 }

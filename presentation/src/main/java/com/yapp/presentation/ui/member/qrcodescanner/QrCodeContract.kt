@@ -6,12 +6,21 @@ import com.yapp.common.base.UiState
 
 class QrCodeContract {
     data class QrCodeUiState(
-        val code: String = ""
+        val isLoading: Boolean = false,
+        val attendanceState: AttendanceState = AttendanceState.STAND_BY
     ) : UiState
 
     sealed class QrCodeUiSideEffect : UiSideEffect {
+        class ShowToast(val msg: String) : QrCodeUiSideEffect()
     }
 
     sealed class QrCodeUiEvent : UiEvent {
+        class ScanQrCode(val codeValue: String?) : QrCodeUiEvent()
+    }
+
+    enum class AttendanceState {
+        STAND_BY,
+        SUCCESS,
+        COMPLETE
     }
 }

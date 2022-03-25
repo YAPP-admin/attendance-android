@@ -34,6 +34,7 @@ fun TodaySession(
     Scaffold(
         topBar = {
             YDSAppBar(
+                modifier = Modifier.background(color = Gray_200),
                 onClickSettings = {
                     navigateToScreen(AttendanceScreenRoute.MEMBER_SETTING.route)
                 }
@@ -46,11 +47,7 @@ fun TodaySession(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(Color.White, Color(0xA6CCD2DA))
-                    )
-                ),
+                .background(color = Gray_200)
         ) {
             TodaysAttendance()
             SessionDescriptionModal(Modifier.weight(1f))
