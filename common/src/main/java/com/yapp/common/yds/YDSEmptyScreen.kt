@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.yapp.common.R
 import com.yapp.common.theme.AttendanceTypography
@@ -35,7 +36,7 @@ fun YDSEmptyScreen() {
                 contentDescription = null
             )
             Text(
-                text = "정보를 불러오지 못했어요",
+                text = stringResource(id = R.string.empty_message),
                 style = AttendanceTypography.h3,
                 color = Gray_600,
                 modifier = Modifier.padding(top = 12.dp)
