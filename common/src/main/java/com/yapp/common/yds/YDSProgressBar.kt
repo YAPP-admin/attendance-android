@@ -1,18 +1,22 @@
 package com.yapp.common.yds
 
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.unit.dp
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.yapp.common.R
 
 @Composable
 fun YDSProgressBar() {
-    CircularProgressIndicator(
-        modifier = Modifier
-            .size(30.dp)
-            .layoutId("progressBar"),
-        strokeWidth = 3.dp
-    )
+    Surface(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.progress_bar_loop))
+        LottieAnimation(composition)
+    }
 }

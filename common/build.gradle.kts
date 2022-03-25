@@ -55,6 +55,8 @@ dependencies {
     implementation(Dependencies.Ktx.LIFECYCLE)
     implementation(Dependencies.Google.MATERIAL)
 
+    implementation(Dependencies.Lottie.LOTTIE)
+
     //hilt
     implementation(Dependencies.Dagger.HILT_ANDROID)
     implementation(Dependencies.Dagger.HILT_LIFECYCLE_VIEWMODEL)
