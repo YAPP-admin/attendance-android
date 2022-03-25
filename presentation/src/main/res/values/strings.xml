@@ -73,4 +73,7 @@
     <string name="help_detail_info_content4_start_text">점수가 </string>
     <string name="help_detail_info_content4_bold_text">\ 70점 미만</string>
     <string name="help_detail_info_content4_end_text">이 되는 회원은 운영진의 심의 하에 제명될 수 있으니 출결에 유의해주세요</string>
+
+    <string name="admin_total_score_title">누적 출결 점수</string>
+    <string name="admin_total_score_box_text">점수가 실시간으로 반영되고 있어요</string>
 </resources>

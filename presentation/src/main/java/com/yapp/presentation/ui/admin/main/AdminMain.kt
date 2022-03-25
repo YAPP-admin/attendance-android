@@ -2,6 +2,7 @@ package com.yapp.presentation.ui.admin.main
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -21,15 +22,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.R
 import com.yapp.common.theme.*
 import com.yapp.common.yds.YDSAppBar
-import com.yapp.common.yds.YDSButtonRegular
 import com.yapp.common.yds.YDSButtonSmall
 import com.yapp.common.yds.YdsButtonState
-import com.yapp.presentation.R.*
+import com.yapp.presentation.R.string
 import com.yapp.presentation.model.Session
 
 @Composable
 fun AdminMain(
-    viewModel: AdminMainViewModel = hiltViewModel()
+    viewModel: AdminMainViewModel = hiltViewModel(),
+    navigateToAdminTotalScore: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -50,7 +51,7 @@ fun AdminMain(
                     .fillMaxWidth()
                     .wrapContentHeight()
             ) {
-                YappuUserScoreCard()
+                YappuUserScoreCard(navigateToAdminTotalScore)
                 GraySpacing(Modifier.height(12.dp))
                 ManagementTitle()
                 TodaySession()
@@ -89,13 +90,16 @@ fun LazyListScope.Sessions(sessions: List<Session>) {
     }
 }
 
-fun LazyListScope.YappuUserScoreCard() {
+fun LazyListScope.YappuUserScoreCard(
+    navigateToAdminTotalScore: () -> Unit
+) {
     item {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .padding(24.dp),
+                .padding(24.dp)
+                .clickable { navigateToAdminTotalScore() },
             shape = RoundedCornerShape(12.dp),
             elevation = 0.dp,
             backgroundColor = Gray_200
