@@ -28,12 +28,13 @@ import com.yapp.common.theme.*
 
 @Composable
 fun YDSAppBar(
+    modifier: Modifier = Modifier,
     title: String = "",
     onClickBackButton: (() -> Unit)? = null,
     onClickSettings: (() -> Unit)? = null
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
             .padding(horizontal = 20.dp),
