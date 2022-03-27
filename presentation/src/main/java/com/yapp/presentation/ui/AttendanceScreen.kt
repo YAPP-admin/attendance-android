@@ -34,12 +34,17 @@ fun AttendanceScreen(
         ) {
             SetStatusBarColorByRoute(it.destination.route)
             Login(
-                kakaoTalkLoginProvider
-            ) {
-                navController.navigate(AttendanceScreenRoute.SIGNUP_NAME.route) {
-                    popUpTo(AttendanceScreenRoute.LOGIN.route) { inclusive = true }
-                }
-            }
+                kakaoTalkLoginProvider = kakaoTalkLoginProvider,
+                navigateToQRMainScreen = {
+                    navController.navigate(AttendanceScreenRoute.SIGNUP_NAME.route) {
+                        popUpTo(AttendanceScreenRoute.LOGIN.route) { inclusive = true }
+                    }
+                },
+                navigateToSignUpScreen = {
+                    navController.navigate(AttendanceScreenRoute.SIGNUP_NAME.route) {
+                        popUpTo(AttendanceScreenRoute.LOGIN.route) { inclusive = true }
+                    }
+                })
         }
 
         composable(
@@ -95,7 +100,14 @@ fun AttendanceScreen(
                     navController.navigate(AttendanceScreenRoute.ADMIN_MAIN.route) {
                         popUpTo(AttendanceScreenRoute.MEMBER_SETTING.route) { inclusive = true }
                     }
-                })
+                },
+                onClickLogoutButton = {
+                    navController.navigate(AttendanceScreenRoute.LOGIN.route) {
+                        // 모든 스택을 다 제거해야함.
+                        popUpTo(AttendanceScreenRoute.MEMBER_SETTING.route)
+                    }
+                }
+            )
         }
 
         composable(
@@ -109,13 +121,20 @@ fun AttendanceScreen(
         ) {
             Name(
                 onClickBackBtn = { navController.popBackStack() },
-                onClickNextBtn = { navController.navigate(AttendanceScreenRoute.SIGNUP_TEAM.route) })
+                onClickNextBtn = {
+                    navController.navigate(AttendanceScreenRoute.SIGNUP_TEAM.route)
+                })
         }
 
         composable(
             route = AttendanceScreenRoute.SIGNUP_TEAM.route
         ) {
-            Team(navigateToMainScreen = { navController.navigate(AttendanceScreenRoute.MEMBER_MAIN.route) })
+            Team(navigateToMainScreen = {
+                navController.navigate(AttendanceScreenRoute.MEMBER_MAIN.route) {
+                    popUpTo(AttendanceScreenRoute.SIGNUP_NAME.route)
+                    popUpTo(AttendanceScreenRoute.SIGNUP_TEAM.route)
+                }
+            })
         }
     }
 }

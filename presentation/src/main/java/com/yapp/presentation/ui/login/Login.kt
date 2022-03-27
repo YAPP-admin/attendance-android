@@ -38,7 +38,8 @@ import kotlinx.coroutines.flow.collect
 fun Login(
     kakaoTalkLoginProvider: KakaoTalkLoginProvider,
     viewModel: LoginViewModel = hiltViewModel(),
-    navigateToQRMainScreen: () -> Unit
+    navigateToQRMainScreen: () -> Unit,
+    navigateToSignUpScreen: () -> Unit,
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
@@ -53,6 +54,10 @@ fun Login(
                     }
                     is LoginUiSideEffect.NavigateToQRMainScreen -> {
                         navigateToQRMainScreen()
+                    }
+
+                    is LoginUiSideEffect.NavigateToSignUpScreen -> {
+                        navigateToSignUpScreen()
                     }
                 }
             }

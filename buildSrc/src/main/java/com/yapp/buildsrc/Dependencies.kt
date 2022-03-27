@@ -75,9 +75,11 @@ object Dependencies {
     }
 
     object Firebase {
+        const val CRASHLYTICS_GRADLE = "com.google.firebase:firebase-crashlytics-gradle:2.8.1"
         const val COMMON = "com.google.firebase:firebase-common-ktx:20.0.0"
         const val BOM = "com.google.firebase:firebase-bom:29.1.0"
         const val CONFIG_KTX = "com.google.firebase:firebase-config-ktx"
+        const val CRASHLYTICS = "com.google.firebase:firebase-crashlytics"
         const val ANALYTICS_KTX = "com.google.firebase:firebase-analytics-ktx"
         const val FIRESTORE = "com.google.firebase:firebase-firestore:24.0.1"
         const val FIRESTORE_KTX = "com.google.firebase:firebase-firestore-ktx"

@@ -15,6 +15,7 @@ class SplashViewModel @Inject constructor(
         if (AuthApiClient.instance.hasToken()) {
             UserApiClient.instance.accessTokenInfo { _, error ->
                 if (error == null) {
+                    // 토큰 유효성 체크 성공(필요 시 토큰 갱신됨)
                     setState { copy(loginState = SplashContract.LoginState.SUCCESS) }
 
                 } else {

@@ -1,5 +1,6 @@
 package com.yapp.presentation.ui.member.setting
 
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
@@ -17,14 +18,27 @@ import com.yapp.common.R
 import com.yapp.common.theme.*
 import com.yapp.common.yds.*
 import com.yapp.presentation.R.*
+import com.yapp.presentation.ui.login.LoginContract
+import kotlinx.coroutines.flow.collect
 
 @Composable
 fun MemberSetting(
     viewModel: MemberSettingViewModel = hiltViewModel(),
     onClickBackButton: () -> Unit,
     onClickAdminButton: () -> Unit,
+    onClickLogoutButton: () -> Unit,
 ) {
     val uiState = viewModel.uiState.collectAsState()
+
+    LaunchedEffect(key1 = viewModel.effect) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is MemberSettingContract.MemberSettingUiSideEffect.NavigateToLoginScreen -> {
+                    onClickLogoutButton()
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -44,7 +58,7 @@ fun MemberSetting(
             Profile()
             ChangeAdminButton(onClickAdminButton)
             Divide()
-            MenuList()
+            MenuList(viewModel)
         }
     }
 }
@@ -106,7 +120,7 @@ private fun Divide() {
 }
 
 @Composable
-private fun MenuList() {
+private fun MenuList(viewModel: MemberSettingViewModel) {
     var showDialog by remember { mutableStateOf(false) }
 
     if (showDialog) {
@@ -170,7 +184,9 @@ private fun MenuList() {
             color = Gray_400,
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {}
+                .clickable {
+                    viewModel.setEvent(MemberSettingContract.MemberSettingUiEvent.OnLogoutButtonClicked)
+                }
                 .padding(horizontal = 24.dp, vertical = 16.dp)
         )
         Text(

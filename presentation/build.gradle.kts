@@ -5,6 +5,7 @@ plugins {
     id(Configs.KOTLIN_KAPT)
     id(Configs.HILT_ANDROID_PLUGIN)
     id(Configs.GOOGLE_SERVICE)
+    id(Configs.CRASHLYTICS)
 }
 
 android {
@@ -65,6 +66,7 @@ dependencies {
     implementation(platform(Dependencies.Firebase.BOM))
     implementation(Dependencies.Firebase.ANALYTICS_KTX)
     implementation(Dependencies.Firebase.CONFIG_KTX)
+    implementation(Dependencies.Firebase.CRASHLYTICS)
 
     //compose
     implementation(Dependencies.Compose.UI)

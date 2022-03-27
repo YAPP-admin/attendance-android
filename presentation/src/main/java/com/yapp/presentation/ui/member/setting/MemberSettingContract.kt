@@ -11,8 +11,10 @@ class MemberSettingContract {
     ) : UiState
 
     sealed class MemberSettingUiSideEffect : UiSideEffect {
+        object NavigateToLoginScreen: MemberSettingUiSideEffect()
     }
 
     sealed class MemberSettingUiEvent : UiEvent {
+        object OnLogoutButtonClicked: MemberSettingUiEvent()
     }
 }
