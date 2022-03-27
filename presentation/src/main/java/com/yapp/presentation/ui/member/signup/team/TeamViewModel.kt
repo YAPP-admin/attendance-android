@@ -60,38 +60,42 @@ class TeamViewModel @Inject constructor(
             }
             is TeamUiEvent.ConfirmTeam -> {
                 viewModelScope.launch {
-                    val name = savedStateHandle.get<String>("name")
-                    var memberId: Long? = -1
-
-                    getMemberIdUseCase().collectWithCallback(
-                        onSuccess = { it -> memberId = it},
-                        onFailed = {}
-                    )
-
-
-                    setMemberUseCase(
-                        name?.let { memberName ->
-                            memberId?.let { memberId ->
-                                MemberEntity(
-                                    id = memberId,
-                                    name = memberName,
-                                    position = PositionTypeEntity.FRONTEND,
-                                    team = TeamEntity(
-                                        platform = uiState.value.selectedTeam.platform!!.name,
-                                        number = uiState.value.selectedTeam.number!!
-                                    ),
-                                    attendances = listOf(
-                                        AttendanceEntity(
-                                            sessionId = 1,
-                                            type = AttendanceTypeEntity.Absent
-                                        )
-                                    )
-                                )
-                            }
-                        }
-                    )
+                    setMember()
                 }
             }
         }
+    }
+
+    suspend fun setMember() {
+        val name = savedStateHandle.get<String>("name")
+        var memberId: Long? = -1
+
+        getMemberIdUseCase().collectWithCallback(
+            onSuccess = { memberId = it },
+            onFailed = {}
+        )
+
+
+        setMemberUseCase(
+            name?.let { memberName ->
+                memberId?.let { memberId ->
+                    MemberEntity(
+                        id = memberId,
+                        name = memberName,
+                        position = PositionTypeEntity.FRONTEND,
+                        team = TeamEntity(
+                            platform = uiState.value.selectedTeam.platform!!.name,
+                            number = uiState.value.selectedTeam.number!!
+                        ),
+                        attendances = listOf(
+                            AttendanceEntity(
+                                sessionId = 1,
+                                type = AttendanceTypeEntity.Absent
+                            )
+                        )
+                    )
+                }
+            }
+        )
     }
 }
