@@ -9,6 +9,7 @@ import com.yapp.domain.model.AttendanceTypeEntity
 import com.yapp.domain.model.MemberEntity
 import com.yapp.domain.model.TeamEntity
 import com.yapp.domain.model.types.PositionTypeEntity
+import com.yapp.domain.usecases.GetMemberIdUseCase
 import com.yapp.domain.usecases.GetTeamListUseCase
 import com.yapp.domain.usecases.SetMemberUseCase
 import com.yapp.presentation.model.Team.Companion.mapTo
@@ -22,6 +23,7 @@ import javax.inject.Inject
 class TeamViewModel @Inject constructor(
     private val getTeamListUseCase: GetTeamListUseCase,
     private val setMemberUseCase: SetMemberUseCase,
+    private val getMemberIdUseCase: GetMemberIdUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : BaseViewModel<TeamUiState, TeamSideEffect, TeamUiEvent>(TeamUiState()) {
 
@@ -57,30 +59,39 @@ class TeamViewModel @Inject constructor(
                 setState { copy(selectedTeam = uiState.value.selectedTeam.copy(number = event.teamNum)) }
             }
             is TeamUiEvent.ConfirmTeam -> {
-                val name: String? = savedStateHandle.get<String>("name")
                 viewModelScope.launch {
-                    val result = setMemberUseCase(
-                        name?.let {
-                            MemberEntity(
-                                id = 1,
-                                name = it,
-                                position = PositionTypeEntity.FRONTEND,
-                                team = TeamEntity(
-                                    platform = uiState.value.selectedTeam.platform!!.name,
-                                    number = uiState.value.selectedTeam.number!!
-                                ),
-                                attendances = listOf(
-                                    AttendanceEntity(
-                                        sessionId = 1,
-                                        type = AttendanceTypeEntity.Absent
+                    val name = savedStateHandle.get<String>("name")
+                    var memberId: Long? = -1
+
+                    getMemberIdUseCase().collectWithCallback(
+                        onSuccess = { it -> memberId = it},
+                        onFailed = {}
+                    )
+
+
+                    setMemberUseCase(
+                        name?.let { memberName ->
+                            memberId?.let { memberId ->
+                                MemberEntity(
+                                    id = memberId,
+                                    name = memberName,
+                                    position = PositionTypeEntity.FRONTEND,
+                                    team = TeamEntity(
+                                        platform = uiState.value.selectedTeam.platform!!.name,
+                                        number = uiState.value.selectedTeam.number!!
+                                    ),
+                                    attendances = listOf(
+                                        AttendanceEntity(
+                                            sessionId = 1,
+                                            type = AttendanceTypeEntity.Absent
+                                        )
                                     )
                                 )
-                            )
+                            }
                         }
                     )
                 }
             }
         }
     }
-
 }
