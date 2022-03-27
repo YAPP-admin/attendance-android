@@ -159,13 +159,12 @@ fun AttendanceScreen(
         ) {
             Name(
                 onClickBackBtn = { navController.popBackStack() },
-                onClickNextBtn = {
-                    navController.navigate(AttendanceScreenRoute.SIGNUP_TEAM.route)
-                })
+                onClickNextBtn = { userName -> navController.navigate(AttendanceScreenRoute.SIGNUP_TEAM.route + "/${userName}") })
         }
 
         composable(
-            route = AttendanceScreenRoute.SIGNUP_TEAM.route
+            route = AttendanceScreenRoute.SIGNUP_TEAM.route + "/{name}",
+            arguments = listOf(navArgument("name") { type = NavType.StringType })
         ) {
             Team(
                 onClickBackButton = { navController.popBackStack() },

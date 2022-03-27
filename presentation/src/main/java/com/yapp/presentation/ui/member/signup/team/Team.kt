@@ -70,13 +70,14 @@ fun Team(
                     .padding(bottom = 40.dp)
                     .height(60.dp)
                     .align(Alignment.BottomCenter),
-<<<<<<< HEAD
                 state = if ((uiState.selectedTeam.type != null) and (uiState.selectedTeam.number != null)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
                 onClick = { if ((uiState.selectedTeam.type != null) and (uiState.selectedTeam.number != null)) navigateToMainScreen() },
-=======
-                state = if ((uiState.selectedTeam.platform != null) and (uiState.selectedTeam.number != null)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                onClick = { if ((uiState.selectedTeam.platform != null) and (uiState.selectedTeam.number != null)) onClickNextButton() },
->>>>>>> b017619 (뒤로가기 기능 수정)
+                onClick = {
+                    if ((uiState.selectedTeam.platform != null) and (uiState.selectedTeam.number != null)) {
+                        onClickNextButton()
+                        viewModel.setEvent(TeamContract.TeamUiEvent.ConfirmTeam)
+                    }
+                },
             )
         }
     }

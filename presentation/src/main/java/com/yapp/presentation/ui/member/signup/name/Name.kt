@@ -27,7 +27,7 @@ import com.yapp.presentation.R
 fun Name(
     viewModel: NameViewModel = hiltViewModel(),
     onClickBackBtn: () -> Unit,
-    onClickNextBtn: () -> Unit
+    onClickNextBtn: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
@@ -129,18 +129,18 @@ fun NextButton(
     name: String,
     isKeyboardOpened: Boolean,
     modifier: Modifier,
-    onClickNextBtn: () -> Unit
+    onClickNextBtn: (String) -> Unit
 ) {
     Column(modifier = modifier) {
         if (isKeyboardOpened) {
             OnKeyboardNextButton(
                 state = if (name.isEmpty()) YdsButtonState.DISABLED else YdsButtonState.ENABLED,
-                onClick = { onClickNextBtn() })
+                onClick = { onClickNextBtn(name) })
         } else {
             YDSButtonLarge(
                 text = stringResource(id = R.string.name_next_button),
                 state = if (name.isEmpty()) YdsButtonState.DISABLED else YdsButtonState.ENABLED,
-                onClick = { onClickNextBtn() },
+                onClick = { onClickNextBtn(name) },
                 modifier = Modifier.padding(horizontal = 24.dp)
             )
             Spacer(modifier = Modifier.height(40.dp))

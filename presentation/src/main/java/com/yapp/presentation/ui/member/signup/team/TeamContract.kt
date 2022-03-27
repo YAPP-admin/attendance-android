@@ -17,5 +17,6 @@ class TeamContract {
     sealed class TeamUiEvent : UiEvent {
         data class ChooseTeam(val platformType: String) : TeamUiEvent()
         data class ChooseTeamNumber(val teamNum: Int) : TeamUiEvent()
+        object ConfirmTeam : TeamUiEvent()
     }
 }

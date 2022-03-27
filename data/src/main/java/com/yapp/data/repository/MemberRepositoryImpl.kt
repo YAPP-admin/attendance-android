@@ -1,5 +1,6 @@
 package com.yapp.data.repository
 
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.yapp.data.model.MemberModel
 import com.yapp.data.model.MemberModel.Companion.mapToEntity
