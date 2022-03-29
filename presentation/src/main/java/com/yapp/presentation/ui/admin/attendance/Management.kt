@@ -4,13 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -19,48 +17,60 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.yapp.common.theme.AttendanceTypography
-import com.yapp.common.theme.Gray_1200
-import com.yapp.common.theme.Yapp_Orange
-import com.yapp.common.theme.Yapp_OrangeAlpha
+import com.yapp.common.theme.*
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.presentation.R
+import com.yapp.presentation.model.AttendanceType
+import com.yapp.presentation.ui.admin.attendance.ManagementContract.ManagementEvent
+import com.yapp.presentation.ui.admin.attendance.ManagementContract.ManagementState
+import com.yapp.presentation.ui.admin.attendance.ManagementContract.ManagementState.MemberItem
+import com.yapp.presentation.ui.admin.attendance.ManagementContract.ManagementState.TeamItem
 
 
 @Preview
 @Composable
 fun Management(
     viewModel: ManagementViewModel = hiltViewModel(),
-    onAppBarBackButtonClicked: (() -> Unit)? = null
+    onBackButtonClicked: (() -> Unit)? = null
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
             YDSAppBar(
-                title = uiState.title,
+                modifier = Modifier.padding(horizontal = 4.dp),
+                title = "YAPP 오리엔테이션",
                 onClickBackButton = {
-                    onAppBarBackButtonClicked?.invoke()
+                    onBackButtonClicked?.invoke()
                 }
             )
         },
         modifier = Modifier.fillMaxSize(),
     ) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 24.dp)
         ) {
             item {
-                Column(modifier = Modifier.padding(24.dp)) {
+                Column {
                     Spacer(modifier = Modifier.height(28.dp))
                     AttendCountText(memberCount = 0)
                     Spacer(modifier = Modifier.height(28.dp))
                 }
             }
             item {
-                ExpandableTeam(teamName = "All-Rounder팀")
-                ExpandableTeam(teamName = "Android 1팀")
-                ExpandableTeam(teamName = "Android 2팀")
-                ExpandableTeam(teamName = "IOS 1팀")
+                ExpandableTeam(
+                    onExpandClicked = { team ->
+                        viewModel.setEvent(ManagementEvent.OnExpandedClicked(team))
+                    },
+                    onChangedAttendanceType = { changedMember, changedAttendance ->
+                        viewModel.setEvent(ManagementEvent.OnChangedAttendanceType(changedMember, changedAttendance))
+                    }
+                )
+                ExpandableTeam()
+                ExpandableTeam()
+                ExpandableTeam()
             }
         }
     }
@@ -74,7 +84,7 @@ fun AttendCountText(
 ) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(10))
+            .clip(RoundedCornerShape(10F))
             .fillMaxWidth()
             .height(48.dp)
             .background(color = Yapp_OrangeAlpha)
@@ -95,21 +105,54 @@ fun AttendCountText(
 @Composable
 fun ExpandableTeam(
     modifier: Modifier = Modifier,
-    teamName: String = "All-Rounder팀"
+    state: TeamItem = TeamItem().copy(isExpanded = true),
+    onExpandClicked: (TeamItem) -> Unit = {},
+    onChangedAttendanceType: ((MemberItem, AttendanceType) -> Unit)? = null
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+    ) {
+        TeamHeader(
+            state = state,
+            onExpandClicked = { onExpandClicked(state) }
+        )
+        if (state.isExpanded) {
+            Divider(modifier = Modifier.height(1.dp), color = Gray_300)
+            for (member in state.members) {
+                MemberContent(
+                    state = member,
+                    onChangedAttendanceType = { changedMember, changedAttendance ->
+                        onChangedAttendanceType?.invoke(changedMember, changedAttendance)
+                    }
+                )
+            }
+            Divider(modifier = Modifier.height(1.dp), color = Gray_300)
+        }
+    }
+}
+
+@Preview
+@Composable
+fun TeamHeader(
+    modifier: Modifier = Modifier,
+    state: TeamItem = TeamItem(),
+    onExpandClicked: (TeamItem) -> Unit = {}
 ) {
     Row(
         modifier = modifier
             .background(Color.White)
-            .fillMaxWidth()
             .height(62.dp)
+            .fillMaxWidth()
     ) {
         Text(
             modifier = Modifier
                 .width(0.dp)
                 .weight(0.9F)
                 .fillMaxHeight()
-                .padding(top = 20.dp, bottom = 20.dp, start = 20.dp),
-            text = teamName,
+                .padding(top = 20.dp, bottom = 20.dp),
+            text = "홍길동",
             textAlign = TextAlign.Start,
             style = AttendanceTypography.h3,
             color = Gray_1200
@@ -120,7 +163,7 @@ fun ExpandableTeam(
                 .weight(0.1F)
                 .fillMaxHeight()
                 .width(0.dp),
-            onClick = { }
+            onClick = { onExpandClicked(state) }
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.icon_chevron_down),
@@ -128,6 +171,33 @@ fun ExpandableTeam(
                 contentDescription = null
             )
         }
+    }
+}
+
+@Composable
+fun MemberContent(
+    modifier: Modifier = Modifier,
+    state: MemberItem = ManagementState.MemberItem(),
+    onChangedAttendanceType: (MemberItem, AttendanceType) -> Unit
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .height(59.dp)
+            .padding(horizontal = 8.dp, vertical = 17.5.dp)
+    ) {
+        Text(
+            modifier = Modifier
+                .wrapContentWidth()
+                .fillMaxHeight()
+                .padding(top = 20.dp, bottom = 20.dp)
+                .align(Alignment.CenterStart),
+            text = state.name,
+            textAlign = TextAlign.Start,
+            style = AttendanceTypography.h3,
+            color = Gray_1200
+        )
+
 
     }
 }
