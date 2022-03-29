@@ -148,16 +148,28 @@ private fun ChildNavigation(
         ) {
             TodaySession(
                 modifier = modifier,
-                navigateToScreen = navigateToScreen
+                navigateToSetting = navigateToScreen
             )
         }
 
         composable(
             route = BottomNavigationItem.MEMBER_SCORE.route
         ) {
-            MemberScore(modifier = modifier) {
-                navigateToScreen(AttendanceScreenRoute.HELP.route)
-            }
+            MemberScore(
+                modifier = modifier,
+                navigateToHelpScreen = {
+                    navigateToScreen(AttendanceScreenRoute.HELP.route)
+                },
+                navigateToSessionDetail = { session ->
+                    navigateToScreen(
+                        AttendanceScreenRoute.SESSION_DETAIL.route
+                            .plus("?title=${session.title}")
+                            .plus("?description=${session.description}")
+                            .plus("?attendanceType=${"출석"}")
+                            .plus("?date=${session.date}")
+                    )
+                }
+            )
         }
     }
 }
