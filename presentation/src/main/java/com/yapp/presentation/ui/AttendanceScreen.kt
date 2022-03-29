@@ -9,15 +9,15 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yapp.common.theme.Yapp_Orange
 import com.yapp.common.util.KakaoTalkLoginProvider
-import com.yapp.common.util.KeyboardVisibilityUtils
+import com.yapp.presentation.ui.admin.browse.AdminTotalScore
 import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.login.Login
 import com.yapp.presentation.ui.member.help.Help
 import com.yapp.presentation.ui.member.main.MemberMain
 import com.yapp.presentation.ui.member.qrcodescanner.QrCodeScanner
-import com.yapp.presentation.ui.member.signup.Team
 import com.yapp.presentation.ui.member.setting.MemberSetting
 import com.yapp.presentation.ui.member.signup.Name
+import com.yapp.presentation.ui.member.signup.Team
 import com.yapp.presentation.ui.splash.Splash
 
 @Composable
@@ -69,7 +69,9 @@ fun AttendanceScreen(
             route = AttendanceScreenRoute.ADMIN_MAIN.route
         ) {
             SetStatusBarColorByRoute(it.destination.route)
-            AdminMain()
+            AdminMain {
+                navController.navigate(AttendanceScreenRoute.ADMIN_TOTAL_SCORE.route)
+            }
         }
 
         composable(
@@ -136,6 +138,12 @@ fun AttendanceScreen(
                 }
             })
         }
+
+        composable(
+            route = AttendanceScreenRoute.ADMIN_TOTAL_SCORE.route
+        ) {
+            AdminTotalScore(onClickBackButton = { navController.popBackStack() })
+        }
     }
 }
 
@@ -148,7 +156,8 @@ enum class AttendanceScreenRoute(val route: String) {
     MEMBER_SETTING("member_setting"),
     SIGNUP_NAME("name"),
     SIGNUP_TEAM("team"),
-    HELP("help");
+    HELP("help"),
+    ADMIN_TOTAL_SCORE("admin-total-score");
 }
 
 // status bar color 한번에 지정할 수 있는 방법 찾아보기 !
