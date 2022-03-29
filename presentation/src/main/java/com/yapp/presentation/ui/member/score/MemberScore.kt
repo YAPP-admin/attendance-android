@@ -1,4 +1,4 @@
-package com.yapp.presentation.ui.member.detail
+package com.yapp.presentation.ui.member.score
 
 import android.graphics.Paint
 import androidx.compose.animation.core.Animatable

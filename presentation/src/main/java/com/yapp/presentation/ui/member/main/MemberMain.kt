@@ -21,7 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import com.yapp.common.theme.*
 import com.yapp.presentation.R
 import com.yapp.presentation.ui.AttendanceScreenRoute
-import com.yapp.presentation.ui.member.detail.MemberScore
+import com.yapp.presentation.ui.member.score.MemberScore
 import com.yapp.presentation.ui.member.todaysession.TodaySession
 import kotlinx.coroutines.flow.collect
 
