@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 
-abstract class BaseUseCase<Result, in Params : Any?>(private val coroutineDispatcher: CoroutineDispatcher) {
+abstract class BaseUseCase<Result, in Params : Any?>(private val coroutineDispatcher: DispatcherProvider) {
 
     abstract suspend operator fun invoke(params: Params? = null): Result
 
@@ -15,6 +15,6 @@ abstract class BaseUseCase<Result, in Params : Any?>(private val coroutineDispat
         TaskResult.Success(it) as TaskResult<T>
     }.catch { cause: Throwable ->
         emit(TaskResult.Failed(cause))
-    }.flowOn(coroutineDispatcher)
+    }.flowOn(coroutineDispatcher.default)
 
 }
