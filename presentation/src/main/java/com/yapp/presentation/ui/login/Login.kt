@@ -1,6 +1,5 @@
 package com.yapp.presentation.ui.login
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,41 +8,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
-import androidx.constraintlayout.compose.layoutId
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.airbnb.lottie.compose.*
 import com.yapp.common.R.*
 import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
-import com.yapp.common.util.KakaoTalkLoginProvider
 import com.yapp.common.yds.YDSButtonLarge
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R
 import com.yapp.presentation.ui.login.LoginContract.*
-import com.yapp.presentation.ui.splash.SplashContract
 import kotlinx.coroutines.flow.collect
 
 @Composable
 fun Login(
-    kakaoTalkLoginProvider: KakaoTalkLoginProvider,
     viewModel: LoginViewModel = hiltViewModel(),
     navigateToQRMainScreen: () -> Unit,
     navigateToSignUpScreen: () -> Unit,
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
-    viewModel.initKakaoLogin(kakaoTalkLoginProvider)
 
     AttendanceTheme {
         LaunchedEffect(key1 = viewModel.effect) {
