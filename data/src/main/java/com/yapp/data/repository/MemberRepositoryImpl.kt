@@ -9,7 +9,9 @@ import com.yapp.domain.model.MemberEntity
 import com.yapp.domain.repository.MemberRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.tasks.await
+import okhttp3.internal.wait
 import javax.inject.Inject
 
 
@@ -23,6 +25,7 @@ class MemberRepositoryImpl @Inject constructor(
                 .document(memberEntity.id.toString())
                 .set(memberEntity)
                 .await()
+            emit(Unit)
         }
     }
 

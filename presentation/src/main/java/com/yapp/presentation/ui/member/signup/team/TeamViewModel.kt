@@ -16,6 +16,7 @@ import com.yapp.presentation.model.Team.Companion.mapTo
 import com.yapp.presentation.model.type.TeamType
 import com.yapp.presentation.ui.member.signup.team.TeamContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -70,10 +71,10 @@ class TeamViewModel @Inject constructor(
         val name = savedStateHandle.get<String>("name")
         var memberId: Long? = -1
 
-        getMemberIdUseCase().collectWithCallback(
-            onSuccess = { memberId = it },
-            onFailed = {}
-        )
+//        getMemberIdUseCase().collectWithCallback(
+//            onSuccess = { memberId = it },
+//            onFailed = {}
+//        )
 
 
         setMemberUseCase(
@@ -96,6 +97,9 @@ class TeamViewModel @Inject constructor(
                     )
                 }
             }
+        ).collectWithCallback(
+            onSuccess = { Log.e("### success", "준영님이 아무거나") },
+            onFailed = { Log.e("### fail", "넣어주세욧") }
         )
     }
 }

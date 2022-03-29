@@ -1,16 +1,19 @@
 package com.yapp.domain.usecases
 
+import com.yapp.domain.DefaultDispatcher
 import com.yapp.domain.firebase.FirebaseRemoteConfig
 import com.yapp.domain.model.SessionEntity
 import com.yapp.domain.util.BaseUseCase
 import com.yapp.domain.util.TaskResult
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 
 class GetSessionListUseCase @Inject constructor(
-    private val firebaseRemoteConfig: FirebaseRemoteConfig
-) : BaseUseCase<@JvmSuppressWildcards Flow<TaskResult<List<SessionEntity>>>, Unit>() {
+    private val firebaseRemoteConfig: FirebaseRemoteConfig,
+    @DefaultDispatcher coroutineDispatcher: CoroutineDispatcher
+) : BaseUseCase<@JvmSuppressWildcards Flow<TaskResult<List<SessionEntity>>>, Unit>(coroutineDispatcher) {
 
     override suspend fun invoke(params: Unit?): Flow<TaskResult<List<SessionEntity>>> {
         return firebaseRemoteConfig.getSessionList()
