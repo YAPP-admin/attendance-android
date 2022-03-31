@@ -121,7 +121,7 @@ fun MemberItem(
     memberWithTotal: MemberWithTotalScore
 ) {
     val startPadding =
-        if (memberWithTotal.attendances < SCORE_LIMIT) (32 - WARNING_ICON_PADDING) else 32
+        if (memberWithTotal.totalScore < SCORE_LIMIT) (32 - WARNING_ICON_PADDING) else 32
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -132,7 +132,7 @@ fun MemberItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row {
-            if (memberWithTotal.attendances < SCORE_LIMIT) {
+            if (memberWithTotal.totalScore < SCORE_LIMIT) {
                 Icon(
                     modifier = Modifier.padding(end = (8 - WARNING_ICON_PADDING).dp),
                     painter = painterResource(id = R.drawable.icon_warning),
@@ -149,7 +149,7 @@ fun MemberItem(
         }
 
         Text(
-            text = memberWithTotal.attendances.toString(),
+            text = memberWithTotal.totalScore.toString(),
             color = Yapp_Orange,
             style = AttendanceTypography.subtitle1
         )
