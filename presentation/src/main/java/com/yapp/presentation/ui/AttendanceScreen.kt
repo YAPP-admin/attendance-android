@@ -1,20 +1,26 @@
 package com.yapp.presentation.ui
 
+import android.bluetooth.BluetoothDevice
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yapp.common.theme.Yapp_Orange
 import com.yapp.common.util.KakaoTalkLoginProvider
+import com.yapp.presentation.model.Session
 import com.yapp.presentation.ui.admin.browse.AdminTotalScore
 import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.login.Login
 import com.yapp.presentation.ui.member.help.Help
 import com.yapp.presentation.ui.member.main.MemberMain
 import com.yapp.presentation.ui.member.qrcodescanner.QrCodeScanner
+import com.yapp.presentation.ui.member.score.detail.SessionDetail
+import com.yapp.presentation.ui.member.score.detail.SessionDetailNavParam
 import com.yapp.presentation.ui.member.setting.MemberSetting
 import com.yapp.presentation.ui.member.signup.Name
 import com.yapp.presentation.ui.member.signup.Team
@@ -119,6 +125,42 @@ fun AttendanceScreen(
         }
 
         composable(
+            route = AttendanceScreenRoute.SESSION_DETAIL.route
+                .plus("?title={title}")
+                .plus("?description={description}")
+                .plus("?attendanceType={attendanceType}")
+                .plus("?date={date}"),
+            arguments = listOf(
+                navArgument("title") {
+                    nullable = false
+                    type = NavType.StringType
+                },
+                navArgument("description") {
+                    nullable = false
+                    type = NavType.StringType
+                },
+                navArgument("attendanceType") {
+                    nullable = false
+                    type = NavType.StringType
+                },
+                navArgument("date") {
+                    nullable = false
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            SessionDetail(
+                navParam = SessionDetailNavParam(
+                    title = backStackEntry.arguments?.getString("title")!!,
+                    description = backStackEntry.arguments?.getString("description")!!,
+                    attendanceType = backStackEntry.arguments?.getString("attendanceType")!!,
+                    date = backStackEntry.arguments?.getString("date")!!,
+                ),
+                onClickBackButton = { navController.popBackStack() }
+            )
+        }
+
+        composable(
             route = AttendanceScreenRoute.SIGNUP_NAME.route
         ) {
             Name(
@@ -153,11 +195,12 @@ enum class AttendanceScreenRoute(val route: String) {
     QR_AUTH("qr-auth"),
     MEMBER_MAIN("member-main"),
     ADMIN_MAIN("admin-main"),
-    MEMBER_SETTING("member_setting"),
+    MEMBER_SETTING("member-setting"),
     SIGNUP_NAME("name"),
     SIGNUP_TEAM("team"),
     HELP("help"),
-    ADMIN_TOTAL_SCORE("admin-total-score");
+    ADMIN_TOTAL_SCORE("admin-total-score"),
+    SESSION_DETAIL("session-detail");
 }
 
 // status bar color 한번에 지정할 수 있는 방법 찾아보기 !

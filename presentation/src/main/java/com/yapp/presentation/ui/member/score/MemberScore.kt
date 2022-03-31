@@ -1,4 +1,4 @@
-package com.yapp.presentation.ui.member.detail
+package com.yapp.presentation.ui.member.score
 
 import android.graphics.Paint
 import androidx.compose.animation.core.Animatable
@@ -39,7 +39,8 @@ import com.yapp.presentation.model.Session
 fun MemberScore(
     viewModel: MemberScoreViewModel = hiltViewModel(),
     modifier: Modifier,
-    navigateToHelpScreen: () -> Unit
+    navigateToHelpScreen: () -> Unit,
+    navigateToSessionDetail: (Session) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -76,7 +77,7 @@ fun MemberScore(
                 )
             }
             items(uiState.sessions) { session ->
-                AttendUserSession(session)
+                AttendUserSession(session, navigateToSessionDetail)
             }
         }
     }
@@ -253,13 +254,15 @@ fun RowScope.AttendanceCell(
 }
 
 @Composable
-private fun AttendUserSession(session: Session) {
+private fun AttendUserSession(session: Session, navigateToSessionDetail: (Session) -> Unit) {
     YDSAttendanceList(
         attendanceType = if (session.sessionId == 2) AttendanceType.TBD else AttendanceType.ATTEND,
         date = session.date,
         title = session.title,
-        description = session.description ?: ""
-    )
+        description = session.description,
+    ) {
+        navigateToSessionDetail(session)
+    }
 
     Spacer(
         modifier = Modifier
