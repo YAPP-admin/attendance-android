@@ -134,13 +134,15 @@ fun NextButton(
     Column(modifier = modifier) {
         if (isKeyboardOpened) {
             OnKeyboardNextButton(
-                state = if (name.isEmpty()) YdsButtonState.DISABLED else YdsButtonState.ENABLED,
-                onClick = { onClickNextBtn(name) })
+                name = name,
+                state = if (name.isBlank()) YdsButtonState.DISABLED else YdsButtonState.ENABLED,
+                onClickNextBtn = onClickNextBtn
+            )
         } else {
             YDSButtonLarge(
                 text = stringResource(id = R.string.name_next_button),
-                state = if (name.isEmpty()) YdsButtonState.DISABLED else YdsButtonState.ENABLED,
-                onClick = { onClickNextBtn(name) },
+                state = if (name.isBlank()) YdsButtonState.DISABLED else YdsButtonState.ENABLED,
+                onClick = { if (name.isNotBlank()) {onClickNextBtn(name)} },
                 modifier = Modifier.padding(horizontal = 24.dp)
             )
             Spacer(modifier = Modifier.height(40.dp))
@@ -151,11 +153,15 @@ fun NextButton(
 
 @Composable
 fun OnKeyboardNextButton(
+    name: String,
     state: YdsButtonState,
-    onClick: () -> Unit
+    onClickNextBtn: (String) -> Unit
 ) {
     Button(
-        onClick = onClick, modifier = Modifier
+        onClick = {
+            if (name.isNotBlank()) { onClickNextBtn(name) }
+        },
+        modifier = Modifier
             .fillMaxWidth()
             .height(60.dp),
         colors = when (state) {

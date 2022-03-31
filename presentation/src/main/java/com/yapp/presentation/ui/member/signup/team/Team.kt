@@ -92,7 +92,6 @@ fun Team(
                 onClick = { if ((uiState.selectedTeam.type != null) and (uiState.selectedTeam.number != null)) navigateToMainScreen() },
                 onClick = {
                     if ((uiState.selectedTeam.platform != null) and (uiState.selectedTeam.number != null)) {
-                        Log.d("####", "clicked")
                         viewModel.setEvent(TeamContract.TeamUiEvent.ConfirmTeam)
                     }
                 },
