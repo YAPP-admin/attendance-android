@@ -109,7 +109,7 @@ fun TeamItem(
                 .wrapContentHeight()
         ) {
             for (i in 0 until teamItemState.teamMembers.size) {
-                MemberItem(member = teamItemState.teamMembers[i])
+                MemberItem(memberWithTotal = teamItemState.teamMembers[i])
             }
         }
         Divider(modifier = Modifier.padding(horizontal = 24.dp), color = Gray_300)
@@ -118,9 +118,10 @@ fun TeamItem(
 
 @Composable
 fun MemberItem(
-    member: MemberScore
+    memberWithTotal: MemberWithTotalScore
 ) {
-    val startPadding = if (member.attendances < SCORE_LIMIT) (32 - WARNING_ICON_PADDING) else 32
+    val startPadding =
+        if (memberWithTotal.attendances < SCORE_LIMIT) (32 - WARNING_ICON_PADDING) else 32
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -131,7 +132,7 @@ fun MemberItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row {
-            if (member.attendances < SCORE_LIMIT) {
+            if (memberWithTotal.attendances < SCORE_LIMIT) {
                 Icon(
                     modifier = Modifier.padding(end = (8 - WARNING_ICON_PADDING).dp),
                     painter = painterResource(id = R.drawable.icon_warning),
@@ -141,14 +142,14 @@ fun MemberItem(
             }
 
             Text(
-                text = member.name,
+                text = memberWithTotal.name,
                 color = Gray_800,
                 style = AttendanceTypography.body1
             )
         }
 
         Text(
-            text = member.attendances.toString(),
+            text = memberWithTotal.attendances.toString(),
             color = Yapp_Orange,
             style = AttendanceTypography.subtitle1
         )

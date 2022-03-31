@@ -8,10 +8,10 @@ import com.yapp.common.base.UiState
 data class TeamItemState(
     val isExpanded: Boolean,
     val teamName: String,
-    val teamMembers: List<MemberScore>
+    val teamMembers: List<MemberWithTotalScore>
 )
 
-data class MemberScore(
+data class MemberWithTotalScore(
     val name: String,
     val attendances: Int = 100
 )
@@ -27,6 +27,6 @@ class AdminTotalScoreContract {
     }
 
     sealed class AdminTotalScoreUiEvent : UiEvent {
-        class ClickTeamItem(val index: Int): AdminTotalScoreUiEvent()
+        class ClickTeamItem(val index: Int) : AdminTotalScoreUiEvent()
     }
 }
