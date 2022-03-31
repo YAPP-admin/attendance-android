@@ -8,6 +8,7 @@ object Configs {
     const val KOTLIN_KAPT               = "kotlin-kapt"
     const val HILT_ANDROID_PLUGIN       = "dagger.hilt.android.plugin"
     const val GOOGLE_SERVICE            = "com.google.gms.google-services"
+    const val CRASHLYTICS               = "com.google.firebase.crashlytics"
 
     //Android Config
     const val COMPILE_SDK               = 31

@@ -25,7 +25,7 @@ class LoginViewModel @Inject constructor() :
                 kakaoTalkLoginProvider?.login(
                     onSuccess = {
                         setEffect(
-                            LoginUiSideEffect.NavigateToQRMainScreen,
+                            LoginUiSideEffect.NavigateToSignUpScreen,
                             LoginUiSideEffect.ShowToast("로그인 성공")
                         )
                         setState {

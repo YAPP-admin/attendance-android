@@ -29,14 +29,14 @@ import com.yapp.presentation.ui.member.main.BottomNavigationItem
 @Composable
 fun TodaySession(
     modifier: Modifier = Modifier,
-    navigateToScreen: (String) -> Unit,
+    navigateToSetting: (String) -> Unit,
 ) {
     Scaffold(
         topBar = {
             YDSAppBar(
                 modifier = Modifier.background(color = Gray_200),
                 onClickSettings = {
-                    navigateToScreen(AttendanceScreenRoute.MEMBER_SETTING.route)
+                    navigateToSetting(AttendanceScreenRoute.MEMBER_SETTING.route)
                 }
             )
         },

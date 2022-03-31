@@ -2,6 +2,7 @@ package com.yapp.common.yds
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -11,6 +12,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.yapp.common.R
 import com.yapp.common.theme.*
@@ -21,11 +23,15 @@ fun YDSAttendanceList(
     date: String,
     title: String,
     description: String,
+    onClick: (() -> Unit)? = null
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .clickable {
+                onClick?.invoke()
+            }
             .padding(24.dp)
     ) {
         Icon(
@@ -72,7 +78,9 @@ fun YDSAttendanceList(
                 text = description,
                 style = AttendanceTypography.body1,
                 color = if (attendanceType == AttendanceType.TBD) Gray_600 else Gray_800,
-                modifier = Modifier.padding(top = 4.dp)
+                modifier = Modifier.padding(top = 4.dp),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

@@ -1,10 +1,10 @@
-package com.yapp.presentation.ui.member.detail
+package com.yapp.presentation.ui.member.score
 
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.usecases.GetSessionListUseCase
 import com.yapp.presentation.model.Session.Companion.mapTo
-import com.yapp.presentation.ui.member.detail.MemberScoreContract.*
+import com.yapp.presentation.ui.member.score.MemberScoreContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

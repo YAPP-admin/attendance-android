@@ -11,6 +11,7 @@ class LoginContract {
 
     sealed class LoginUiSideEffect : UiSideEffect {
         object NavigateToQRMainScreen : LoginUiSideEffect()
+        object NavigateToSignUpScreen : LoginUiSideEffect()
         data class ShowToast(val msg: String) : LoginUiSideEffect()
     }
 
