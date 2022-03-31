@@ -1,28 +1,28 @@
-package com.yapp.presentation.ui.admin.browse
+package com.yapp.presentation.ui.admin.totalscore
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.theme.*
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSBox
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.presentation.R
+import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.AdminTotalScoreUiEvent
 
 const val WARNING_ICON_PADDING = 5
 const val SCORE_LIMIT = 70
@@ -58,8 +58,13 @@ fun AdminTotalScore(
                     )
                 }
 
-                items(uiState.value.teams.toList()) { teamMembersPair ->
-                    TeamItem(teamMembersPair = teamMembersPair)
+                itemsIndexed(uiState.value.teamItemStates) { index, teamItemState ->
+                    TeamItem(
+                        teamItemState = teamItemState,
+                        onTeamItemClicked = {
+                            viewModel.setEvent(AdminTotalScoreUiEvent.ClickTeamItem(index))
+                        }
+                    )
                 }
             }
         }
@@ -68,23 +73,23 @@ fun AdminTotalScore(
 
 @Composable
 fun TeamItem(
-    teamMembersPair: Pair<String, List<MemberScore>>
+    teamItemState: TeamItemState,
+    onTeamItemClicked: () -> Unit
 ) {
-    var isExpanded by remember { mutableStateOf(false) }
     val iconResourceId =
-        if (isExpanded) R.drawable.icon_chevron_up else R.drawable.icon_chevron_down
+        if (teamItemState.isExpanded) R.drawable.icon_chevron_up else R.drawable.icon_chevron_down
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .clickable { isExpanded = !isExpanded }
+            .clickable { onTeamItemClicked() }
             .padding(vertical = 18.dp, horizontal = 24.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = teamMembersPair.first,
+            text = teamItemState.teamName,
             color = Gray_1200,
             style = AttendanceTypography.h3
         )
@@ -96,21 +101,20 @@ fun TeamItem(
         )
     }
 
-    if (isExpanded) {
+    if (teamItemState.isExpanded) {
         Divider(modifier = Modifier.padding(horizontal = 24.dp), color = Gray_300)
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
         ) {
-            for (i in 0 until teamMembersPair.second.size) {
-                MemberItem(member = teamMembersPair.second[i])
+            for (i in 0 until teamItemState.teamMembers.size) {
+                MemberItem(member = teamItemState.teamMembers[i])
             }
         }
         Divider(modifier = Modifier.padding(horizontal = 24.dp), color = Gray_300)
     }
 }
-
 
 @Composable
 fun MemberItem(

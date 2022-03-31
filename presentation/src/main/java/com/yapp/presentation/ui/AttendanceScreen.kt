@@ -1,6 +1,5 @@
 package com.yapp.presentation.ui
 
-import android.bluetooth.BluetoothDevice
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
@@ -12,8 +11,7 @@ import androidx.navigation.navArgument
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yapp.common.theme.Yapp_Orange
 import com.yapp.common.util.KakaoTalkLoginProvider
-import com.yapp.presentation.model.Session
-import com.yapp.presentation.ui.admin.browse.AdminTotalScore
+import com.yapp.presentation.ui.admin.totalscore.AdminTotalScore
 import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.login.Login
 import com.yapp.presentation.ui.member.help.Help
