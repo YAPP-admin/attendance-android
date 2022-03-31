@@ -177,7 +177,10 @@ fun LazyListScope.TodaySession() {
                 YDSButtonSmall(
                     text = stringResource(id = string.admin_main_confirm_button),
                     state = YdsButtonState.ENABLED,
-                ) { }
+                    onClick = {
+
+                    }
+                )
             }
         }
     }

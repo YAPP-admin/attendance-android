@@ -33,6 +33,10 @@ sealed class AttendanceType(val point: Int, val text: String) {
                 is AttendanceTypeEntity.ReportedLate -> AttendanceType.ReportedLate
             }
         }
+
+        fun getAllTypes() : List<AttendanceType> {
+            return listOf(Absent, ReportedAbsent, Normal, Late, ReportedLate)
+        }
     }
 
     object Absent : AttendanceType(point = -20, text = "미통보 결석")

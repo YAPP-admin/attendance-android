@@ -1,6 +1,7 @@
 package com.yapp.presentation.ui.admin.attendance
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -8,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,14 +21,16 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.theme.*
 import com.yapp.common.yds.YDSAppBar
+import com.yapp.common.yds.YDSDropDownButton
 import com.yapp.presentation.R
 import com.yapp.presentation.model.AttendanceType
 import com.yapp.presentation.ui.admin.attendance.ManagementContract.ManagementEvent
-import com.yapp.presentation.ui.admin.attendance.ManagementContract.ManagementState
-import com.yapp.presentation.ui.admin.attendance.ManagementContract.ManagementState.MemberItem
-import com.yapp.presentation.ui.admin.attendance.ManagementContract.ManagementState.TeamItem
+import com.yapp.presentation.ui.admin.attendance.ManagementContract.ManagementState.MemberState
+import com.yapp.presentation.ui.admin.attendance.ManagementContract.ManagementState.TeamState
+import kotlinx.coroutines.launch
 
 
+@ExperimentalMaterialApi
 @Preview
 @Composable
 fun Management(
@@ -35,42 +39,62 @@ fun Management(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Scaffold(
-        topBar = {
-            YDSAppBar(
-                modifier = Modifier.padding(horizontal = 4.dp),
-                title = "YAPP 오리엔테이션",
-                onClickBackButton = {
-                    onBackButtonClicked?.invoke()
+    val coroutineScope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+
+    ModalBottomSheetLayout(
+        modifier = Modifier,
+        sheetContent = {
+            BottomSheetDialogContent(
+                attendanceTypes = AttendanceType.getAllTypes(),
+                onClickItem = { attendanceType ->
+                    viewModel.setEvent(ManagementEvent.OnAttendanceTypeChanged(attendanceType))
                 }
             )
         },
-        modifier = Modifier.fillMaxSize(),
+        sheetState = sheetState,
+        sheetBackgroundColor = Color.Red
     ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 24.dp)
-        ) {
-            item {
-                Column {
-                    Spacer(modifier = Modifier.height(28.dp))
-                    AttendCountText(memberCount = 0)
-                    Spacer(modifier = Modifier.height(28.dp))
-                }
-            }
-            item {
-                ExpandableTeam(
-                    onExpandClicked = { team ->
-                        viewModel.setEvent(ManagementEvent.OnExpandedClicked(team))
-                    },
-                    onChangedAttendanceType = { changedMember, changedAttendance ->
-                        viewModel.setEvent(ManagementEvent.OnChangedAttendanceType(changedMember, changedAttendance))
+        Scaffold(
+            topBar = {
+                YDSAppBar(
+                    modifier = Modifier.padding(horizontal = 4.dp),
+                    title = "YAPP 오리엔테이션",
+                    onClickBackButton = {
+                        onBackButtonClicked?.invoke()
                     }
                 )
-                ExpandableTeam()
-                ExpandableTeam()
-                ExpandableTeam()
+            },
+            modifier = Modifier.fillMaxSize()
+        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp)
+            ) {
+                item {
+                    Column {
+                        Spacer(modifier = Modifier.height(28.dp))
+                        AttendCountText(memberCount = 0)
+                        Spacer(modifier = Modifier.height(28.dp))
+                    }
+                }
+                item {
+                    ExpandableTeam(
+                        onExpandClicked = { team ->
+                            viewModel.setEvent(ManagementEvent.OnExpandedClicked(team))
+                        },
+                        onDropDownClicked = { changedMember ->
+                            viewModel.setEvent(ManagementEvent.OnDropDownButtonClicked(changedMember))
+                            coroutineScope.launch {
+                                sheetState.show()
+                            }
+                        }
+                    )
+                    ExpandableTeam()
+                    ExpandableTeam()
+                    ExpandableTeam()
+                }
             }
         }
     }
@@ -105,9 +129,9 @@ fun AttendCountText(
 @Composable
 fun ExpandableTeam(
     modifier: Modifier = Modifier,
-    state: TeamItem = TeamItem().copy(isExpanded = true),
-    onExpandClicked: (TeamItem) -> Unit = {},
-    onChangedAttendanceType: ((MemberItem, AttendanceType) -> Unit)? = null
+    state: TeamState = TeamState().copy(isExpanded = false),
+    onExpandClicked: (TeamState) -> Unit = {},
+    onDropDownClicked: ((MemberState) -> Unit)? = null
 ) {
     Column(
         modifier = modifier
@@ -123,8 +147,8 @@ fun ExpandableTeam(
             for (member in state.members) {
                 MemberContent(
                     state = member,
-                    onChangedAttendanceType = { changedMember, changedAttendance ->
-                        onChangedAttendanceType?.invoke(changedMember, changedAttendance)
+                    onDropDownClicked = { changedMember ->
+                        onDropDownClicked?.invoke(changedMember)
                     }
                 )
             }
@@ -137,8 +161,8 @@ fun ExpandableTeam(
 @Composable
 fun TeamHeader(
     modifier: Modifier = Modifier,
-    state: TeamItem = TeamItem(),
-    onExpandClicked: (TeamItem) -> Unit = {}
+    state: TeamState = TeamState(),
+    onExpandClicked: (TeamState) -> Unit = {}
 ) {
     Row(
         modifier = modifier
@@ -177,8 +201,8 @@ fun TeamHeader(
 @Composable
 fun MemberContent(
     modifier: Modifier = Modifier,
-    state: MemberItem = ManagementState.MemberItem(),
-    onChangedAttendanceType: (MemberItem, AttendanceType) -> Unit
+    state: MemberState = MemberState(),
+    onDropDownClicked: (MemberState) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -198,6 +222,52 @@ fun MemberContent(
             color = Gray_1200
         )
 
-
+        YDSDropDownButton(
+            text = state.attendance.attendanceType.text,
+            onClick = { onDropDownClicked.invoke(state) }
+        )
     }
+}
+
+@Composable
+fun BottomSheetDialogContent(
+    modifier: Modifier = Modifier,
+    attendanceTypes: List<AttendanceType>,
+    onClickItem: (AttendanceType) -> Unit = {}
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+    ) {
+        for (type in attendanceTypes) {
+            BottomSheetDialogItem(
+                attendanceType = type,
+                onClickItem = {
+                    onClickItem.invoke(type)
+                }
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun BottomSheetDialogItem(
+    modifier: Modifier = Modifier,
+    attendanceType: AttendanceType = AttendanceType.Normal,
+    onClickItem: (AttendanceType) -> Unit = {}
+) {
+    Text(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(51.dp)
+            .clickable {
+                onClickItem.invoke(attendanceType)
+            },
+        text = attendanceType.text,
+        style = AttendanceTypography.subtitle1,
+        color = Gray_1200,
+        textAlign = TextAlign.Center
+    )
 }

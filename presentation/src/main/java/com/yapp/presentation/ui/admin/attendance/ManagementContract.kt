@@ -11,16 +11,16 @@ import com.yapp.presentation.model.AttendanceType.Normal
 class ManagementContract {
     data class ManagementState(
         val isLoading: Boolean = false,
-        val teams: List<TeamItem> = emptyList()
+        val teams: List<TeamState> = emptyList()
     ): UiState {
 
-        data class TeamItem (
+        data class TeamState (
             val isExpanded: Boolean = false,
             val teamName: String = "",
-            val members: List<MemberItem> = emptyList()
+            val members: List<MemberState> = emptyList()
         )
 
-        data class MemberItem(
+        data class MemberState(
             val id: Long = 0L,
             val name: String = "",
             val attendance: Attendance = Attendance(sessionId = 0, attendanceType = Normal)
@@ -28,8 +28,9 @@ class ManagementContract {
     }
 
     sealed class ManagementEvent : UiEvent {
-        class OnExpandedClicked(team: ManagementState.TeamItem): ManagementEvent()
-        class OnChangedAttendanceType(member: ManagementState.MemberItem, changedAttendanceType: AttendanceType) : ManagementEvent()
+        class OnExpandedClicked(team: ManagementState.TeamState): ManagementEvent()
+        class OnDropDownButtonClicked(member: ManagementState.MemberState) : ManagementEvent()
+        class OnAttendanceTypeChanged(attendanceType: AttendanceType) : ManagementEvent()
     }
 
     sealed class ManagementSideEffect : UiSideEffect
