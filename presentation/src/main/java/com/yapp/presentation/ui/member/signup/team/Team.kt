@@ -1,5 +1,7 @@
 package com.yapp.presentation.ui.member.signup.team
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -8,10 +10,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -20,15 +24,29 @@ import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.theme.Gray_1200
 import com.yapp.common.yds.*
 import com.yapp.presentation.R
+import kotlinx.coroutines.flow.collect
 
 @Composable
 fun Team(
     viewModel: TeamViewModel = hiltViewModel(),
     onClickBackButton: () -> Unit,
-    onClickNextButton: () -> Unit
+    navigateToMainScreen: () -> Unit
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
 
+    LaunchedEffect(key1 = viewModel.effect) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is TeamContract.TeamSideEffect.NavigateToMainScreen -> {
+                    navigateToMainScreen()
+                }
+                is TeamContract.TeamSideEffect.ShowToast -> {
+                    Toast.makeText(context, effect.msg, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
     Scaffold(
         topBar = { YDSAppBar(onClickBackButton = { onClickBackButton() }) },
         modifier = Modifier
@@ -74,7 +92,7 @@ fun Team(
                 onClick = { if ((uiState.selectedTeam.type != null) and (uiState.selectedTeam.number != null)) navigateToMainScreen() },
                 onClick = {
                     if ((uiState.selectedTeam.platform != null) and (uiState.selectedTeam.number != null)) {
-                        onClickNextButton()
+                        Log.d("####", "clicked")
                         viewModel.setEvent(TeamContract.TeamUiEvent.ConfirmTeam)
                     }
                 },

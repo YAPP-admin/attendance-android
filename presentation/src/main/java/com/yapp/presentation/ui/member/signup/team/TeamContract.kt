@@ -12,7 +12,10 @@ class TeamContract {
         val selectedTeam: Team = Team()
     ) : UiState
 
-    sealed class TeamSideEffect : UiSideEffect {}
+    sealed class TeamSideEffect : UiSideEffect {
+        object NavigateToMainScreen : TeamSideEffect()
+        data class ShowToast(val msg: String) : TeamSideEffect()
+    }
 
     sealed class TeamUiEvent : UiEvent {
         data class ChooseTeam(val platformType: String) : TeamUiEvent()

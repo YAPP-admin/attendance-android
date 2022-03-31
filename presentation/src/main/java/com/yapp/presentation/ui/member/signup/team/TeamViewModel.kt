@@ -16,7 +16,6 @@ import com.yapp.presentation.model.Team.Companion.mapTo
 import com.yapp.presentation.model.type.TeamType
 import com.yapp.presentation.ui.member.signup.team.TeamContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -40,7 +39,6 @@ class TeamViewModel @Inject constructor(
                     }
                 )
         }
-
     }
 
     override fun handleEvent(event: TeamUiEvent) {
@@ -67,39 +65,41 @@ class TeamViewModel @Inject constructor(
         }
     }
 
-    suspend fun setMember() {
-        val name = savedStateHandle.get<String>("name")
-        var memberId: Long? = -1
+    private suspend fun setMember() {
+        val memberName = savedStateHandle.get<String>("name")
 
-//        getMemberIdUseCase().collectWithCallback(
-//            onSuccess = { memberId = it },
-//            onFailed = {}
-//        )
-
-
-        setMemberUseCase(
-            name?.let { memberName ->
-                memberId?.let { memberId ->
-                    MemberEntity(
-                        id = memberId,
-                        name = memberName,
-                        position = PositionTypeEntity.FRONTEND,
-                        team = TeamEntity(
-                            platform = uiState.value.selectedTeam.platform!!.name,
-                            number = uiState.value.selectedTeam.number!!
-                        ),
-                        attendances = listOf(
-                            AttendanceEntity(
-                                sessionId = 1,
-                                type = AttendanceTypeEntity.Absent
-                            )
-                        )
-                    )
+        getMemberIdUseCase().collectWithCallback(
+            onSuccess = { memberId ->
+                if ((memberId == null) or (memberName == null)) {
+                    setEffect(TeamSideEffect.ShowToast("널인디요"))
+                } else {
+                    setMemberToFireBase(memberName!!, memberId!!)
                 }
-            }
+            },
+            onFailed = { setEffect(TeamSideEffect.ShowToast("멤버 번호 문제")) }
+        )
+    }
+
+    private suspend fun setMemberToFireBase(memberName: String, memberId: Long) {
+        setMemberUseCase(
+            MemberEntity(
+                id = memberId,
+                name = memberName,
+                position = PositionTypeEntity.FRONTEND,
+                team = TeamEntity(
+                    platform = uiState.value.selectedTeam.platform!!.name,
+                    number = uiState.value.selectedTeam.number!!
+                ),
+                attendances = listOf(
+                    AttendanceEntity(
+                        sessionId = 1,
+                        type = AttendanceTypeEntity.Absent
+                    )
+                )
+            )
         ).collectWithCallback(
-            onSuccess = { Log.e("### success", "준영님이 아무거나") },
-            onFailed = { Log.e("### fail", "넣어주세욧") }
+            onSuccess = { setEffect(TeamSideEffect.NavigateToMainScreen) },
+            onFailed = { setEffect(TeamSideEffect.ShowToast("파이어베이스 문제")) }
         )
     }
 }

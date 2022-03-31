@@ -168,7 +168,12 @@ fun AttendanceScreen(
         ) {
             Team(
                 onClickBackButton = { navController.popBackStack() },
-                onClickNextButton = { navController.navigate(AttendanceScreenRoute.MEMBER_MAIN.route) })
+                navigateToMainScreen = {
+                    navController.navigate(AttendanceScreenRoute.MEMBER_MAIN.route) {
+                        popUpTo(AttendanceScreenRoute.SIGNUP_NAME.route)
+                        popUpTo(AttendanceScreenRoute.SIGNUP_TEAM.route)
+                    }
+                })
         }
 
         composable(
