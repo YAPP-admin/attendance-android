@@ -19,7 +19,7 @@ class AttendanceList private constructor(
     }
 
     fun getTotalAttendanceScore(): Int {
-        return MAX_SCORE - value.sumOf { it.attendanceType.point }
+        return MAX_SCORE + value.sumOf { it.attendanceType.point }
     }
 
 }
