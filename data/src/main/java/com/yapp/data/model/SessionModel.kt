@@ -10,6 +10,8 @@ data class SessionModel(
     @SerialName("session_id")
     val sessionId: Int? = null,
     val title: String? = null,
+    @SerialName("is_off")
+    val isOff: Boolean? = null,
     val date: String? = null,
     val description: String? = null
 ) {
@@ -19,7 +21,8 @@ data class SessionModel(
                 sessionId = sessionId!!,
                 title = title!!,
                 date = date!!,
-                description = description!!
+                description = description!!,
+                isOff = isOff!!
             )
         }
     }
