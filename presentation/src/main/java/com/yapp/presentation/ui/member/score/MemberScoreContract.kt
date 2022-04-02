@@ -1,4 +1,4 @@
-package com.yapp.presentation.ui.member.detail
+package com.yapp.presentation.ui.member.score
 
 import com.yapp.common.base.UiEvent
 import com.yapp.common.base.UiSideEffect

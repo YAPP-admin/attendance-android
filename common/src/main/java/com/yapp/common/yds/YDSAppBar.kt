@@ -36,47 +36,55 @@ fun YDSAppBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp)
+            .height(56.dp) // todo sehee 이거 하드코딩 어케 못하나...
             .padding(horizontal = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (onClickBackButton != null) {
-                Icon(
-                    painter = painterResource(R.drawable.icon_back),
-                    tint = Color.Unspecified,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(30.dp))
-                        .clickable {
-                            onClickBackButton()
-                        }
-                )
-            }
-            Text(
-                text = title,
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .padding(start = 20.dp),
-                style = AttendanceTypography.h3,
-                color = Gray_1200
-            )
-        }
+        Icon(
+            painter = painterResource(R.drawable.icon_back),
+            tint = Color.Unspecified,
+            contentDescription = null,
+            modifier = Modifier
+                .alpha(if (onClickBackButton == null) 0f else 1f)
+                .clip(RoundedCornerShape(30.dp))
+                .clickable {
+                    onClickBackButton?.invoke()
+                }
+        )
 
-        if (onClickSettings != null) {
-            Icon(
-                imageVector = Icons.Filled.Settings,
-                tint = Gray_600,
-                contentDescription = null,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(30.dp))
-                    .clickable {
-                        onClickSettings()
-                    }
-            )
-        }
+        Text(
+            text = title,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .align(Alignment.CenterVertically)
+                .padding(start = 20.dp, end = 20.dp),
+            textAlign = TextAlign.Center,
+            style = AttendanceTypography.h3,
+            color = Gray_1200
+        )
+
+        Icon(
+            imageVector = Icons.Filled.Settings,
+            tint = Gray_600,
+            contentDescription = null,
+            modifier = Modifier
+                .alpha(if (onClickSettings == null) 0f else 1f)
+                .clip(RoundedCornerShape(30.dp))
+                .clickable {
+                    onClickSettings?.invoke()
+                }
+        )
     }
+}
+
+@Preview("appBarPreview")
+@Composable
+fun AppBarPreview() {
+    YDSAppBar(
+        onClickBackButton = null,
+        title = "test",
+        onClickSettings = { }
+    )
 }
