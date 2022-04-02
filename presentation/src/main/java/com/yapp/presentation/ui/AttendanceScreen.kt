@@ -1,6 +1,5 @@
 package com.yapp.presentation.ui
 
-import android.bluetooth.BluetoothDevice
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
@@ -11,8 +10,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yapp.common.theme.Yapp_Orange
-import com.yapp.common.util.KakaoTalkLoginProvider
-import com.yapp.presentation.model.Session
 import com.yapp.presentation.ui.admin.browse.AdminTotalScore
 import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.login.Login
@@ -28,7 +25,6 @@ import com.yapp.presentation.ui.splash.Splash
 
 @Composable
 fun AttendanceScreen(
-    kakaoTalkLoginProvider: KakaoTalkLoginProvider,
     navController: NavHostController = rememberNavController(),
 ) {
     NavHost(
@@ -40,7 +36,6 @@ fun AttendanceScreen(
         ) {
             SetStatusBarColorByRoute(it.destination.route)
             Login(
-                kakaoTalkLoginProvider = kakaoTalkLoginProvider,
                 navigateToQRMainScreen = {
                     navController.navigate(AttendanceScreenRoute.SIGNUP_NAME.route) {
                         popUpTo(AttendanceScreenRoute.LOGIN.route) { inclusive = true }
