@@ -7,9 +7,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TeamModel(
-    @SerialName("team")
     val type: String? = null,
-    @SerialName("count")
     val number: Int? = null
 ) {
     companion object {

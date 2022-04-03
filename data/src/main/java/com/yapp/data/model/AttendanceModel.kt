@@ -8,7 +8,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AttendanceModel(
-    @SerialName("session_id")
     val sessionId: Int? = null,
     val type: AttendanceTypeModel? = null
 ) {
