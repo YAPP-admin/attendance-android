@@ -2,5 +2,5 @@ package com.yapp.domain.model.types
 
 
 enum class PositionTypeEntity {
-    FRONTEND, BACKEND, DESIGNER, PROJECT_MANAGER
+    DEV_ANDROID, DEV_WEB, DEV_IOS, DEV_SERVER, DESIGNER, PROJECT_MANAGER
 }
