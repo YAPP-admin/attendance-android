@@ -1,6 +1,5 @@
 package com.yapp.presentation.ui.member.signup.team
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
@@ -47,8 +46,8 @@ class TeamViewModel @Inject constructor(
                 setState {
                     copy(
                         selectedTeam = uiState.value.selectedTeam.copy(
-                            platform = PlatformType.of(
-                                event.platformType
+                            type= TeamType.of(
+                                event.teamType
                             )
                         )
                     )
@@ -87,7 +86,7 @@ class TeamViewModel @Inject constructor(
                 name = memberName,
                 position = PositionTypeEntity.FRONTEND,
                 team = TeamEntity(
-                    platform = uiState.value.selectedTeam.platform!!.name,
+                    type = uiState.value.selectedTeam.type!!.name,
                     number = uiState.value.selectedTeam.number!!
                 ),
                 attendances = listOf(

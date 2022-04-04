@@ -1,6 +1,5 @@
 package com.yapp.presentation.ui.member.signup.team
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
