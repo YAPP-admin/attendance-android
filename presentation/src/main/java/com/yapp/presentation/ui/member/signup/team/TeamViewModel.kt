@@ -1,5 +1,6 @@
 package com.yapp.presentation.ui.member.signup.team
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
@@ -46,7 +47,7 @@ class TeamViewModel @Inject constructor(
                 setState {
                     copy(
                         selectedTeam = uiState.value.selectedTeam.copy(
-                            type= TeamType.of(
+                            type = TeamType.of(
                                 event.teamType
                             )
                         )
@@ -70,7 +71,7 @@ class TeamViewModel @Inject constructor(
         getMemberIdUseCase().collectWithCallback(
             onSuccess = { memberId ->
                 if ((memberId == null) or (memberName == null)) {
-                    setEffect(TeamSideEffect.ShowToast("널인디요"))
+                    setEffect(TeamSideEffect.ShowToast(memberId.toString()))
                 } else {
                     setMemberToFireBase(memberName!!, memberId!!)
                 }
@@ -80,6 +81,7 @@ class TeamViewModel @Inject constructor(
     }
 
     private suspend fun setMemberToFireBase(memberName: String, memberId: Long) {
+
         setMemberUseCase(
             MemberEntity(
                 id = memberId,
@@ -89,12 +91,12 @@ class TeamViewModel @Inject constructor(
                     type = uiState.value.selectedTeam.type!!.name,
                     number = uiState.value.selectedTeam.number!!
                 ),
-                attendances = listOf(
+                attendances = Array(20) { sessionNum ->
                     AttendanceEntity(
-                        sessionId = 1,
+                        sessionId = sessionNum,
                         type = AttendanceTypeEntity.Absent
                     )
-                )
+                }.toList(),
             )
         ).collectWithCallback(
             onSuccess = { setEffect(TeamSideEffect.NavigateToMainScreen) },
