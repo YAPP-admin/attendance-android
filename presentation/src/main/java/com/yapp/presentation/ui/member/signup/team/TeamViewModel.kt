@@ -86,7 +86,7 @@ class TeamViewModel @Inject constructor(
             MemberEntity(
                 id = memberId,
                 name = memberName,
-                position = PositionTypeEntity.FRONTEND,
+                position = PositionTypeEntity.DESIGNER,
                 team = TeamEntity(
                     type = uiState.value.selectedTeam.type!!.name,
                     number = uiState.value.selectedTeam.number!!
