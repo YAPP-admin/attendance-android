@@ -2,13 +2,14 @@ package com.yapp.presentation.model
 
 import android.os.Parcelable
 import com.yapp.domain.model.SessionEntity
+import com.yapp.domain.model.types.NeedToAttendType
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Session(
     val sessionId: Int,
     val title: String,
-    val isOff: Boolean,
+    val type: NeedToAttendType,
     val description: String,
     val date: String
 ): Parcelable {
@@ -18,11 +19,10 @@ data class Session(
             return Session(
                 sessionId = sessionId,
                 title = title,
-                isOff = isOff,
+                type = type,
                 description = description,
                 date = date
             )
         }
     }
-
 }
