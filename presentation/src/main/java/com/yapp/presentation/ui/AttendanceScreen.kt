@@ -173,7 +173,7 @@ fun AttendanceScreen(
         {
             Position(
                 onClickBackButton = { navController.popBackStack() },
-                onClickNextButton = { userName, userPosition ->
+                navigateToTeamScreen = { userName, userPosition ->
                     navController.navigate(AttendanceScreenRoute.SIGNUP_TEAM.route.plus("/${userName}").plus("/${userPosition}")) }
             )
         }

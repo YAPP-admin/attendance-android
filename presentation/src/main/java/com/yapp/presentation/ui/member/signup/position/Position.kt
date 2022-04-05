@@ -4,11 +4,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -20,14 +20,24 @@ import com.yapp.common.yds.YDSChoiceButton
 import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R
 import com.yapp.presentation.model.type.PositionType
+import kotlinx.coroutines.flow.collect
 
 @Composable
 fun Position(
     viewModel: PositionViewModel = hiltViewModel(),
     onClickBackButton: () -> Unit,
-    onClickNextButton: (String, String) -> Unit
+    navigateToTeamScreen: (String, String) -> Unit
 ){
     val uiState by viewModel.uiState.collectAsState()
+    LaunchedEffect(key1 = viewModel.effect) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is PositionContract.PositionSideEffect.NavigateToTeamScreen -> {
+                    navigateToTeamScreen(effect.name, effect.position.name)
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = { YDSAppBar(onClickBackButton = { onClickBackButton() }) },
@@ -57,9 +67,11 @@ fun Position(
                     .padding(bottom = 40.dp)
                     .height(60.dp)
                     .align(Alignment.BottomCenter),
-                onClick = {
-                },
-                state = YdsButtonState.DISABLED
+                onClick = { if (uiState.position != null) {
+                    viewModel.setEvent(PositionContract.PositionUiEvent.ConfirmPosition)
+
+                } },
+                state = if (uiState.position != null) YdsButtonState.ENABLED else YdsButtonState.DISABLED
             )
         }
     }

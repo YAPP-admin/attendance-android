@@ -11,11 +11,12 @@ class PositionContract {
     ) : UiState
 
     sealed class PositionSideEffect : UiSideEffect {
-        object NavigateToTeamScreen:PositionSideEffect()
+        data class NavigateToTeamScreen(val name: String, val position: PositionType) :
+            PositionSideEffect()
     }
 
-    sealed class PositionUiEvent:UiEvent{
-        data class ChoosePosition(val position:PositionType) : PositionUiEvent()
+    sealed class PositionUiEvent : UiEvent {
+        data class ChoosePosition(val position: PositionType) : PositionUiEvent()
         object ConfirmPosition : PositionUiEvent()
     }
 }
