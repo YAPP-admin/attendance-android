@@ -2,7 +2,6 @@ package com.yapp.presentation.ui.member.signup.position
 
 import androidx.lifecycle.SavedStateHandle
 import com.yapp.common.base.BaseViewModel
-import com.yapp.presentation.ui.member.signup.team.TeamContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
