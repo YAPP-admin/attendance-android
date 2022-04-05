@@ -20,6 +20,7 @@ import com.yapp.presentation.ui.member.score.detail.SessionDetail
 import com.yapp.presentation.ui.member.score.detail.SessionDetailNavParam
 import com.yapp.presentation.ui.member.setting.MemberSetting
 import com.yapp.presentation.ui.member.signup.name.Name
+import com.yapp.presentation.ui.member.signup.team.Team
 import com.yapp.presentation.ui.splash.Splash
 
 @Composable
@@ -193,7 +194,9 @@ enum class AttendanceScreenRoute(val route: String) {
     MEMBER_SETTING("member_setting"),
     SIGNUP_NAME("signup-name"),
     SIGNUP_TEAM("signup-team"),
-    HELP("help");
+    HELP("help"),
+    ADMIN_TOTAL_SCORE("admin-total-score"),
+    SESSION_DETAIL("session-detail");
 }
 
 // status bar color 한번에 지정할 수 있는 방법 찾아보기 !

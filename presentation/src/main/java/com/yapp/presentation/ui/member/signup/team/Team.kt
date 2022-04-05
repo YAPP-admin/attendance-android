@@ -88,9 +88,8 @@ fun Team(
                     .height(60.dp)
                     .align(Alignment.BottomCenter),
                 state = if ((uiState.selectedTeam.type != null) and (uiState.selectedTeam.number != null)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                onClick = { if ((uiState.selectedTeam.type != null) and (uiState.selectedTeam.number != null)) navigateToMainScreen() },
                 onClick = {
-                    if ((uiState.selectedTeam.platform != null) and (uiState.selectedTeam.number != null)) {
+                    if ((uiState.selectedTeam.type != null) and (uiState.selectedTeam.number != null)) {
                         viewModel.setEvent(TeamContract.TeamUiEvent.ConfirmTeam)
                     }
                 },
@@ -121,10 +120,10 @@ fun TeamOption(uiState: TeamContract.TeamUiState, onTeamTypeClicked: (String) ->
 
 @Composable
 fun TeamNumberOption(uiState: TeamContract.TeamUiState, onTeamNumberClicked: (Int) -> Unit) {
-    val selectedTeamType = uiState.teams.filter { it.platform == uiState.selectedTeam.platform }
+    val selectedTeamType = uiState.teams.filter { it.type == uiState.selectedTeam.type }
     val density = LocalDensity.current
     AnimatedVisibility(
-        visible = uiState.selectedTeam.platform != null,
+        visible = uiState.selectedTeam.type != null,
         enter = slideInVertically { with(density) { -40.dp.roundToPx() } }
                 + expandVertically(expandFrom = Alignment.CenterVertically)
                 + fadeIn(initialAlpha = 0.3f)

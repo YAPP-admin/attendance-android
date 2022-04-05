@@ -13,6 +13,7 @@ import com.yapp.domain.usecases.GetMemberIdUseCase
 import com.yapp.domain.usecases.GetTeamListUseCase
 import com.yapp.domain.usecases.SetMemberUseCase
 import com.yapp.presentation.model.Team.Companion.mapTo
+import com.yapp.presentation.model.type.PositionType
 import com.yapp.presentation.model.type.TeamType
 import com.yapp.presentation.ui.member.signup.team.TeamContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -86,7 +87,7 @@ class TeamViewModel @Inject constructor(
             MemberEntity(
                 id = memberId,
                 name = memberName,
-                position = PositionTypeEntity.FRONTEND,
+                position = PositionTypeEntity.DESIGNER,
                 team = TeamEntity(
                     type = uiState.value.selectedTeam.type!!.name,
                     number = uiState.value.selectedTeam.number!!
