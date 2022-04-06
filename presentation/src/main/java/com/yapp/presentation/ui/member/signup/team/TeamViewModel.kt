@@ -9,6 +9,7 @@ import com.yapp.domain.model.AttendanceTypeEntity
 import com.yapp.domain.model.MemberEntity
 import com.yapp.domain.model.TeamEntity
 import com.yapp.domain.model.types.PositionTypeEntity
+import com.yapp.domain.usecases.CheckLocalMemberUseCase
 import com.yapp.domain.usecases.GetMemberIdUseCase
 import com.yapp.domain.usecases.GetTeamListUseCase
 import com.yapp.domain.usecases.SetMemberUseCase
