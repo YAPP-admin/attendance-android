@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 class GetMemberIdUseCase @Inject constructor(
     private val localRepository: LocalRepository,
-    private val coroutineDispatcher: gDispatcherProvider
+    private val coroutineDispatcher: DispatcherProvider
 ) : BaseUseCase<Flow<TaskResult<Long?>>, Unit>(coroutineDispatcher) {
     override suspend fun invoke(params: Unit?): Flow<TaskResult<Long?>> {
         return localRepository.getMemberId().toResult()
