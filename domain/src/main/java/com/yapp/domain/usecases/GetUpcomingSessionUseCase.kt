@@ -17,7 +17,7 @@ class GetUpcomingSessionUseCase @Inject constructor(
         // 세션 당일 밤 12시까지
         return firebaseRemoteConfig.getSessionList()
             .map { list ->
-                list.firstOrNull { !DateUtil.isPastSession(it.date) }
+                list.firstOrNull { DateUtil.isUpcomingSession(it.date) }
             }.toResult()
     }
 }

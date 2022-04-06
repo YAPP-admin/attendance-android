@@ -15,12 +15,11 @@ object DateUtil {
         return (currentDate - sessionDate) / 1000 / 60
     }
 
-    // 지난 세션인지 확인
-    // 세션 다음날부터 true
-    fun isPastSession(sessionDateStr: String): Boolean {
+    // 다가오는 세션인지 확인
+    // 세션 날짜가 오늘 이후이면 true
+    fun isUpcomingSession(sessionDateStr: String): Boolean {
         val currentDate = System.currentTimeMillis()
-        // TODO 지금 당일부터 true인걸로 되어있음
         val sessionDate = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA).parse(sessionDateStr).time
-        return currentDate > sessionDate
+        return currentDate < sessionDate
     }
 }
