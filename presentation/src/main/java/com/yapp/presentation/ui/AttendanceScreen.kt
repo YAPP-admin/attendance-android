@@ -15,6 +15,7 @@ import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.login.Login
 import com.yapp.presentation.ui.member.help.Help
 import com.yapp.presentation.ui.member.main.MemberMain
+import com.yapp.presentation.ui.member.privacy_policy.PrivacyPolicyScreen
 import com.yapp.presentation.ui.member.qrcodescanner.QrCodeScanner
 import com.yapp.presentation.ui.member.score.detail.SessionDetail
 import com.yapp.presentation.ui.member.score.detail.SessionDetailNavParam
@@ -109,7 +110,18 @@ fun AttendanceScreen(
                         // 모든 스택을 다 제거해야함.
                         popUpTo(AttendanceScreenRoute.MEMBER_SETTING.route)
                     }
+                },
+                onClickPrivacyPolicyButton = {
+                    navController.navigate(AttendanceScreenRoute.PRIVACY_POLICY.route)
                 }
+            )
+        }
+
+        composable(
+            route = AttendanceScreenRoute.PRIVACY_POLICY.route
+        ) {
+            PrivacyPolicyScreen(
+                onClickBackButton = { navController.popBackStack() }
             )
         }
 
@@ -195,7 +207,8 @@ enum class AttendanceScreenRoute(val route: String) {
     SIGNUP_TEAM("team"),
     HELP("help"),
     ADMIN_TOTAL_SCORE("admin-total-score"),
-    SESSION_DETAIL("session-detail");
+    SESSION_DETAIL("session-detail"),
+    PRIVACY_POLICY("privacy-policy");
 }
 
 // status bar color 한번에 지정할 수 있는 방법 찾아보기 !
