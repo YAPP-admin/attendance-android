@@ -34,7 +34,7 @@ sealed class AttendanceType(val point: Int, val text: String) {
         }
 
         fun getAllTypes() : List<AttendanceType> {
-            return listOf(Absent, ReportedAbsent, Normal, Late, ReportedLate)
+            return listOf(Absent, Normal, Late, Admit)
         }
     }
 

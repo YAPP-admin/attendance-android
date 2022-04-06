@@ -135,6 +135,7 @@ fun ExpandableTeam(
 ) {
     Column(
         modifier = modifier
+            .padding(horizontal = 8.dp)
             .fillMaxWidth()
             .wrapContentHeight()
     ) {
