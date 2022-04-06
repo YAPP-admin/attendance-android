@@ -22,4 +22,10 @@ object DateUtil {
         val sessionDate = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA).parse(sessionDateStr).time
         return currentDate < sessionDate
     }
+
+    // 지난 세션인지 확인
+    // 세션 시작 시간이 지나면 true
+    fun isPastSession(sessionDateStr: String): Boolean {
+        return getElapsedTime(sessionDateStr) >= 0
+    }
 }
