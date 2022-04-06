@@ -49,7 +49,7 @@ fun Team(
                     uiState,
                     onTeamTypeClicked = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeam(it)) })
                 Spacer(modifier = Modifier.height(52.dp))
-                if (uiState.selectedTeam.platform != null) {
+                if (uiState.selectedTeam.type != null) {
                     TeamNumberOption(
                         uiState,
                         onTeamNumberClicked = {
@@ -66,8 +66,8 @@ fun Team(
                     .padding(bottom = 40.dp)
                     .height(60.dp)
                     .align(Alignment.BottomCenter),
-                state = if ((uiState.selectedTeam.platform != null) and (uiState.selectedTeam.number != null)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                onClick = { if ((uiState.selectedTeam.platform != null) and (uiState.selectedTeam.number != null)) navigateToMainScreen() },
+                state = if ((uiState.selectedTeam.type != null) and (uiState.selectedTeam.number != null)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+                onClick = { if ((uiState.selectedTeam.type != null) and (uiState.selectedTeam.number != null)) navigateToMainScreen() },
             )
         }
     }
@@ -82,10 +82,10 @@ fun TeamOption(uiState: TeamContract.TeamUiState, onTeamTypeClicked: (String) ->
                 repeat(rowNum) { index ->
                     val team = uiState.teams[rowNum * row + index]
                     YDSChoiceButton(
-                        text = team.platform!!.type,
+                        text = team.type!!.displayName,
                         modifier = Modifier.padding(end = 12.dp),
-                        state = if (uiState.selectedTeam.platform == team.platform) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                        onClick = { onTeamTypeClicked(team.platform.type) }
+                        state = if (uiState.selectedTeam.type == team.type) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+                        onClick = { onTeamTypeClicked(team.type.displayName) }
                     )
                 }
             }
@@ -95,7 +95,7 @@ fun TeamOption(uiState: TeamContract.TeamUiState, onTeamTypeClicked: (String) ->
 
 @Composable
 fun TeamNumberOption(uiState: TeamContract.TeamUiState, onTeamNumberClicked: (Int) -> Unit) {
-    val selectedTeamType = uiState.teams.filter { it.platform == uiState.selectedTeam.platform }
+    val selectedTeamType = uiState.teams.filter { it.type == uiState.selectedTeam.type }
     Column(
     ) {
         Text(

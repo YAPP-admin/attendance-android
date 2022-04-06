@@ -7,15 +7,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TeamModel(
-    @SerialName("team")
-    val platform: String? = null,
-    @SerialName("count")
+    val type: String? = null,
     val number: Int? = null
 ) {
     companion object {
         fun TeamModel.mapToEntity(): TeamEntity {
             return TeamEntity(
-                platform = platform!!,
+                type = type!!,
                 number = number!!,
             )
         }

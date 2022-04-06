@@ -1,17 +1,24 @@
 package com.yapp.common.util
 
 import android.content.Context
+import android.util.Log
+import com.kakao.sdk.auth.AuthApiClient
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.yapp.domain.common.KakaoSdkProviderInterface
 import dagger.hilt.android.qualifiers.ActivityContext
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class KakaoTalkLoginProvider @Inject constructor(
-    @ActivityContext
+@Singleton
+class KakaoSdkProvider @Inject constructor(
+    @ApplicationContext
     val context: Context
-) {
-    fun login(
+) : KakaoSdkProviderInterface {
+
+    override fun login(
         onSuccess: () -> Unit,
         onFailed: () -> Unit,
     ) {
@@ -45,6 +52,52 @@ class KakaoTalkLoginProvider @Inject constructor(
                 onFailed()
             } else if (token != null) {
                 onSuccess()
+            }
+        }
+    }
+
+    override fun logout(
+        onSuccess: () -> Unit,
+        onFailed: () -> Unit,
+    ) {
+        UserApiClient.instance.logout { error ->
+            error?.let {
+                onFailed()
+            } ?: run {
+                onSuccess()
+            }
+        }
+    }
+
+    override fun validateAccessToken(onSuccess: (Long) -> Unit, onFailed: () -> Unit) {
+        if (AuthApiClient.instance.hasToken()) {
+            UserApiClient.instance.accessTokenInfo { _, error ->
+                if (error == null) {
+                    // 토큰 유효성 체크 성공(필요 시 토큰 갱신됨)
+                    getUserAccountId(onSuccess, onFailed)
+                } else {
+                    onFailed()
+                }
+            }
+        } else {
+            onFailed()
+        }
+    }
+
+    override fun getUserAccountId(
+        onSuccess: (Long) -> Unit,
+        onFailed: () -> Unit,
+    ) {
+        UserApiClient.instance.me { user, error ->
+            error?.let {
+                onFailed()
+            }
+            if (user != null) {
+                user.id?.let { id ->
+                    onSuccess(id)
+                } ?: run {
+                    onFailed()
+                }
             }
         }
     }

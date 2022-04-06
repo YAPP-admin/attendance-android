@@ -1,24 +1,16 @@
 package com.yapp.presentation.ui
 
 import android.os.Bundle
-import android.util.Log
-import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
 import androidx.compose.runtime.CompositionLocalProvider
-import com.kakao.sdk.common.util.Utility
 import com.yapp.common.theme.AttendanceTheme
-import com.yapp.common.util.KakaoTalkLoginProvider
-import com.yapp.common.util.KeyboardVisibilityUtils
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @Inject
-    lateinit var kakaoTalkLoginProvider: KakaoTalkLoginProvider
 
     @OptIn(ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,9 +20,7 @@ class MainActivity : ComponentActivity() {
                 CompositionLocalProvider(
                     LocalOverScrollConfiguration provides null
                 ) {
-                    AttendanceScreen(
-                        kakaoTalkLoginProvider
-                    )
+                    AttendanceScreen()
                 }
             }
         }
