@@ -11,10 +11,12 @@ class MemberSettingContract {
     ) : UiState
 
     sealed class MemberSettingUiSideEffect : UiSideEffect {
-        object NavigateToLoginScreen: MemberSettingUiSideEffect()
+        object NavigateToLoginScreen : MemberSettingUiSideEffect()
+        object NavigateToPrivacyPolicyScreen : MemberSettingUiSideEffect()
     }
 
     sealed class MemberSettingUiEvent : UiEvent {
-        object OnLogoutButtonClicked: MemberSettingUiEvent()
+        object OnLogoutButtonClicked : MemberSettingUiEvent()
+        object OnPrivacyPolicyButtonClicked : MemberSettingUiEvent()
     }
 }
