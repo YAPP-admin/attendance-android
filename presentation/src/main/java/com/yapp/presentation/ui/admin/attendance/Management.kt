@@ -6,10 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,13 +24,14 @@ import com.yapp.presentation.model.AttendanceType
 import com.yapp.presentation.ui.admin.attendance.ManagementContract.ManagementEvent
 import com.yapp.presentation.ui.admin.attendance.ManagementContract.ManagementState.MemberState
 import com.yapp.presentation.ui.admin.attendance.ManagementContract.ManagementState.TeamState
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
 @ExperimentalMaterialApi
 @Preview
 @Composable
-fun Management(
+fun AttendanceManagement(
     viewModel: ManagementViewModel = hiltViewModel(),
     onBackButtonClicked: (() -> Unit)? = null
 ) {
@@ -45,7 +43,7 @@ fun Management(
     ModalBottomSheetLayout(
         modifier = Modifier,
         sheetContent = {
-            BottomSheetDialogContent(
+            BottomSheetDialog(
                 attendanceTypes = AttendanceType.getAllTypes(),
                 onClickItem = { attendanceType ->
                     viewModel.setEvent(ManagementEvent.OnAttendanceTypeChanged(attendanceType))
@@ -53,7 +51,7 @@ fun Management(
             )
         },
         sheetState = sheetState,
-        sheetBackgroundColor = Color.Red
+        sheetBackgroundColor = Color.Transparent
     ) {
         Scaffold(
             topBar = {
@@ -86,14 +84,23 @@ fun Management(
                         },
                         onDropDownClicked = { changedMember ->
                             viewModel.setEvent(ManagementEvent.OnDropDownButtonClicked(changedMember))
-                            coroutineScope.launch {
-                                sheetState.show()
-                            }
                         }
                     )
                     ExpandableTeam()
                     ExpandableTeam()
                     ExpandableTeam()
+                }
+            }
+        }
+    }
+
+    LaunchedEffect(key1 = viewModel.effect) {
+        viewModel.effect.collect { effect ->
+            when(effect) {
+                is ManagementContract.ManagementSideEffect.OpenBottomSheetDialog -> {
+                    coroutineScope.launch {
+                        sheetState.show()
+                    }
                 }
             }
         }
@@ -145,6 +152,7 @@ fun ExpandableTeam(
         )
         if (state.isExpanded) {
             Divider(modifier = Modifier.height(1.dp), color = Gray_300)
+
             for (member in state.members) {
                 MemberContent(
                     state = member,
@@ -153,6 +161,7 @@ fun ExpandableTeam(
                     }
                 )
             }
+
             Divider(modifier = Modifier.height(1.dp), color = Gray_300)
         }
     }
@@ -176,7 +185,7 @@ fun TeamHeader(
                 .width(0.dp)
                 .weight(0.9F)
                 .fillMaxHeight()
-                .padding(top = 20.dp, bottom = 20.dp),
+                .padding(vertical = 18.dp),
             text = "홍길동",
             textAlign = TextAlign.Start,
             style = AttendanceTypography.h3,
@@ -231,7 +240,7 @@ fun MemberContent(
 }
 
 @Composable
-fun BottomSheetDialogContent(
+fun BottomSheetDialog(
     modifier: Modifier = Modifier,
     attendanceTypes: List<AttendanceType>,
     onClickItem: (AttendanceType) -> Unit = {}
@@ -241,14 +250,28 @@ fun BottomSheetDialogContent(
             .fillMaxWidth()
             .wrapContentHeight()
     ) {
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(24.dp)
+                .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
+                .background(color = Color.White)
+
+        )
+
         for (type in attendanceTypes) {
             BottomSheetDialogItem(
                 attendanceType = type,
-                onClickItem = {
-                    onClickItem.invoke(type)
-                }
+                onClickItem = { onClickItem.invoke(type) }
             )
         }
+
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(42.dp)
+                .background(color = Color.White)
+        )
     }
 }
 
@@ -259,16 +282,24 @@ fun BottomSheetDialogItem(
     attendanceType: AttendanceType = AttendanceType.Normal,
     onClickItem: (AttendanceType) -> Unit = {}
 ) {
-    Text(
+    Column(
         modifier = modifier
             .fillMaxWidth()
-            .height(51.dp)
-            .clickable {
-                onClickItem.invoke(attendanceType)
-            },
-        text = attendanceType.text,
-        style = AttendanceTypography.subtitle1,
-        color = Gray_1200,
-        textAlign = TextAlign.Center
-    )
+            .height(52.dp)
+            .background(color = Color.White)
+            .clickable { onClickItem.invoke(attendanceType) },
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            modifier = modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(vertical = 14.dp),
+            text = attendanceType.text,
+            style = AttendanceTypography.subtitle1,
+            color = Gray_1200,
+            textAlign = TextAlign.Center,
+        )
+    }
 }

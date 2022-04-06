@@ -19,6 +19,7 @@ class ManagementViewModel @Inject constructor(
                 teams = listOf(
                     ManagementState.TeamState(
                         isExpanded = false,
+                        index = 0,
                         teamName = "Android1",
                         members = listOf(
                             ManagementState.MemberState(
@@ -40,6 +41,7 @@ class ManagementViewModel @Inject constructor(
                     ),
                     ManagementState.TeamState(
                         isExpanded = false,
+                        index = 1,
                         teamName = "Android2",
                         members = listOf(
                             ManagementState.MemberState(
@@ -65,7 +67,25 @@ class ManagementViewModel @Inject constructor(
     }
 
     override fun handleEvent(event: ManagementEvent) {
-        TODO("Not yet implemented")
+        when(event) {
+            is ManagementEvent.OnDropDownButtonClicked -> {
+                setEffect(ManagementSideEffect.OpenBottomSheetDialog())
+            }
+
+            is ManagementEvent.OnExpandedClicked -> {
+                setState {
+                    val oldState = this.teams.toMutableList()
+                    oldState[event.team.index] = this.teams[event.team.index].copy(isExpanded = true)
+                    val newState = oldState.toList()
+
+                    return@setState this.copy(teams = newState)
+                }
+            }
+
+            is ManagementEvent.OnAttendanceTypeChanged -> {
+
+            }
+        }
     }
 
 }

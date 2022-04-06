@@ -1,5 +1,6 @@
 package com.yapp.presentation.ui
 
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
@@ -10,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yapp.common.theme.Yapp_Orange
+import com.yapp.presentation.ui.admin.attendance.AttendanceManagement
 import com.yapp.presentation.ui.admin.browse.AdminTotalScore
 import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.login.Login
@@ -23,6 +25,7 @@ import com.yapp.presentation.ui.member.signup.Name
 import com.yapp.presentation.ui.member.signup.Team
 import com.yapp.presentation.ui.splash.Splash
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AttendanceScreen(
     navController: NavHostController = rememberNavController(),
@@ -93,6 +96,14 @@ fun AttendanceScreen(
         }
 
         composable(
+            route = AttendanceScreenRoute.ADMIN_ATTENDANCE_MANAGEMENT.route
+        ) {
+            AttendanceManagement(
+                onBackButtonClicked = { navController.popBackStack() }
+            )
+        }
+
+        composable(
             route = AttendanceScreenRoute.MEMBER_SETTING.route
         ) {
             MemberSetting(
@@ -100,9 +111,11 @@ fun AttendanceScreen(
                     navController.popBackStack()
                 },
                 onClickAdminButton = {
-                    navController.navigate(AttendanceScreenRoute.ADMIN_MAIN.route) {
-                        popUpTo(AttendanceScreenRoute.MEMBER_SETTING.route) { inclusive = true }
-                    }
+                    // TODO [임시] 원래 Main이 들어와야 함
+                    navController.navigate(AttendanceScreenRoute.ADMIN_ATTENDANCE_MANAGEMENT.route)
+//                    navController.navigate(AttendanceScreenRoute.ADMIN_MAIN.route) {
+//                        popUpTo(AttendanceScreenRoute.MEMBER_SETTING.route) { inclusive = true }
+//                    }
                 },
                 onClickLogoutButton = {
                     navController.navigate(AttendanceScreenRoute.LOGIN.route) {
@@ -195,7 +208,8 @@ enum class AttendanceScreenRoute(val route: String) {
     SIGNUP_TEAM("team"),
     HELP("help"),
     ADMIN_TOTAL_SCORE("admin-total-score"),
-    SESSION_DETAIL("session-detail");
+    SESSION_DETAIL("session-detail"),
+    ADMIN_ATTENDANCE_MANAGEMENT("admin-attendance-management");
 }
 
 // status bar color 한번에 지정할 수 있는 방법 찾아보기 !

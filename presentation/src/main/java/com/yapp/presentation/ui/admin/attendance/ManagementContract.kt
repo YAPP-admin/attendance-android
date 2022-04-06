@@ -16,6 +16,7 @@ class ManagementContract {
 
         data class TeamState (
             val isExpanded: Boolean = false,
+            val index: Int = -1,
             val teamName: String = "",
             val members: List<MemberState> = emptyList()
         )
@@ -28,10 +29,12 @@ class ManagementContract {
     }
 
     sealed class ManagementEvent : UiEvent {
-        class OnExpandedClicked(team: ManagementState.TeamState): ManagementEvent()
-        class OnDropDownButtonClicked(member: ManagementState.MemberState) : ManagementEvent()
-        class OnAttendanceTypeChanged(attendanceType: AttendanceType) : ManagementEvent()
+        class OnExpandedClicked(val team: ManagementState.TeamState): ManagementEvent()
+        class OnDropDownButtonClicked(val member: ManagementState.MemberState) : ManagementEvent()
+        class OnAttendanceTypeChanged(val attendanceType: AttendanceType) : ManagementEvent()
     }
 
-    sealed class ManagementSideEffect : UiSideEffect
+    sealed class ManagementSideEffect : UiSideEffect {
+        class OpenBottomSheetDialog : ManagementSideEffect()
+    }
 }
