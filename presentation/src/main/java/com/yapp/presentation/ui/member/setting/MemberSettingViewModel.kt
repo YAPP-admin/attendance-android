@@ -33,6 +33,10 @@ class MemberSettingViewModel @Inject constructor(
             is MemberSettingContract.MemberSettingUiEvent.OnLogoutButtonClicked -> {
                 logout()
             }
+
+            is MemberSettingContract.MemberSettingUiEvent.OnPrivacyPolicyButtonClicked -> {
+                setEffect(MemberSettingContract.MemberSettingUiSideEffect.NavigateToPrivacyPolicyScreen)
+            }
         }
     }
 }

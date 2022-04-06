@@ -2,7 +2,20 @@ package com.yapp.presentation.ui
 
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
+import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.*
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -10,13 +23,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.yapp.common.R
 import com.yapp.common.theme.Yapp_Orange
 import com.yapp.presentation.ui.admin.attendance.AttendanceManagement
 import com.yapp.presentation.ui.admin.browse.AdminTotalScore
 import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.login.Login
+import com.yapp.presentation.ui.login.LoginContract
 import com.yapp.presentation.ui.member.help.Help
 import com.yapp.presentation.ui.member.main.MemberMain
+import com.yapp.presentation.ui.member.privacy_policy.PrivacyPolicyScreen
 import com.yapp.presentation.ui.member.qrcodescanner.QrCodeScanner
 import com.yapp.presentation.ui.member.score.detail.SessionDetail
 import com.yapp.presentation.ui.member.score.detail.SessionDetailNavParam
@@ -24,12 +40,32 @@ import com.yapp.presentation.ui.member.setting.MemberSetting
 import com.yapp.presentation.ui.member.signup.Name
 import com.yapp.presentation.ui.member.signup.Team
 import com.yapp.presentation.ui.splash.Splash
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AttendanceScreen(
+    viewModel: MainViewModel = hiltViewModel(),
     navController: NavHostController = rememberNavController(),
 ) {
+    var qrToastVisible by remember { mutableStateOf(false) }
+
+    LaunchedEffect(key1 = viewModel.effect) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is MainContract.MainUiSideEffect.NavigateToQRScreen -> {
+                    navController.navigate(AttendanceScreenRoute.QR_AUTH.route)
+                }
+                is MainContract.MainUiSideEffect.ShowToast -> {
+                    qrToastVisible = !qrToastVisible
+                    delay(1000L)
+                    qrToastVisible = !qrToastVisible
+                }
+            }
+        }
+    }
+
     NavHost(
         navController = navController,
         startDestination = AttendanceScreenRoute.SPLASH.route
@@ -82,8 +118,12 @@ fun AttendanceScreen(
             route = AttendanceScreenRoute.MEMBER_MAIN.route
         ) {
             SetStatusBarColorByRoute(it.destination.route)
-            MemberMain {
-                navController.navigate(it)
+            MemberMain { screen ->
+                if (screen == AttendanceScreenRoute.QR_AUTH.route) {
+                    viewModel.validateQRScreen()
+                } else {
+                    navController.navigate(screen)
+                }
             }
         }
 
@@ -122,7 +162,18 @@ fun AttendanceScreen(
                         // 모든 스택을 다 제거해야함.
                         popUpTo(AttendanceScreenRoute.MEMBER_SETTING.route)
                     }
+                },
+                onClickPrivacyPolicyButton = {
+                    navController.navigate(AttendanceScreenRoute.PRIVACY_POLICY.route)
                 }
+            )
+        }
+
+        composable(
+            route = AttendanceScreenRoute.PRIVACY_POLICY.route
+        ) {
+            PrivacyPolicyScreen(
+                onClickBackButton = { navController.popBackStack() }
             )
         }
 
@@ -195,6 +246,23 @@ fun AttendanceScreen(
             AdminTotalScore(onClickBackButton = { navController.popBackStack() })
         }
     }
+
+    AnimatedVisibility(
+        visible = qrToastVisible,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 90.dp),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            YDSToast(
+                text = stringResource(id = com.yapp.presentation.R.string.member_main_qr_enter_failed_toast_message),
+            )
+        }
+    }
 }
 
 enum class AttendanceScreenRoute(val route: String) {
@@ -209,6 +277,7 @@ enum class AttendanceScreenRoute(val route: String) {
     HELP("help"),
     ADMIN_TOTAL_SCORE("admin-total-score"),
     SESSION_DETAIL("session-detail"),
+    PRIVACY_POLICY("privacy-policy");
     ADMIN_ATTENDANCE_MANAGEMENT("admin-attendance-management");
 }
 
