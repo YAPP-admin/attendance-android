@@ -2,11 +2,14 @@ package com.yapp.presentation.ui.member.signup
 
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
+import com.yapp.domain.model.MemberEntity
+import com.yapp.domain.model.types.PositionTypeEntity
 import com.yapp.domain.usecases.GetTeamListUseCase
 import com.yapp.presentation.model.Team.Companion.mapTo
-import com.yapp.presentation.model.type.PlatformType
+import com.yapp.presentation.model.type.TeamType
 import com.yapp.presentation.ui.member.signup.TeamContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,12 +36,11 @@ class TeamViewModel @Inject constructor (
     override fun handleEvent(event: TeamUiEvent) {
         when (event) {
             is TeamUiEvent.ChooseTeam -> {
-                setState { copy(selectedTeam = uiState.value.selectedTeam.copy(platform = PlatformType.of(event.platformType))) }
+                setState { copy(selectedTeam = uiState.value.selectedTeam.copy(type = TeamType.of(event.platformType))) }
             }
             is TeamUiEvent.ChooseTeamNumber -> {
                 setState { copy(selectedTeam = uiState.value.selectedTeam.copy(number = event.teamNum)) }
             }
         }
     }
-
 }

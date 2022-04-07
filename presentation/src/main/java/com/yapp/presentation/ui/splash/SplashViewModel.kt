@@ -1,29 +1,38 @@
 package com.yapp.presentation.ui.splash
 
-import com.kakao.sdk.auth.AuthApiClient
-import com.kakao.sdk.user.UserApiClient
+import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
+import com.yapp.domain.common.KakaoSdkProviderInterface
+import com.yapp.domain.usecases.SetMemberIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
+    private val kakaoSdkProvider: KakaoSdkProviderInterface,
+    private val setMemberIdUseCase: SetMemberIdUseCase
 ) : BaseViewModel<SplashContract.SplashUiState, SplashContract.SplashUiSideEffect, SplashContract.SplashUiEvent>(
     SplashContract.SplashUiState()
 ) {
     init {
-        if (AuthApiClient.instance.hasToken()) {
-            UserApiClient.instance.accessTokenInfo { _, error ->
-                if (error == null) {
-                    // 토큰 유효성 체크 성공(필요 시 토큰 갱신됨)
+        kakaoSdkProvider.validateAccessToken(
+            onSuccess = { userAccountId ->
+                viewModelScope.launch {
+                    setMemberId(userAccountId)
                     setState { copy(loginState = SplashContract.LoginState.SUCCESS) }
-
-                } else {
-                    setState { copy(loginState = SplashContract.LoginState.REQUIRED) }
                 }
+            },
+            onFailed = {
+                setState { copy(loginState = SplashContract.LoginState.REQUIRED) }
             }
-        } else {
-            setState { copy(loginState = SplashContract.LoginState.REQUIRED) }
+        )
+    }
+
+    private suspend fun setMemberId(id: Long) {
+        withContext(viewModelScope.coroutineContext) {
+            setMemberIdUseCase(id)
         }
     }
 
