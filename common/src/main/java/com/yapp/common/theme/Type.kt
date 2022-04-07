@@ -31,7 +31,7 @@ val AttendanceTypography = Typography(
     ),
     subtitle1 = TextStyle(
         fontFamily = Pretendard,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp,
         lineHeight = 24.sp
     ),
