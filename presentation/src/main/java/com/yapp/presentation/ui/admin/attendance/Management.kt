@@ -15,6 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.theme.*
 import com.yapp.common.yds.YDSAppBar
@@ -79,6 +80,16 @@ fun AttendanceManagement(
                 }
                 item {
                     ExpandableTeam(
+                        state = uiState.teams[0],
+                        onExpandClicked = { team ->
+                            viewModel.setEvent(ManagementEvent.OnExpandedClicked(team))
+                        },
+                        onDropDownClicked = { changedMember ->
+                            viewModel.setEvent(ManagementEvent.OnDropDownButtonClicked(changedMember))
+                        }
+                    )
+                    ExpandableTeam(
+                        state = uiState.teams[1],
                         onExpandClicked = { team ->
                             viewModel.setEvent(ManagementEvent.OnExpandedClicked(team))
                         },
@@ -88,7 +99,6 @@ fun AttendanceManagement(
                     )
                     ExpandableTeam()
                     ExpandableTeam()
-                    ExpandableTeam()
                 }
             }
         }
@@ -96,7 +106,7 @@ fun AttendanceManagement(
 
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collect { effect ->
-            when(effect) {
+            when (effect) {
                 is ManagementContract.ManagementSideEffect.OpenBottomSheetDialog -> {
                     coroutineScope.launch {
                         sheetState.show()
@@ -136,20 +146,22 @@ fun AttendCountText(
 @Composable
 fun ExpandableTeam(
     modifier: Modifier = Modifier,
-    state: TeamState = TeamState().copy(isExpanded = false),
+    state: TeamState = TeamState(),
     onExpandClicked: (TeamState) -> Unit = {},
     onDropDownClicked: ((MemberState) -> Unit)? = null
 ) {
     Column(
         modifier = modifier
-            .padding(horizontal = 8.dp)
             .fillMaxWidth()
-            .wrapContentHeight()
+            .wrapContentHeight(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         TeamHeader(
             state = state,
             onExpandClicked = { onExpandClicked(state) }
         )
+
         if (state.isExpanded) {
             Divider(modifier = Modifier.height(1.dp), color = Gray_300)
 
@@ -186,7 +198,7 @@ fun TeamHeader(
                 .weight(0.9F)
                 .fillMaxHeight()
                 .padding(vertical = 18.dp),
-            text = "홍길동",
+            text = state.teamName,
             textAlign = TextAlign.Start,
             style = AttendanceTypography.h3,
             color = Gray_1200
@@ -200,7 +212,7 @@ fun TeamHeader(
             onClick = { onExpandClicked(state) }
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.icon_chevron_down),
+                painter = if (state.isExpanded) painterResource(id = R.drawable.icon_chevron_up) else painterResource(id = R.drawable.icon_chevron_down),
                 tint = Color.Unspecified,
                 contentDescription = null
             )
@@ -208,35 +220,47 @@ fun TeamHeader(
     }
 }
 
+@Preview
 @Composable
 fun MemberContent(
     modifier: Modifier = Modifier,
     state: MemberState = MemberState(),
-    onDropDownClicked: (MemberState) -> Unit
+    onDropDownClicked: (MemberState) -> Unit = {}
 ) {
-    Box(
+    ConstraintLayout(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .height(59.dp)
-            .padding(horizontal = 8.dp, vertical = 17.5.dp)
     ) {
+        val (ydsDropdownButton, nameText) = createRefs()
+
         Text(
             modifier = Modifier
                 .wrapContentWidth()
-                .fillMaxHeight()
-                .padding(top = 20.dp, bottom = 20.dp)
-                .align(Alignment.CenterStart),
+                .constrainAs(nameText) {
+                    start.linkTo(parent.start, margin = 8.dp)
+                    top.linkTo(parent.top, margin = 17.5.dp)
+                    bottom.linkTo(parent.bottom, margin = 17.5.dp)
+                },
             text = state.name,
             textAlign = TextAlign.Start,
-            style = AttendanceTypography.h3,
-            color = Gray_1200
+            style = AttendanceTypography.body1,
+            color = Gray_800
         )
 
         YDSDropDownButton(
+            modifier = Modifier
+                .wrapContentHeight()
+                .constrainAs(ydsDropdownButton) {
+                    end.linkTo(parent.end, margin = 8.dp)
+                    top.linkTo(parent.top, margin = 13.dp)
+                    bottom.linkTo(parent.bottom, margin = 13.dp)
+                },
             text = state.attendance.attendanceType.text,
             onClick = { onDropDownClicked.invoke(state) }
         )
     }
+
 }
 
 @Composable

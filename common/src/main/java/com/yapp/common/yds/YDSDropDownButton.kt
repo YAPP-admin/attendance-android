@@ -6,42 +6,49 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.yapp.common.R.drawable
+import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.theme.Gray_200
+import com.yapp.common.theme.Gray_800
 
 @Composable
 fun YDSDropDownButton(
+    modifier: Modifier = Modifier,
     text: String,
     onClick: () -> Unit,
 ) {
     Button(
         onClick = onClick,
-        modifier = Modifier
-            .wrapContentWidth()
-            .padding(horizontal = 8.dp, vertical = 16.dp),
+        modifier = modifier
+            .wrapContentWidth(),
         shape = RoundedCornerShape(8.dp),
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = Gray_200
-        ),
+        colors = ButtonDefaults.buttonColors(backgroundColor = Gray_200),
         elevation = null
     ) {
-        Row {
+        Row(
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .wrapContentSize(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
                 text = text,
-                color = Color(0xff6D747E),
-                modifier = Modifier.align(alignment = Alignment.CenterVertically)
+                modifier = Modifier
+                    .height(20.dp)
+                    .align(alignment = Alignment.CenterVertically),
+                style = AttendanceTypography.subtitle2,
+                color = Gray_800
             )
+            Spacer(modifier = Modifier.width(8.dp))
             Icon(
-                Icons.Filled.ArrowDropDown,
+                painter = painterResource(id = drawable.icon_rounded_drop_down),
                 contentDescription = "drop down",
-                modifier = Modifier.padding(start = 8.dp)
+                tint = Gray_800
             )
         }
     }
