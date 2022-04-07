@@ -78,7 +78,7 @@ class TeamViewModel @Inject constructor(
                     setMemberToFireBase(memberName!!, memberId!!)
                 }
             },
-            onFailed = { setEffect(TeamSideEffect.ShowToast("멤버 번호 문제")) }
+            onFailed = { setEffect(TeamSideEffect.ShowToast("회원가입 실패")) }
         )
     }
 
@@ -102,7 +102,7 @@ class TeamViewModel @Inject constructor(
             )
         ).collectWithCallback(
             onSuccess = { setEffect(TeamSideEffect.NavigateToMainScreen) },
-            onFailed = { setEffect(TeamSideEffect.ShowToast("파이어베이스 문제")) }
+            onFailed = { setEffect(TeamSideEffect.ShowToast("회원가입 실패")) }
         )
     }
 }

@@ -27,19 +27,17 @@ class LocalRepositoryImpl @Inject constructor(
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(DATASTORE_NAME)
 
     override suspend fun getMemberId(): Flow<Long?> {
-
-        return context.dataStore.data.map { it[MEMBER_ID] }
-//        return context.dataStore.data
-//            .catch {
-//                if (it is IOException) {
-//                    emit(emptyPreferences())
-//                } else {
-//                    throw it
-//                }
-//            }
-//            .map { preferences ->
-//                preferences[MEMBER_ID]
-//            }
+        return context.dataStore.data
+            .catch {
+                if (it is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    throw it
+                }
+            }
+            .map { preferences ->
+                preferences[MEMBER_ID]
+            }
     }
 
     override suspend fun setMemberId(memberId: Long) {
