@@ -38,6 +38,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.YDSPopupDialog
+import com.yapp.common.yds.YDSProgressBar
 import com.yapp.common.yds.YDSToast
 import com.yapp.presentation.R
 import com.yapp.presentation.util.permission.PermissionManager
@@ -87,60 +88,64 @@ fun QrCodeScanner(
         }
     }
 
-    if (showQrScanner) {
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-        ) {
-            CameraPreview { qrCode ->
-                viewModel.setEvent(QrCodeContract.QrCodeUiEvent.ScanQrCode(qrCode.rawValue))
+    if (uiState.isLoading) {
+        YDSProgressBar()
+    } else {
+        if (showQrScanner) {
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+            ) {
+                CameraPreview { qrCode ->
+                    viewModel.setEvent(QrCodeContract.QrCodeUiEvent.ScanQrCode(qrCode.rawValue))
+                }
+                ScannerDecoration(
+                    modifier = modifier,
+                    navigateToPreviousScreen = navigateToPreviousScreen
+                )
             }
-            ScannerDecoration(
-                modifier = modifier,
-                navigateToPreviousScreen = navigateToPreviousScreen
-            )
-        }
 
-        ConstraintLayout(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-        ) {
-            val (noticeText, checkIcon, completeNoticeBox) = createRefs()
-            val guideline = createGuidelineFromTop(fraction = 0.5f)
+            ConstraintLayout(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+            ) {
+                val (noticeText, checkIcon, completeNoticeBox) = createRefs()
+                val guideline = createGuidelineFromTop(fraction = 0.5f)
 
-            when (uiState.attendanceState) {
-                QrCodeContract.AttendanceState.STAND_BY -> {
-                    NoticeText(
-                        modifier.constrainAs(noticeText) {
-                            bottom.linkTo(guideline, 162.dp)
-                            absoluteLeft.linkTo(parent.absoluteLeft)
-                            absoluteRight.linkTo(parent.absoluteRight)
-                        }
-                    )
-                }
-                QrCodeContract.AttendanceState.SUCCESS -> {
-                    SuccessLottie(
-                        modifier = modifier.constrainAs(checkIcon) {
-                            top.linkTo(parent.top)
-                            bottom.linkTo(parent.bottom)
-                            absoluteLeft.linkTo(parent.absoluteLeft)
-                            absoluteRight.linkTo(parent.absoluteRight)
-                        },
-                        navigateToPreviousScreen = { navigateToPreviousScreen() }
-                    )
-                }
-                QrCodeContract.AttendanceState.COMPLETE -> {
-                    YDSToast(
-                        modifier = Modifier
-                            .constrainAs(completeNoticeBox) {
+                when (uiState.attendanceState) {
+                    QrCodeContract.AttendanceState.STAND_BY -> {
+                        NoticeText(
+                            modifier.constrainAs(noticeText) {
                                 bottom.linkTo(guideline, 162.dp)
                                 absoluteLeft.linkTo(parent.absoluteLeft)
                                 absoluteRight.linkTo(parent.absoluteRight)
+                            }
+                        )
+                    }
+                    QrCodeContract.AttendanceState.SUCCESS -> {
+                        SuccessLottie(
+                            modifier = modifier.constrainAs(checkIcon) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                absoluteLeft.linkTo(parent.absoluteLeft)
+                                absoluteRight.linkTo(parent.absoluteRight)
                             },
-                        text = stringResource(id = R.string.member_qr_complete_inform_text)
-                    )
+                            navigateToPreviousScreen = { navigateToPreviousScreen() }
+                        )
+                    }
+                    QrCodeContract.AttendanceState.COMPLETE -> {
+                        YDSToast(
+                            modifier = Modifier
+                                .constrainAs(completeNoticeBox) {
+                                    bottom.linkTo(guideline, 162.dp)
+                                    absoluteLeft.linkTo(parent.absoluteLeft)
+                                    absoluteRight.linkTo(parent.absoluteRight)
+                                },
+                            text = stringResource(id = R.string.member_qr_complete_inform_text)
+                        )
+                    }
                 }
             }
         }
