@@ -74,8 +74,10 @@ class ManagementViewModel @Inject constructor(
 
             is ManagementEvent.OnExpandedClicked -> {
                 setState {
+                    val toggleExpanded = !this.teams[event.team.index].isExpanded
                     val oldState = this.teams.toMutableList()
-                    oldState[event.team.index] = this.teams[event.team.index].copy(isExpanded = true)
+
+                    oldState[event.team.index] = this.teams[event.team.index].copy(isExpanded = toggleExpanded)
                     val newState = oldState.toList()
 
                     return@setState this.copy(teams = newState)

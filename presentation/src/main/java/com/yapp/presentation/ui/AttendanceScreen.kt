@@ -25,6 +25,7 @@ import androidx.navigation.navArgument
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yapp.common.R
 import com.yapp.common.theme.Yapp_Orange
+import com.yapp.common.yds.YDSToast
 import com.yapp.presentation.ui.admin.attendance.AttendanceManagement
 import com.yapp.presentation.ui.admin.browse.AdminTotalScore
 import com.yapp.presentation.ui.admin.main.AdminMain
@@ -277,7 +278,7 @@ enum class AttendanceScreenRoute(val route: String) {
     HELP("help"),
     ADMIN_TOTAL_SCORE("admin-total-score"),
     SESSION_DETAIL("session-detail"),
-    PRIVACY_POLICY("privacy-policy");
+    PRIVACY_POLICY("privacy-policy"),
     ADMIN_ATTENDANCE_MANAGEMENT("admin-attendance-management");
 }
 
