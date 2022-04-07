@@ -27,6 +27,7 @@ fun MemberSetting(
     onClickBackButton: () -> Unit,
     onClickAdminButton: () -> Unit,
     onClickLogoutButton: () -> Unit,
+    onClickPrivacyPolicyButton: () -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsState()
 
@@ -35,6 +36,9 @@ fun MemberSetting(
             when (effect) {
                 is MemberSettingContract.MemberSettingUiSideEffect.NavigateToLoginScreen -> {
                     onClickLogoutButton()
+                }
+                is MemberSettingContract.MemberSettingUiSideEffect.NavigateToPrivacyPolicyScreen -> {
+                    onClickPrivacyPolicyButton()
                 }
             }
         }
@@ -162,7 +166,9 @@ private fun MenuList(viewModel: MemberSettingViewModel) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {}
+                .clickable {
+                    viewModel.setEvent(MemberSettingContract.MemberSettingUiEvent.OnPrivacyPolicyButtonClicked)
+                }
                 .padding(horizontal = 24.dp, vertical = 16.dp)
         ) {
             Text(
