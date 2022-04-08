@@ -168,7 +168,7 @@ fun AttendanceScreen(
         composable(
             route = AttendanceScreenRoute.HELP.route
         ) {
-            Help()
+            Help{ navController.popBackStack()}
         }
 
         composable(
