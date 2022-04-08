@@ -69,26 +69,27 @@ class TeamViewModel @Inject constructor(
 
     private suspend fun setMember() {
         val memberName = savedStateHandle.get<String>("name")
+        val memberPosition = savedStateHandle.get<String>("position")
 
         getMemberIdUseCase().collectWithCallback(
             onSuccess = { memberId ->
-                if ((memberId == null) or (memberName == null)) {
-                    setEffect(TeamSideEffect.ShowToast(memberId.toString()))
+                if ((memberId == null) or (memberName == null) or (memberPosition == null)) {
+                    setEffect(TeamSideEffect.ShowToast("회원가입 실패"))
                 } else {
-                    setMemberToFireBase(memberName!!, memberId!!)
+                    setMemberToFireBase(memberName!!, memberPosition!!, memberId!!)
                 }
             },
             onFailed = { setEffect(TeamSideEffect.ShowToast("회원가입 실패")) }
         )
     }
 
-    private suspend fun setMemberToFireBase(memberName: String, memberId: Long) {
+    private suspend fun setMemberToFireBase(memberName: String, memberPosition:String, memberId: Long) {
 
         setMemberUseCase(
             MemberEntity(
                 id = memberId,
                 name = memberName,
-                position = PositionTypeEntity.DESIGNER,
+                position = PositionTypeEntity.of(memberPosition),
                 team = TeamEntity(
                     type = uiState.value.selectedTeam.type!!.name,
                     number = uiState.value.selectedTeam.number!!
