@@ -5,13 +5,13 @@ import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.yapp.domain.repository.LocalRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
+import java.io.IOException
 import javax.inject.Inject
 
 
@@ -26,19 +26,23 @@ class LocalRepositoryImpl @Inject constructor(
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(DATASTORE_NAME)
 
-    override fun getMemberId(): Flow<Long?> {
+    override suspend fun getMemberId(): Flow<Long?> {
         return context.dataStore.data
+            .catch {
+                if (it is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    throw it
+                }
+            }
             .map { preferences ->
                 preferences[MEMBER_ID]
             }
     }
 
-    override fun setMemberId(memberId: Long): Flow<Unit> {
-        return flow {
-            context.dataStore.edit { preferences ->
-                preferences[MEMBER_ID] = memberId
-            }
+    override suspend fun setMemberId(memberId: Long) {
+        context.dataStore.edit { preferences ->
+            preferences[MEMBER_ID] = memberId
         }
     }
-
 }

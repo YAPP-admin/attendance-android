@@ -1,6 +1,5 @@
 package com.yapp.presentation.ui.member.signup.name
 
-import android.util.Log
 import com.yapp.common.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

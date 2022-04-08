@@ -1,6 +1,7 @@
 package com.yapp.data.model
 
 import com.yapp.domain.model.SessionEntity
+import com.yapp.domain.model.types.NeedToAttendType
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -10,8 +11,7 @@ data class SessionModel(
     @SerialName("session_id")
     val sessionId: Int? = null,
     val title: String? = null,
-    @SerialName("is_off")
-    val isOff: Boolean? = null,
+    val type: String? = null,
     val date: String? = null,
     val description: String? = null
 ) {
@@ -22,7 +22,7 @@ data class SessionModel(
                 title = title!!,
                 date = date!!,
                 description = description!!,
-                isOff = isOff!!
+                type = NeedToAttendType.valueOf(type!!)
             )
         }
     }

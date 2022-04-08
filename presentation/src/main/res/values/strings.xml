@@ -4,6 +4,8 @@
     <string name="login_attendance_introduce_text">3초만에 끝나는\n간편한 출석체크</string>
     <string name="login_kakao_login_text">카카오 로그인</string>
 
+    <string name="member_main_qr_enter_failed_toast_message">지금은 출석할 수 없어요</string>
+
     <string name="member_main_bottom_navigation_today_session_text">오늘 세션</string>
     <string name="member_main_bottom_navigation_qr_text">QR</string>
     <string name="member_main_bottom_navigation_attendance_detail_text">출결 확인</string>

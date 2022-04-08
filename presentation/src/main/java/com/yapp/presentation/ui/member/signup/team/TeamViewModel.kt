@@ -9,10 +9,12 @@ import com.yapp.domain.model.AttendanceTypeEntity
 import com.yapp.domain.model.MemberEntity
 import com.yapp.domain.model.TeamEntity
 import com.yapp.domain.model.types.PositionTypeEntity
+import com.yapp.domain.usecases.CheckLocalMemberUseCase
 import com.yapp.domain.usecases.GetMemberIdUseCase
 import com.yapp.domain.usecases.GetTeamListUseCase
 import com.yapp.domain.usecases.SetMemberUseCase
 import com.yapp.presentation.model.Team.Companion.mapTo
+import com.yapp.presentation.model.type.PositionType
 import com.yapp.presentation.model.type.TeamType
 import com.yapp.presentation.ui.member.signup.team.TeamContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -76,7 +78,7 @@ class TeamViewModel @Inject constructor(
                     setMemberToFireBase(memberName!!, memberId!!)
                 }
             },
-            onFailed = { setEffect(TeamSideEffect.ShowToast("멤버 번호 문제")) }
+            onFailed = { setEffect(TeamSideEffect.ShowToast("회원가입 실패")) }
         )
     }
 
@@ -100,7 +102,7 @@ class TeamViewModel @Inject constructor(
             )
         ).collectWithCallback(
             onSuccess = { setEffect(TeamSideEffect.NavigateToMainScreen) },
-            onFailed = { setEffect(TeamSideEffect.ShowToast("파이어베이스 문제")) }
+            onFailed = { setEffect(TeamSideEffect.ShowToast("회원가입 실패")) }
         )
     }
 }
