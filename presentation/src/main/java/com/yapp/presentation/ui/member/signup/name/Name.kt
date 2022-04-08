@@ -1,16 +1,14 @@
-package com.yapp.presentation.ui.member.signup
+package com.yapp.presentation.ui.member.signup.name
 
 import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -29,7 +27,7 @@ import com.yapp.presentation.R
 fun Name(
     viewModel: NameViewModel = hiltViewModel(),
     onClickBackBtn: () -> Unit,
-    onClickNextBtn: () -> Unit
+    onClickNextBtn: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
@@ -131,18 +129,20 @@ fun NextButton(
     name: String,
     isKeyboardOpened: Boolean,
     modifier: Modifier,
-    onClickNextBtn: () -> Unit
+    onClickNextBtn: (String) -> Unit
 ) {
     Column(modifier = modifier) {
         if (isKeyboardOpened) {
             OnKeyboardNextButton(
-                state = if (name.isEmpty()) YdsButtonState.DISABLED else YdsButtonState.ENABLED,
-                onClick = { onClickNextBtn() })
+                name = name,
+                state = if (name.isBlank()) YdsButtonState.DISABLED else YdsButtonState.ENABLED,
+                onClickNextBtn = onClickNextBtn
+            )
         } else {
             YDSButtonLarge(
                 text = stringResource(id = R.string.name_next_button),
-                state = if (name.isEmpty()) YdsButtonState.DISABLED else YdsButtonState.ENABLED,
-                onClick = { onClickNextBtn() },
+                state = if (name.isBlank()) YdsButtonState.DISABLED else YdsButtonState.ENABLED,
+                onClick = { if (name.isNotBlank()) {onClickNextBtn(name)} },
                 modifier = Modifier.padding(horizontal = 24.dp)
             )
             Spacer(modifier = Modifier.height(40.dp))
@@ -153,11 +153,15 @@ fun NextButton(
 
 @Composable
 fun OnKeyboardNextButton(
+    name: String,
     state: YdsButtonState,
-    onClick: () -> Unit
+    onClickNextBtn: (String) -> Unit
 ) {
     Button(
-        onClick = onClick, modifier = Modifier
+        onClick = {
+            if (name.isNotBlank()) { onClickNextBtn(name) }
+        },
+        modifier = Modifier
             .fillMaxWidth()
             .height(60.dp),
         colors = when (state) {
