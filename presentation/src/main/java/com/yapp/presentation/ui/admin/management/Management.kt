@@ -1,4 +1,4 @@
-package com.yapp.presentation.ui.admin.attendance
+package com.yapp.presentation.ui.admin.management
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,9 +22,9 @@ import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSDropDownButton
 import com.yapp.presentation.R
 import com.yapp.presentation.model.AttendanceType
-import com.yapp.presentation.ui.admin.attendance.ManagementContract.ManagementEvent
-import com.yapp.presentation.ui.admin.attendance.ManagementContract.ManagementState.MemberState
-import com.yapp.presentation.ui.admin.attendance.ManagementContract.ManagementState.TeamState
+import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementEvent
+import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState.MemberState
+import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState.TeamState
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 

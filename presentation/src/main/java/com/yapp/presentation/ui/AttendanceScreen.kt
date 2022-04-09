@@ -2,16 +2,13 @@ package com.yapp.presentation.ui
 
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.*
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -23,17 +20,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.yapp.common.R
 import com.yapp.common.theme.Yapp_Orange
 import com.yapp.common.yds.YDSToast
-import com.yapp.presentation.ui.admin.attendance.AttendanceManagement
+import com.yapp.presentation.ui.admin.management.AttendanceManagement
 import com.yapp.presentation.ui.admin.browse.AdminTotalScore
 import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.login.Login
-import com.yapp.presentation.ui.login.LoginContract
 import com.yapp.presentation.ui.member.help.Help
 import com.yapp.presentation.ui.member.main.MemberMain
-import com.yapp.presentation.ui.member.privacy_policy.PrivacyPolicyScreen
+import com.yapp.presentation.ui.member.privacyPolicy.PrivacyPolicyScreen
 import com.yapp.presentation.ui.member.qrcodescanner.QrCodeScanner
 import com.yapp.presentation.ui.member.score.detail.SessionDetail
 import com.yapp.presentation.ui.member.score.detail.SessionDetailNavParam

@@ -1,4 +1,4 @@
-package com.yapp.presentation.ui.member.privacy_policy
+package com.yapp.presentation.ui.member.privacyPolicy
 
 import android.annotation.SuppressLint
 import android.view.ViewGroup

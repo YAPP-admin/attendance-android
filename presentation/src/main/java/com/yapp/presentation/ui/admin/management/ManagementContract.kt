@@ -1,4 +1,4 @@
-package com.yapp.presentation.ui.admin.attendance
+package com.yapp.presentation.ui.admin.management
 
 import com.yapp.common.base.UiEvent
 import com.yapp.common.base.UiSideEffect

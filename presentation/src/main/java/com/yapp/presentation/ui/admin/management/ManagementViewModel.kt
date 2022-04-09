@@ -1,9 +1,9 @@
-package com.yapp.presentation.ui.admin.attendance
+package com.yapp.presentation.ui.admin.management
 
 import com.yapp.common.base.BaseViewModel
 import com.yapp.presentation.model.Attendance
 import com.yapp.presentation.model.AttendanceType
-import com.yapp.presentation.ui.admin.attendance.ManagementContract.*
+import com.yapp.presentation.ui.admin.management.ManagementContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
