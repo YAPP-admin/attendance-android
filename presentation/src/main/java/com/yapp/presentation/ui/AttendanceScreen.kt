@@ -5,7 +5,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,8 +35,9 @@ import com.yapp.presentation.ui.member.qrcodescanner.QrCodeScanner
 import com.yapp.presentation.ui.member.score.detail.SessionDetail
 import com.yapp.presentation.ui.member.score.detail.SessionDetailNavParam
 import com.yapp.presentation.ui.member.setting.MemberSetting
-import com.yapp.presentation.ui.member.signup.Name
-import com.yapp.presentation.ui.member.signup.Team
+import com.yapp.presentation.ui.member.signup.name.Name
+import com.yapp.presentation.ui.member.signup.position.Position
+import com.yapp.presentation.ui.member.signup.team.Team
 import com.yapp.presentation.ui.splash.Splash
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
@@ -220,20 +223,40 @@ fun AttendanceScreen(
         ) {
             Name(
                 onClickBackBtn = { navController.popBackStack() },
-                onClickNextBtn = {
-                    navController.navigate(AttendanceScreenRoute.SIGNUP_TEAM.route)
-                })
+                onClickNextBtn = { userName -> navController.navigate(AttendanceScreenRoute.SIGNUP_POSITION.route + "/${userName}") })
         }
 
         composable(
+            route = AttendanceScreenRoute.SIGNUP_POSITION.route
+                .plus("/{name}"),
+            arguments = listOf(
+                navArgument("name") { type = NavType.StringType })
+        )
+        {
+            Position(
+                onClickBackButton = { navController.popBackStack() },
+                navigateToTeamScreen = { userName, userPosition ->
+                    navController.navigate(AttendanceScreenRoute.SIGNUP_TEAM.route.plus("/${userName}").plus("/${userPosition}")) }
+            )
+        }
+
+
+        composable(
             route = AttendanceScreenRoute.SIGNUP_TEAM.route
+                .plus("/{name}")
+                .plus("/{position}"),
+            arguments = listOf(
+                navArgument("name") { type = NavType.StringType },
+                navArgument("position") { type = NavType.StringType })
         ) {
-            Team(navigateToMainScreen = {
-                navController.navigate(AttendanceScreenRoute.MEMBER_MAIN.route) {
-                    popUpTo(AttendanceScreenRoute.SIGNUP_NAME.route)
-                    popUpTo(AttendanceScreenRoute.SIGNUP_TEAM.route)
-                }
-            })
+            Team(
+                onClickBackButton = { navController.popBackStack() },
+                navigateToMainScreen = {
+                    navController.navigate(AttendanceScreenRoute.MEMBER_MAIN.route) {
+                        popUpTo(AttendanceScreenRoute.SIGNUP_NAME.route)
+                        popUpTo(AttendanceScreenRoute.SIGNUP_TEAM.route)
+                    }
+                })
         }
 
         composable(
@@ -267,9 +290,10 @@ enum class AttendanceScreenRoute(val route: String) {
     QR_AUTH("qr-auth"),
     MEMBER_MAIN("member-main"),
     ADMIN_MAIN("admin-main"),
-    MEMBER_SETTING("member-setting"),
-    SIGNUP_NAME("name"),
-    SIGNUP_TEAM("team"),
+    MEMBER_SETTING("member_setting"),
+    SIGNUP_NAME("signup-name"),
+    SIGNUP_POSITION("signup-position"),
+    SIGNUP_TEAM("signup-team"),
     HELP("help"),
     ADMIN_TOTAL_SCORE("admin-total-score"),
     SESSION_DETAIL("session-detail"),

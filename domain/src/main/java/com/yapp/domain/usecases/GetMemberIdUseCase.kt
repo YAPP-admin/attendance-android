@@ -1,10 +1,13 @@
 package com.yapp.domain.usecases
 
 import com.yapp.domain.repository.LocalRepository
+import com.yapp.domain.repository.MemberRepository
 import com.yapp.domain.util.BaseUseCase
 import com.yapp.domain.util.DispatcherProvider
 import com.yapp.domain.util.TaskResult
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class GetMemberIdUseCase @Inject constructor(

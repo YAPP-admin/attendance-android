@@ -4,6 +4,6 @@ import kotlinx.coroutines.flow.Flow
 
 
 interface LocalRepository {
-    fun getMemberId(): Flow<Long?>
+    suspend fun getMemberId(): Flow<Long?>
     suspend fun setMemberId(memberId: Long)
 }

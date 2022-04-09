@@ -23,6 +23,9 @@
     <string name="admin_main_see_all_session_text">전체 보기</string>
     <string name="admin_main_confirm_button">확인</string>
     <string name="admin_main_see_all_score_text">누적 점수 확인하기</string>
+    
+    <string name="member_signup_choose_position">속한 직군을\n알려주세요</string>
+    <string name="member_signup_position_confirm">확인</string>
 
     <string name="member_signup_choose_team">소속 팀을\n알려주세요</string>
     <string name="member_signup_choose_team_number">하나만 더 알려주세요</string>
