@@ -33,6 +33,7 @@ import com.yapp.presentation.ui.member.score.detail.SessionDetail
 import com.yapp.presentation.ui.member.score.detail.SessionDetailNavParam
 import com.yapp.presentation.ui.member.setting.MemberSetting
 import com.yapp.presentation.ui.member.signup.name.Name
+import com.yapp.presentation.ui.member.signup.position.Position
 import com.yapp.presentation.ui.member.signup.team.Team
 import com.yapp.presentation.ui.splash.Splash
 import kotlinx.coroutines.delay
@@ -208,12 +209,31 @@ fun AttendanceScreen(
         ) {
             Name(
                 onClickBackBtn = { navController.popBackStack() },
-                onClickNextBtn = { userName -> navController.navigate(AttendanceScreenRoute.SIGNUP_TEAM.route + "/${userName}") })
+                onClickNextBtn = { userName -> navController.navigate(AttendanceScreenRoute.SIGNUP_POSITION.route + "/${userName}") })
         }
 
         composable(
-            route = AttendanceScreenRoute.SIGNUP_TEAM.route + "/{name}",
-            arguments = listOf(navArgument("name") { type = NavType.StringType })
+            route = AttendanceScreenRoute.SIGNUP_POSITION.route
+                .plus("/{name}"),
+            arguments = listOf(
+                navArgument("name") { type = NavType.StringType })
+        )
+        {
+            Position(
+                onClickBackButton = { navController.popBackStack() },
+                navigateToTeamScreen = { userName, userPosition ->
+                    navController.navigate(AttendanceScreenRoute.SIGNUP_TEAM.route.plus("/${userName}").plus("/${userPosition}")) }
+            )
+        }
+
+
+        composable(
+            route = AttendanceScreenRoute.SIGNUP_TEAM.route
+                .plus("/{name}")
+                .plus("/{position}"),
+            arguments = listOf(
+                navArgument("name") { type = NavType.StringType },
+                navArgument("position") { type = NavType.StringType })
         ) {
             Team(
                 onClickBackButton = { navController.popBackStack() },
@@ -258,6 +278,7 @@ enum class AttendanceScreenRoute(val route: String) {
     ADMIN_MAIN("admin-main"),
     MEMBER_SETTING("member_setting"),
     SIGNUP_NAME("signup-name"),
+    SIGNUP_POSITION("signup-position"),
     SIGNUP_TEAM("signup-team"),
     HELP("help"),
     ADMIN_TOTAL_SCORE("admin-total-score"),
