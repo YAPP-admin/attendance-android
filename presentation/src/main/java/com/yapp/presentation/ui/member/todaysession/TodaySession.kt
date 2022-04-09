@@ -4,14 +4,14 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
-import androidx.compose.material.LocalContentColor
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -19,18 +19,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.layoutId
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.R
 import com.yapp.common.theme.*
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.presentation.R.*
+import com.yapp.presentation.model.Session
 import com.yapp.presentation.ui.AttendanceScreenRoute
-import com.yapp.presentation.ui.member.main.BottomNavigationItem
 
 @Composable
 fun TodaySession(
     modifier: Modifier = Modifier,
+    viewModel: TodaySessionViewModel = hiltViewModel(),
     navigateToSetting: (String) -> Unit,
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+
     Scaffold(
         topBar = {
             YDSAppBar(
@@ -50,7 +54,7 @@ fun TodaySession(
                 .background(color = Gray_200)
         ) {
             TodaysAttendance()
-            SessionDescriptionModal(Modifier.weight(1f))
+            SessionDescriptionModal(uiState.todaySession, Modifier.weight(1f))
         }
     }
 }
@@ -90,7 +94,7 @@ private fun TodaysAttendance() {
 }
 
 @Composable
-private fun SessionDescriptionModal(modifier: Modifier) {
+private fun SessionDescriptionModal(session: Session?, modifier: Modifier) {
     Column(
         modifier = modifier
             .layoutId("modal", "modal")
@@ -101,21 +105,20 @@ private fun SessionDescriptionModal(modifier: Modifier) {
             .padding(24.dp),
     ) {
         Text(
-            text = "02.07",
+            text = session?.date ?: "",
             style = AttendanceTypography.body1,
             color = Gray_600
         )
 
         Text(
-            text = "YAPP 3번째 데브 캠프\n및 성과 공유회",
+            text = session?.title ?: "",
             style = AttendanceTypography.h1,
             color = Gray_1000,
             modifier = Modifier.padding(top = 28.dp)
         )
 
         Text(
-            text = "드디어 마지막 성과 공유를 하는 세션입니다! \n" +
-                    "지금까지 하나의 팀으로서 열심히 작업한 결과물을 YAPP 전원에게 보여주세요 \uD83C\uDF89",
+            text = session?.description ?: "",
             style = AttendanceTypography.body1,
             color = Gray_800,
             modifier = Modifier.padding(top = 12.dp)
