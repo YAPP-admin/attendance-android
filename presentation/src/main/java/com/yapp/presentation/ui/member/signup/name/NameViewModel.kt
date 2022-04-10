@@ -9,7 +9,7 @@ class NameViewModel @Inject constructor() :
     BaseViewModel<NameContract.NameUiState, NameContract.NameSideEffect, NameContract.NameUiEvent>(
         NameContract.NameUiState()
     ) {
-    override fun handleEvent(event: NameContract.NameUiEvent) {
+    override suspend fun handleEvent(event: NameContract.NameUiEvent) {
         when (event) {
             is NameContract.NameUiEvent.InputName -> {
                 setState { copy(name = event.name) }

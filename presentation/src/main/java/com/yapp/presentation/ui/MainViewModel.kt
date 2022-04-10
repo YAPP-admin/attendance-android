@@ -40,7 +40,7 @@ class MainViewModel @Inject constructor(
 //        }
     }
 
-    override fun handleEvent(event: MainContract.MainUiEvent) {
+    override suspend fun handleEvent(event: MainContract.MainUiEvent) {
         TODO("Not yet implemented")
     }
 }
