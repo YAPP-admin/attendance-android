@@ -71,7 +71,10 @@ class ManagementViewModel @Inject constructor(
                     }
                     .sortedBy { teamState -> teamState.teamName }
 
-                setState { this.copy(isLoading = false, teams = teams) }
+                val attendCount = teams.flatMap { it.members }
+                    .count { it.attendance.attendanceType == AttendanceType.Normal }
+
+                setState { this.copy(isLoading = false, memberCount= attendCount, teams = teams) }
             },
             onFailed = {
                 setEffect(ManagementSideEffect.MemberListLoadFailed)

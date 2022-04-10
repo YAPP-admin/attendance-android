@@ -1,9 +1,7 @@
 package com.yapp.presentation.ui.admin.management
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -79,7 +77,7 @@ fun AttendanceManagement(
                 item {
                     Column {
                         Spacer(modifier = Modifier.height(28.dp))
-                        AttendCountText(memberCount = 0)
+                        AttendCountText(memberCount = uiState.memberCount)
                         Spacer(modifier = Modifier.height(28.dp))
                     }
                 }
@@ -120,6 +118,14 @@ fun AttendCountText(
     modifier: Modifier = Modifier,
     memberCount: Int = 0
 ) {
+    val counter by animateIntAsState(
+        targetValue = memberCount,
+        animationSpec = tween(
+            durationMillis = 500,
+            easing = FastOutSlowInEasing
+        )
+    )
+
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(10F))
@@ -131,7 +137,7 @@ fun AttendCountText(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 24.dp, vertical = 12.dp),
-            text = "${memberCount}명이 출석했어요",
+            text = "${counter}명이 출석했어요",
             textAlign = TextAlign.Center,
             style = AttendanceTypography.body1,
             color = Yapp_Orange
@@ -147,16 +153,13 @@ fun ExpandableTeam(
     onExpandClicked: (TeamState) -> Unit = {},
     onDropDownClicked: ((MemberState) -> Unit)? = null
 ) {
-
-
     Column(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .animateContentSize(
                 animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow)
-            )
-            ,
+            ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -164,14 +167,19 @@ fun ExpandableTeam(
             state = state,
             onExpandClicked = { onExpandClicked(state) }
         )
+
         AnimatedVisibility(
             visible = state.isExpanded,
             enter = fadeIn(animationSpec = tween(50)) +
-                    expandVertically (
-                        animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow)),
+                    expandVertically(
+                        animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow)
+                    ),
             exit = fadeOut(animationSpec = tween(50)) +
-                    shrinkVertically (
-                        animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow))) {
+                    shrinkVertically(
+                        animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow)
+                    )
+        ) {
+
             Column(modifier = Modifier) {
                 Divider(modifier = Modifier.height(1.dp), color = Gray_300)
 
