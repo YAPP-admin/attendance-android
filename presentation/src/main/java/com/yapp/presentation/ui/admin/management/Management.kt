@@ -1,7 +1,9 @@
 package com.yapp.presentation.ui.admin.management
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -46,38 +48,65 @@ fun AttendanceManagement(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    val coroutineScope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+
     if (uiState.isLoading) {
         YDSProgressBar()
     } else {
         ManagementScreen(
-            viewModel = viewModel,
             uiState = uiState,
-            onBackButtonClicked = { onBackButtonClicked?.invoke() }
+            sheetState = sheetState,
+            onBackButtonClicked = { onBackButtonClicked?.invoke() },
+            onBottomSheetDialogItemClicked = { attendanceType ->
+                viewModel.setEvent(ManagementEvent.OnAttendanceTypeChanged(attendanceType))
+                coroutineScope.launch {
+                    sheetState.hide()
+                }
+            },
+            onDropDownClicked = { changedMember ->
+                viewModel.setEvent(ManagementEvent.OnDropDownButtonClicked(changedMember))
+            }
         )
+    }
+
+    val lifeCycleOwner = LocalLifecycleOwner.current
+    LaunchedEffect(key1 = viewModel.effect, key2 = lifeCycleOwner) {
+        lifeCycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.effect.collect { effect ->
+                when (effect) {
+                    is ManagementContract.ManagementSideEffect.OpenBottomSheetDialog -> {
+                        coroutineScope.launch {
+                            sheetState.show()
+                        }
+                    }
+                    ManagementContract.ManagementSideEffect.AttendanceChangeFailed -> {
+
+                    }
+                    ManagementContract.ManagementSideEffect.MemberListLoadFailed -> {
+
+                    }
+                }
+            }
+        }
     }
 }
 
 @ExperimentalMaterialApi
 @Composable
 fun ManagementScreen(
-    viewModel: ManagementViewModel,
     uiState: ManagementContract.ManagementState,
-    onBackButtonClicked: (() -> Unit)? = null
+    sheetState: ModalBottomSheetState,
+    onBackButtonClicked: (() -> Unit),
+    onBottomSheetDialogItemClicked: (AttendanceType) -> Unit,
+    onDropDownClicked: ((MemberState) -> Unit)
 ) {
-    val coroutineScope = rememberCoroutineScope()
-    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-
     ModalBottomSheetLayout(
         modifier = Modifier,
         sheetContent = {
             BottomSheetDialog(
                 attendanceTypes = AttendanceType.getAllTypes(),
-                onClickItem = { attendanceType ->
-                    viewModel.setEvent(ManagementEvent.OnAttendanceTypeChanged(attendanceType))
-                    coroutineScope.launch {
-                        sheetState.hide()
-                    }
-                }
+                onClickItem = { attendanceType -> onBottomSheetDialogItemClicked.invoke(attendanceType) }
             )
         },
         sheetState = sheetState,
@@ -89,9 +118,7 @@ fun ManagementScreen(
                 YDSAppBar(
                     modifier = Modifier.padding(horizontal = 4.dp),
                     title = "YAPP 오리엔테이션",
-                    onClickBackButton = {
-                        onBackButtonClicked?.invoke()
-                    }
+                    onClickBackButton = { onBackButtonClicked?.invoke() }
                 )
             }
         ) {
@@ -112,37 +139,13 @@ fun ManagementScreen(
                 itemsIndexed(
                     items = uiState.teams,
                     key = { _, team -> team.teamName }
-                ) { index, team ->
+                ) { _, team ->
                     ExpandableTeam(
                         state = team,
-                        onDropDownClicked = { changedMember ->
-                            viewModel.setEvent(ManagementEvent.OnDropDownButtonClicked(changedMember))
-                        }
+                        onDropDownClicked = { changedMember -> onDropDownClicked.invoke(changedMember) }
                     )
                 }
 
-            }
-        }
-    }
-
-    val lifeCycleOwner = LocalLifecycleOwner.current
-
-    LaunchedEffect(key1 = viewModel.effect, key2 = lifeCycleOwner) {
-        lifeCycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.effect.collect { effect ->
-                when (effect) {
-                    is ManagementContract.ManagementSideEffect.OpenBottomSheetDialog -> {
-                        coroutineScope.launch {
-                            sheetState.show()
-                        }
-                    }
-                    ManagementContract.ManagementSideEffect.AttendanceChangeFailed -> {
-
-                    }
-                    ManagementContract.ManagementSideEffect.MemberListLoadFailed -> {
-
-                    }
-                }
             }
         }
     }

@@ -28,9 +28,7 @@ class ManagementViewModel @Inject constructor(
     }
 
     init {
-        setState {
-            this.copy(sessionId = savedStateHandle.get<Int>("sessionId") ?: DEFAULT_SESSION_ID)
-        }
+        setState { this.copy(sessionId = savedStateHandle.get<Int>("sessionId") ?: DEFAULT_SESSION_ID) }
 
         viewModelScope.launch {
             setLoading()
@@ -97,7 +95,7 @@ class ManagementViewModel @Inject constructor(
         if(selectedMember.attendance.attendanceType == changedAttendanceType) {
             return
         }
-        
+
         setMemberAttendanceUseCase(
             params = SetMemberAttendanceUseCase.Params(
                 memberId = selectedMember.id,
