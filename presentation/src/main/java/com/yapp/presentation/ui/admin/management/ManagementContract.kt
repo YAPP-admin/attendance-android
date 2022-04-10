@@ -11,6 +11,8 @@ import com.yapp.presentation.model.AttendanceType.Normal
 class ManagementContract {
     data class ManagementState(
         val isLoading: Boolean = false,
+        val memberCount: Int = -1,
+        val selectedMember: MemberState? = null,
         val teams: List<TeamState> = emptyList()
     ): UiState {
 
@@ -35,5 +37,6 @@ class ManagementContract {
 
     sealed class ManagementSideEffect : UiSideEffect {
         class OpenBottomSheetDialog : ManagementSideEffect()
+        object MemberListLoadFailed : ManagementSideEffect()
     }
 }

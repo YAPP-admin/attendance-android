@@ -74,7 +74,7 @@ fun AttendanceManagement(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 24.dp)
+                    .padding(start = 24.dp, end = 24.dp, bottom = 24.dp)
             ) {
                 item {
                     Column {
