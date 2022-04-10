@@ -13,6 +13,7 @@ class ManagementContract {
         val isLoading: Boolean = false,
         val memberCount: Int = 0,
         val selectedMember: MemberState? = null,
+        val selectedTeam : TeamState? = null,
         val teams: List<TeamState> = emptyList()
     ): UiState {
 
@@ -38,5 +39,6 @@ class ManagementContract {
     sealed class ManagementSideEffect : UiSideEffect {
         class OpenBottomSheetDialog : ManagementSideEffect()
         object MemberListLoadFailed : ManagementSideEffect()
+        object AttendanceChangeFailed : ManagementSideEffect()
     }
 }

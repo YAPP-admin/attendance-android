@@ -3,6 +3,7 @@ package com.yapp.presentation.model
 import com.yapp.domain.model.AttendanceEntity
 import com.yapp.domain.model.AttendanceTypeEntity
 import com.yapp.presentation.model.AttendanceType.Companion.mapTo
+import com.yapp.presentation.model.AttendanceType.Companion.mapToEntity
 
 
 data class Attendance(
@@ -15,6 +16,13 @@ data class Attendance(
             return Attendance(
                 sessionId = this.sessionId,
                 attendanceType = this.type.mapTo()
+            )
+        }
+
+        fun Attendance.mapToEntity(): AttendanceEntity {
+            return AttendanceEntity(
+                sessionId = this.sessionId,
+                type = this.attendanceType.mapToEntity()
             )
         }
     }
@@ -30,6 +38,15 @@ sealed class AttendanceType(val point: Int, val text: String) {
                 is AttendanceTypeEntity.Normal -> AttendanceType.Normal
                 is AttendanceTypeEntity.Late -> AttendanceType.Late
                 is AttendanceTypeEntity.Admit -> AttendanceType.Admit
+            }
+        }
+
+        fun AttendanceType.mapToEntity(): AttendanceTypeEntity {
+            return when (this) {
+                is AttendanceType.Absent -> AttendanceTypeEntity.Absent
+                is AttendanceType.Normal -> AttendanceTypeEntity.Normal
+                is AttendanceType.Late -> AttendanceTypeEntity.Late
+                is AttendanceType.Admit -> AttendanceTypeEntity.Admit
             }
         }
 

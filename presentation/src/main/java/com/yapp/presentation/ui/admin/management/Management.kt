@@ -14,15 +14,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import com.yapp.common.theme.*
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSDropDownButton
+import com.yapp.common.yds.YDSProgressBar
 import com.yapp.presentation.R
 import com.yapp.presentation.model.AttendanceType
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementEvent
@@ -41,6 +45,24 @@ fun AttendanceManagement(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    if (uiState.isLoading) {
+        YDSProgressBar()
+    } else {
+        ManagementScreen(
+            viewModel = viewModel,
+            uiState = uiState,
+            onBackButtonClicked = { onBackButtonClicked?.invoke() }
+        )
+    }
+}
+
+@ExperimentalMaterialApi
+@Composable
+fun ManagementScreen(
+    viewModel: ManagementViewModel,
+    uiState: ManagementContract.ManagementState,
+    onBackButtonClicked: (() -> Unit)? = null
+) {
     val coroutineScope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
@@ -51,6 +73,9 @@ fun AttendanceManagement(
                 attendanceTypes = AttendanceType.getAllTypes(),
                 onClickItem = { attendanceType ->
                     viewModel.setEvent(ManagementEvent.OnAttendanceTypeChanged(attendanceType))
+                    coroutineScope.launch {
+                        sheetState.hide()
+                    }
                 }
             )
         },
@@ -58,6 +83,7 @@ fun AttendanceManagement(
         sheetBackgroundColor = Color.Transparent
     ) {
         Scaffold(
+            modifier = Modifier.fillMaxSize(),
             topBar = {
                 YDSAppBar(
                     modifier = Modifier.padding(horizontal = 4.dp),
@@ -66,14 +92,14 @@ fun AttendanceManagement(
                         onBackButtonClicked?.invoke()
                     }
                 )
-            },
-            modifier = Modifier.fillMaxSize()
+            }
         ) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(start = 24.dp, end = 24.dp, bottom = 24.dp)
             ) {
+
                 item {
                     Column {
                         Spacer(modifier = Modifier.height(28.dp))
@@ -81,6 +107,7 @@ fun AttendanceManagement(
                         Spacer(modifier = Modifier.height(28.dp))
                     }
                 }
+
                 itemsIndexed(
                     items = uiState.teams,
                     key = { _, team -> team.members }
@@ -95,16 +122,27 @@ fun AttendanceManagement(
                         }
                     )
                 }
+
             }
         }
     }
 
-    LaunchedEffect(key1 = viewModel.effect) {
-        viewModel.effect.collect { effect ->
-            when (effect) {
-                is ManagementContract.ManagementSideEffect.OpenBottomSheetDialog -> {
-                    coroutineScope.launch {
-                        sheetState.show()
+    val lifeCycleOwner = LocalLifecycleOwner.current
+
+    LaunchedEffect(key1 = viewModel.effect, key2 = lifeCycleOwner) {
+        lifeCycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.effect.collect { effect ->
+                when (effect) {
+                    is ManagementContract.ManagementSideEffect.OpenBottomSheetDialog -> {
+                        coroutineScope.launch {
+                            sheetState.show()
+                        }
+                    }
+                    ManagementContract.ManagementSideEffect.AttendanceChangeFailed -> {
+
+                    }
+                    ManagementContract.ManagementSideEffect.MemberListLoadFailed -> {
+
                     }
                 }
             }
@@ -121,8 +159,8 @@ fun AttendCountText(
     val counter by animateIntAsState(
         targetValue = memberCount,
         animationSpec = tween(
-            durationMillis = 500,
-            easing = FastOutSlowInEasing
+            durationMillis = 1000,
+            easing = FastOutSlowInEasing,
         )
     )
 
@@ -299,7 +337,6 @@ fun BottomSheetDialog(
                 .height(24.dp)
                 .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
                 .background(color = Color.White)
-
         )
 
         for (type in attendanceTypes) {

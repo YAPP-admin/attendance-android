@@ -2,27 +2,28 @@ package com.yapp.presentation.ui.admin.management
 
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
+import com.yapp.domain.model.AttendanceEntity
 import com.yapp.domain.usecases.GetAllMemberUseCase
-import com.yapp.presentation.model.Attendance
+import com.yapp.domain.usecases.SetMemberAttendanceUseCase
 import com.yapp.presentation.model.AttendanceType
+import com.yapp.presentation.model.AttendanceType.Companion.mapToEntity
 import com.yapp.presentation.model.Member.Companion.mapTo
 import com.yapp.presentation.ui.admin.management.ManagementContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.shareIn
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ManagementViewModel @Inject constructor(
-    private val getAllMemberUseCase: GetAllMemberUseCase
+    private val getAllMemberUseCase: GetAllMemberUseCase,
+    private val setMemberAttendanceUseCase: SetMemberAttendanceUseCase
 
 ) : BaseViewModel<ManagementState, ManagementSideEffect, ManagementEvent>(ManagementState()) {
 
     init {
         viewModelScope.launch {
+            setLoading()
             getAllMemberState(sessionId = 0)
         }
     }
@@ -30,6 +31,7 @@ class ManagementViewModel @Inject constructor(
     override fun handleEvent(event: ManagementEvent) {
         when (event) {
             is ManagementEvent.OnDropDownButtonClicked -> {
+                setState { this.copy(selectedMember = event.member) }
                 setEffect(ManagementSideEffect.OpenBottomSheetDialog())
             }
 
@@ -46,7 +48,15 @@ class ManagementViewModel @Inject constructor(
             }
 
             is ManagementEvent.OnAttendanceTypeChanged -> {
-
+                uiState.value.selectedMember?.let { selectedMember ->
+                    viewModelScope.launch {
+                        changeMemberAttendance(
+                            selectedMember = selectedMember,
+                            changedAttendanceType = event.attendanceType,
+                            sessionId = 0
+                        )
+                    }
+                }
             }
         }
     }
@@ -74,12 +84,38 @@ class ManagementViewModel @Inject constructor(
                 val attendCount = teams.flatMap { it.members }
                     .count { it.attendance.attendanceType == AttendanceType.Normal }
 
-                setState { this.copy(isLoading = false, memberCount= attendCount, teams = teams) }
+                setState { this.copy(isLoading = false, memberCount = attendCount, teams = teams) }
             },
             onFailed = {
                 setEffect(ManagementSideEffect.MemberListLoadFailed)
             }
         )
+    }
+
+    private suspend fun changeMemberAttendance(
+        selectedMember: ManagementState.MemberState,
+        changedAttendanceType: AttendanceType,
+        sessionId: Int
+    ) {
+        setMemberAttendanceUseCase(
+            params = SetMemberAttendanceUseCase.Params(
+                memberId = selectedMember.id,
+                sessionId = sessionId,
+                changedAttendance = AttendanceEntity(sessionId = sessionId, type = changedAttendanceType.mapToEntity())
+            )
+        ).collectWithCallback(
+            onSuccess = {
+                setState { this.copy(selectedTeam = null) }
+                getAllMemberState(sessionId = sessionId)
+            },
+            onFailed = {
+                setEffect(ManagementSideEffect.AttendanceChangeFailed)
+            }
+        )
+    }
+
+    private fun setLoading() {
+        setState { this.copy(isLoading = true) }
     }
 
 }
