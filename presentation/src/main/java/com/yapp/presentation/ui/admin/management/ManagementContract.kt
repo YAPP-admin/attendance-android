@@ -11,9 +11,9 @@ import com.yapp.presentation.model.AttendanceType.Normal
 class ManagementContract {
     data class ManagementState(
         val isLoading: Boolean = false,
+        val sessionId: Int = 0,
         val memberCount: Int = 0,
         val selectedMember: MemberState? = null,
-        val selectedTeam : TeamState? = null,
         val teams: List<TeamState> = emptyList()
     ): UiState {
 
