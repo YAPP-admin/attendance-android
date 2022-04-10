@@ -23,58 +23,8 @@ class ManagementViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getAllMemberState(0)
+            getAllMemberState(sessionId = 0)
         }
-
-//        setState {
-//            ManagementState(
-//                isLoading = false,
-//                teams = listOf(
-//                    ManagementState.TeamState(
-//                        isExpanded = false,
-//                        teamName = "Android1",
-//                        members = listOf(
-//                            ManagementState.MemberState(
-//                                id = 1L,
-//                                name = "Jason",
-//                                attendance = Attendance(sessionId = 1, attendanceType = AttendanceType.Absent)
-//                            ),
-//                            ManagementState.MemberState(
-//                                id = 2L,
-//                                name = "John",
-//                                attendance = Attendance(sessionId = 1, attendanceType = AttendanceType.Absent)
-//                            ),
-//                            ManagementState.MemberState(
-//                                id = 3L,
-//                                name = "Kim",
-//                                attendance = Attendance(sessionId = 1, attendanceType = AttendanceType.Absent)
-//                            ),
-//                        )
-//                    ),
-//                    ManagementState.TeamState(
-//                        isExpanded = false,
-//                        teamName = "Android2",
-//                        members = listOf(
-//                            ManagementState.MemberState(
-//                                id = 4L,
-//                                name = "Zoey",
-//                                attendance = Attendance(sessionId = 1, attendanceType = AttendanceType.Normal)
-//                            ),
-//                            ManagementState.MemberState(
-//                                id = 5L,
-//                                name = "Joseph",
-//                                attendance = Attendance(sessionId = 1, attendanceType = AttendanceType.Normal)
-//                            ),
-//                            ManagementState.MemberState(
-//                                id = 6L,
-//                                name = "Jim",
-//                                attendance = Attendance(sessionId = 1, attendanceType = AttendanceType.Normal)
-//                            ),
-//                        )
-//                    )
-//                )
-//            )
-//        }
     }
 
     override fun handleEvent(event: ManagementEvent) {
@@ -109,7 +59,7 @@ class ManagementViewModel @Inject constructor(
                     .map { (team, members) ->
                         ManagementState.TeamState(
                             isExpanded = false,
-                            teamName = team.type?.displayName + team.number,
+                            teamName = String.format("${team.type?.displayName} ${team.number}"),
                             members = members.map { member ->
                                 ManagementState.MemberState(
                                     id = member.id,
