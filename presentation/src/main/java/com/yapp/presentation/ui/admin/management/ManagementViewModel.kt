@@ -1,5 +1,6 @@
 package com.yapp.presentation.ui.admin.management
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.model.AttendanceEntity
@@ -17,14 +18,23 @@ import javax.inject.Inject
 @HiltViewModel
 class ManagementViewModel @Inject constructor(
     private val getAllMemberUseCase: GetAllMemberUseCase,
-    private val setMemberAttendanceUseCase: SetMemberAttendanceUseCase
+    private val setMemberAttendanceUseCase: SetMemberAttendanceUseCase,
+    private val savedStateHandle: SavedStateHandle
 
 ) : BaseViewModel<ManagementState, ManagementSideEffect, ManagementEvent>(ManagementState()) {
 
+    companion object {
+        const val DEFAULT_SESSION_ID = 0
+    }
+
     init {
+        setState {
+            this.copy(sessionId = savedStateHandle.get<Int>("sessionId") ?: DEFAULT_SESSION_ID)
+        }
+
         viewModelScope.launch {
             setLoading()
-            getAllMemberState(sessionId = 0)
+            getAllMemberState(sessionId = uiState.value.sessionId)
         }
     }
 
@@ -105,7 +115,7 @@ class ManagementViewModel @Inject constructor(
             )
         ).collectWithCallback(
             onSuccess = {
-                setState { this.copy(selectedTeam = null) }
+                setState { this.copy(selectedMember = null) }
                 getAllMemberState(sessionId = sessionId)
             },
             onFailed = {
