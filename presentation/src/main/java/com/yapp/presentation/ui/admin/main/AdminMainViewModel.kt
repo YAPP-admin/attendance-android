@@ -33,7 +33,7 @@ class AdminMainViewModel @Inject constructor(
         super.setEvent(event)
     }
 
-    override fun handleEvent(event: AdminMainUiEvent) {
+    override suspend fun handleEvent(event: AdminMainUiEvent) {
         TODO("Not yet implemented")
     }
 

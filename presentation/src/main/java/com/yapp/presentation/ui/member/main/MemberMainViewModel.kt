@@ -9,7 +9,7 @@ import javax.inject.Inject
 class MemberMainViewModel @Inject constructor() :
     BaseViewModel<MemberMainUiState, MemberMainUiSideEffect, MemberMainUiEvent>(MemberMainUiState()) {
 
-    override fun handleEvent(event: MemberMainUiEvent) {
+    override suspend fun handleEvent(event: MemberMainUiEvent) {
         when (event) {
             is MemberMainUiEvent.OnClickBottomNavigationTab -> {
                 setState { copy(selectedTab = event.tab) }
