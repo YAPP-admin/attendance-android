@@ -154,14 +154,6 @@ fun AttendCountText(
     modifier: Modifier = Modifier,
     memberCount: Int = 0
 ) {
-    val counter by animateIntAsState(
-        targetValue = memberCount,
-        animationSpec = tween(
-            durationMillis = 1000,
-            easing = FastOutSlowInEasing,
-        )
-    )
-
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(10F))
@@ -169,15 +161,17 @@ fun AttendCountText(
             .height(48.dp)
             .background(color = Yapp_OrangeAlpha)
     ) {
-        Text(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 24.dp, vertical = 12.dp),
-            text = "${counter}명이 출석했어요",
-            textAlign = TextAlign.Center,
-            style = AttendanceTypography.body1,
-            color = Yapp_Orange
-        )
+        Crossfade(targetState = memberCount) { count ->
+            Text(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp, vertical = 12.dp),
+                text = "${count}명이 출석했어요",
+                textAlign = TextAlign.Center,
+                style = AttendanceTypography.body1,
+                color = Yapp_Orange
+            )
+        }
     }
 }
 
