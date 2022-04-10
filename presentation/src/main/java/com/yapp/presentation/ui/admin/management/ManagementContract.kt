@@ -16,7 +16,6 @@ class ManagementContract {
 
         data class TeamState (
             val isExpanded: Boolean = false,
-            val index: Int = -1,
             val teamName: String = "",
             val members: List<MemberState> = emptyList()
         )
@@ -29,7 +28,7 @@ class ManagementContract {
     }
 
     sealed class ManagementEvent : UiEvent {
-        class OnExpandedClicked(val team: ManagementState.TeamState): ManagementEvent()
+        class OnExpandedClicked(val team: ManagementState.TeamState, val index: Int): ManagementEvent()
         class OnDropDownButtonClicked(val member: ManagementState.MemberState) : ManagementEvent()
         class OnAttendanceTypeChanged(val attendanceType: AttendanceType) : ManagementEvent()
     }

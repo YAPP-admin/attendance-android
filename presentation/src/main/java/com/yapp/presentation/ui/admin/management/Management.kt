@@ -1,12 +1,14 @@
 package com.yapp.presentation.ui.admin.management
 
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.*
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -81,27 +83,19 @@ fun AttendanceManagement(
                         Spacer(modifier = Modifier.height(28.dp))
                     }
                 }
-                item {
+                itemsIndexed(
+                    items = uiState.teams,
+                    key = { _, team -> team.members }
+                ) { index, team ->
                     ExpandableTeam(
-                        state = uiState.teams[0],
-                        onExpandClicked = { team ->
-                            viewModel.setEvent(ManagementEvent.OnExpandedClicked(team))
+                        state = team,
+                        onExpandClicked = { clickedTeam ->
+                            viewModel.setEvent(ManagementEvent.OnExpandedClicked(clickedTeam, index))
                         },
                         onDropDownClicked = { changedMember ->
                             viewModel.setEvent(ManagementEvent.OnDropDownButtonClicked(changedMember))
                         }
                     )
-                    ExpandableTeam(
-                        state = uiState.teams[1],
-                        onExpandClicked = { team ->
-                            viewModel.setEvent(ManagementEvent.OnExpandedClicked(team))
-                        },
-                        onDropDownClicked = { changedMember ->
-                            viewModel.setEvent(ManagementEvent.OnDropDownButtonClicked(changedMember))
-                        }
-                    )
-                    ExpandableTeam()
-                    ExpandableTeam()
                 }
             }
         }
@@ -153,16 +147,16 @@ fun ExpandableTeam(
     onExpandClicked: (TeamState) -> Unit = {},
     onDropDownClicked: ((MemberState) -> Unit)? = null
 ) {
+
+
     Column(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .animateContentSize(
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioLowBouncy,
-                    stiffness = Spring.StiffnessLow
-                )
-            ),
+                animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow)
+            )
+            ,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -170,20 +164,28 @@ fun ExpandableTeam(
             state = state,
             onExpandClicked = { onExpandClicked(state) }
         )
+        AnimatedVisibility(
+            visible = state.isExpanded,
+            enter = fadeIn(animationSpec = tween(50)) +
+                    expandVertically (
+                        animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow)),
+            exit = fadeOut(animationSpec = tween(50)) +
+                    shrinkVertically (
+                        animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow))) {
+            Column(modifier = Modifier) {
+                Divider(modifier = Modifier.height(1.dp), color = Gray_300)
 
-        if (state.isExpanded) {
-            Divider(modifier = Modifier.height(1.dp), color = Gray_300)
+                for (member in state.members) {
+                    MemberContent(
+                        state = member,
+                        onDropDownClicked = { clickedMember ->
+                            onDropDownClicked?.invoke(clickedMember)
+                        }
+                    )
+                }
 
-            for (member in state.members) {
-                MemberContent(
-                    state = member,
-                    onDropDownClicked = { changedMember ->
-                        onDropDownClicked?.invoke(changedMember)
-                    }
-                )
+                Divider(modifier = Modifier.height(1.dp), color = Gray_300)
             }
-
-            Divider(modifier = Modifier.height(1.dp), color = Gray_300)
         }
     }
 }
