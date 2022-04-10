@@ -306,6 +306,7 @@ fun MemberContent(
         YDSDropDownButton(
             modifier = Modifier
                 .wrapContentHeight()
+                .animateContentSize()
                 .constrainAs(ydsDropdownButton) {
                     end.linkTo(parent.end, margin = 8.dp)
                     top.linkTo(parent.top, margin = 13.dp)

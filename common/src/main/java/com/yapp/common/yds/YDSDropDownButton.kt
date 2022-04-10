@@ -1,5 +1,6 @@
 package com.yapp.common.yds
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -36,14 +37,16 @@ fun YDSDropDownButton(
                 .wrapContentSize(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = text,
-                modifier = Modifier
-                    .height(20.dp)
-                    .align(alignment = Alignment.CenterVertically),
-                style = AttendanceTypography.subtitle2,
-                color = Gray_800
-            )
+            Crossfade(targetState = text) {
+                Text(
+                    text = it,
+                    modifier = Modifier
+                        .height(20.dp)
+                        .align(alignment = Alignment.CenterVertically),
+                    style = AttendanceTypography.subtitle2,
+                    color = Gray_800
+                )
+            }
             Spacer(modifier = Modifier.width(8.dp))
             Icon(
                 painter = painterResource(id = drawable.icon_rounded_drop_down),
