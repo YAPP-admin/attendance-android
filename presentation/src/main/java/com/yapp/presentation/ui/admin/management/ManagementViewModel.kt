@@ -36,7 +36,7 @@ class ManagementViewModel @Inject constructor(
         }
     }
 
-    override fun handleEvent(event: ManagementEvent) {
+    override suspend fun handleEvent(event: ManagementEvent) {
         when (event) {
             is ManagementEvent.OnDropDownButtonClicked -> {
                 setState { this.copy(selectedMember = event.member) }
@@ -45,13 +45,7 @@ class ManagementViewModel @Inject constructor(
 
             is ManagementEvent.OnAttendanceTypeChanged -> {
                 uiState.value.selectedMember?.let { selectedMember ->
-                    viewModelScope.launch {
-                        changeMemberAttendance(
-                            selectedMember = selectedMember,
-                            changedAttendanceType = event.attendanceType,
-                            sessionId = 0
-                        )
-                    }
+                    changeMemberAttendance(selectedMember = selectedMember, changedAttendanceType = event.attendanceType, sessionId = 0)
                 }
             }
         }
