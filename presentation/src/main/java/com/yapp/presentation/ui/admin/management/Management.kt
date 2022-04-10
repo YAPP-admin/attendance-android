@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -110,13 +111,10 @@ fun ManagementScreen(
 
                 itemsIndexed(
                     items = uiState.teams,
-                    key = { _, team -> team.members }
+                    key = { _, team -> team.teamName }
                 ) { index, team ->
                     ExpandableTeam(
                         state = team,
-                        onExpandClicked = { clickedTeam ->
-                            viewModel.setEvent(ManagementEvent.OnExpandedClicked(clickedTeam, index))
-                        },
                         onDropDownClicked = { changedMember ->
                             viewModel.setEvent(ManagementEvent.OnDropDownButtonClicked(changedMember))
                         }
@@ -188,9 +186,10 @@ fun AttendCountText(
 fun ExpandableTeam(
     modifier: Modifier = Modifier,
     state: TeamState = TeamState(),
-    onExpandClicked: (TeamState) -> Unit = {},
     onDropDownClicked: ((MemberState) -> Unit)? = null
 ) {
+    var expanded by rememberSaveable { mutableStateOf(false) }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -203,11 +202,12 @@ fun ExpandableTeam(
 
         TeamHeader(
             state = state,
-            onExpandClicked = { onExpandClicked(state) }
+            expanded = expanded,
+            onExpandClicked = { changedState -> expanded = changedState }
         )
 
         AnimatedVisibility(
-            visible = state.isExpanded,
+            visible = expanded,
             enter = fadeIn(animationSpec = tween(50)) +
                     expandVertically(
                         animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow)
@@ -217,10 +217,8 @@ fun ExpandableTeam(
                         animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow)
                     )
         ) {
-
-            Column(modifier = Modifier) {
+            Column {
                 Divider(modifier = Modifier.height(1.dp), color = Gray_300)
-
                 for (member in state.members) {
                     MemberContent(
                         state = member,
@@ -229,7 +227,6 @@ fun ExpandableTeam(
                         }
                     )
                 }
-
                 Divider(modifier = Modifier.height(1.dp), color = Gray_300)
             }
         }
@@ -241,7 +238,8 @@ fun ExpandableTeam(
 fun TeamHeader(
     modifier: Modifier = Modifier,
     state: TeamState = TeamState(),
-    onExpandClicked: (TeamState) -> Unit = {}
+    expanded: Boolean = false,
+    onExpandClicked: (Boolean) -> Unit = {}
 ) {
     Row(
         modifier = modifier
@@ -266,10 +264,10 @@ fun TeamHeader(
                 .weight(0.1F)
                 .fillMaxHeight()
                 .width(0.dp),
-            onClick = { onExpandClicked(state) }
+            onClick = { onExpandClicked(!expanded) }
         ) {
             Icon(
-                painter = if (state.isExpanded) painterResource(id = R.drawable.icon_chevron_up) else painterResource(id = R.drawable.icon_chevron_down),
+                painter = if (expanded) painterResource(id = R.drawable.icon_chevron_up) else painterResource(id = R.drawable.icon_chevron_down),
                 tint = Color.Unspecified,
                 contentDescription = null
             )

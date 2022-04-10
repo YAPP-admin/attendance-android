@@ -45,18 +45,6 @@ class ManagementViewModel @Inject constructor(
                 setEffect(ManagementSideEffect.OpenBottomSheetDialog())
             }
 
-            is ManagementEvent.OnExpandedClicked -> {
-                setState {
-                    val toggleExpanded = !this.teams[event.index].isExpanded
-                    val oldState = this.teams.toMutableList()
-
-                    oldState[event.index] = this.teams[event.index].copy(isExpanded = toggleExpanded)
-                    val newState = oldState.toList()
-
-                    return@setState this.copy(teams = newState)
-                }
-            }
-
             is ManagementEvent.OnAttendanceTypeChanged -> {
                 uiState.value.selectedMember?.let { selectedMember ->
                     viewModelScope.launch {
@@ -78,7 +66,6 @@ class ManagementViewModel @Inject constructor(
                     .groupBy { member -> member.team }
                     .map { (team, members) ->
                         ManagementState.TeamState(
-                            isExpanded = false,
                             teamName = String.format("${team.type?.displayName} ${team.number}"),
                             members = members.map { member ->
                                 ManagementState.MemberState(
