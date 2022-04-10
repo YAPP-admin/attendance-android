@@ -31,9 +31,14 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.YDSPopupDialog
+import com.yapp.common.yds.YDSProgressBar
 import com.yapp.common.yds.YDSToast
 import com.yapp.presentation.R
 import com.yapp.presentation.util.permission.PermissionManager
@@ -46,7 +51,7 @@ import java.util.concurrent.Executors
 fun QrCodeScanner(
     viewModel: QrCodeViewModel = hiltViewModel(),
     modifier: Modifier = Modifier,
-    moveBackToPreviousScreen: () -> Unit,
+    navigateToPreviousScreen: () -> Unit,
 ) {
     val context = LocalContext.current
     var showQrScanner by remember { mutableStateOf(false) }
@@ -83,62 +88,64 @@ fun QrCodeScanner(
         }
     }
 
-    if (showQrScanner) {
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-        ) {
-            CameraPreview { qrCode ->
-                viewModel.setEvent(QrCodeContract.QrCodeUiEvent.ScanQrCode(qrCode.rawValue))
+    if (uiState.isLoading) {
+        YDSProgressBar()
+    } else {
+        if (showQrScanner) {
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+            ) {
+                CameraPreview { qrCode ->
+                    viewModel.setEvent(QrCodeContract.QrCodeUiEvent.ScanQrCode(qrCode.rawValue))
+                }
+                ScannerDecoration(
+                    modifier = modifier,
+                    navigateToPreviousScreen = navigateToPreviousScreen
+                )
             }
-            ScannerDecoration(
-                modifier = modifier,
-                moveBackToPreviousScreen = moveBackToPreviousScreen
-            )
-        }
 
-        ConstraintLayout(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-        ) {
-            val (noticeText, checkIcon, completeNoticeBox) = createRefs()
-            val guideline = createGuidelineFromTop(fraction = 0.5f)
+            ConstraintLayout(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+            ) {
+                val (noticeText, checkIcon, completeNoticeBox) = createRefs()
+                val guideline = createGuidelineFromTop(fraction = 0.5f)
 
-            when (uiState.attendanceState) {
-                QrCodeContract.AttendanceState.STAND_BY -> {
-                    NoticeText(
-                        modifier.constrainAs(noticeText) {
-                            bottom.linkTo(guideline, 162.dp)
-                            absoluteLeft.linkTo(parent.absoluteLeft)
-                            absoluteRight.linkTo(parent.absoluteRight)
-                        }
-                    )
-                }
-                QrCodeContract.AttendanceState.SUCCESS -> {
-                    Icon(
-                        modifier = modifier.constrainAs(checkIcon) {
-                            top.linkTo(parent.top)
-                            bottom.linkTo(parent.bottom)
-                            absoluteLeft.linkTo(parent.absoluteLeft)
-                            absoluteRight.linkTo(parent.absoluteRight)
-                        },
-                        painter = painterResource(id = R.drawable.icon_property_enabled),
-                        tint = Color.Unspecified,
-                        contentDescription = null
-                    )
-                }
-                QrCodeContract.AttendanceState.COMPLETE -> {
-                    YDSToast(
-                        modifier = Modifier
-                            .constrainAs(completeNoticeBox) {
+                when (uiState.attendanceState) {
+                    QrCodeContract.AttendanceState.STAND_BY -> {
+                        NoticeText(
+                            modifier.constrainAs(noticeText) {
                                 bottom.linkTo(guideline, 162.dp)
                                 absoluteLeft.linkTo(parent.absoluteLeft)
                                 absoluteRight.linkTo(parent.absoluteRight)
+                            }
+                        )
+                    }
+                    QrCodeContract.AttendanceState.SUCCESS -> {
+                        SuccessLottie(
+                            modifier = modifier.constrainAs(checkIcon) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                absoluteLeft.linkTo(parent.absoluteLeft)
+                                absoluteRight.linkTo(parent.absoluteRight)
                             },
-                        text = stringResource(id = R.string.member_qr_complete_inform_text)
-                    )
+                            navigateToPreviousScreen = { navigateToPreviousScreen() }
+                        )
+                    }
+                    QrCodeContract.AttendanceState.COMPLETE -> {
+                        YDSToast(
+                            modifier = Modifier
+                                .constrainAs(completeNoticeBox) {
+                                    bottom.linkTo(guideline, 162.dp)
+                                    absoluteLeft.linkTo(parent.absoluteLeft)
+                                    absoluteRight.linkTo(parent.absoluteRight)
+                                },
+                            text = stringResource(id = R.string.member_qr_complete_inform_text)
+                        )
+                    }
                 }
             }
         }
@@ -151,8 +158,8 @@ fun QrCodeScanner(
             negativeButtonText = stringResource(id = R.string.member_qr_permission_dialog_negative_text),
             positiveButtonText = stringResource(id = R.string.member_qr_permission_dialog_positive_text),
             onClickPositiveButton = { intentToAppSetting(context) },
-            onClickNegativeButton = { moveBackToPreviousScreen() },
-            onDismiss = { moveBackToPreviousScreen() }
+            onClickNegativeButton = { navigateToPreviousScreen() },
+            onDismiss = { navigateToPreviousScreen() }
         )
     }
 }
@@ -230,7 +237,7 @@ fun CameraPreview(
 @Composable
 fun ScannerDecoration(
     modifier: Modifier = Modifier,
-    moveBackToPreviousScreen: () -> Unit
+    navigateToPreviousScreen: () -> Unit
 ) {
     Box(
         modifier = modifier
@@ -239,7 +246,7 @@ fun ScannerDecoration(
             modifier = modifier
                 .align(Alignment.TopEnd)
                 .padding(top = 14.dp, end = 14.dp),
-            onClick = moveBackToPreviousScreen
+            onClick = navigateToPreviousScreen
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.icon_close),
@@ -274,6 +281,29 @@ fun NoticeText(modifier: Modifier = Modifier) {
             style = AttendanceTypography.body1
         )
     }
+}
+
+@Composable
+fun SuccessLottie(
+    modifier: Modifier = Modifier,
+    navigateToPreviousScreen: () -> Unit
+) {
+    val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.qr_check_success))
+    val progress by animateLottieCompositionAsState(
+        composition,
+        iterations = 1
+    )
+
+    LaunchedEffect(progress) {
+        if (progress == 1f) {
+            navigateToPreviousScreen()
+        }
+    }
+    LottieAnimation(
+        composition,
+        progress,
+        modifier = modifier
+    )
 }
 
 private fun intentToAppSetting(context: Context) {
