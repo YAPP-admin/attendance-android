@@ -94,6 +94,10 @@ class ManagementViewModel @Inject constructor(
         changedAttendanceType: AttendanceType,
         sessionId: Int
     ) {
+        if(selectedMember.attendance.attendanceType == changedAttendanceType) {
+            return
+        }
+        
         setMemberAttendanceUseCase(
             params = SetMemberAttendanceUseCase.Params(
                 memberId = selectedMember.id,
