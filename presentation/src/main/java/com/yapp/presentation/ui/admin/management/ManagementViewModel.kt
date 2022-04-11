@@ -53,8 +53,8 @@ class ManagementViewModel @Inject constructor(
 
     private suspend fun getAllMemberState(sessionId: Int) = coroutineScope {
         getAllMemberUseCase().collectWithCallback(
-            onSuccess = { members ->
-                val teams = members.map { it.mapTo() }
+            onSuccess = { memberEntities ->
+                val teams = memberEntities.map { entity -> entity.mapTo() }
                     .groupBy { member -> member.team }
                     .map { (team, members) ->
                         ManagementState.TeamState(
