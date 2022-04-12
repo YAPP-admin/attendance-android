@@ -11,7 +11,7 @@ class PositionViewModel @Inject constructor(
 ) : BaseViewModel<PositionContract.PositionUiState, PositionContract.PositionSideEffect, PositionContract.PositionUiEvent>(
     PositionContract.PositionUiState()
 ) {
-    override fun handleEvent(event: PositionContract.PositionUiEvent) {
+    override suspend fun handleEvent(event: PositionContract.PositionUiEvent) {
         when (event) {
             is PositionContract.PositionUiEvent.ChoosePosition -> {
                 setState { copy(position = event.position) }

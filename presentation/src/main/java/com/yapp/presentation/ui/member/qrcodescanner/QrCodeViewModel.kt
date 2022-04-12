@@ -13,7 +13,7 @@ class QrCodeViewModel @Inject constructor(
         // todo: DB 확인 후 오늘의 세션 출석이 완료되었는지 확인 후 attendanceState 변경
     }
 
-    override fun handleEvent(event: QrCodeUiEvent) {
+    override suspend fun handleEvent(event: QrCodeUiEvent) {
         when (event) {
             is QrCodeUiEvent.ScanQrCode -> {
                 val sessionId = parseQrCode(event.codeValue)

@@ -14,7 +14,7 @@ class AttendanceList private constructor(
         const val MAX_SCORE = 100
     }
 
-    fun getTodayAttendance(sessionId: Int): Attendance {
+    fun getAttendanceBySessionId(sessionId: Int): Attendance {
         return value[sessionId]
     }
 

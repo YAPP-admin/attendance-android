@@ -22,12 +22,13 @@ import androidx.navigation.navArgument
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yapp.common.theme.Yapp_Orange
 import com.yapp.common.yds.YDSToast
+import com.yapp.presentation.ui.admin.management.AttendanceManagement
 import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.admin.totalscore.AdminTotalScore
 import com.yapp.presentation.ui.login.Login
 import com.yapp.presentation.ui.member.help.Help
 import com.yapp.presentation.ui.member.main.MemberMain
-import com.yapp.presentation.ui.member.privacy_policy.PrivacyPolicyScreen
+import com.yapp.presentation.ui.member.privacyPolicy.PrivacyPolicyScreen
 import com.yapp.presentation.ui.member.qrcodescanner.QrCodeScanner
 import com.yapp.presentation.ui.member.score.detail.SessionDetail
 import com.yapp.presentation.ui.member.score.detail.SessionDetailNavParam
@@ -39,6 +40,7 @@ import com.yapp.presentation.ui.splash.Splash
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AttendanceScreen(
     viewModel: MainViewModel = hiltViewModel(),
@@ -131,6 +133,14 @@ fun AttendanceScreen(
         }
 
         composable(
+            route = AttendanceScreenRoute.ADMIN_ATTENDANCE_MANAGEMENT.route
+        ) {
+            AttendanceManagement(
+                onBackButtonClicked = { navController.popBackStack() }
+            )
+        }
+
+        composable(
             route = AttendanceScreenRoute.MEMBER_SETTING.route
         ) {
             MemberSetting(
@@ -138,9 +148,11 @@ fun AttendanceScreen(
                     navController.popBackStack()
                 },
                 onClickAdminButton = {
-                    navController.navigate(AttendanceScreenRoute.ADMIN_MAIN.route) {
-                        popUpTo(AttendanceScreenRoute.MEMBER_SETTING.route) { inclusive = true }
-                    }
+                    // TODO [임시] 원래 Main이 들어와야 함
+                    navController.navigate(AttendanceScreenRoute.ADMIN_ATTENDANCE_MANAGEMENT.route)
+//                    navController.navigate(AttendanceScreenRoute.ADMIN_MAIN.route) {
+//                        popUpTo(AttendanceScreenRoute.MEMBER_SETTING.route) { inclusive = true }
+//                    }
                 },
                 onClickLogoutButton = {
                     navController.navigate(AttendanceScreenRoute.LOGIN.route) {
@@ -222,11 +234,7 @@ fun AttendanceScreen(
             Position(
                 onClickBackButton = { navController.popBackStack() },
                 navigateToTeamScreen = { userName, userPosition ->
-                    navController.navigate(
-                        AttendanceScreenRoute.SIGNUP_TEAM.route.plus("/${userName}")
-                            .plus("/${userPosition}")
-                    )
-                }
+                    navController.navigate(AttendanceScreenRoute.SIGNUP_TEAM.route.plus("/${userName}").plus("/${userPosition}")) }
             )
         }
 
@@ -287,7 +295,8 @@ enum class AttendanceScreenRoute(val route: String) {
     HELP("help"),
     ADMIN_TOTAL_SCORE("admin-total-score"),
     SESSION_DETAIL("session-detail"),
-    PRIVACY_POLICY("privacy-policy");
+    PRIVACY_POLICY("privacy-policy"),
+    ADMIN_ATTENDANCE_MANAGEMENT("admin-attendance-management");
 }
 
 // status bar color 한번에 지정할 수 있는 방법 찾아보기 !

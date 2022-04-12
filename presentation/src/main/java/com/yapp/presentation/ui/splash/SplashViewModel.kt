@@ -40,7 +40,7 @@ class SplashViewModel @Inject constructor(
         super.setEvent(event)
     }
 
-    override fun handleEvent(event: SplashContract.SplashUiEvent) {
+    override suspend fun handleEvent(event: SplashContract.SplashUiEvent) {
         TODO("Not yet implemented")
     }
 }

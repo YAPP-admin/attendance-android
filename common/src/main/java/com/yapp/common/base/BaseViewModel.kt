@@ -34,7 +34,7 @@ abstract class BaseViewModel<S : UiState, A : UiSideEffect, E : UiEvent>(
         handleEvent(event)
     }
 
-    protected abstract fun handleEvent(event: E)
+    protected abstract suspend fun handleEvent(event: E)
 
     protected fun setState(reduce: S.() -> S) {
         val state = currentState.reduce()
