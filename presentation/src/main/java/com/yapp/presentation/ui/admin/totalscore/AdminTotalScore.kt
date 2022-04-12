@@ -69,7 +69,7 @@ fun AdminTotalScore(
 
 @Composable
 fun TeamItem(
-    teamItemState: TeamItemState
+    teamItemState: AdminTotalScoreContract.AdminTotalScoreUiState.TeamItemState
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     val iconResourceId =
@@ -114,7 +114,7 @@ fun TeamItem(
 
 @Composable
 fun MemberItem(
-    memberWithTotal: MemberWithTotalScore
+    memberWithTotal: AdminTotalScoreContract.AdminTotalScoreUiState.MemberWithTotalScore
 ) {
     val startPadding =
         if (memberWithTotal.totalScore < SCORE_LIMIT) (32 - WARNING_ICON_PADDING) else 32
