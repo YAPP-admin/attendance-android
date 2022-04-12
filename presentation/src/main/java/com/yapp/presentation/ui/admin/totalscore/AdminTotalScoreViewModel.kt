@@ -67,9 +67,9 @@ class AdminTotalScoreViewModel @Inject constructor(
 
     private fun getTeamItemStates(groupMembers: Map<Team, List<Member>>): List<AdminTotalScoreUiState.TeamItemState> {
         val result = mutableListOf<AdminTotalScoreUiState.TeamItemState>()
-        for (key in groupMembers.keys.toList()
+        for (team in groupMembers.keys.toList()
             .sortedWith(compareBy({ it.type }, { it.number }))) {
-            val teamMembers = groupMembers[key]!!.map { member ->
+            val teamMembers = groupMembers[team]!!.map { member ->
                 AdminTotalScoreUiState.MemberWithTotalScore(
                     member.name,
                     member.attendances.getTotalAttendanceScore()
@@ -77,7 +77,7 @@ class AdminTotalScoreViewModel @Inject constructor(
             }
             result.add(
                 AdminTotalScoreUiState.TeamItemState(
-                    teamName = "${key.type!!.name} ${key.number}팀",
+                    teamName = "${team.type?.displayName} ${team.number}팀",
                     teamMembers = teamMembers
                 )
             )
