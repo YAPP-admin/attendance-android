@@ -20,6 +20,7 @@ class AdminTotalScoreViewModel @Inject constructor(
 ) {
     init {
         viewModelScope.launch {
+            setState { copy(isLoading = true) }
             getAllScores()
         }
     }
@@ -38,9 +39,15 @@ class AdminTotalScoreViewModel @Inject constructor(
             val teamItemStates = getTeamItemStates(groupMembers)
 
             setState {
-                copy(teamItemStates = teamItemStates)
+                copy(
+                    isLoading = false,
+                    teamItemStates = teamItemStates
+                )
             }
         } else {
+            setState {
+                copy(isLoading = false)
+            }
             setEffect(AdminTotalScoreUiSideEffect.ShowToast("출석 정보를 불러오지 못했습니다."))
         }
     }
