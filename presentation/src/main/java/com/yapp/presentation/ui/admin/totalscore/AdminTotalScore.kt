@@ -19,8 +19,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.theme.*
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSBox
+import com.yapp.common.yds.YDSEmptyScreen
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.presentation.R
+import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.*
 
 const val WARNING_ICON_PADDING = 5
 const val SCORE_LIMIT = 70
@@ -41,35 +43,42 @@ fun AdminTotalScore(
     ) {
         val uiState = viewModel.uiState.collectAsState()
 
-        if (uiState.value.isLoading) {
-            YDSProgressBar()
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-            ) {
-                item {
-                    YDSBox(
-                        modifier = Modifier.padding(vertical = 28.dp),
-                        text = stringResource(id = R.string.admin_total_score_box_text)
-                    )
-                }
+        when (uiState.value.loadState) {
+            AdminTotalScoreUiState.LoadState.Loading -> YDSProgressBar()
+            AdminTotalScoreUiState.LoadState.Idle -> AdminTotalScoreScreen(uiState = uiState.value)
+            AdminTotalScoreUiState.LoadState.Error -> YDSEmptyScreen()
+        }
+    }
+}
+
+@Composable
+fun AdminTotalScoreScreen(
+    uiState: AdminTotalScoreUiState
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+    ) {
+        item {
+            YDSBox(
+                modifier = Modifier.padding(vertical = 28.dp),
+                text = stringResource(id = R.string.admin_total_score_box_text)
+            )
+        }
 
 
-                itemsIndexed(uiState.value.teamItemStates) { _, teamItemState ->
-                    TeamItem(
-                        teamItemState = teamItemState
-                    )
-                }
-            }
+        itemsIndexed(uiState.teamItemStates) { _, teamItemState ->
+            TeamItem(
+                teamItemState = teamItemState
+            )
         }
     }
 }
 
 @Composable
 fun TeamItem(
-    teamItemState: AdminTotalScoreContract.AdminTotalScoreUiState.TeamItemState
+    teamItemState: AdminTotalScoreUiState.TeamItemState
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     val iconResourceId =
@@ -114,7 +123,7 @@ fun TeamItem(
 
 @Composable
 fun MemberItem(
-    memberWithTotal: AdminTotalScoreContract.AdminTotalScoreUiState.MemberWithTotalScore
+    memberWithTotal: AdminTotalScoreUiState.MemberWithTotalScore
 ) {
     val startPadding =
         if (memberWithTotal.totalScore < SCORE_LIMIT) (32 - WARNING_ICON_PADDING) else 32
