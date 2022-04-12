@@ -5,7 +5,6 @@ import com.yapp.common.base.UiSideEffect
 import com.yapp.common.base.UiState
 
 data class TeamItemState(
-    val isExpanded: Boolean,
     val teamName: String,
     val teamMembers: List<MemberWithTotalScore>
 )

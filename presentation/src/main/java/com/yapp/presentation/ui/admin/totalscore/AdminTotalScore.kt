@@ -8,8 +8,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,7 +21,6 @@ import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSBox
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.presentation.R
-import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.AdminTotalScoreUiEvent
 
 const val WARNING_ICON_PADDING = 5
 const val SCORE_LIMIT = 70
@@ -58,12 +56,10 @@ fun AdminTotalScore(
                     )
                 }
 
-                itemsIndexed(uiState.value.teamItemStates) { index, teamItemState ->
+
+                itemsIndexed(uiState.value.teamItemStates) { _, teamItemState ->
                     TeamItem(
-                        teamItemState = teamItemState,
-                        onTeamItemClicked = {
-                            viewModel.setEvent(AdminTotalScoreUiEvent.ClickTeamItem(index))
-                        }
+                        teamItemState = teamItemState
                     )
                 }
             }
@@ -73,17 +69,17 @@ fun AdminTotalScore(
 
 @Composable
 fun TeamItem(
-    teamItemState: TeamItemState,
-    onTeamItemClicked: () -> Unit
+    teamItemState: TeamItemState
 ) {
+    var isExpanded by remember { mutableStateOf(false) }
     val iconResourceId =
-        if (teamItemState.isExpanded) R.drawable.icon_chevron_up else R.drawable.icon_chevron_down
+        if (isExpanded) R.drawable.icon_chevron_up else R.drawable.icon_chevron_down
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .clickable { onTeamItemClicked() }
+            .clickable { isExpanded = !isExpanded }
             .padding(vertical = 18.dp, horizontal = 24.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -101,7 +97,7 @@ fun TeamItem(
         )
     }
 
-    if (teamItemState.isExpanded) {
+    if (isExpanded) {
         Divider(modifier = Modifier.padding(horizontal = 24.dp), color = Gray_300)
         Column(
             modifier = Modifier

@@ -22,30 +22,8 @@ class AdminTotalScoreViewModel @Inject constructor(
         getAllScores()
     }
 
-    override fun handleEvent(event: AdminTotalScoreUiEvent) {
-        when (event) {
-            is AdminTotalScoreUiEvent.ClickTeamItem -> changeIsExpandedState(event.index)
-        }
-    }
+    override suspend fun handleEvent(event: AdminTotalScoreUiEvent) {
 
-    private fun changeIsExpandedState(index: Int) {
-        val newTeamItemStates = mutableListOf<TeamItemState>()
-        uiState.value.teamItemStates.forEachIndexed { i, teamItemState ->
-            if (index == i) {
-                newTeamItemStates.add(
-                    TeamItemState(
-                        teamName = teamItemState.teamName,
-                        teamMembers = teamItemState.teamMembers,
-                        isExpanded = !teamItemState.isExpanded
-                    )
-                )
-            } else {
-                newTeamItemStates.add(teamItemState)
-            }
-        }
-        setState {
-            copy(teamItemStates = newTeamItemStates)
-        }
     }
 
     private fun getAllScores() {
@@ -86,10 +64,10 @@ class AdminTotalScoreViewModel @Inject constructor(
 
     private fun getRandomTeam(): Team {
         val platformType = when ((0..3).random()) {
-            0 -> "Android"
-            1 -> "iOS"
-            2 -> "Web"
-            else -> "All-Rounder"
+            0 -> "ANDROID"
+            1 -> "IOS"
+            2 -> "WEB"
+            else -> "ALL_ROUNDER"
         }
         val number = (1..2).random()
         return Team(type = TeamType.of(platformType), number = number)
@@ -126,7 +104,6 @@ class AdminTotalScoreViewModel @Inject constructor(
             }
             result.add(
                 TeamItemState(
-                    isExpanded = false,
                     teamName = "${key.type!!.name} ${key.number}팀",
                     teamMembers = teamMembers
                 )
