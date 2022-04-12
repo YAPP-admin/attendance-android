@@ -10,12 +10,16 @@ import com.yapp.presentation.model.AttendanceType.Normal
 
 class ManagementContract {
     data class ManagementState(
-        val isLoading: Boolean = false,
+        val loadState: LoadState = LoadState.Idle,
         val sessionId: Int = 0,
         val memberCount: Int = 0,
         val selectedMember: MemberState? = null,
         val teams: List<TeamState> = emptyList()
     ): UiState {
+
+        enum class LoadState {
+            Loading, Idle, Error
+        }
 
         data class TeamState (
             val teamName: String = "",
@@ -36,7 +40,5 @@ class ManagementContract {
 
     sealed class ManagementSideEffect : UiSideEffect {
         class OpenBottomSheetDialog : ManagementSideEffect()
-        object MemberListLoadFailed : ManagementSideEffect()
-        object AttendanceChangeFailed : ManagementSideEffect()
     }
 }

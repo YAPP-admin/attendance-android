@@ -10,6 +10,7 @@ import com.yapp.presentation.model.AttendanceType
 import com.yapp.presentation.model.AttendanceType.Companion.mapToEntity
 import com.yapp.presentation.model.Member.Companion.mapTo
 import com.yapp.presentation.ui.admin.management.ManagementContract.*
+import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -31,7 +32,7 @@ class ManagementViewModel @Inject constructor(
         setState { this.copy(sessionId = savedStateHandle.get<Int>("sessionId") ?: DEFAULT_SESSION_ID) }
 
         viewModelScope.launch {
-            setLoading()
+            setState { this.copy(loadState = LoadState.Loading) }
             getAllMemberState(sessionId = uiState.value.sessionId)
         }
     }
@@ -57,10 +58,10 @@ class ManagementViewModel @Inject constructor(
                 val teams = memberEntities.map { entity -> entity.mapTo() }
                     .groupBy { member -> member.team }
                     .map { (team, members) ->
-                        ManagementState.TeamState(
+                        TeamState(
                             teamName = String.format("${team.type?.displayName} ${team.number}"),
                             members = members.map { member ->
-                                ManagementState.MemberState(
+                                MemberState(
                                     id = member.id,
                                     name = member.name,
                                     attendance = member.attendances.getAttendanceBySessionId(sessionId = sessionId)
@@ -73,16 +74,16 @@ class ManagementViewModel @Inject constructor(
                 val attendCount = teams.flatMap { it.members }
                     .count { it.attendance.attendanceType == AttendanceType.Normal }
 
-                setState { this.copy(isLoading = false, memberCount = attendCount, teams = teams) }
+                setState { this.copy(loadState = LoadState.Idle, memberCount = attendCount, teams = teams) }
             },
             onFailed = {
-                setEffect(ManagementSideEffect.MemberListLoadFailed)
+                setState { this.copy(loadState = LoadState.Error) }
             }
         )
     }
 
     private suspend fun changeMemberAttendance(
-        selectedMember: ManagementState.MemberState,
+        selectedMember: MemberState,
         changedAttendanceType: AttendanceType,
         sessionId: Int
     ) {
@@ -102,13 +103,9 @@ class ManagementViewModel @Inject constructor(
                 getAllMemberState(sessionId = sessionId)
             },
             onFailed = {
-                setEffect(ManagementSideEffect.AttendanceChangeFailed)
+                setState { this.copy(loadState = LoadState.Error) }
             }
         )
-    }
-
-    private fun setLoading() {
-        setState { this.copy(isLoading = true) }
     }
 
 }
