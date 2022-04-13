@@ -24,6 +24,7 @@ import com.yapp.common.R
 import com.yapp.common.theme.*
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.presentation.R.*
+import com.yapp.presentation.model.AttendanceType
 import com.yapp.presentation.model.Session
 import com.yapp.presentation.ui.AttendanceScreenRoute
 
@@ -53,16 +54,33 @@ fun TodaySession(
                 .verticalScroll(rememberScrollState())
                 .background(color = Gray_200)
         ) {
-            TodaysAttendance()
+            TodaysAttendance(uiState.attendanceType)
             SessionDescriptionModal(uiState.todaySession, Modifier.weight(1f))
         }
     }
 }
 
 @Composable
-private fun TodaysAttendance() {
+private fun TodaysAttendance(attendanceType: AttendanceType) {
+    val imageRsc: Int
+    val iconRsc: Int
+    val textRsc: Int
+    val textColor: Color
+
+    if (attendanceType == AttendanceType.Absent) {
+        imageRsc = R.drawable.illust_member_home_disabled
+        iconRsc = R.drawable.icon_check_disabled
+        textRsc = string.today_session_attendance_before_text
+        textColor = Gray_600
+    } else {
+        imageRsc = R.drawable.illust_member_home_enabled
+        iconRsc = R.drawable.icon_check_enabled
+        textRsc = string.today_session_attendance_after_text
+        textColor = Yapp_Orange
+    }
+
     Image(
-        painter = painterResource(id = R.drawable.illust_member_home_disabled),
+        painter = painterResource(id = imageRsc),
         contentDescription = null,
         modifier = Modifier
             .layoutId("yappu", "yappu")
@@ -81,14 +99,14 @@ private fun TodaysAttendance() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            imageVector = ImageVector.vectorResource(R.drawable.icon_check),
+            imageVector = ImageVector.vectorResource(iconRsc),
             contentDescription = null,
             modifier = Modifier.padding(end = 8.dp),
             tint = Color.Unspecified
         )
         Text(
-            text = stringResource(id = string.today_session_attendance_before_text),
-            color = Gray_600,
+            text = stringResource(id = textRsc),
+            color = textColor,
         )
     }
 }
