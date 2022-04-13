@@ -23,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.R
 import com.yapp.common.theme.*
 import com.yapp.common.yds.YDSAppBar
+import com.yapp.common.yds.YDSProgressBar
 import com.yapp.presentation.R.*
 import com.yapp.presentation.model.AttendanceType
 import com.yapp.presentation.model.Session
@@ -57,6 +58,10 @@ fun TodaySession(
             TodaysAttendance(uiState.attendanceType)
             SessionDescriptionModal(uiState.todaySession, Modifier.weight(1f))
         }
+    }
+
+    if (uiState.isLoading) {
+        YDSProgressBar()
     }
 }
 
