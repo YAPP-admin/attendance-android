@@ -146,7 +146,7 @@ fun YDSButtonSmall(
             }
             else -> {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xffFA6027)
+                    backgroundColor = Color(0xffFF7744)
                 )
             }
         },

@@ -21,11 +21,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.R
 import com.yapp.common.theme.*
-import com.yapp.common.yds.YDSAppBar
-import com.yapp.common.yds.YDSButtonSmall
-import com.yapp.common.yds.YdsButtonState
+import com.yapp.common.yds.*
+import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.presentation.R.string
 import com.yapp.presentation.model.Session
+import com.yapp.presentation.ui.admin.main.AdminMainContract.AdminMainUiState
 
 @Composable
 fun AdminMain(
@@ -43,27 +43,29 @@ fun AdminMain(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        if (uiState.isLoading) {
-            CircularProgressBar()
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-            ) {
-                YappuUserScoreCard(navigateToAdminTotalScore)
-                GraySpacing(Modifier.height(12.dp))
-                ManagementTitle()
-                TodaySession()
-                Spacing()
-                GraySpacing(
-                    Modifier
-                        .height(1.dp)
-                        .padding(horizontal = 24.dp)
-                )
-                ManagementSubTitle()
-                Sessions(uiState.sessions)
+        when (uiState.loadState) {
+            AdminMainUiState.LoadState.Loading -> YDSProgressBar()
+            AdminMainUiState.LoadState.Idle -> {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                ) {
+                    YappuUserScoreCard(navigateToAdminTotalScore)
+                    GraySpacing(Modifier.height(12.dp))
+                    ManagementTitle()
+                    UpcomingSession(uiState.upcomingSession!!)
+                    Spacing()
+                    GraySpacing(
+                        Modifier
+                            .height(1.dp)
+                            .padding(horizontal = 24.dp)
+                    )
+                    ManagementSubTitle()
+                    Sessions(uiState.sessions)
+                }
             }
+            AdminMainUiState.LoadState.Error -> YDSEmptyScreen()
         }
     }
 }
@@ -75,7 +77,6 @@ private fun CircularProgressBar() {
         color = Yapp_Orange,
         strokeWidth = 10.dp
     )
-
 }
 
 fun LazyListScope.Spacing() {
@@ -117,7 +118,7 @@ fun LazyListScope.YappuUserScoreCard(
                 verticalArrangement = Arrangement.Center,
             ) {
                 Text(
-                    text = "20기 누적 출결 점수",
+                    text = stringResource(id = string.admin_main_all_score_text),
                     style = AttendanceTypography.h3,
                     color = Gray_1200
                 )
@@ -152,13 +153,13 @@ fun LazyListScope.GraySpacing(modifier: Modifier) {
     }
 }
 
-fun LazyListScope.TodaySession() {
+fun LazyListScope.UpcomingSession(upcomingSession: Session) {
     item {
         Column(
             modifier = Modifier.padding(horizontal = 24.dp)
         ) {
             Text(
-                text = "02.07 오늘",
+                text = "${upcomingSession.date.substring(5, 7)}.${upcomingSession.date.substring(8, 10)}",
                 color = Gray_600,
                 style = AttendanceTypography.body2
             )
@@ -171,12 +172,12 @@ fun LazyListScope.TodaySession() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "YAPP 오리엔테이션",
+                    text = upcomingSession.title,
                     style = AttendanceTypography.h3
                 )
                 YDSButtonSmall(
                     text = stringResource(id = string.admin_main_confirm_button),
-                    state = YdsButtonState.ENABLED,
+                    state = if (upcomingSession.type == NeedToAttendType.NEED_ATTENDANCE) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
                     onClick = {
 
                     }
@@ -203,23 +204,27 @@ private fun SessionItem(session: Session) {
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(vertical = 20.dp, horizontal = 24.dp),
+            .padding(vertical = 18.dp, horizontal = 24.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val textColor =
+            if (session.type == NeedToAttendType.NEED_ATTENDANCE) Gray_1200 else Gray_400
         Row {
             Text(
-                text = session.date,
-                color = if (session.description.isNotBlank()) Gray_400 else Gray_1200,
-                modifier = Modifier.width(64.dp)
+                text = "${session.date.substring(5, 7)}.${session.date.substring(8, 10)}",
+                color = textColor,
+                style = AttendanceTypography.body1
             )
             Text(
                 text = session.title,
-                color = if (session.description.isNotBlank()) Gray_400 else Gray_1200,
+                color = textColor,
+                style = AttendanceTypography.subtitle1,
+                modifier = Modifier.padding(start = 24.dp)
             )
         }
 
-        if (session.description.isNotBlank()) {
+        if (session.type == NeedToAttendType.NEED_ATTENDANCE) {
             Icon(
                 painter = painterResource(id = R.drawable.icon_chevron_right),
                 contentDescription = null,
