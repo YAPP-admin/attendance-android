@@ -144,13 +144,19 @@ fun YDSButtonSmall(
                     backgroundColor = Yapp_Orange
                 )
             }
-            else -> {
+            YdsButtonState.DISABLED -> {
+                ButtonDefaults.buttonColors(
+                    backgroundColor = Gray_400
+                )
+            }
+            YdsButtonState.PRESSED -> {
                 ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xffFF7744)
                 )
             }
         },
-        elevation = null
+        elevation = null,
+        enabled = state == YdsButtonState.ENABLED
     ) {
         Text(
             text = text,

@@ -70,15 +70,6 @@ fun AdminMain(
     }
 }
 
-@Composable
-private fun CircularProgressBar() {
-    CircularProgressIndicator(
-        modifier = Modifier.size(10.dp),
-        color = Yapp_Orange,
-        strokeWidth = 10.dp
-    )
-}
-
 fun LazyListScope.Spacing() {
     item {
         Spacer(modifier = Modifier.padding(top = 28.dp))
@@ -177,11 +168,9 @@ fun LazyListScope.UpcomingSession(upcomingSession: Session) {
                     style = AttendanceTypography.h3
                 )
                 YDSButtonSmall(
-                    text = stringResource(id = string.admin_main_confirm_button),
+                    text = stringResource(id = string.admin_main_admin_button),
                     state = if (upcomingSession.type == NeedToAttendType.NEED_ATTENDANCE) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                    onClick = {
-
-                    }
+                    onClick = {}
                 )
             }
         }
