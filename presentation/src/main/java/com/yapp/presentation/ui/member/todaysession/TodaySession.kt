@@ -28,6 +28,8 @@ import com.yapp.presentation.R.*
 import com.yapp.presentation.model.AttendanceType
 import com.yapp.presentation.model.Session
 import com.yapp.presentation.ui.AttendanceScreenRoute
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun TodaySession(
@@ -127,8 +129,9 @@ private fun SessionDescriptionModal(session: Session?, modifier: Modifier) {
             .background(Color.White)
             .padding(24.dp),
     ) {
+        val sessionDate = session?.date?.substring(5, 10)?.replace("-", ".")
         Text(
-            text = session?.date ?: "",
+            text = sessionDate ?: "",
             style = AttendanceTypography.body1,
             color = Gray_600
         )
