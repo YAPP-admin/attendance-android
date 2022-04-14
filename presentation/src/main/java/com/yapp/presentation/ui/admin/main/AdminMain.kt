@@ -54,7 +54,7 @@ fun AdminMain(
                     YappuUserScoreCard(navigateToAdminTotalScore)
                     GraySpacing(Modifier.height(12.dp))
                     ManagementTitle()
-                    UpcomingSession(uiState.upcomingSession!!)
+                    uiState.upcomingSession?.let { UpcomingSession(it) } ?: FinishAllSessions()
                     Spacing()
                     GraySpacing(
                         Modifier
@@ -159,7 +159,8 @@ fun LazyListScope.UpcomingSession(upcomingSession: Session) {
             modifier = Modifier.padding(horizontal = 24.dp)
         ) {
             Text(
-                text = "${upcomingSession.date.substring(5, 7)}.${upcomingSession.date.substring(8, 10)}",
+                text = upcomingSession.date.substring(5, 7) +
+                        "." + upcomingSession.date.substring(8, 10),
                 color = Gray_600,
                 style = AttendanceTypography.body2
             )
@@ -184,6 +185,16 @@ fun LazyListScope.UpcomingSession(upcomingSession: Session) {
                 )
             }
         }
+    }
+}
+
+fun LazyListScope.FinishAllSessions() {
+    item {
+        Text(
+            modifier = Modifier.padding(horizontal = 24.dp),
+            text = "20기 끝~~",
+            style = AttendanceTypography.h3
+        )
     }
 }
 
