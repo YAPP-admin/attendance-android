@@ -22,6 +22,7 @@ class TodaySessionViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            setState { this.copy(loadState = LoadState.Loading) }
             getUpcomingSessionUseCase()
                 .collectWithCallback(
                     onSuccess = { entity ->
@@ -38,7 +39,7 @@ class TodaySessionViewModel @Inject constructor(
                         getMemberAttendances()
                     },
                     onFailed = {
-                        // TODO 엠티뷰 보여주기
+                        setState { this.copy(loadState = LoadState.Error) }
                     }
                 )
         }
@@ -46,19 +47,20 @@ class TodaySessionViewModel @Inject constructor(
 
     fun getMemberAttendances() {
         viewModelScope.launch {
+            setState { this.copy(loadState = LoadState.Loading) }
             getMemberAttendancesUseCase().collectWithCallback(
                 onSuccess = { attendances ->
                     val attendance =
                         attendances?.first { it.sessionId == uiState.value.sessionId }?.mapTo()
                     setState {
                         copy(
-                            isLoading = false,
+                            loadState = LoadState.Idle,
                             attendanceType = attendance?.attendanceType ?: AttendanceType.Absent
                         )
                     }
                 },
                 onFailed = {
-                    //TODO
+                    setState { this.copy(loadState = LoadState.Error) }
                 })
         }
     }

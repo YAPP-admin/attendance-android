@@ -8,11 +8,15 @@ import com.yapp.presentation.model.Session
 
 class TodaySessionContract {
     data class TodaySessionUiState(
-        val isLoading: Boolean = true,
+        val loadState: LoadState = LoadState.Idle,
         val sessionId: Int = 0,
         val attendanceType: AttendanceType = AttendanceType.Absent,
         val todaySession: Session? = null,
     ) : UiState
+
+    enum class LoadState {
+        Loading, Idle, Error
+    }
 
     sealed class TodaySessionUiSideEffect : UiSideEffect {
     }

@@ -23,13 +23,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.R
 import com.yapp.common.theme.*
 import com.yapp.common.yds.YDSAppBar
+import com.yapp.common.yds.YDSEmptyScreen
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.presentation.R.*
 import com.yapp.presentation.model.AttendanceType
 import com.yapp.presentation.model.Session
 import com.yapp.presentation.ui.AttendanceScreenRoute
-import java.text.SimpleDateFormat
-import java.util.*
 
 @Composable
 fun TodaySession(
@@ -62,8 +61,10 @@ fun TodaySession(
         }
     }
 
-    if (uiState.isLoading) {
+    if (uiState.loadState == TodaySessionContract.LoadState.Loading) {
         YDSProgressBar()
+    } else if (uiState.loadState == TodaySessionContract.LoadState.Error) {
+        YDSEmptyScreen()
     }
 }
 
