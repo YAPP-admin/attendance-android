@@ -30,7 +30,7 @@ import com.yapp.presentation.ui.admin.main.AdminMainContract.AdminMainUiState
 @Composable
 fun AdminMain(
     viewModel: AdminMainViewModel = hiltViewModel(),
-    navigateToAdminTotalScore: () -> Unit
+    navigateToAdminTotalScore: (Int) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -51,7 +51,10 @@ fun AdminMain(
                         .fillMaxWidth()
                         .wrapContentHeight()
                 ) {
-                    YappuUserScoreCard(navigateToAdminTotalScore)
+                    YappuUserScoreCard(
+                        upcomingSessionId = uiState.upcomingSession?.sessionId ?: -1,
+                        navigateToAdminTotalScore = navigateToAdminTotalScore
+                    )
                     GraySpacing(Modifier.height(12.dp))
                     ManagementTitle()
                     uiState.upcomingSession?.let { UpcomingSession(it) } ?: FinishAllSessions()
@@ -83,7 +86,8 @@ fun LazyListScope.Sessions(sessions: List<Session>) {
 }
 
 fun LazyListScope.YappuUserScoreCard(
-    navigateToAdminTotalScore: () -> Unit
+    upcomingSessionId: Int,
+    navigateToAdminTotalScore: (Int) -> Unit
 ) {
     item {
         Card(
@@ -91,7 +95,7 @@ fun LazyListScope.YappuUserScoreCard(
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .padding(24.dp)
-                .clickable { navigateToAdminTotalScore() },
+                .clickable { navigateToAdminTotalScore(upcomingSessionId) },
             shape = RoundedCornerShape(12.dp),
             elevation = 0.dp,
             backgroundColor = Gray_200
