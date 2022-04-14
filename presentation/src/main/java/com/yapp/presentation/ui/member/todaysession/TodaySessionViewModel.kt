@@ -48,7 +48,8 @@ class TodaySessionViewModel @Inject constructor(
         viewModelScope.launch {
             getMemberAttendancesUseCase().collectWithCallback(
                 onSuccess = { attendances ->
-                    val attendance = attendances?.get(uiState.value.sessionId)?.mapTo()
+                    val attendance =
+                        attendances?.first { it.sessionId == uiState.value.sessionId }?.mapTo()
                     setState {
                         copy(
                             isLoading = false,
