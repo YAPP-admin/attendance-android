@@ -119,7 +119,7 @@ fun AttendanceScreen(
             SetStatusBarColorByRoute(it.destination.route)
             MemberMain { screen ->
                 if (screen == AttendanceScreenRoute.QR_AUTH.route) {
-                    viewModel.validateQRScreen()
+                    viewModel.setEvent(MainContract.MainUiEvent.OnClickQrAuthButton)
                 } else {
                     navController.navigate(screen)
                 }

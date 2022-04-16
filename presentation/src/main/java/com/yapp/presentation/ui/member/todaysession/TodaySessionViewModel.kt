@@ -65,10 +65,6 @@ class TodaySessionViewModel @Inject constructor(
         }
     }
 
-    override fun setEvent(event: TodaySessionUiEvent) {
-        super.setEvent(event)
-    }
-
     override suspend fun handleEvent(event: TodaySessionUiEvent) {
         TODO("Not yet implemented")
     }

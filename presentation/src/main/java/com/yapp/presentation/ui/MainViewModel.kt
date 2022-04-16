@@ -2,13 +2,14 @@ package com.yapp.presentation.ui
 
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
+import com.yapp.domain.usecases.GetUpcomingSessionUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-  //  private val getUpcomingSessionUseCase: GetUpcomingSessionUseCase
+    private val getUpcomingSessionUseCase: GetUpcomingSessionUseCase
 ) : BaseViewModel<MainContract.MainUiState, MainContract.MainUiSideEffect, MainContract.MainUiEvent>(
     MainContract.MainUiState
 ) {
@@ -18,7 +19,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun validateQRScreen() {
-//        viewModelScope.launch {
+        viewModelScope.launch {
 //            getUpcomingSessionUseCase()
 //                .collectWithCallback(
 //                    onSuccess = { session ->
@@ -37,10 +38,19 @@ class MainViewModel @Inject constructor(
 //                        // TODO 에러핸들링 필요합니다.
 //                    }
 //                )
-//        }
+        }
     }
 
     override suspend fun handleEvent(event: MainContract.MainUiEvent) {
-        TODO("Not yet implemented")
+        when(event) {
+            MainContract.MainUiEvent.OnClickQrAuthButton -> {
+                checkAttendanceValidate()
+                if(uiState.value.is)
+            }
+        }
+    }
+
+    private suspend fun checkAttendanceValidate() {
+
     }
 }
