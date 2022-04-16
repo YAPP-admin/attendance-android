@@ -109,7 +109,7 @@ fun ManagementScreen(
             topBar = {
                 YDSAppBar(
                     modifier = Modifier.padding(horizontal = 4.dp),
-                    title = "YAPP 오리엔테이션",
+                    title = uiState.sessionTitle,
                     onClickBackButton = { onBackButtonClicked?.invoke() }
                 )
             }

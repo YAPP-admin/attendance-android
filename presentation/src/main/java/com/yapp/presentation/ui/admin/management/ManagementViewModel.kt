@@ -5,10 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.model.AttendanceEntity
 import com.yapp.domain.usecases.GetAllMemberUseCase
+import com.yapp.domain.usecases.GetSessionListUseCase
 import com.yapp.domain.usecases.SetMemberAttendanceUseCase
 import com.yapp.presentation.model.AttendanceType
 import com.yapp.presentation.model.AttendanceType.Companion.mapToEntity
 import com.yapp.presentation.model.Member.Companion.mapTo
+import com.yapp.presentation.model.Session.Companion.mapTo
 import com.yapp.presentation.ui.admin.management.ManagementContract.*
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ManagementViewModel @Inject constructor(
+    private val getSessionListUseCase: GetSessionListUseCase,
     private val getAllMemberUseCase: GetAllMemberUseCase,
     private val setMemberAttendanceUseCase: SetMemberAttendanceUseCase,
     private val savedStateHandle: SavedStateHandle
@@ -25,7 +28,7 @@ class ManagementViewModel @Inject constructor(
 ) : BaseViewModel<ManagementState, ManagementSideEffect, ManagementEvent>(ManagementState()) {
 
     companion object {
-        const val DEFAULT_SESSION_ID = 0
+        const val DEFAULT_SESSION_ID = 1
     }
 
     init {
@@ -34,6 +37,7 @@ class ManagementViewModel @Inject constructor(
         viewModelScope.launch {
             setState { this.copy(loadState = LoadState.Loading) }
             getAllMemberState(sessionId = uiState.value.sessionId)
+            getSessionTitle(sessionId = uiState.value.sessionId)
         }
     }
 
@@ -87,7 +91,7 @@ class ManagementViewModel @Inject constructor(
         changedAttendanceType: AttendanceType,
         sessionId: Int
     ) {
-        if(selectedMember.attendance.attendanceType == changedAttendanceType) {
+        if (selectedMember.attendance.attendanceType == changedAttendanceType) {
             return
         }
 
@@ -104,6 +108,20 @@ class ManagementViewModel @Inject constructor(
             },
             onFailed = {
                 setState { this.copy(loadState = LoadState.Error) }
+            }
+        )
+    }
+
+    private suspend fun getSessionTitle(sessionId: Int) {
+        getSessionListUseCase().collectWithCallback(
+            onSuccess = { sessionEntities ->
+                val currentSession = sessionEntities.map { entity -> entity.mapTo() }
+                    .get(sessionId)
+
+                setState { this.copy(sessionTitle = currentSession.title) }
+            },
+            onFailed = {
+                setState { this.copy(sessionTitle = "세션을 불러오는데 실패했습니다.") }
             }
         )
     }
