@@ -290,8 +290,11 @@ private fun checkSessionAttendance(
     if (!DateUtil.isPastSession(session.date)) {
         return AttendanceType.TBD
     }
-    if (session.type != NeedToAttendType.NEED_ATTENDANCE) {
+    if (session.type == NeedToAttendType.DONT_NEED_ATTENDANCE) {
         return AttendanceType.NO_ATTENDANCE
+    }
+    if (session.type == NeedToAttendType.DAY_OFF) {
+        return AttendanceType.NO_YAPP
     }
     return when (attendance.attendanceType) {
         com.yapp.presentation.model.AttendanceType.Absent -> AttendanceType.ABSENT
