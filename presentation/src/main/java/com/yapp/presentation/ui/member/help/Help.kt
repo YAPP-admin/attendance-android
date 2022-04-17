@@ -2,6 +2,8 @@ package com.yapp.presentation.ui.member.help
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -36,7 +38,6 @@ fun Help( onClickBackButton: () -> Unit) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
         ) {
             BasicInfo()
             DetailInfo()
@@ -50,20 +51,12 @@ private fun BasicInfo() {
         Text(
             buildAnnotatedString {
                 withStyle(
-                    style = SpanStyle(
-                        fontWeight = FontWeight.Bold,
-                        color = Yapp_Orange,
-                        fontSize = 18.sp
-                    )
+                    style = AttendanceTypography.h3.copy(color = Yapp_Orange).toSpanStyle()
                 ) {
                     append(stringResource(id = R.string.help_basic_info_yapp_text))
                 }
                 withStyle(
-                    style = SpanStyle(
-                        fontWeight = FontWeight.Bold,
-                        color = Gray_1200,
-                        fontSize = 18.sp
-                    )
+                    style = AttendanceTypography.h3.copy(color = Gray_1200).toSpanStyle()
                 ) {
                     append(stringResource(id = R.string.help_basic_info_title_text))
                 }
@@ -73,17 +66,15 @@ private fun BasicInfo() {
             text = stringResource(id = R.string.help_basic_info_content_text),
             color = Gray_600,
             modifier = Modifier.padding(top = 8.dp),
-            fontSize = 16.sp
+            fontSize = 16.sp,
+            style = AttendanceTypography.body1
         )
-        ScoreRule(
-            type = stringResource(id = R.string.help_basic_info_type_pre_notice_text),
-            lateScore = -5,
-            absentScore = -15
-        )
-        ScoreRule(
-            type = stringResource(id = R.string.help_basic_info_type_not_notice_text),
-            lateScore = -10,
-            absentScore = -20
+        ScoreRuleTable(tardyScore = -10, absentScore = -20)
+        Spacer(modifier = Modifier.height(38.dp))
+        Text(
+            text = stringResource(id = R.string.help_basic_info_tip_text),
+            color = Gray_600,
+            style = AttendanceTypography.body1
         )
     }
 }
@@ -94,43 +85,42 @@ private fun DetailInfo() {
         modifier = Modifier
             .background(Gray_200)
             .fillMaxSize()
-            .padding(vertical = 40.dp, horizontal = 24.dp)
+            .padding(top = 40.dp, start = 24.dp, end=24.dp)
     ) {
         Text(
             text = stringResource(id = R.string.help_detail_info_title_text),
             modifier = Modifier.padding(bottom = 12.dp),
             color = Gray_800,
             fontWeight = FontWeight.Bold,
-            fontSize = 14.sp
+            fontSize = 14.sp,
         )
-        DetailInfoItem(buildAnnotatedString { append(stringResource(id = R.string.help_detail_info_content1_text)) })
-        DetailInfoItem(
-            buildAnnotatedString {
-                append(stringResource(id = R.string.help_detail_info_content2_start_text))
-                withStyle(
-                    style = SpanStyle(
-                        fontWeight = FontWeight.Bold,
-                        color = Gray_800
-                    )
-                ) {
-                    append(stringResource(id = R.string.help_detail_info_content2_bold_text))
-                }
-                append(stringResource(id = R.string.help_detail_info_content2_end_text))
-            })
+
+        DetailInfoItem(buildAnnotatedString {
+            append(stringResource(id = R.string.help_detail_info_content1_start_text))
+            withStyle(
+                style = SpanStyle(
+                    fontWeight = FontWeight.Bold,
+                    color = Gray_800,
+                )
+            ) {
+                append(stringResource(id = R.string.help_detail_info_content1_bold_text))
+            }
+            append(stringResource(id = R.string.help_detail_info_content1_end_text))
+        })
+        DetailInfoItem(buildAnnotatedString {
+            append(stringResource(id = R.string.help_detail_info_content2_start_text))
+            withStyle(
+                style = SpanStyle(
+                    fontWeight = FontWeight.Bold,
+                    color = Gray_800
+                )
+            ) {
+                append(stringResource(id = R.string.help_detail_info_content2_bold_text))
+            }
+            append(stringResource(id = R.string.help_detail_info_content2_end_text))
+        })
         DetailInfoItem(buildAnnotatedString { append(stringResource(id = R.string.help_detail_info_content3_text)) })
-        DetailInfoItem(
-            buildAnnotatedString {
-                append(stringResource(id = R.string.help_detail_info_content4_start_text))
-                withStyle(
-                    style = SpanStyle(
-                        fontWeight = FontWeight.Bold,
-                        color = Gray_800
-                    )
-                ) {
-                    append(stringResource(id = R.string.help_detail_info_content4_bold_text))
-                }
-                append(stringResource(id = R.string.help_detail_info_content4_end_text))
-            })
+        DetailInfoItem(buildAnnotatedString { append(stringResource(id = R.string.help_detail_info_content4_text)) })
     }
 }
 
@@ -143,30 +133,12 @@ private fun DetailInfoItem(text: AnnotatedString) {
             fontSize = 12.sp,
             color = Gray_600
         )
-        Text(text = text, fontSize = 12.sp, color = Gray_600)
-    }
-}
-
-@Composable
-private fun ScoreRule(type: String, lateScore: Int, absentScore: Int) {
-    Column(modifier = Modifier.padding(top = 28.dp)) {
         Text(
-            buildAnnotatedString {
-                withStyle(
-                    style = SpanStyle(
-                        fontWeight = FontWeight.Bold,
-                        color = Gray_800,
-                        fontSize = 16.sp
-                    )
-                ) {
-                    append(type)
-                }
-                withStyle(style = SpanStyle(color = Gray_800, fontSize = 16.sp)) {
-                    append(stringResource(id = R.string.help_basic_info_type_text))
-                }
-            }
+            text = text,
+            color = Gray_600,
+            style = AttendanceTypography.caption.copy(lineHeight = 18.sp),
+            fontWeight = FontWeight.W400,
         )
-        ScoreRuleTable(tardyScore = lateScore, absentScore = absentScore)
     }
 }
 
@@ -175,7 +147,7 @@ fun ScoreRuleTable(tardyScore: Int, absentScore: Int) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 12.dp)
+            .padding(top = 28.dp)
             .clip(RoundedCornerShape(10.dp))
             .border(BorderStroke(1.dp, Gray_200)),
         verticalAlignment = Alignment.CenterVertically,
@@ -220,7 +192,8 @@ fun RowScope.ScoreRuleCell(
                 .fillMaxWidth()
                 .padding(19.dp),
             textAlign = TextAlign.Center,
-            fontSize = 18.sp
+            fontSize = 18.sp,
+            fontWeight = FontWeight.SemiBold
         )
     }
 }
