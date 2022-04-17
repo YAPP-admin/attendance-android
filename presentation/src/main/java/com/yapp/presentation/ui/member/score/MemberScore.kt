@@ -43,7 +43,7 @@ fun MemberScore(
     viewModel: MemberScoreViewModel = hiltViewModel(),
     modifier: Modifier,
     navigateToHelpScreen: () -> Unit,
-    navigateToSessionDetail: (Session) -> Unit,
+    navigateToSessionDetail: (Session, String) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -261,17 +261,19 @@ fun RowScope.AttendanceCell(
 @Composable
 private fun AttendUserSession(
     attendanceInfo: Pair<Session, Attendance>,
-    navigateToSessionDetail: (Session) -> Unit
+    navigateToSessionDetail: (Session, String) -> Unit
 ) {
     val session = attendanceInfo.first
     val attendance = attendanceInfo.second
+    val attendanceType = checkSessionAttendance(session, attendance)
+    val attendanceTypeTitle = stringResource(id = attendanceType.title)
     YDSAttendanceList(
-        attendanceType = checkSessionAttendance(session, attendance),
+        attendanceType = attendanceType,
         date = session.date,
         title = session.title,
         description = session.description,
     ) {
-        navigateToSessionDetail(session)
+        navigateToSessionDetail(session, attendanceTypeTitle)
     }
 
     Spacer(
