@@ -1,5 +1,9 @@
 package com.yapp.presentation.ui.admin.totalscore
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,7 +26,7 @@ import com.yapp.common.yds.YDSBox
 import com.yapp.common.yds.YDSEmptyScreen
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.presentation.R
-import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.*
+import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.AdminTotalScoreUiState
 
 const val WARNING_ICON_PADDING = 5
 const val SCORE_LIMIT = 70
@@ -84,40 +88,68 @@ fun TeamItem(
     val iconResourceId =
         if (isExpanded) R.drawable.icon_chevron_up else R.drawable.icon_chevron_down
 
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .clickable { isExpanded = !isExpanded }
-            .padding(vertical = 18.dp, horizontal = 24.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+            .animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioLowBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            )
     ) {
-        Text(
-            text = teamItemState.teamName,
-            color = Gray_1200,
-            style = AttendanceTypography.h3
-        )
-
-        Icon(
-            painter = painterResource(id = iconResourceId),
-            tint = Color.Unspecified,
-            contentDescription = null
-        )
-    }
-
-    if (isExpanded) {
-        Divider(modifier = Modifier.padding(horizontal = 24.dp), color = Gray_300)
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
+                .clickable { isExpanded = !isExpanded }
+                .padding(vertical = 18.dp, horizontal = 24.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            for (i in 0 until teamItemState.teamMembers.size) {
-                MemberItem(memberWithTotal = teamItemState.teamMembers[i])
+            Text(
+                text = teamItemState.teamName,
+                color = Gray_1200,
+                style = AttendanceTypography.h3
+            )
+
+            Icon(
+                painter = painterResource(id = iconResourceId),
+                tint = Color.Unspecified,
+                contentDescription = null
+            )
+        }
+
+        AnimatedVisibility(
+            visible = isExpanded,
+            enter = fadeIn(animationSpec = tween(50)) +
+                    expandVertically(
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessLow
+                        )
+                    ),
+            exit = fadeOut(animationSpec = tween(50)) +
+                    shrinkVertically(
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessLow
+                        )
+                    )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+            ) {
+                Divider(modifier = Modifier.padding(horizontal = 24.dp), color = Gray_300)
+                for (i in 0 until teamItemState.teamMembers.size) {
+                    MemberItem(memberWithTotal = teamItemState.teamMembers[i])
+                }
+                Divider(modifier = Modifier.padding(horizontal = 24.dp), color = Gray_300)
             }
         }
-        Divider(modifier = Modifier.padding(horizontal = 24.dp), color = Gray_300)
     }
 }
 
