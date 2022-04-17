@@ -17,8 +17,10 @@ class AdminMainContract {
     }
 
     sealed class AdminMainUiSideEffect : UiSideEffect {
+        class NavigateToAdminTotalScore(val upcomingSessionId: Int) : AdminMainUiSideEffect()
     }
 
     sealed class AdminMainUiEvent : UiEvent {
+        class OnUserScoreCardClicked(val upcomingSessionId: Int) : AdminMainUiEvent()
     }
 }

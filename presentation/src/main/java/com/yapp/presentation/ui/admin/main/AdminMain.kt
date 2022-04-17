@@ -8,8 +8,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -25,7 +29,8 @@ import com.yapp.common.yds.*
 import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.presentation.R.string
 import com.yapp.presentation.model.Session
-import com.yapp.presentation.ui.admin.main.AdminMainContract.AdminMainUiState
+import com.yapp.presentation.ui.admin.main.AdminMainContract.*
+import kotlinx.coroutines.flow.collect
 
 @Composable
 fun AdminMain(
@@ -33,6 +38,16 @@ fun AdminMain(
     navigateToAdminTotalScore: (Int) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(key1 = viewModel.effect) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is AdminMainUiSideEffect.NavigateToAdminTotalScore -> navigateToAdminTotalScore(
+                    effect.upcomingSessionId
+                )
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -52,8 +67,13 @@ fun AdminMain(
                         .wrapContentHeight()
                 ) {
                     YappuUserScoreCard(
-                        upcomingSessionId = uiState.upcomingSession?.sessionId ?: -1,
-                        navigateToAdminTotalScore = navigateToAdminTotalScore
+                        setOnUserScoreCardClickedEvent = {
+                            viewModel.setEvent(
+                                AdminMainUiEvent.OnUserScoreCardClicked(
+                                    uiState.upcomingSession?.sessionId ?: -1
+                                )
+                            )
+                        }
                     )
                     GraySpacing(Modifier.height(12.dp))
                     ManagementTitle()
@@ -86,8 +106,7 @@ fun LazyListScope.Sessions(sessions: List<Session>) {
 }
 
 fun LazyListScope.YappuUserScoreCard(
-    upcomingSessionId: Int,
-    navigateToAdminTotalScore: (Int) -> Unit
+    setOnUserScoreCardClickedEvent: () -> Unit
 ) {
     item {
         Card(
@@ -95,7 +114,7 @@ fun LazyListScope.YappuUserScoreCard(
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .padding(24.dp)
-                .clickable { navigateToAdminTotalScore(upcomingSessionId) },
+                .clickable { setOnUserScoreCardClickedEvent() },
             shape = RoundedCornerShape(12.dp),
             elevation = 0.dp,
             backgroundColor = Gray_200
