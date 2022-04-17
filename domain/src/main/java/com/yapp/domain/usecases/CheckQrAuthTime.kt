@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 
-class CheckQrCheckTime @Inject constructor(
+class CheckQrAuthTime @Inject constructor(
     private val firebaseRemoteConfig: FirebaseRemoteConfig,
     coroutineDispatcher: DispatcherProvider
 ) : BaseUseCase<Flow<TaskResult<Boolean>>, Unit>(coroutineDispatcher) {

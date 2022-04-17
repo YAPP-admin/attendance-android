@@ -1,14 +1,14 @@
 package com.yapp.presentation.ui
 
 import com.yapp.common.base.BaseViewModel
-import com.yapp.domain.usecases.CheckQrCheckTime
+import com.yapp.domain.usecases.CheckQrAuthTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val checkQrCheckTime: CheckQrCheckTime
+    private val checkQrAuthTime: CheckQrAuthTime
 
 ) : BaseViewModel<MainContract.MainUiState, MainContract.MainUiSideEffect, MainContract.MainUiEvent>(MainContract.MainUiState) {
 
@@ -19,7 +19,7 @@ class MainViewModel @Inject constructor(
     }
 
     private suspend fun checkAttendanceValidate() = coroutineScope {
-        checkQrCheckTime()
+        checkQrAuthTime()
             .collectWithCallback(
                 onSuccess = { isEnable ->
                     if (isEnable) {
