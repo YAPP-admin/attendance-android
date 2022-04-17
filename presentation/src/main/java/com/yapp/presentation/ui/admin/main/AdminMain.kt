@@ -185,7 +185,7 @@ fun LazyListScope.FinishAllSessions() {
     item {
         Text(
             modifier = Modifier.padding(horizontal = 24.dp),
-            text = "20기 끝~~",
+            text = stringResource(id = string.admin_main_finish_all_sessions_text),
             style = AttendanceTypography.h3
         )
     }
