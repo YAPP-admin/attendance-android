@@ -47,7 +47,7 @@ fun SessionDetail(
                     tint = Color.Unspecified,
                 )
                 Text(
-                    text = "출석",
+                    text = navParam.attendanceType,
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)

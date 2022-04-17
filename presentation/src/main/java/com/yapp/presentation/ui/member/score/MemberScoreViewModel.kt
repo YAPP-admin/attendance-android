@@ -37,22 +37,9 @@ class MemberScoreViewModel @Inject constructor(
                             }
                         },
                         onFailed = {
-                            Log.d("####", it.message.toString())
                         }
                     )
             }
-
-//            //제거하기
-//            getSessionListUseCase()
-//                .collectWithCallback(
-//                    onSuccess = { entities ->
-//                        val sessions = entities.map { entity -> entity.mapTo() }
-//                        setState { copy(isLoading = false, sessions = sessions) }
-//                    },
-//                    onFailed = {
-//                        // TODO 에러핸들링 필요합니다.
-//                    }
-//                )
         }
     }
 

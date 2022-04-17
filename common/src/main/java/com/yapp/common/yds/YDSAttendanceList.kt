@@ -93,5 +93,5 @@ enum class AttendanceType(@DrawableRes val icon: Int, @StringRes val title: Int)
     ABSENT(R.drawable.icon_absent, R.string.absent),
     TBD(R.drawable.icon_absent, R.string.tbd),
     NO_ATTENDANCE(R.drawable.icon_absent, R.string.no_attendance),
-    NO_YAPP(R.drawable.icon_absent, R.string.no_attendance)
+    NO_YAPP(R.drawable.icon_absent, R.string.no_yapp)
 }
