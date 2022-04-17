@@ -42,8 +42,7 @@ class TeamViewModel @Inject constructor(
                 )
         }
     }
-
-    override fun handleEvent(event: TeamUiEvent) {
+    override suspend fun handleEvent(event: TeamUiEvent) {
         when (event) {
             is TeamUiEvent.ChooseTeam -> {
                 setState {

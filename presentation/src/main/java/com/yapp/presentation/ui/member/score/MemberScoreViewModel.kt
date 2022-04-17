@@ -47,7 +47,7 @@ class MemberScoreViewModel @Inject constructor(
         super.setEvent(event)
     }
 
-    override fun handleEvent(event: MemberScoreUiEvent) {
+    override suspend fun handleEvent(event: MemberScoreUiEvent) {
         TODO("Not yet implemented")
     }
 }

@@ -28,7 +28,7 @@ class MemberSettingViewModel @Inject constructor(
         // 카카오 로그인 외에, 저장된 모든 정보를 지우는 유즈케이스가 필요함.
     }
 
-    override fun handleEvent(event: MemberSettingContract.MemberSettingUiEvent) {
+    override suspend fun handleEvent(event: MemberSettingContract.MemberSettingUiEvent) {
         when (event) {
             is MemberSettingContract.MemberSettingUiEvent.OnLogoutButtonClicked -> {
                 logout()

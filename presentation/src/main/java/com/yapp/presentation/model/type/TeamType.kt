@@ -7,10 +7,10 @@ enum class TeamType(val displayName: String) {
     companion object {
         fun of(value: String): TeamType {
             return when(value) {
-                "Android" -> ANDROID
-                "iOS" -> IOS
-                "Web" -> WEB
-                "All-Rounder" -> ALL_ROUNDER
+                "ANDROID" -> ANDROID
+                "IOS" -> IOS
+                "WEB" -> WEB
+                "ALL_ROUNDER" -> ALL_ROUNDER
                 else -> error("잘못된 TeamType 입니다.")
             }
         }

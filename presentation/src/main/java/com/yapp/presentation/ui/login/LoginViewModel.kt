@@ -58,7 +58,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    override fun handleEvent(event: LoginUiEvent) {
+    override suspend fun handleEvent(event: LoginUiEvent) {
         when (event) {
             is LoginUiEvent.OnLoginButtonClicked -> {
                 setState { copy(isLoading = true) }

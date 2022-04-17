@@ -15,7 +15,7 @@ class AdminTotalScoreViewModel @Inject constructor(
         getAllScores()
     }
 
-    override fun handleEvent(event: AdminTotalScoreUiEvent) {
+    override suspend fun handleEvent(event: AdminTotalScoreUiEvent) {
         when (event) {
 
         }

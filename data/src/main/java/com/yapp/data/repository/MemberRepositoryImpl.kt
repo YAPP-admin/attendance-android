@@ -45,4 +45,24 @@ class MemberRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getAllMember(): Flow<List<MemberEntity>> {
+        return flow {
+            val snapshot = fireStore.memberRef()
+                .get()
+                .await()
+
+            if(snapshot.documents.isNotEmpty()) {
+                val entities = snapshot.documents.map { document ->
+                    val model =  document.toObject(MemberModel::class.java)
+                    val entity = model!!.mapToEntity()
+                    entity
+                }
+                emit(entities)
+                return@flow
+            }
+
+            emit(emptyList())
+        }
+    }
+
 }
