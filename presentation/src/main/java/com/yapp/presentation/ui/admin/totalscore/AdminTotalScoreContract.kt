@@ -25,9 +25,10 @@ class AdminTotalScoreContract {
     }
 
     sealed class AdminTotalScoreUiSideEffect : UiSideEffect {
-        class ShowToast(val msg: String) : AdminTotalScoreContract.AdminTotalScoreUiSideEffect()
+        object NavigateToPreviousScreen : AdminTotalScoreUiSideEffect()
     }
 
     sealed class AdminTotalScoreUiEvent : UiEvent {
+        object OnBackArrowClick : AdminTotalScoreUiEvent()
     }
 }

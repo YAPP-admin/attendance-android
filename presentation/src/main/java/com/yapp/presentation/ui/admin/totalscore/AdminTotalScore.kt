@@ -26,7 +26,8 @@ import com.yapp.common.yds.YDSBox
 import com.yapp.common.yds.YDSEmptyScreen
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.presentation.R
-import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.AdminTotalScoreUiState
+import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.*
+import kotlinx.coroutines.flow.collect
 
 const val WARNING_ICON_PADDING = 5
 const val SCORE_LIMIT = 70
@@ -34,18 +35,26 @@ const val SCORE_LIMIT = 70
 @Composable
 fun AdminTotalScore(
     viewModel: AdminTotalScoreViewModel = hiltViewModel(),
-    onClickBackButton: () -> Unit
+    navigateToPreviousScreen: () -> Unit
 ) {
     Scaffold(
         topBar = {
             YDSAppBar(
                 title = stringResource(id = R.string.admin_total_score_title),
-                onClickBackButton = { onClickBackButton() }
+                onClickBackButton = { viewModel.setEvent(AdminTotalScoreUiEvent.OnBackArrowClick) }
             )
         },
         modifier = Modifier.fillMaxSize(),
     ) {
         val uiState = viewModel.uiState.collectAsState()
+
+        LaunchedEffect(key1 = viewModel.effect) {
+            viewModel.effect.collect { effect ->
+                when (effect) {
+                    is AdminTotalScoreUiSideEffect.NavigateToPreviousScreen -> navigateToPreviousScreen()
+                }
+            }
+        }
 
         when (uiState.value.loadState) {
             AdminTotalScoreUiState.LoadState.Loading -> YDSProgressBar()

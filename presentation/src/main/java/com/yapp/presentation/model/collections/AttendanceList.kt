@@ -12,6 +12,7 @@ class AttendanceList private constructor(
         }
 
         const val MAX_SCORE = 100
+        const val DEFAULT_UPCOMING_SESSION_ID = -1
     }
 
     fun getAttendanceBySessionId(sessionId: Int): Attendance {
@@ -23,7 +24,7 @@ class AttendanceList private constructor(
     }
 
     fun getTotalAttendanceScore(upcomingSessionId: Int): Int {
-        if (upcomingSessionId == -1) return getTotalAttendanceScore()
+        if (upcomingSessionId == DEFAULT_UPCOMING_SESSION_ID) return getTotalAttendanceScore()
         var totalScore = MAX_SCORE
         value.forEach { attendance ->
             if (attendance.sessionId == upcomingSessionId) {

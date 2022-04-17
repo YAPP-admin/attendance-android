@@ -7,6 +7,8 @@ import com.yapp.domain.usecases.GetAllMemberUseCase
 import com.yapp.presentation.model.Member
 import com.yapp.presentation.model.Member.Companion.mapTo
 import com.yapp.presentation.model.Team
+import com.yapp.presentation.model.collections.AttendanceList
+import com.yapp.presentation.ui.UPCOMING_SESSION_ID_KEY
 import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -27,14 +29,17 @@ class AdminTotalScoreViewModel @Inject constructor(
     }
 
     override suspend fun handleEvent(event: AdminTotalScoreUiEvent) {
-
+        when (event) {
+            is AdminTotalScoreUiEvent.OnBackArrowClick -> setEffect(AdminTotalScoreUiSideEffect.NavigateToPreviousScreen)
+        }
     }
 
     private suspend fun getAllScores() {
         getAllMemberUseCase().collectWithCallback(
             onSuccess = { memberEntity ->
                 val members = memberEntity.map { it.mapTo() }
-                val upcomingSessionId = savedStateHandle.get<Int>("upcomingSessionId") ?: -1
+                val upcomingSessionId = savedStateHandle.get<Int>(UPCOMING_SESSION_ID_KEY)
+                    ?: AttendanceList.DEFAULT_UPCOMING_SESSION_ID
                 val groupMembers = members.groupBy {
                     it.team
                 }
