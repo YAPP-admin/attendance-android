@@ -32,7 +32,10 @@ import com.yapp.common.theme.*
 import com.yapp.common.yds.AttendanceType
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSAttendanceList
+import com.yapp.domain.model.types.NeedToAttendType
+import com.yapp.domain.util.DateUtil
 import com.yapp.presentation.R
+import com.yapp.presentation.model.Attendance
 import com.yapp.presentation.model.Session
 
 @Composable
@@ -76,8 +79,8 @@ fun MemberScore(
                         .height(28.dp)
                 )
             }
-            items(uiState.sessions) { session ->
-                AttendUserSession(session, navigateToSessionDetail)
+            items(uiState.attendanceList) { attendanceInfo ->
+                AttendUserSession(attendanceInfo, navigateToSessionDetail)
             }
         }
     }
@@ -86,7 +89,9 @@ fun MemberScore(
 @Composable
 private fun HelpIcon(navigateToHelpScreen: () -> Unit) {
     Box(
-        modifier = Modifier.fillMaxWidth().wrapContentHeight()
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
     ) {
         Icon(
             painter = painterResource(R.drawable.icon_help),
@@ -254,9 +259,14 @@ fun RowScope.AttendanceCell(
 }
 
 @Composable
-private fun AttendUserSession(session: Session, navigateToSessionDetail: (Session) -> Unit) {
+private fun AttendUserSession(
+    attendanceInfo: Pair<Session, Attendance>,
+    navigateToSessionDetail: (Session) -> Unit
+) {
+    val session = attendanceInfo.first
+    val attendance = attendanceInfo.second
     YDSAttendanceList(
-        attendanceType = if (session.sessionId == 2) AttendanceType.TBD else AttendanceType.ATTEND,
+        attendanceType = checkSessionAttendance(session, attendance),
         date = session.date,
         title = session.title,
         description = session.description,
@@ -273,6 +283,23 @@ private fun AttendUserSession(session: Session, navigateToSessionDetail: (Sessio
     )
 }
 
+private fun checkSessionAttendance(
+    session: Session,
+    attendance: Attendance
+): AttendanceType {
+    if (!DateUtil.isPastSession(session.date)) {
+        return AttendanceType.TBD
+    }
+    if (session.type != NeedToAttendType.NEED_ATTENDANCE) {
+        return AttendanceType.NO_ATTENDANCE
+    }
+    return when (attendance.attendanceType) {
+        com.yapp.presentation.model.AttendanceType.Absent -> AttendanceType.ABSENT
+        com.yapp.presentation.model.AttendanceType.Admit -> AttendanceType.ATTEND
+        com.yapp.presentation.model.AttendanceType.Late -> AttendanceType.TARDY
+        com.yapp.presentation.model.AttendanceType.Normal -> AttendanceType.ATTEND
+    }
+}
 
 private fun fillColorByUserScore(score: Int): Color {
     return when (score) {
