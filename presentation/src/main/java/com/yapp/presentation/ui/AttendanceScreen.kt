@@ -106,8 +106,8 @@ fun AttendanceScreen(
             route = AttendanceScreenRoute.ADMIN_MAIN.route
         ) {
             SetStatusBarColorByRoute(it.destination.route)
-            AdminMain {
-                navController.navigate(AttendanceScreenRoute.ADMIN_TOTAL_SCORE.route)
+            AdminMain { upcomingSessionId ->
+                navController.navigate(AttendanceScreenRoute.ADMIN_TOTAL_SCORE.route + "/${upcomingSessionId}")
             }
         }
 
@@ -259,6 +259,10 @@ fun AttendanceScreen(
 
         composable(
             route = AttendanceScreenRoute.ADMIN_TOTAL_SCORE.route
+                .plus("/{upcomingSessionId}"),
+            arguments = listOf(
+                navArgument("upcomingSessionId") { type = NavType.IntType }
+            )
         ) {
             AdminTotalScore(onClickBackButton = { navController.popBackStack() })
         }

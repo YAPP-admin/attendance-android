@@ -7,13 +7,20 @@ import com.yapp.presentation.model.Session
 
 class AdminMainContract {
     data class AdminMainUiState(
-        val isLoading: Boolean = true,
+        val loadState: LoadState = LoadState.Idle,
+        val upcomingSession: Session? = null,
         val sessions: List<Session> = emptyList()
-    ) : UiState
+    ) : UiState {
+        enum class LoadState {
+            Loading, Idle, Error
+        }
+    }
 
     sealed class AdminMainUiSideEffect : UiSideEffect {
+        class NavigateToAdminTotalScore(val upcomingSessionId: Int) : AdminMainUiSideEffect()
     }
 
     sealed class AdminMainUiEvent : UiEvent {
+        class OnUserScoreCardClicked(val upcomingSessionId: Int) : AdminMainUiEvent()
     }
 }
