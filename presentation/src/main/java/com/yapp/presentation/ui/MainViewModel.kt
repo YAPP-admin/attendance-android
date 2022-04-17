@@ -45,7 +45,6 @@ class MainViewModel @Inject constructor(
         when(event) {
             MainContract.MainUiEvent.OnClickQrAuthButton -> {
                 checkAttendanceValidate()
-                if(uiState.value.is)
             }
         }
     }

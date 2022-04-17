@@ -22,5 +22,6 @@ class TodaySessionContract {
     }
 
     sealed class TodaySessionUiEvent : UiEvent {
+        object OnInitializeComposable : TodaySessionUiEvent()
     }
 }
