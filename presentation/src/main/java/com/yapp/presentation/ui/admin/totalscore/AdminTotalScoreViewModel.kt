@@ -37,13 +37,10 @@ class AdminTotalScoreViewModel @Inject constructor(
     private suspend fun getAllScores() {
         getAllMemberUseCase().collectWithCallback(
             onSuccess = { memberEntity ->
-                val members = memberEntity.map { it.mapTo() }
+                val members = memberEntity.map { it.mapTo() }.groupBy { it.team }
                 val upcomingSessionId = savedStateHandle.get<Int>(UPCOMING_SESSION_ID_KEY)
                     ?: AttendanceList.DEFAULT_UPCOMING_SESSION_ID
-                val groupMembers = members.groupBy {
-                    it.team
-                }
-                val teamItemStates = getTeamItemStates(groupMembers, upcomingSessionId)
+                val teamItemStates = getTeamItemStates(members, upcomingSessionId)
                 setState {
                     copy(
                         loadState = AdminTotalScoreUiState.LoadState.Idle,
