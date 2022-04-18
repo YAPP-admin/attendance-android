@@ -110,7 +110,7 @@ fun TeamOption(uiState: TeamContract.TeamUiState, onTeamTypeClicked: (String) ->
                         text = team.type!!.displayName,
                         modifier = Modifier.padding(end = 12.dp),
                         state = if (uiState.selectedTeam.type == team.type) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                        onClick = { onTeamTypeClicked(team.type.displayName) }
+                        onClick = { onTeamTypeClicked(team.type.name) }
                     )
                 }
             }
