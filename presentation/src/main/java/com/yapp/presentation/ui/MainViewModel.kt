@@ -1,14 +1,14 @@
 package com.yapp.presentation.ui
 
 import com.yapp.common.base.BaseViewModel
-import com.yapp.domain.usecases.CheckQrAuthTime
+import com.yapp.domain.usecases.CheckQrAuthTimeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val checkQrAuthTime: CheckQrAuthTime
+    private val checkQrAuthTime: CheckQrAuthTimeUseCase
 
 ) : BaseViewModel<MainContract.MainUiState, MainContract.MainUiSideEffect, MainContract.MainUiEvent>(MainContract.MainUiState) {
 
