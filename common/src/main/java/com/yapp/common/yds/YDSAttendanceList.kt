@@ -38,7 +38,8 @@ fun YDSAttendanceList(
             painterResource(id = attendanceType.icon),
             contentDescription = null,
             tint = Color.Unspecified,
-            modifier = Modifier.alpha(if (attendanceType == AttendanceType.TBD) 0f else 1f)
+            modifier = Modifier.alpha(
+                if ((attendanceType == AttendanceType.TBD) or (attendanceType == AttendanceType.NO_ATTENDANCE) or (attendanceType == AttendanceType.NO_YAPP)) 0f else 1f)
         )
         Column(
             modifier = Modifier
@@ -56,7 +57,7 @@ fun YDSAttendanceList(
                         AttendanceType.ATTEND -> Etc_Green
                         AttendanceType.ABSENT -> Etc_Red
                         AttendanceType.TARDY -> Etc_Yellow_Font
-                        AttendanceType.TBD -> Gray_400
+                        AttendanceType.TBD, AttendanceType.NO_ATTENDANCE, AttendanceType.NO_YAPP -> Gray_400
                     }
                 )
 
@@ -70,14 +71,14 @@ fun YDSAttendanceList(
             Text(
                 text = title,
                 style = AttendanceTypography.h3,
-                color = if (attendanceType == AttendanceType.TBD) Gray_600 else Gray_1200,
+                color = if ((attendanceType == AttendanceType.TBD) or (attendanceType == AttendanceType.NO_YAPP)) Gray_600 else Gray_1200,
                 modifier = Modifier.padding(top = 4.dp)
             )
 
             Text(
                 text = description,
                 style = AttendanceTypography.body1,
-                color = if (attendanceType == AttendanceType.TBD) Gray_600 else Gray_800,
+                color = if ((attendanceType == AttendanceType.TBD) or (attendanceType == AttendanceType.NO_YAPP)) Gray_600 else Gray_800,
                 modifier = Modifier.padding(top = 4.dp),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
@@ -90,5 +91,7 @@ enum class AttendanceType(@DrawableRes val icon: Int, @StringRes val title: Int)
     ATTEND(R.drawable.icon_attend, R.string.attend),
     TARDY(R.drawable.icon_tardy, R.string.tardy),
     ABSENT(R.drawable.icon_absent, R.string.absent),
-    TBD(R.drawable.icon_absent, R.string.tbd)
+    TBD(R.drawable.icon_absent, R.string.tbd),
+    NO_ATTENDANCE(R.drawable.icon_absent, R.string.no_attendance),
+    NO_YAPP(R.drawable.icon_absent, R.string.no_yapp)
 }

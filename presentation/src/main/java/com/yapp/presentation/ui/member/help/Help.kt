@@ -25,12 +25,12 @@ import com.yapp.common.yds.YDSAppBar
 import com.yapp.presentation.R
 
 @Composable
-fun Help() {
+fun Help( onClickBackButton: () -> Unit) {
     Scaffold(
         topBar = {
             YDSAppBar(
                 title = stringResource(id = R.string.help_title),
-                onClickBackButton = {}
+                onClickBackButton = { onClickBackButton() }
             )
         },
         modifier = Modifier.fillMaxSize(),

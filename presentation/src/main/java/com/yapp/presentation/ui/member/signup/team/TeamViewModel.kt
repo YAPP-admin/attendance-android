@@ -42,7 +42,6 @@ class TeamViewModel @Inject constructor(
                 )
         }
     }
-
     override suspend fun handleEvent(event: TeamUiEvent) {
         when (event) {
             is TeamUiEvent.ChooseTeam -> {

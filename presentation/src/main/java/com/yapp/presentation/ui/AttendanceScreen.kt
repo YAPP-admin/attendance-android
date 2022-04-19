@@ -179,7 +179,7 @@ fun AttendanceScreen(
         composable(
             route = AttendanceScreenRoute.HELP.route
         ) {
-            Help()
+            Help{ navController.popBackStack()}
         }
 
         composable(
@@ -253,7 +253,6 @@ fun AttendanceScreen(
                 onClickBackButton = { navController.popBackStack() },
                 navigateToMainScreen = {
                     navController.navigate(AttendanceScreenRoute.MEMBER_MAIN.route) {
-                        popUpTo(AttendanceScreenRoute.SIGNUP_NAME.route)
                         popUpTo(AttendanceScreenRoute.SIGNUP_TEAM.route)
                     }
                 })

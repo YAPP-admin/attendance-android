@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.usecases.GetMemberAttendanceListUseCase
 import com.yapp.domain.usecases.GetSessionListUseCase
+import com.yapp.presentation.model.Attendance.Companion.mapTo
 import com.yapp.presentation.model.Session.Companion.mapTo
 import com.yapp.presentation.ui.member.score.MemberScoreContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +18,8 @@ import javax.inject.Inject
 class MemberScoreViewModel @Inject constructor(
     private val getSessionListUseCase: GetSessionListUseCase,
     private val getMemberAttendanceListUseCase: GetMemberAttendanceListUseCase,
-) : BaseViewModel<MemberScoreUiState, MemberScoreUiSideEffect, MemberScoreUiEvent>(
+
+    ) : BaseViewModel<MemberScoreUiState, MemberScoreUiSideEffect, MemberScoreUiEvent>(
     MemberScoreUiState()
 ) {
     init {
@@ -27,22 +29,17 @@ class MemberScoreViewModel @Inject constructor(
                 getMemberAttendanceListUseCase()
                     .collectWithCallback(
                         onSuccess = { entities ->
+                            val session = entities.first.map { entity -> entity.mapTo() }
+                            val attendance = entities.second?.map { entity -> entity.mapTo() }
+                            if (!attendance.isNullOrEmpty()) {
+                                val attendanceList = session zip attendance
+                                setState { copy(isLoading = false, attendanceList = attendanceList) }
+                            }
                         },
                         onFailed = {
                         }
                     )
             }
-            //제거하기
-            getSessionListUseCase()
-                .collectWithCallback(
-                    onSuccess = { entities ->
-                        val sessions = entities.map { entity -> entity.mapTo() }
-                        setState { copy(isLoading = false, sessions = sessions) }
-                    },
-                    onFailed = {
-                        // TODO 에러핸들링 필요합니다.
-                    }
-                )
         }
     }
 
