@@ -12,14 +12,26 @@ class AttendanceList private constructor(
         }
 
         const val MAX_SCORE = 100
+        const val DEFAULT_UPCOMING_SESSION_ID = -1
     }
 
     fun getAttendanceBySessionId(sessionId: Int): Attendance {
         return value[sessionId]
     }
 
-    fun getTotalAttendanceScore(): Int {
-        return MAX_SCORE - value.sumOf { it.attendanceType.point }
+    private fun getTotalAttendanceScore(): Int {
+        return MAX_SCORE + value.sumOf { it.attendanceType.point }
     }
 
+    fun getTotalAttendanceScore(upcomingSessionId: Int): Int {
+        if (upcomingSessionId == DEFAULT_UPCOMING_SESSION_ID) return getTotalAttendanceScore()
+        var totalScore = MAX_SCORE
+        value.forEach { attendance ->
+            if (attendance.sessionId == upcomingSessionId) {
+                return totalScore
+            }
+            totalScore += attendance.attendanceType.point
+        }
+        return totalScore
+    }
 }

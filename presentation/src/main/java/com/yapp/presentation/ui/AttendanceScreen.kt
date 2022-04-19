@@ -1,13 +1,12 @@
 package com.yapp.presentation.ui
 
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.runtime.Composable
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,9 +23,9 @@ import androidx.navigation.navArgument
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yapp.common.theme.Yapp_Orange
 import com.yapp.common.yds.YDSToast
-import com.yapp.presentation.ui.admin.management.AttendanceManagement
-import com.yapp.presentation.ui.admin.browse.AdminTotalScore
 import com.yapp.presentation.ui.admin.main.AdminMain
+import com.yapp.presentation.ui.admin.management.AttendanceManagement
+import com.yapp.presentation.ui.admin.totalscore.AdminTotalScore
 import com.yapp.presentation.ui.login.Login
 import com.yapp.presentation.ui.member.help.Help
 import com.yapp.presentation.ui.member.main.MemberMain
@@ -236,7 +235,11 @@ fun AttendanceScreen(
             Position(
                 onClickBackButton = { navController.popBackStack() },
                 navigateToTeamScreen = { userName, userPosition ->
-                    navController.navigate(AttendanceScreenRoute.SIGNUP_TEAM.route.plus("/${userName}").plus("/${userPosition}")) }
+                    navController.navigate(
+                        AttendanceScreenRoute.SIGNUP_TEAM.route.plus("/${userName}")
+                            .plus("/${userPosition}")
+                    )
+                }
             )
         }
 
@@ -260,12 +263,12 @@ fun AttendanceScreen(
 
         composable(
             route = AttendanceScreenRoute.ADMIN_TOTAL_SCORE.route
-                .plus("/{upcomingSessionId}"),
+                .plus("/{$UPCOMING_SESSION_ID_KEY}"),
             arguments = listOf(
-                navArgument("upcomingSessionId") { type = NavType.IntType }
+                navArgument(UPCOMING_SESSION_ID_KEY) { type = NavType.IntType }
             )
         ) {
-            AdminTotalScore(onClickBackButton = { navController.popBackStack() })
+            AdminTotalScore(navigateToPreviousScreen = { navController.popBackStack() })
         }
     }
 
@@ -322,3 +325,5 @@ private fun SetStatusBarColorByRoute(route: String?) {
         }
     }
 }
+
+const val UPCOMING_SESSION_ID_KEY = "upcomingSessionId"

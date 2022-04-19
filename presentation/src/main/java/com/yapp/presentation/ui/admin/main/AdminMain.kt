@@ -29,6 +29,7 @@ import com.yapp.common.yds.*
 import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.presentation.R.string
 import com.yapp.presentation.model.Session
+import com.yapp.presentation.model.collections.AttendanceList
 import com.yapp.presentation.ui.admin.main.AdminMainContract.*
 import kotlinx.coroutines.flow.collect
 
@@ -60,36 +61,43 @@ fun AdminMain(
     ) {
         when (uiState.loadState) {
             AdminMainUiState.LoadState.Loading -> YDSProgressBar()
-            AdminMainUiState.LoadState.Idle -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                ) {
-                    YappuUserScoreCard(
-                        setOnUserScoreCardClickedEvent = {
-                            viewModel.setEvent(
-                                AdminMainUiEvent.OnUserScoreCardClicked(
-                                    uiState.upcomingSession?.sessionId ?: -1
-                                )
-                            )
-                        }
+            AdminMainUiState.LoadState.Idle -> AdminMainScreen(uiState = uiState) {
+                viewModel.setEvent(
+                    AdminMainUiEvent.OnUserScoreCardClicked(
+                        uiState.upcomingSession?.sessionId
+                            ?: AttendanceList.DEFAULT_UPCOMING_SESSION_ID
                     )
-                    GraySpacing(Modifier.height(12.dp))
-                    ManagementTitle()
-                    uiState.upcomingSession?.let { UpcomingSession(it) } ?: FinishAllSessions()
-                    Spacing()
-                    GraySpacing(
-                        Modifier
-                            .height(1.dp)
-                            .padding(horizontal = 24.dp)
-                    )
-                    ManagementSubTitle()
-                    Sessions(uiState.sessions)
-                }
+                )
             }
             AdminMainUiState.LoadState.Error -> YDSEmptyScreen()
         }
+    }
+}
+
+@Composable
+fun AdminMainScreen(
+    uiState: AdminMainUiState,
+    onUserScoreCardClicked: () -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+    ) {
+        YappuUserScoreCard(
+            setOnUserScoreCardClickedEvent = { onUserScoreCardClicked() }
+        )
+        GraySpacing(Modifier.height(12.dp))
+        ManagementTitle()
+        uiState.upcomingSession?.let { UpcomingSession(it) } ?: FinishAllSessions()
+        Spacing()
+        GraySpacing(
+            Modifier
+                .height(1.dp)
+                .padding(horizontal = 24.dp)
+        )
+        ManagementSubTitle()
+        Sessions(uiState.sessions)
     }
 }
 
