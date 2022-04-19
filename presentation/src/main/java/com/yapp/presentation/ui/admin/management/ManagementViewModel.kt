@@ -27,13 +27,16 @@ class ManagementViewModel @Inject constructor(
 ) : BaseViewModel<ManagementState, ManagementSideEffect, ManagementEvent>(ManagementState()) {
 
     companion object {
+        const val KEY_SESSION_ID = "sessionId"
+        const val KEY_SESSION_TITLE = "sessionTitle"
+
         const val DEFAULT_SESSION_ID = 1
         const val DEFAULT_SESSION_TITLE = "YAPP"
     }
 
     init {
-        val sessionId    = savedStateHandle.get<Int>("sessionId") ?: DEFAULT_SESSION_ID
-        val sessionTitle = savedStateHandle.get<String>("sessionTitle") ?: DEFAULT_SESSION_TITLE
+        val sessionId    = savedStateHandle.get<Int>(KEY_SESSION_ID) ?: DEFAULT_SESSION_ID
+        val sessionTitle = savedStateHandle.get<String>(KEY_SESSION_TITLE) ?: DEFAULT_SESSION_TITLE
         setState { this.copy(sessionId = sessionId, sessionTitle = sessionTitle) }
 
         viewModelScope.launch {
