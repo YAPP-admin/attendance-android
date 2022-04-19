@@ -20,24 +20,25 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ManagementViewModel @Inject constructor(
-    private val getSessionListUseCase: GetSessionListUseCase,
     private val getAllMemberUseCase: GetAllMemberUseCase,
     private val setMemberAttendanceUseCase: SetMemberAttendanceUseCase,
-    private val savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle
 
 ) : BaseViewModel<ManagementState, ManagementSideEffect, ManagementEvent>(ManagementState()) {
 
     companion object {
         const val DEFAULT_SESSION_ID = 1
+        const val DEFAULT_SESSION_TITLE = "YAPP"
     }
 
     init {
-        setState { this.copy(sessionId = savedStateHandle.get<Int>("sessionId") ?: DEFAULT_SESSION_ID) }
+        val sessionId    = savedStateHandle.get<Int>("sessionId") ?: DEFAULT_SESSION_ID
+        val sessionTitle = savedStateHandle.get<String>("sessionTitle") ?: DEFAULT_SESSION_TITLE
+        setState { this.copy(sessionId = sessionId, sessionTitle = sessionTitle) }
 
         viewModelScope.launch {
             setState { this.copy(loadState = LoadState.Loading) }
             getAllMemberState(sessionId = uiState.value.sessionId)
-            getSessionTitle(sessionId = uiState.value.sessionId)
         }
     }
 
@@ -108,20 +109,6 @@ class ManagementViewModel @Inject constructor(
             },
             onFailed = {
                 setState { this.copy(loadState = LoadState.Error) }
-            }
-        )
-    }
-
-    private suspend fun getSessionTitle(sessionId: Int) {
-        getSessionListUseCase().collectWithCallback(
-            onSuccess = { sessionEntities ->
-                val currentSession = sessionEntities.map { entity -> entity.mapTo() }
-                    .get(sessionId)
-
-                setState { this.copy(sessionTitle = currentSession.title) }
-            },
-            onFailed = {
-                setState { this.copy(sessionTitle = "세션을 불러오는데 실패했습니다.") }
             }
         )
     }
