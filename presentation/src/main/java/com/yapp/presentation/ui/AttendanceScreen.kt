@@ -116,13 +116,15 @@ fun AttendanceScreen(
             route = AttendanceScreenRoute.MEMBER_MAIN.route
         ) {
             SetStatusBarColorByRoute(it.destination.route)
-            MemberMain { screen ->
-                if (screen == AttendanceScreenRoute.QR_AUTH.route) {
-                    viewModel.validateQRScreen()
-                } else {
-                    navController.navigate(screen)
+            MemberMain(
+                navigateToScreen =  { route ->
+                    if (route == AttendanceScreenRoute.QR_AUTH.route) {
+                        viewModel.setEvent(MainContract.MainUiEvent.OnClickQrAuthButton)
+                    } else {
+                        navController.navigate(route)
+                    }
                 }
-            }
+            )
         }
 
         composable(

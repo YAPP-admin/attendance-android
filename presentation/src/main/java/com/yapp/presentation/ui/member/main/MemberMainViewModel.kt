@@ -1,5 +1,6 @@
 package com.yapp.presentation.ui.member.main
 
+import androidx.compose.material.BottomNavigation
 import com.yapp.common.base.BaseViewModel
 import com.yapp.presentation.ui.member.main.MemberMainContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,6 +14,7 @@ class MemberMainViewModel @Inject constructor() :
         when (event) {
             is MemberMainUiEvent.OnClickBottomNavigationTab -> {
                 setState { copy(selectedTab = event.tab) }
+                setEffect( MemberMainUiSideEffect.NavigateToRoute(event.tab))
             }
         }
     }

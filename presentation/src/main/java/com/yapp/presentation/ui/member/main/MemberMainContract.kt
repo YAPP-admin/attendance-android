@@ -13,10 +13,10 @@ class MemberMainContract {
     ) : UiState
 
     sealed class MemberMainUiSideEffect : UiSideEffect {
+        class NavigateToRoute(val tab: BottomNavigationItem) : MemberMainUiSideEffect()
     }
 
     sealed class MemberMainUiEvent : UiEvent {
-        data class OnClickBottomNavigationTab(val tab: BottomNavigationItem) :
-            MemberMainUiEvent()
+        data class OnClickBottomNavigationTab(val tab: BottomNavigationItem) : MemberMainUiEvent()
     }
 }

@@ -12,6 +12,7 @@ class ManagementContract {
     data class ManagementState(
         val loadState: LoadState = LoadState.Idle,
         val sessionId: Int = 0,
+        val sessionTitle: String = "",
         val memberCount: Int = 0,
         val selectedMember: MemberState? = null,
         val teams: List<TeamState> = emptyList()
