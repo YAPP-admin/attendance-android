@@ -36,7 +36,8 @@ import kotlinx.coroutines.flow.collect
 @Composable
 fun AdminMain(
     viewModel: AdminMainViewModel = hiltViewModel(),
-    navigateToAdminTotalScore: (Int) -> Unit
+    navigateToAdminTotalScore: (Int) -> Unit,
+    navigateToManagement: (Int, String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -45,6 +46,10 @@ fun AdminMain(
             when (effect) {
                 is AdminMainUiSideEffect.NavigateToAdminTotalScore -> navigateToAdminTotalScore(
                     effect.upcomingSessionId
+                )
+                is AdminMainUiSideEffect.NavigateToManagement -> navigateToManagement(
+                    effect.sessionId,
+                    effect.sessionTitle
                 )
             }
         }
@@ -61,14 +66,22 @@ fun AdminMain(
     ) {
         when (uiState.loadState) {
             AdminMainUiState.LoadState.Loading -> YDSProgressBar()
-            AdminMainUiState.LoadState.Idle -> AdminMainScreen(uiState = uiState) {
-                viewModel.setEvent(
-                    AdminMainUiEvent.OnUserScoreCardClicked(
-                        uiState.upcomingSession?.sessionId
-                            ?: AttendanceList.DEFAULT_UPCOMING_SESSION_ID
+            AdminMainUiState.LoadState.Idle -> AdminMainScreen(
+                uiState = uiState,
+                onUserScoreCardClicked = {
+                    viewModel.setEvent(
+                        AdminMainUiEvent.OnUserScoreCardClicked(
+                            uiState.upcomingSession?.sessionId
+                                ?: AttendanceList.DEFAULT_UPCOMING_SESSION_ID
+                        )
                     )
-                )
-            }
+                },
+                onSessionItemClicked = { sessionId, sessionTitle ->
+                    viewModel.setEvent(
+                        AdminMainUiEvent.OnSessionItemClicked(sessionId, sessionTitle)
+                    )
+                }
+            )
             AdminMainUiState.LoadState.Error -> YDSEmptyScreen()
         }
     }
@@ -77,7 +90,8 @@ fun AdminMain(
 @Composable
 fun AdminMainScreen(
     uiState: AdminMainUiState,
-    onUserScoreCardClicked: () -> Unit
+    onUserScoreCardClicked: () -> Unit,
+    onSessionItemClicked: (Int, String) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -97,7 +111,10 @@ fun AdminMainScreen(
                 .padding(horizontal = 24.dp)
         )
         ManagementSubTitle()
-        Sessions(uiState.sessions)
+        Sessions(
+            sessions = uiState.sessions,
+            onSessionItemClicked = onSessionItemClicked
+        )
     }
 }
 
@@ -107,9 +124,15 @@ fun LazyListScope.Spacing() {
     }
 }
 
-fun LazyListScope.Sessions(sessions: List<Session>) {
+fun LazyListScope.Sessions(
+    sessions: List<Session>,
+    onSessionItemClicked: (Int, String) -> Unit
+) {
     items(sessions) { session ->
-        SessionItem(session)
+        SessionItem(
+            session = session,
+            onSessionItemClicked = onSessionItemClicked
+        )
     }
 }
 
@@ -230,11 +253,18 @@ fun LazyListScope.ManagementSubTitle() {
 }
 
 @Composable
-private fun SessionItem(session: Session) {
+private fun SessionItem(
+    session: Session,
+    onSessionItemClicked: (Int, String) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .clickable {
+                if (session.type == NeedToAttendType.NEED_ATTENDANCE)
+                    onSessionItemClicked(session.sessionId, session.title)
+            }
             .padding(vertical = 18.dp, horizontal = 24.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
