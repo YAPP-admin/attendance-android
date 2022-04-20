@@ -76,9 +76,9 @@ fun AdminMain(
                         )
                     )
                 },
-                onSessionItemClicked = { sessionId, sessionTitle ->
+                onSessionClicked = { sessionId, sessionTitle ->
                     viewModel.setEvent(
-                        AdminMainUiEvent.OnSessionItemClicked(sessionId, sessionTitle)
+                        AdminMainUiEvent.OnSessionClicked(sessionId, sessionTitle)
                     )
                 }
             )
@@ -91,7 +91,7 @@ fun AdminMain(
 fun AdminMainScreen(
     uiState: AdminMainUiState,
     onUserScoreCardClicked: () -> Unit,
-    onSessionItemClicked: (Int, String) -> Unit
+    onSessionClicked: (Int, String) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -103,7 +103,7 @@ fun AdminMainScreen(
         )
         GraySpacing(Modifier.height(12.dp))
         ManagementTitle()
-        uiState.upcomingSession?.let { UpcomingSession(it) } ?: FinishAllSessions()
+        uiState.upcomingSession?.let { UpcomingSession(it, onSessionClicked) } ?: FinishAllSessions()
         Spacing()
         GraySpacing(
             Modifier
@@ -113,7 +113,7 @@ fun AdminMainScreen(
         ManagementSubTitle()
         Sessions(
             sessions = uiState.sessions,
-            onSessionItemClicked = onSessionItemClicked
+            onSessionItemClicked = onSessionClicked
         )
     }
 }
@@ -198,7 +198,10 @@ fun LazyListScope.GraySpacing(modifier: Modifier) {
     }
 }
 
-fun LazyListScope.UpcomingSession(upcomingSession: Session) {
+fun LazyListScope.UpcomingSession(
+    upcomingSession: Session,
+    onManagementButtonClicked: (Int, String) -> Unit
+) {
     item {
         Column(
             modifier = Modifier.padding(horizontal = 24.dp)
@@ -224,7 +227,7 @@ fun LazyListScope.UpcomingSession(upcomingSession: Session) {
                 YDSButtonSmall(
                     text = stringResource(id = string.admin_main_admin_button),
                     state = if (upcomingSession.type == NeedToAttendType.NEED_ATTENDANCE) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                    onClick = {}
+                    onClick = { onManagementButtonClicked(upcomingSession.sessionId, upcomingSession.title) }
                 )
             }
         }

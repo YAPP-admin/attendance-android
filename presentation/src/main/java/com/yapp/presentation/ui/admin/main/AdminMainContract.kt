@@ -23,6 +23,6 @@ class AdminMainContract {
 
     sealed class AdminMainUiEvent : UiEvent {
         class OnUserScoreCardClicked(val upcomingSessionId: Int) : AdminMainUiEvent()
-        class OnSessionItemClicked(val sessionId: Int, val sessionTitle: String) : AdminMainUiEvent()
+        class OnSessionClicked(val sessionId: Int, val sessionTitle: String) : AdminMainUiEvent()
     }
 }
