@@ -16,11 +16,11 @@ class QrCodeContract {
 
     sealed class QrCodeUiEvent : UiEvent {
         class ScanQrCode(val codeValue: String?) : QrCodeUiEvent()
+        class ScanWrongCode(val informText: String) : QrCodeUiEvent()
     }
 
     enum class AttendanceState {
         STAND_BY,
-        SUCCESS,
-        COMPLETE
+        SUCCESS
     }
 }

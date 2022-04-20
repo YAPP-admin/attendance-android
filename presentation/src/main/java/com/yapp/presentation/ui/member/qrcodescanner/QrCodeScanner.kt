@@ -39,7 +39,6 @@ import com.google.mlkit.vision.barcode.common.Barcode
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.YDSPopupDialog
 import com.yapp.common.yds.YDSProgressBar
-import com.yapp.common.yds.YDSToast
 import com.yapp.presentation.R
 import com.yapp.presentation.util.permission.PermissionManager
 import com.yapp.presentation.util.permission.PermissionState
@@ -50,7 +49,6 @@ import java.util.concurrent.Executors
 @Composable
 fun QrCodeScanner(
     viewModel: QrCodeViewModel = hiltViewModel(),
-    modifier: Modifier = Modifier,
     navigateToPreviousScreen: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -97,11 +95,16 @@ fun QrCodeScanner(
                     .fillMaxWidth()
                     .fillMaxHeight()
             ) {
-                CameraPreview { qrCode ->
-                    viewModel.setEvent(QrCodeContract.QrCodeUiEvent.ScanQrCode(qrCode.rawValue))
-                }
+                CameraPreview(
+                    afterDetectedCode = { qrCode ->
+                        viewModel.setEvent(QrCodeContract.QrCodeUiEvent.ScanQrCode(qrCode.rawValue))
+                    },
+                    showToast = { informText ->
+                        viewModel.setEvent(QrCodeContract.QrCodeUiEvent.ScanWrongCode(informText))
+                    }
+                )
                 ScannerDecoration(
-                    modifier = modifier,
+                    modifier = Modifier,
                     navigateToPreviousScreen = navigateToPreviousScreen
                 )
             }
@@ -111,13 +114,13 @@ fun QrCodeScanner(
                     .fillMaxWidth()
                     .fillMaxHeight()
             ) {
-                val (noticeText, checkIcon, completeNoticeBox) = createRefs()
+                val (noticeText, checkIcon) = createRefs()
                 val guideline = createGuidelineFromTop(fraction = 0.5f)
 
                 when (uiState.attendanceState) {
                     QrCodeContract.AttendanceState.STAND_BY -> {
                         NoticeText(
-                            modifier.constrainAs(noticeText) {
+                            Modifier.constrainAs(noticeText) {
                                 bottom.linkTo(guideline, 162.dp)
                                 absoluteLeft.linkTo(parent.absoluteLeft)
                                 absoluteRight.linkTo(parent.absoluteRight)
@@ -126,24 +129,13 @@ fun QrCodeScanner(
                     }
                     QrCodeContract.AttendanceState.SUCCESS -> {
                         SuccessLottie(
-                            modifier = modifier.constrainAs(checkIcon) {
+                            modifier = Modifier.constrainAs(checkIcon) {
                                 top.linkTo(parent.top)
                                 bottom.linkTo(parent.bottom)
                                 absoluteLeft.linkTo(parent.absoluteLeft)
                                 absoluteRight.linkTo(parent.absoluteRight)
                             },
                             navigateToPreviousScreen = { navigateToPreviousScreen() }
-                        )
-                    }
-                    QrCodeContract.AttendanceState.COMPLETE -> {
-                        YDSToast(
-                            modifier = Modifier
-                                .constrainAs(completeNoticeBox) {
-                                    bottom.linkTo(guideline, 162.dp)
-                                    absoluteLeft.linkTo(parent.absoluteLeft)
-                                    absoluteRight.linkTo(parent.absoluteRight)
-                                },
-                            text = stringResource(id = R.string.member_qr_complete_inform_text)
                         )
                     }
                 }
@@ -166,7 +158,8 @@ fun QrCodeScanner(
 
 @Composable
 fun CameraPreview(
-    afterDetectedCode: (code: Barcode) -> Unit
+    afterDetectedCode: (code: Barcode) -> Unit,
+    showToast: (String) -> Unit
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -203,11 +196,7 @@ fun CameraPreview(
                                 afterDetectedCode(code)
                             },
                             onFailToAnalysis = { exception ->
-                                Toast.makeText(
-                                    context,
-                                    "문제가 발생했습니다 코드를 다시 스캔해 주세요\n$exception",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                showToast("문제가 발생했습니다 코드를 다시 스캔해 주세요\n$exception")
                             }
                         )
                     val imageAnalysis = ImageAnalysis.Builder()
@@ -226,7 +215,7 @@ fun CameraPreview(
                             imageAnalysis
                         )
                     } catch (exception: Exception) {
-                        Toast.makeText(context, "문제가 발생했습니다\n$exception", Toast.LENGTH_SHORT).show()
+                        showToast("문제가 발생했습니다\n$exception")
                     }
                 }, ContextCompat.getMainExecutor(context))
             }
