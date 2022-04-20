@@ -67,7 +67,7 @@ class ManagementViewModel @Inject constructor(
                     .groupBy { member -> member.team }
                     .map { (team, members) ->
                         TeamState(
-                            teamName = String.format("${team.type?.displayName} ${team.number}"),
+                            teamName = String.format("${team.type?.displayName} ${team.number}팀"),
                             members = members.map { member ->
                                 MemberState(
                                     id = member.id,
