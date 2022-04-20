@@ -23,10 +23,10 @@ import androidx.navigation.navArgument
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yapp.common.theme.Yapp_Orange
 import com.yapp.common.yds.YDSToast
+import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_ID
+import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_TITLE
 import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.admin.management.AttendanceManagement
-import com.yapp.presentation.ui.admin.management.ManagementViewModel.Companion.KEY_SESSION_ID
-import com.yapp.presentation.ui.admin.management.ManagementViewModel.Companion.KEY_SESSION_TITLE
 import com.yapp.presentation.ui.admin.totalscore.AdminTotalScore
 import com.yapp.presentation.ui.login.Login
 import com.yapp.presentation.ui.member.help.Help
