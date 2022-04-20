@@ -1,5 +1,6 @@
 package com.yapp.presentation.ui.admin.totalscore
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
@@ -8,7 +9,7 @@ import com.yapp.presentation.model.Member
 import com.yapp.presentation.model.Member.Companion.mapTo
 import com.yapp.presentation.model.Team
 import com.yapp.presentation.model.collections.AttendanceList
-import com.yapp.presentation.ui.UPCOMING_SESSION_ID_KEY
+import com.yapp.presentation.ui.KEY_UPCOMING_SESSION_ID
 import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -38,7 +39,7 @@ class AdminTotalScoreViewModel @Inject constructor(
         getAllMemberUseCase().collectWithCallback(
             onSuccess = { memberEntity ->
                 val members = memberEntity.map { it.mapTo() }.groupBy { it.team }
-                val upcomingSessionId = savedStateHandle.get<Int>(UPCOMING_SESSION_ID_KEY)
+                val upcomingSessionId = savedStateHandle.get<Int>(KEY_UPCOMING_SESSION_ID)
                     ?: AttendanceList.DEFAULT_UPCOMING_SESSION_ID
                 val teamItemStates = getTeamItemStates(members, upcomingSessionId)
                 setState {
