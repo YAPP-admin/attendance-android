@@ -23,6 +23,8 @@ import androidx.navigation.navArgument
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yapp.common.theme.Yapp_Orange
 import com.yapp.common.yds.YDSToast
+import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_ID
+import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_TITLE
 import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.admin.management.AttendanceManagement
 import com.yapp.presentation.ui.admin.totalscore.AdminTotalScore
@@ -107,9 +109,21 @@ fun AttendanceScreen(
             route = AttendanceScreenRoute.ADMIN_MAIN.route
         ) {
             SetStatusBarColorByRoute(it.destination.route)
-            AdminMain { upcomingSessionId ->
-                navController.navigate(AttendanceScreenRoute.ADMIN_TOTAL_SCORE.route + "/${upcomingSessionId}")
-            }
+            AdminMain(
+                navigateToAdminTotalScore = { upcomingSessionId ->
+                    navController.navigate(
+                        AttendanceScreenRoute.ADMIN_TOTAL_SCORE.route
+                            .plus("/${upcomingSessionId}")
+                    )
+                },
+                navigateToManagement = { sessionId, sessionTitle ->
+                    navController.navigate(
+                        AttendanceScreenRoute.ADMIN_ATTENDANCE_MANAGEMENT.route
+                            .plus("/${sessionId}")
+                            .plus("/${sessionTitle}")
+                    )
+                }
+            )
         }
 
         composable(
@@ -117,7 +131,7 @@ fun AttendanceScreen(
         ) {
             SetStatusBarColorByRoute(it.destination.route)
             MemberMain(
-                navigateToScreen =  { route ->
+                navigateToScreen = { route ->
                     if (route == AttendanceScreenRoute.QR_AUTH.route) {
                         viewModel.setEvent(MainContract.MainUiEvent.OnClickQrAuthButton)
                     } else {
@@ -137,6 +151,12 @@ fun AttendanceScreen(
 
         composable(
             route = AttendanceScreenRoute.ADMIN_ATTENDANCE_MANAGEMENT.route
+                .plus("/{$KEY_SESSION_ID}")
+                .plus("/{$KEY_SESSION_TITLE}"),
+            arguments = listOf(
+                navArgument(KEY_SESSION_ID) { type = NavType.IntType },
+                navArgument(KEY_SESSION_TITLE) { type = NavType.StringType }
+            )
         ) {
             AttendanceManagement(
                 onBackButtonClicked = { navController.popBackStack() }
@@ -151,15 +171,13 @@ fun AttendanceScreen(
                     navController.popBackStack()
                 },
                 onClickAdminButton = {
-                    // TODO [임시] 원래 Main이 들어와야 함
-                    navController.navigate(AttendanceScreenRoute.ADMIN_ATTENDANCE_MANAGEMENT.route)
-//                    navController.navigate(AttendanceScreenRoute.ADMIN_MAIN.route) {
-//                        popUpTo(AttendanceScreenRoute.MEMBER_SETTING.route) { inclusive = true }
-//                    }
+                    navController.navigate(AttendanceScreenRoute.ADMIN_MAIN.route) {
+                        popUpTo(AttendanceScreenRoute.MEMBER_SETTING.route) { inclusive = true }
+                    }
                 },
                 onClickLogoutButton = {
                     navController.navigate(AttendanceScreenRoute.LOGIN.route) {
-                        // 모든 스택을 다 제거해야함.
+                        // TODO: 모든 스택을 다 제거해야함.
                         popUpTo(AttendanceScreenRoute.MEMBER_SETTING.route)
                     }
                 },
@@ -180,7 +198,7 @@ fun AttendanceScreen(
         composable(
             route = AttendanceScreenRoute.HELP.route
         ) {
-            Help{ navController.popBackStack()}
+            Help { navController.popBackStack() }
         }
 
         composable(
@@ -265,9 +283,9 @@ fun AttendanceScreen(
 
         composable(
             route = AttendanceScreenRoute.ADMIN_TOTAL_SCORE.route
-                .plus("/{$UPCOMING_SESSION_ID_KEY}"),
+                .plus("/{$KEY_UPCOMING_SESSION_ID}"),
             arguments = listOf(
-                navArgument(UPCOMING_SESSION_ID_KEY) { type = NavType.IntType }
+                navArgument(KEY_UPCOMING_SESSION_ID) { type = NavType.IntType }
             )
         ) {
             AdminTotalScore(navigateToPreviousScreen = { navController.popBackStack() })
@@ -328,4 +346,4 @@ private fun SetStatusBarColorByRoute(route: String?) {
     }
 }
 
-const val UPCOMING_SESSION_ID_KEY = "upcomingSessionId"
+const val KEY_UPCOMING_SESSION_ID = "upcomingSessionId"

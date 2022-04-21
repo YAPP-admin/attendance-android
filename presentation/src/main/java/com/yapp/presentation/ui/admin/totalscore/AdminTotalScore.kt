@@ -13,6 +13,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -80,8 +81,10 @@ fun AdminTotalScoreScreen(
             )
         }
 
-
-        itemsIndexed(uiState.teamItemStates) { _, teamItemState ->
+        itemsIndexed(
+            items = uiState.teamItemStates,
+            key = { _, key -> key.teamName }
+        ) { _, teamItemState ->
             TeamItem(
                 teamItemState = teamItemState
             )
@@ -93,7 +96,7 @@ fun AdminTotalScoreScreen(
 fun TeamItem(
     teamItemState: AdminTotalScoreUiState.TeamItemState
 ) {
-    var isExpanded by remember { mutableStateOf(false) }
+    var isExpanded by rememberSaveable { mutableStateOf(false) }
     val iconResourceId =
         if (isExpanded) R.drawable.icon_chevron_up else R.drawable.icon_chevron_down
 
