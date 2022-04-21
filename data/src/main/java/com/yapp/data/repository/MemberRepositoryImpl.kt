@@ -45,15 +45,26 @@ class MemberRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun deleteMember(id: Long): Flow<Boolean> {
+        return flow {
+            val deleteSucceed = fireStore.memberRef()
+                .document(id.toString())
+                .delete()
+                .isSuccessful
+
+            emit(deleteSucceed)
+        }
+    }
+
     override fun getAllMember(): Flow<List<MemberEntity>> {
         return flow {
             val snapshot = fireStore.memberRef()
                 .get()
                 .await()
 
-            if(snapshot.documents.isNotEmpty()) {
+            if (snapshot.documents.isNotEmpty()) {
                 val entities = snapshot.documents.map { document ->
-                    val model =  document.toObject(MemberModel::class.java)
+                    val model = document.toObject(MemberModel::class.java)
                     val entity = model!!.mapToEntity()
                     entity
                 }

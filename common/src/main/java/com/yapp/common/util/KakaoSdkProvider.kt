@@ -9,6 +9,12 @@ import com.kakao.sdk.user.UserApiClient
 import com.yapp.domain.common.KakaoSdkProviderInterface
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -65,6 +71,22 @@ class KakaoSdkProvider @Inject constructor(
                 onFailed()
             } ?: run {
                 onSuccess()
+            }
+        }
+    }
+
+    override fun withdraw(): Flow<Boolean> {
+        return callbackFlow {
+            UserApiClient.instance.unlink { error ->
+                error?.let {
+                    trySend(false)
+                } ?: run {
+                    trySend(true)
+                }
+            }
+
+            awaitClose {
+                close()
             }
         }
     }

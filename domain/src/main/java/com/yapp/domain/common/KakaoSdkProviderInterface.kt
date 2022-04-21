@@ -1,5 +1,7 @@
 package com.yapp.domain.common
 
+import kotlinx.coroutines.flow.Flow
+
 // todo sehee coroutine 으로 변경
 interface KakaoSdkProviderInterface {
     fun login(
@@ -11,6 +13,8 @@ interface KakaoSdkProviderInterface {
         onSuccess: () -> Unit,
         onFailed: () -> Unit,
     )
+
+    fun withdraw(): Flow<Boolean>
 
     fun getUserAccountId(
         onSuccess: (Long) -> Unit,
