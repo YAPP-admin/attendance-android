@@ -27,9 +27,10 @@ class AdminMainViewModel @Inject constructor(
     override suspend fun handleEvent(event: AdminMainUiEvent) {
         when (event) {
             is AdminMainUiEvent.OnUserScoreCardClicked -> setEffect(
-                AdminMainUiSideEffect.NavigateToAdminTotalScore(
-                    event.upcomingSessionId
-                )
+                AdminMainUiSideEffect.NavigateToAdminTotalScore(event.upcomingSessionId)
+            )
+            is AdminMainUiEvent.OnSessionClicked -> setEffect(
+                AdminMainUiSideEffect.NavigateToManagement(event.sessionId, event.sessionTitle)
             )
         }
     }
