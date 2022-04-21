@@ -7,16 +7,22 @@ import com.yapp.common.base.UiState
 class QrCodeContract {
     data class QrCodeUiState(
         val isLoading: Boolean = false,
-        val attendanceState: AttendanceState = AttendanceState.STAND_BY
-    ) : UiState
+        val attendanceState: AttendanceState = AttendanceState.STAND_BY,
+        val maginotlineTime: String = "",
+        val toastMsg: String = ""
+    ) : UiState {
+        enum class LoadState {
+            Loading, Idle, Error
+        }
+    }
 
     sealed class QrCodeUiSideEffect : UiSideEffect {
-        class ShowToast(val msg: String) : QrCodeUiSideEffect()
+        object ShowToast : QrCodeUiSideEffect()
     }
 
     sealed class QrCodeUiEvent : UiEvent {
         class ScanQrCode(val codeValue: String?) : QrCodeUiEvent()
-        class ScanWrongCode(val informText: String) : QrCodeUiEvent()
+        class GetErrorMessage(val errorMessage: String) : QrCodeUiEvent()
     }
 
     enum class AttendanceState {

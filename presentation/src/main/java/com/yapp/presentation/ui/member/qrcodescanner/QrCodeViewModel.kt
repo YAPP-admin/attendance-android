@@ -1,85 +1,107 @@
 package com.yapp.presentation.ui.member.qrcodescanner
 
+import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.common.util.AttendanceQrCodeParser
 import com.yapp.domain.model.AttendanceEntity
 import com.yapp.domain.model.AttendanceTypeEntity
+import com.yapp.domain.usecases.GetMaginotlineTimeUseCase
 import com.yapp.domain.usecases.GetMemberIdUseCase
 import com.yapp.domain.usecases.SetMemberAttendanceUseCase
 import com.yapp.presentation.model.collections.AttendanceList
 import com.yapp.presentation.ui.member.qrcodescanner.QrCodeContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class QrCodeViewModel @Inject constructor(
+    private val getMaginotlineTimeUseCase: GetMaginotlineTimeUseCase,
     private val getMemberIdUseCase: GetMemberIdUseCase,
     private val setMemberAttendanceUseCase: SetMemberAttendanceUseCase
 ) : BaseViewModel<QrCodeUiState, QrCodeUiSideEffect, QrCodeUiEvent>(
     QrCodeUiState()
 ) {
+    var isAvailableToScan = true
     var upcomingSessionId = AttendanceList.DEFAULT_UPCOMING_SESSION_ID
+    var userId = 0L
 
     init {
         // TODO: Upcoming Session Id 받아오기
         upcomingSessionId = 3
+
+        viewModelScope.launch {
+            getMaginotlineTime()
+            getUserId()
+        }
     }
 
     override suspend fun handleEvent(event: QrCodeUiEvent) {
         when (event) {
             is QrCodeUiEvent.ScanQrCode -> {
-                when (val sessionId = parseQrCode(event.codeValue)) {
-                    AttendanceList.DEFAULT_UPCOMING_SESSION_ID -> setEffect(
-                        QrCodeUiSideEffect.ShowToast("오늘의 세션 정보를 불러오지 못했습니다.")
-                    )
-                    upcomingSessionId -> {
-                        markAttendance(sessionId)
-                    }
-                    else -> QrCodeUiSideEffect.ShowToast("잘못된 코드입니다.")
-                }
+                if (isAvailableToScan) afterScannedCode(event.codeValue)
             }
-            is QrCodeUiEvent.ScanWrongCode -> setEffect(
-                QrCodeUiSideEffect.ShowToast(event.informText)
-            )
+            is QrCodeUiEvent.GetErrorMessage -> {
+                setState { copy(toastMsg = event.errorMessage) }
+                setEffect(QrCodeUiSideEffect.ShowToast)
+            }
         }
     }
 
-    private fun parseQrCode(codeValue: String?): Int {
-        return try {
-            AttendanceQrCodeParser.getSessionIdFromBarcode(codeValue)
+    private suspend fun afterScannedCode(codeValue: String?) {
+        isAvailableToScan = false
+
+        try {
+            val paredSessionId = AttendanceQrCodeParser.getSessionIdFromBarcode(codeValue)
+            if (paredSessionId == upcomingSessionId) markAttendance(paredSessionId)
+            else handleQRError("잘못된 코드입니다")
         } catch (e: Exception) {
-            return AttendanceList.DEFAULT_UPCOMING_SESSION_ID
+            handleQRError("잘못된 형식의 코드입니다")
         }
     }
 
-    private suspend fun markAttendance(sessionId: Int) {
-        val userId = getUserId()
+    private suspend fun markAttendance(targetSessionId: Int) {
         setMemberAttendanceUseCase(
             params = SetMemberAttendanceUseCase.Params(
                 memberId = userId,
-                sessionId = sessionId,
+                sessionId = targetSessionId,
                 changedAttendance = AttendanceEntity(
-                    sessionId = sessionId,
+                    sessionId = targetSessionId,
                     type = AttendanceTypeEntity.Normal
                 )
             )
         ).collectWithCallback(
             onSuccess = { setState { copy(attendanceState = AttendanceState.SUCCESS) } },
-            onFailed = { QrCodeUiSideEffect.ShowToast("출석에 실패했습니다") }
+            onFailed = { handleQRError("출석 정보 반영에 실패했습니다") }
         )
-
     }
 
-    private suspend fun getUserId(): Long {
-        var userId = -1L
+    private suspend fun getUserId() {
         getMemberIdUseCase().collectWithCallback(
-            onSuccess = {
-                userId = it ?: -1L
+            onSuccess = { id ->
+                if (id != null) userId = id
+                else handleQRError("ID를 받아오지 못했습니다")
             },
+            onFailed = { handleQRError("ID를 받아오지 못했습니다") }
+        )
+    }
+
+    private suspend fun getMaginotlineTime() {
+        setState { copy(isLoading = true) }
+        getMaginotlineTimeUseCase().collectWithCallback(
+            onSuccess = { maginotline -> setState { copy(maginotlineTime = maginotline) } },
             onFailed = {
-                QrCodeUiSideEffect.ShowToast("ID를 받아오지 못했습니다.")
+                // TODO: 출석 마감 정보 불러오지 못했을 때의 에러 처리
             }
         )
-        return userId
+        setState { copy(isLoading = false) }
+    }
+
+    private suspend fun handleQRError(errorMsg: String) {
+        setState { copy(toastMsg = errorMsg) }
+        setEffect(QrCodeUiSideEffect.ShowToast)
+        delay(1500L)
+        isAvailableToScan = true
     }
 }

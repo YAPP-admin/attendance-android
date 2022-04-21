@@ -53,7 +53,7 @@
     <string name="member_setting_withdraw_dialog_negative_button">취소</string>
     <string name="member_setting_withdraw_dialog_positive_button">탈퇴합니다</string>
 
-    <string name="member_qr_time_inform_text">2시 5분까지 출석해 주세요.</string>
+    <string name="member_qr_time_inform_text">까지 출석해 주세요.</string>
     <string name="member_qr_late_inform_text">30분까지는 지각, 그 이후는 결석으로 처리돼요.</string>
     <string name="member_qr_complete_inform_text">이미 출석을 완료했어요</string>
     <string name="member_qr_permission_dialog_title_text">카메라 권한이 필요합니다</string>

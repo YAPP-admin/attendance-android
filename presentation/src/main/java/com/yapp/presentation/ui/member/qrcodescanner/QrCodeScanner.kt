@@ -5,13 +5,15 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -39,10 +41,12 @@ import com.google.mlkit.vision.barcode.common.Barcode
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.YDSPopupDialog
 import com.yapp.common.yds.YDSProgressBar
+import com.yapp.common.yds.YDSToast
 import com.yapp.presentation.R
 import com.yapp.presentation.util.permission.PermissionManager
 import com.yapp.presentation.util.permission.PermissionState
 import com.yapp.presentation.util.permission.PermissionType
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import java.util.concurrent.Executors
 
@@ -55,12 +59,15 @@ fun QrCodeScanner(
     var showQrScanner by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
     val uiState by viewModel.uiState.collectAsState()
+    var toastVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collect { effect ->
             when (effect) {
                 is QrCodeContract.QrCodeUiSideEffect.ShowToast -> {
-                    Toast.makeText(context, effect.msg, Toast.LENGTH_SHORT).show()
+                    toastVisible = !toastVisible
+                    delay(1000L)
+                    toastVisible = !toastVisible
                 }
             }
         }
@@ -99,8 +106,8 @@ fun QrCodeScanner(
                     afterDetectedCode = { qrCode ->
                         viewModel.setEvent(QrCodeContract.QrCodeUiEvent.ScanQrCode(qrCode.rawValue))
                     },
-                    showToast = { informText ->
-                        viewModel.setEvent(QrCodeContract.QrCodeUiEvent.ScanWrongCode(informText))
+                    detectedError = { informText ->
+                        viewModel.setEvent(QrCodeContract.QrCodeUiEvent.GetErrorMessage(informText))
                     }
                 )
                 ScannerDecoration(
@@ -120,11 +127,12 @@ fun QrCodeScanner(
                 when (uiState.attendanceState) {
                     QrCodeContract.AttendanceState.STAND_BY -> {
                         NoticeText(
-                            Modifier.constrainAs(noticeText) {
+                            modifier = Modifier.constrainAs(noticeText) {
                                 bottom.linkTo(guideline, 162.dp)
                                 absoluteLeft.linkTo(parent.absoluteLeft)
                                 absoluteRight.linkTo(parent.absoluteRight)
-                            }
+                            },
+                            maginotlineTime = uiState.maginotlineTime
                         )
                     }
                     QrCodeContract.AttendanceState.SUCCESS -> {
@@ -140,6 +148,21 @@ fun QrCodeScanner(
                     }
                 }
             }
+        }
+    }
+
+    AnimatedVisibility(
+        visible = toastVisible,
+        enter = fadeIn(),
+        exit = fadeOut(),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 90.dp),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            YDSToast(text = uiState.toastMsg)
         }
     }
 
@@ -159,7 +182,7 @@ fun QrCodeScanner(
 @Composable
 fun CameraPreview(
     afterDetectedCode: (code: Barcode) -> Unit,
-    showToast: (String) -> Unit
+    detectedError: (String) -> Unit
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -196,7 +219,7 @@ fun CameraPreview(
                                 afterDetectedCode(code)
                             },
                             onFailToAnalysis = { exception ->
-                                showToast("문제가 발생했습니다 코드를 다시 스캔해 주세요\n$exception")
+                                detectedError("문제가 발생했습니다 코드를 다시 스캔해 주세요\n$exception")
                             }
                         )
                     val imageAnalysis = ImageAnalysis.Builder()
@@ -215,7 +238,7 @@ fun CameraPreview(
                             imageAnalysis
                         )
                     } catch (exception: Exception) {
-                        showToast("문제가 발생했습니다\n$exception")
+                        detectedError("문제가 발생했습니다\n$exception")
                     }
                 }, ContextCompat.getMainExecutor(context))
             }
@@ -253,13 +276,16 @@ fun ScannerDecoration(
 }
 
 @Composable
-fun NoticeText(modifier: Modifier = Modifier) {
+fun NoticeText(
+    modifier: Modifier = Modifier,
+    maginotlineTime: String,
+) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = stringResource(id = R.string.member_qr_time_inform_text),
+            text = maginotlineTime + stringResource(id = R.string.member_qr_time_inform_text),
             color = Color.White,
             style = AttendanceTypography.body1,
         )
