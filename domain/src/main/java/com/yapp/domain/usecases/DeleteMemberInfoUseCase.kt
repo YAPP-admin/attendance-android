@@ -17,8 +17,7 @@ class DeleteMemberInfoUseCase @Inject constructor(
     private val coroutineDispatcher: DispatcherProvider
 ) : BaseUseCase<Flow<Boolean>, Long?>(coroutineDispatcher) {
     override suspend fun invoke(params: Long?): Flow<Boolean> {
-        return localRepository.deleteAllUserInfo().zip(
-            memberRepository.deleteMember(params!!)
-        ) { _, remoteSucceed -> remoteSucceed }
+        localRepository.deleteAllUserInfo()
+        return memberRepository.deleteMember(params!!)
     }
 }

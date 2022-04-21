@@ -7,7 +7,9 @@ import com.yapp.data.model.MemberModel.Companion.mapToEntity
 import com.yapp.data.util.memberRef
 import com.yapp.domain.model.MemberEntity
 import com.yapp.domain.repository.MemberRepository
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.tasks.await
@@ -46,13 +48,17 @@ class MemberRepositoryImpl @Inject constructor(
     }
 
     override fun deleteMember(id: Long): Flow<Boolean> {
-        return flow {
-            val deleteSucceed = fireStore.memberRef()
+        return callbackFlow {
+            fireStore.memberRef()
                 .document(id.toString())
                 .delete()
-                .isSuccessful
+                .addOnCompleteListener {
+                    trySend(it.isSuccessful)
+                }
 
-            emit(deleteSucceed)
+            awaitClose {
+                close()
+            }
         }
     }
 

@@ -1,22 +1,22 @@
 package com.yapp.common.util
 
 import android.content.Context
-import android.util.Log
 import com.kakao.sdk.auth.AuthApiClient
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.yapp.domain.common.KakaoSdkProviderInterface
-import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.onSuccess
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.CoroutineContext
 
 @Singleton
 class KakaoSdkProvider @Inject constructor(
@@ -75,18 +75,12 @@ class KakaoSdkProvider @Inject constructor(
         }
     }
 
-    override fun withdraw(): Flow<Boolean> {
-        return callbackFlow {
-            UserApiClient.instance.unlink { error ->
-                error?.let {
-                    trySend(false)
-                } ?: run {
-                    trySend(true)
-                }
-            }
-
-            awaitClose {
-                close()
+    override fun withdraw(onSuccess: () -> Unit, onFailed: () -> Unit) {
+        return UserApiClient.instance.unlink { error ->
+            error?.let {
+                onFailed()
+            } ?: run {
+                onSuccess()
             }
         }
     }
