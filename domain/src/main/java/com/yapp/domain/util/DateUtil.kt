@@ -23,9 +23,9 @@ object DateUtil {
     // 다가오는 세션인지 확인
     // 세션 날짜가 오늘 이후이면 true
     fun isUpcomingSession(sessionDateStr: String): Boolean {
-        val currentDate = System.currentTimeMillis() / oneDay
-        val sessionDate =
-            SimpleDateFormat("yyyy-MM-dd", Locale.KOREA).parse(sessionDateStr).time / oneDay
+        val currentDate =
+            SimpleDateFormat("yyyy-MM-dd", Locale.KOREA).format(System.currentTimeMillis())
+        val sessionDate = sessionDateStr.substring(0, 10)
         return currentDate <= sessionDate
     }
 
