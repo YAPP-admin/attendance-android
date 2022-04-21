@@ -64,6 +64,10 @@ fun MemberSetting(
             Divide()
             MenuList(viewModel)
         }
+
+        if(uiState.value.isLoading) {
+            YDSProgressBar()
+        }
     }
 }
 
@@ -133,7 +137,10 @@ private fun MenuList(viewModel: MemberSettingViewModel) {
             content = stringResource(id = string.member_setting_withdraw_dialog_content_text),
             negativeButtonText = stringResource(id = string.member_setting_withdraw_dialog_negative_button),
             positiveButtonText = stringResource(id = string.member_setting_withdraw_dialog_positive_button),
-            onClickPositiveButton = { showDialog = !showDialog },
+            onClickPositiveButton = {
+                viewModel.setEvent(MemberSettingContract.MemberSettingUiEvent.OnWithdrawButtonClicked)
+                showDialog = !showDialog
+            },
             onClickNegativeButton = { showDialog = !showDialog },
             onDismiss = { showDialog = !showDialog }
         )
