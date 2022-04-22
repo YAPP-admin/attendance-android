@@ -17,7 +17,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MemberScoreViewModel @Inject constructor(
-    private val getSessionListUseCase: GetSessionListUseCase,
     private val getMemberAttendanceListUseCase: GetMemberAttendanceListUseCase,
 
     ) : BaseViewModel<MemberScoreUiState, MemberScoreUiSideEffect, MemberScoreUiEvent>(

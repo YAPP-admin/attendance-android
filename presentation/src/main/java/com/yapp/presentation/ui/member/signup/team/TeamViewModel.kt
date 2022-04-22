@@ -8,11 +8,9 @@ import com.yapp.domain.model.AttendanceEntity
 import com.yapp.domain.model.AttendanceTypeEntity
 import com.yapp.domain.model.MemberEntity
 import com.yapp.domain.model.TeamEntity
+import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.domain.model.types.PositionTypeEntity
-import com.yapp.domain.usecases.CheckLocalMemberUseCase
-import com.yapp.domain.usecases.GetMemberIdUseCase
-import com.yapp.domain.usecases.GetTeamListUseCase
-import com.yapp.domain.usecases.SetMemberUseCase
+import com.yapp.domain.usecases.*
 import com.yapp.presentation.model.Team.Companion.mapTo
 import com.yapp.presentation.model.type.PositionType
 import com.yapp.presentation.model.type.TeamType
@@ -23,11 +21,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TeamViewModel @Inject constructor(
+    private val getSessionListUseCase: GetSessionListUseCase,
     private val getTeamListUseCase: GetTeamListUseCase,
     private val setMemberUseCase: SetMemberUseCase,
     private val getMemberIdUseCase: GetMemberIdUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : BaseViewModel<TeamUiState, TeamSideEffect, TeamUiEvent>(TeamUiState()) {
+    private var defaultAttendance: List<AttendanceEntity>? = null
 
     init {
         viewModelScope.launch {
@@ -41,7 +41,9 @@ class TeamViewModel @Inject constructor(
                     }
                 )
         }
+
     }
+
     override suspend fun handleEvent(event: TeamUiEvent) {
         when (event) {
             is TeamUiEvent.ChooseTeam -> {
@@ -60,7 +62,7 @@ class TeamViewModel @Inject constructor(
             }
             is TeamUiEvent.ConfirmTeam -> {
                 viewModelScope.launch {
-                    setMember()
+                    createDefaultAttendance()
                 }
             }
         }
@@ -72,7 +74,7 @@ class TeamViewModel @Inject constructor(
 
         getMemberIdUseCase().collectWithCallback(
             onSuccess = { memberId ->
-                if ((memberId == null) or (memberName == null) or (memberPosition == null)) {
+                if ((memberId == null) or (memberName == null) or (memberPosition == null) or (defaultAttendance == null)) {
                     setEffect(TeamSideEffect.ShowToast("회원가입 실패"))
                 } else {
                     setMemberToFireBase(memberName!!, memberPosition!!, memberId!!)
@@ -82,7 +84,11 @@ class TeamViewModel @Inject constructor(
         )
     }
 
-    private suspend fun setMemberToFireBase(memberName: String, memberPosition:String, memberId: Long) {
+    private suspend fun setMemberToFireBase(
+        memberName: String,
+        memberPosition: String,
+        memberId: Long
+    ) {
 
         setMemberUseCase(
             MemberEntity(
@@ -93,16 +99,29 @@ class TeamViewModel @Inject constructor(
                     type = uiState.value.selectedTeam.type!!.name,
                     number = uiState.value.selectedTeam.number!!
                 ),
-                attendances = Array(20) { sessionNum ->
-                    AttendanceEntity(
-                        sessionId = sessionNum,
-                        type = AttendanceTypeEntity.Absent
-                    )
-                }.toList(),
+                attendances = defaultAttendance!!
             )
         ).collectWithCallback(
             onSuccess = { setEffect(TeamSideEffect.NavigateToMainScreen) },
             onFailed = { setEffect(TeamSideEffect.ShowToast("회원가입 실패")) }
+        )
+    }
+
+    private suspend fun createDefaultAttendance() {
+        getSessionListUseCase().collectWithCallback(
+            onSuccess = { sessionList ->
+                 defaultAttendance = sessionList.map { session ->
+                    AttendanceEntity(
+                        sessionId = session.sessionId,
+                        type = when(session.type) {
+                            NeedToAttendType.DONT_NEED_ATTENDANCE, NeedToAttendType.DAY_OFF -> AttendanceTypeEntity.Normal
+                            NeedToAttendType.NEED_ATTENDANCE -> AttendanceTypeEntity.Absent
+                        }
+                    )
+                }
+                setMember()
+            },
+            onFailed = {}
         )
     }
 }
