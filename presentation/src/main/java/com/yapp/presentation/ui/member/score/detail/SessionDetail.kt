@@ -9,7 +9,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -18,11 +17,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.theme.*
 import com.yapp.common.yds.AttendanceType
 import com.yapp.common.yds.YDSAppBar
-import com.yapp.domain.model.types.NeedToAttendType
-import com.yapp.domain.util.DateUtil
-import com.yapp.presentation.model.Attendance
 import com.yapp.presentation.model.Session
 import com.yapp.presentation.util.attendance.checkSessionAttendance
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun SessionDetail(
@@ -82,12 +80,16 @@ fun SessionDetail(
                         }
                     )
                 }
+                if (session != null) {
+                    val sessionDate =
+                        SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA).parse(session.date)?.time
+                    Text(
+                        text = SimpleDateFormat("MM.dd", Locale.KOREA).format(sessionDate),
+                        style = AttendanceTypography.body1,
+                        color = Gray_600
+                    )
+                }
 
-                Text(
-                    text = session?.date ?: "",
-                    style = AttendanceTypography.body1,
-                    color = Gray_600
-                )
             }
 
             Text(
@@ -106,3 +108,4 @@ fun SessionDetail(
         }
     }
 }
+
