@@ -10,6 +10,7 @@ class MemberScoreContract {
     data class MemberScoreUiState(
         val isLoading: Boolean = true,
         val attendanceList: List<Pair<Session, Attendance>> = emptyList(),
+        val lastAttendanceList: List<Pair<Session, Attendance>> = emptyList()
     ) : UiState
 
     sealed class MemberScoreUiSideEffect : UiSideEffect {

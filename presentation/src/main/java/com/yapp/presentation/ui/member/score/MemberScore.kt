@@ -1,6 +1,7 @@
 package com.yapp.presentation.ui.member.score
 
 import android.graphics.Paint
+import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
@@ -59,8 +60,7 @@ fun MemberScore(
         LazyColumn {
             item {
                 HelpIcon(navigateToHelpScreen)
-                //todo score 주입 필요!
-                SemiCircleProgressBar(60f)
+                SemiCircleProgressBar(uiState.lastAttendanceList.fold(100f) {total, pair -> total + pair.second.attendanceType.point})
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
