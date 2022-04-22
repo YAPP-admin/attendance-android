@@ -33,7 +33,6 @@ import com.yapp.presentation.ui.member.main.MemberMain
 import com.yapp.presentation.ui.member.privacyPolicy.PrivacyPolicyScreen
 import com.yapp.presentation.ui.member.qrcodescanner.QrCodeScanner
 import com.yapp.presentation.ui.member.score.detail.SessionDetail
-import com.yapp.presentation.ui.member.score.detail.SessionDetailNavParam
 import com.yapp.presentation.ui.member.setting.MemberSetting
 import com.yapp.presentation.ui.member.signup.name.Name
 import com.yapp.presentation.ui.member.signup.position.Position
@@ -184,38 +183,14 @@ fun AttendanceScreen(
 
         composable(
             route = AttendanceScreenRoute.SESSION_DETAIL.route
-                .plus("?title={title}")
-                .plus("?description={description}")
-                .plus("?attendanceType={attendanceType}")
-                .plus("?date={date}"),
+                .plus("/{session}"),
             arguments = listOf(
-                navArgument("title") {
+                navArgument("session") {
                     nullable = false
-                    type = NavType.StringType
+                    type = NavType.IntType
                 },
-                navArgument("description") {
-                    nullable = false
-                    type = NavType.StringType
-                },
-                navArgument("attendanceType") {
-                    nullable = false
-                    type = NavType.StringType
-                },
-                navArgument("date") {
-                    nullable = false
-                    type = NavType.StringType
-                }
             )
-        ) { backStackEntry ->
-            SessionDetail(
-                navParam = SessionDetailNavParam(
-                    title = backStackEntry.arguments?.getString("title")!!,
-                    description = backStackEntry.arguments?.getString("description")!!,
-                    attendanceType = backStackEntry.arguments?.getString("attendanceType")!!,
-                    date = backStackEntry.arguments?.getString("date")!!,
-                ),
-                onClickBackButton = { navController.popBackStack() }
-            )
+        ) { SessionDetail { navController.popBackStack() }
         }
 
         composable(
