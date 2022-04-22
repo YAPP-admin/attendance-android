@@ -9,6 +9,8 @@ import com.yapp.domain.usecases.SetMemberAttendanceUseCase
 import com.yapp.presentation.model.AttendanceType
 import com.yapp.presentation.model.AttendanceType.Companion.mapToEntity
 import com.yapp.presentation.model.Member.Companion.mapTo
+import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_ID
+import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_TITLE
 import com.yapp.presentation.ui.admin.management.ManagementContract.*
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,16 +22,19 @@ import javax.inject.Inject
 class ManagementViewModel @Inject constructor(
     private val getAllMemberUseCase: GetAllMemberUseCase,
     private val setMemberAttendanceUseCase: SetMemberAttendanceUseCase,
-    private val savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle
 
 ) : BaseViewModel<ManagementState, ManagementSideEffect, ManagementEvent>(ManagementState()) {
 
     companion object {
-        const val DEFAULT_SESSION_ID = 0
+        const val DEFAULT_SESSION_ID = 1
+        const val DEFAULT_SESSION_TITLE = "YAPP"
     }
 
     init {
-        setState { this.copy(sessionId = savedStateHandle.get<Int>("sessionId") ?: DEFAULT_SESSION_ID) }
+        val sessionId    = savedStateHandle.get<Int>(KEY_SESSION_ID) ?: DEFAULT_SESSION_ID
+        val sessionTitle = savedStateHandle.get<String>(KEY_SESSION_TITLE) ?: DEFAULT_SESSION_TITLE
+        setState { this.copy(sessionId = sessionId, sessionTitle = sessionTitle) }
 
         viewModelScope.launch {
             setState { this.copy(loadState = LoadState.Loading) }
@@ -59,7 +64,7 @@ class ManagementViewModel @Inject constructor(
                     .groupBy { member -> member.team }
                     .map { (team, members) ->
                         TeamState(
-                            teamName = String.format("${team.type?.displayName} ${team.number}"),
+                            teamName = String.format("${team.type?.displayName} ${team.number}팀"),
                             members = members.map { member ->
                                 MemberState(
                                     id = member.id,
@@ -87,7 +92,7 @@ class ManagementViewModel @Inject constructor(
         changedAttendanceType: AttendanceType,
         sessionId: Int
     ) {
-        if(selectedMember.attendance.attendanceType == changedAttendanceType) {
+        if (selectedMember.attendance.attendanceType == changedAttendanceType) {
             return
         }
 

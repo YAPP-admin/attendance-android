@@ -109,8 +109,8 @@ fun ManagementScreen(
             topBar = {
                 YDSAppBar(
                     modifier = Modifier.padding(horizontal = 4.dp),
-                    title = "YAPP 오리엔테이션",
-                    onClickBackButton = { onBackButtonClicked?.invoke() }
+                    title = uiState.sessionTitle,
+                    onClickBackButton = { onBackButtonClicked.invoke() }
                 )
             }
         ) {
@@ -234,6 +234,7 @@ fun TeamHeader(
             .background(Color.White)
             .height(62.dp)
             .fillMaxWidth()
+            .clickable { onExpandClicked(!expanded) }
     ) {
         Text(
             modifier = Modifier

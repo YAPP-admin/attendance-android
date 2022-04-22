@@ -2,9 +2,13 @@ package com.yapp.presentation.ui.member.main
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -25,6 +29,7 @@ import com.yapp.presentation.ui.member.score.MemberScore
 import com.yapp.presentation.ui.member.todaysession.TodaySession
 import kotlinx.coroutines.flow.collect
 
+
 @Composable
 fun MemberMain(
     scaffoldState: ScaffoldState = rememberScaffoldState(),
@@ -41,13 +46,23 @@ fun MemberMain(
             bottomBar = {
                 BottomNavigationTab(
                     navController = childNavController,
-                    navigateToScreen = navigateToScreen
+                    navigateToScreen = { tab -> viewModel.setEvent(MemberMainContract.MemberMainUiEvent.OnClickBottomNavigationTab(tab)) }
                 )
             }
         ) { innerPadding ->
 
             LaunchedEffect(key1 = viewModel.effect) {
-                viewModel.effect.collect {}
+                viewModel.effect.collect { uiEffect ->
+                    when (uiEffect) {
+                        is MemberMainContract.MemberMainUiSideEffect.NavigateToRoute -> {
+                            navigateBottomNavigationScreen(
+                                qrScreenNavigate = navigateToScreen,
+                                navController = childNavController,
+                                tab = uiEffect.tab
+                            )
+                        }
+                    }
+                }
             }
 
             val modifier = Modifier.padding(innerPadding)
@@ -61,10 +76,33 @@ fun MemberMain(
     }
 }
 
+private fun navigateBottomNavigationScreen(
+    qrScreenNavigate: (String) -> Unit,
+    navController: NavController,
+    tab: BottomNavigationItem
+) {
+    when (tab) {
+        BottomNavigationItem.QR_AUTH -> {
+            qrScreenNavigate.invoke(tab.route)
+        }
+        else -> {
+            navController.navigate(tab.route) {
+                navController.graph.startDestinationRoute?.let { route ->
+                    popUpTo(route) {
+                        saveState = true
+                    }
+                }
+                launchSingleTop = true
+                restoreState = true
+            }
+        }
+    }
+}
+
 @Composable
 fun BottomNavigationTab(
     navController: NavController,
-    navigateToScreen: (String) -> Unit
+    navigateToScreen: (BottomNavigationItem) -> Unit
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -74,42 +112,28 @@ fun BottomNavigationTab(
         modifier = Modifier.height(80.dp),
         elevation = 2.dp
     ) {
-        BottomNavigationItem.values().forEach { tab ->
+        for (navigationTab in BottomNavigationItem.values()) {
             BottomNavigationItem(
                 modifier = Modifier.padding(8.dp),
                 icon = {
                     Icon(
-                        imageVector = ImageVector.vectorResource(id = tab.icon),
+                        imageVector = ImageVector.vectorResource(id = navigationTab.icon),
                         contentDescription = null,
                         modifier = Modifier.padding(4.dp),
-                        tint = if (tab == BottomNavigationItem.QR_AUTH) Color.Unspecified else LocalContentColor.current,
+                        tint = if (navigationTab == BottomNavigationItem.QR_AUTH) Color.Unspecified else LocalContentColor.current,
                     )
                 },
-                label = if (tab.title != null) {
-                    {
+                label = if (navigationTab.title != null) {
+                    @Composable {
                         Text(
-                            text = stringResource(tab.title),
-                            color = if(tab.route == currentRoute) Gray_1000 else Gray_600,
+                            text = stringResource(navigationTab.title),
+                            color = if (navigationTab.route == currentRoute) Gray_1000 else Gray_600,
                             style = AttendanceTypography.caption
                         )
                     }
                 } else null,
-                selected = tab.route == currentRoute,
-                onClick = {
-                    if (tab.route == AttendanceScreenRoute.QR_AUTH.route) {
-                        navigateToScreen(AttendanceScreenRoute.QR_AUTH.route)
-                    } else {
-                        navController.navigate(tab.route) {
-                            navController.graph.startDestinationRoute?.let { route ->
-                                popUpTo(route) {
-                                    saveState = true
-                                }
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }
-                },
+                selected = navigationTab.route == currentRoute,
+                onClick = { navigateToScreen.invoke(navigationTab) },
                 selectedContentColor = Yapp_Orange,
                 unselectedContentColor = Gray_600,
             )
