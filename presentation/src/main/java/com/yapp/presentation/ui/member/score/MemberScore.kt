@@ -37,6 +37,7 @@ import com.yapp.domain.util.DateUtil
 import com.yapp.presentation.R
 import com.yapp.presentation.model.Attendance
 import com.yapp.presentation.model.Session
+import com.yapp.presentation.util.attendance.checkSessionAttendance
 
 @Composable
 fun MemberScore(
@@ -267,7 +268,7 @@ private fun AttendUserSession(
     val attendance = attendanceInfo.second
 
     YDSAttendanceList(
-        attendanceType = checkSessionAttendance(session, attendance),
+        attendanceType = checkSessionAttendance(session, attendance)!!,
         date = session.date,
         title = session.title,
         description = session.description,
@@ -282,27 +283,6 @@ private fun AttendUserSession(
             .padding(horizontal = 24.dp)
             .background(Gray_200)
     )
-}
-
-private fun checkSessionAttendance(
-    session: Session,
-    attendance: Attendance
-): AttendanceType {
-    if (!DateUtil.isPastSession(session.date)) {
-        return AttendanceType.TBD
-    }
-    if (session.type == NeedToAttendType.DONT_NEED_ATTENDANCE) {
-        return AttendanceType.NO_ATTENDANCE
-    }
-    if (session.type == NeedToAttendType.DAY_OFF) {
-        return AttendanceType.NO_YAPP
-    }
-    return when (attendance.attendanceType) {
-        com.yapp.presentation.model.AttendanceType.Absent -> AttendanceType.ABSENT
-        com.yapp.presentation.model.AttendanceType.Admit -> AttendanceType.ATTEND
-        com.yapp.presentation.model.AttendanceType.Late -> AttendanceType.TARDY
-        com.yapp.presentation.model.AttendanceType.Normal -> AttendanceType.ATTEND
-    }
 }
 
 private fun fillColorByUserScore(score: Int): Color {

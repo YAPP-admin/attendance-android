@@ -33,7 +33,6 @@ class SessionDetailViewModel @Inject constructor(
                                 val attendance = entities.second?.map { entity -> entity.mapTo() }
                                 if (!attendance.isNullOrEmpty()) {
                                     val attendanceList = session zip attendance
-                                    Log.d("####", attendanceList[sessionId].toString())
                                     setState { copy(session = attendanceList[sessionId]) }
                                 }
                             },
