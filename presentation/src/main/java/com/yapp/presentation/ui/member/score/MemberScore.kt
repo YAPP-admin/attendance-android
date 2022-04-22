@@ -60,13 +60,13 @@ fun MemberScore(
         LazyColumn {
             item {
                 HelpIcon(navigateToHelpScreen)
-                SemiCircleProgressBar(uiState.lastAttendanceList.fold(100f) {total, pair -> total + pair.second.attendanceType.point})
+                SemiCircleProgressBar(uiState.lastAttendanceList.fold(100f) { total, pair -> total + pair.second.attendanceType.point })
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(4.dp)
                 )
-                UserAttendanceTable()
+                UserAttendanceTable(uiState.lastAttendanceList)
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -187,7 +187,7 @@ fun SemiCircleProgressBar(score: Float) {
 }
 
 @Composable
-fun UserAttendanceTable() {
+fun UserAttendanceTable(lastAttendanceList: List<Pair<Session, Attendance>>) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -200,19 +200,21 @@ fun UserAttendanceTable() {
         AttendanceCell(
             topText = stringResource(R.string.member_score_attend_text),
             topIconResId = R.drawable.icon_attend,
-            bottomText = "10"
+            bottomText = lastAttendanceList.filter {
+                (it.first.type == NeedToAttendType.NEED_ATTENDANCE) and
+                (it.second.attendanceType == com.yapp.presentation.model.AttendanceType.Normal) }.size.toString()
         )
 
         AttendanceCell(
             topText = stringResource(R.string.member_score_tardy_text),
             topIconResId = R.drawable.icon_tardy,
-            bottomText = "1"
+            bottomText = lastAttendanceList.filter { it.second.attendanceType == com.yapp.presentation.model.AttendanceType.Late }.size.toString()
         )
 
         AttendanceCell(
             topText = stringResource(R.string.member_score_absent_text),
             topIconResId = R.drawable.icon_absent,
-            bottomText = "10"
+            bottomText = lastAttendanceList.filter { it.second.attendanceType == com.yapp.presentation.model.AttendanceType.Absent }.size.toString()
         )
     }
 }
