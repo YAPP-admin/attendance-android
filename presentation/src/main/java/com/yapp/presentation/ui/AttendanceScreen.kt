@@ -241,7 +241,7 @@ fun AttendanceScreen(
             route = AttendanceScreenRoute.SIGNUP_NAME.route
         ) {
             Name(
-                onClickBackBtn = { navController.popBackStack() },
+                onClickBackBtn = { navController.navigate(AttendanceScreenRoute.LOGIN.route) },
                 onClickNextBtn = { userName -> navController.navigate(AttendanceScreenRoute.SIGNUP_POSITION.route + "/${userName}") })
         }
 
