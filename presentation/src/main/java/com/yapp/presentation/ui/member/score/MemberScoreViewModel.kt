@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.usecases.GetMemberAttendanceListUseCase
 import com.yapp.domain.usecases.GetSessionListUseCase
+import com.yapp.domain.util.DateUtil
 import com.yapp.presentation.model.Attendance.Companion.mapTo
 import com.yapp.presentation.model.Session.Companion.mapTo
 import com.yapp.presentation.ui.admin.main.AdminMainContract
@@ -36,7 +37,12 @@ class MemberScoreViewModel @Inject constructor(
                                 setState {
                                     copy(
                                         loadState = MemberScoreUiState.LoadState.Idle,
-                                        attendanceList = attendanceList
+                                        attendanceList = attendanceList,
+                                        lastAttendanceList = attendanceList.filter {
+                                            DateUtil.isPastSession(
+                                                it.first.date
+                                            )
+                                        }
                                     )
                                 }
                             } else {

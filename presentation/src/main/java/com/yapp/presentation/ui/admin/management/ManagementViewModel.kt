@@ -46,7 +46,7 @@ class ManagementViewModel @Inject constructor(
         when (event) {
             is ManagementEvent.OnDropDownButtonClicked -> {
                 setState { this.copy(selectedMember = event.member) }
-                setEffect(ManagementSideEffect.OpenBottomSheetDialog())
+                setEffect(ManagementSideEffect.OpenBottomSheetDialog)
             }
 
             is ManagementEvent.OnAttendanceTypeChanged -> {

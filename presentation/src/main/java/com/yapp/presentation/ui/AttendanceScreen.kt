@@ -121,6 +121,13 @@ fun AttendanceScreen(
                             .plus("/${sessionId}")
                             .plus("/${sessionTitle}")
                     )
+                },
+                navigateToLogin = {
+                    navController.navigate(
+                        AttendanceScreenRoute.LOGIN.route
+                    ) {
+                        popUpTo(AttendanceScreenRoute.ADMIN_MAIN.route) { inclusive = true }
+                    }
                 }
             )
         }
@@ -209,7 +216,8 @@ fun AttendanceScreen(
                     type = NavType.IntType
                 },
             )
-        ) { SessionDetail { navController.popBackStack() }
+        ) {
+            SessionDetail { navController.popBackStack() }
         }
 
         composable(

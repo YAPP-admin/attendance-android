@@ -10,6 +10,7 @@ class MemberScoreContract {
     data class MemberScoreUiState(
         val loadState: LoadState = LoadState.Idle,
         val attendanceList: List<Pair<Session, Attendance>> = emptyList(),
+        val lastAttendanceList: List<Pair<Session, Attendance>> = emptyList()
     ) : UiState {
         enum class LoadState {
             Loading, Idle, Error

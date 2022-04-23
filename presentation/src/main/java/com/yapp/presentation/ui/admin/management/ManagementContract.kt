@@ -35,11 +35,11 @@ class ManagementContract {
     }
 
     sealed class ManagementEvent : UiEvent {
-        class OnDropDownButtonClicked(val member: ManagementState.MemberState) : ManagementEvent()
-        class OnAttendanceTypeChanged(val attendanceType: AttendanceType) : ManagementEvent()
+        data class OnDropDownButtonClicked(val member: ManagementState.MemberState) : ManagementEvent()
+        data class OnAttendanceTypeChanged(val attendanceType: AttendanceType) : ManagementEvent()
     }
 
     sealed class ManagementSideEffect : UiSideEffect {
-        class OpenBottomSheetDialog : ManagementSideEffect()
+        object OpenBottomSheetDialog : ManagementSideEffect()
     }
 }
