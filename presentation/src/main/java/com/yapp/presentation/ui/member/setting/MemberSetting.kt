@@ -27,7 +27,7 @@ fun MemberSetting(
     onClickBackButton: () -> Unit,
     onClickAdminButton: () -> Unit,
     onClickLogoutButton: () -> Unit,
-    onClickPrivacyPolicyButton: () -> Unit
+    onClickPrivacyPolicyButton: () -> Unit,
 ) {
     val uiState = viewModel.uiState.collectAsState()
 
@@ -59,13 +59,13 @@ fun MemberSetting(
                 .verticalScroll(rememberScrollState())
         ) {
             GroupInfo()
-            Profile()
+            Profile(uiState.value.memberName)
             ChangeAdminButton(onClickAdminButton)
             Divide()
             MenuList(viewModel)
         }
 
-        if(uiState.value.isLoading) {
+        if (uiState.value.isLoading) {
             YDSProgressBar()
         }
     }
@@ -85,7 +85,7 @@ private fun GroupInfo() {
 }
 
 @Composable
-private fun Profile() {
+private fun Profile(name: String) {
     Column(
         modifier = Modifier.padding(horizontal = 24.dp, vertical = 28.dp)
     ) {
@@ -96,7 +96,7 @@ private fun Profile() {
                 .fillMaxWidth()
         )
         Text(
-            text = "YAPP@gmail.com 님",
+            text = stringResource(id = string.member_setting_name, name),
             color = Gray_800,
             modifier = Modifier
                 .fillMaxWidth()

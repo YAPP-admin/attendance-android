@@ -4,7 +4,9 @@ import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.common.KakaoSdkProviderInterface
 import com.yapp.domain.usecases.DeleteMemberInfoUseCase
+import com.yapp.domain.usecases.GetFirestoreMemberUseCase
 import com.yapp.domain.usecases.GetMemberIdUseCase
+import com.yapp.presentation.model.Member.Companion.mapTo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -14,11 +16,26 @@ import javax.inject.Inject
 class MemberSettingViewModel @Inject constructor(
     private val kakaoSdkProvider: KakaoSdkProviderInterface,
     private val getMemberIdUseCase: GetMemberIdUseCase,
-    private val deleteMemberInfoUseCase: DeleteMemberInfoUseCase
+    private val getFirestoreMemberUseCase: GetFirestoreMemberUseCase,
+    private val deleteMemberInfoUseCase: DeleteMemberInfoUseCase,
 ) :
     BaseViewModel<MemberSettingContract.MemberSettingUiState, MemberSettingContract.MemberSettingUiSideEffect, MemberSettingContract.MemberSettingUiEvent>(
         MemberSettingContract.MemberSettingUiState()
     ) {
+
+    init {
+        viewModelScope.launch {
+            setState { copy(isLoading = true) }
+            getFirestoreMemberUseCase().collectWithCallback(
+                onSuccess = {
+                    setState { copy(isLoading = false, memberName = it?.mapTo()?.name ?: "") }
+                },
+                onFailed = {
+                    setState { copy(isLoading = false) }
+                }
+            )
+        }
+    }
 
     private fun logout() {
         kakaoSdkProvider.logout(

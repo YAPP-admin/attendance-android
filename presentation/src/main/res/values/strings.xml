@@ -44,6 +44,7 @@
     <string name="name_cancel_dialog_cancel">취소합니다</string>
 
     <string name="member_setting_title">설정</string>
+    <string name="member_setting_name">%s 님</string>
     <string name="member_setting_version_info_text">버전 정보</string>
     <string name="member_setting_privacy_policy_text">개인정보 처리방침</string>
     <string name="member_setting_logout_text">로그아웃</string>
