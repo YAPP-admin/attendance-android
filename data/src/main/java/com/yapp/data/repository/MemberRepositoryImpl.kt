@@ -7,7 +7,9 @@ import com.yapp.data.model.MemberModel.Companion.mapToEntity
 import com.yapp.data.util.memberRef
 import com.yapp.domain.model.MemberEntity
 import com.yapp.domain.repository.MemberRepository
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.tasks.await
@@ -45,15 +47,30 @@ class MemberRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun deleteMember(id: Long): Flow<Boolean> {
+        return callbackFlow {
+            fireStore.memberRef()
+                .document(id.toString())
+                .delete()
+                .addOnCompleteListener {
+                    trySend(it.isSuccessful)
+                }
+
+            awaitClose {
+                close()
+            }
+        }
+    }
+
     override fun getAllMember(): Flow<List<MemberEntity>> {
         return flow {
             val snapshot = fireStore.memberRef()
                 .get()
                 .await()
 
-            if(snapshot.documents.isNotEmpty()) {
+            if (snapshot.documents.isNotEmpty()) {
                 val entities = snapshot.documents.map { document ->
-                    val model =  document.toObject(MemberModel::class.java)
+                    val model = document.toObject(MemberModel::class.java)
                     val entity = model!!.mapToEntity()
                     entity
                 }

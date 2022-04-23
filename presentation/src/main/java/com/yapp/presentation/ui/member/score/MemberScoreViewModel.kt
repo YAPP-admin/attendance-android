@@ -23,7 +23,6 @@ class MemberScoreViewModel @Inject constructor(
     MemberScoreUiState()
 ) {
     init {
-        //제거하기
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 getMemberAttendanceListUseCase()

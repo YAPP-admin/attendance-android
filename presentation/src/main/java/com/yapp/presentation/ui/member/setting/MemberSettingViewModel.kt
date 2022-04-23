@@ -1,15 +1,20 @@
 package com.yapp.presentation.ui.member.setting
 
-import android.util.Log
-import com.kakao.sdk.user.UserApiClient
+import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.common.KakaoSdkProviderInterface
+import com.yapp.domain.usecases.DeleteMemberInfoUseCase
+import com.yapp.domain.usecases.GetMemberIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MemberSettingViewModel @Inject constructor(
-    private val kakaoSdkProvider: KakaoSdkProviderInterface
+    private val kakaoSdkProvider: KakaoSdkProviderInterface,
+    private val getMemberIdUseCase: GetMemberIdUseCase,
+    private val deleteMemberInfoUseCase: DeleteMemberInfoUseCase
 ) :
     BaseViewModel<MemberSettingContract.MemberSettingUiState, MemberSettingContract.MemberSettingUiSideEffect, MemberSettingContract.MemberSettingUiEvent>(
         MemberSettingContract.MemberSettingUiState()
@@ -24,14 +29,47 @@ class MemberSettingViewModel @Inject constructor(
                 // 실패했다는 토스트
             }
         )
+    }
 
-        // 카카오 로그인 외에, 저장된 모든 정보를 지우는 유즈케이스가 필요함.
+    private fun withdraw() {
+        viewModelScope.launch {
+            setState { copy(isLoading = true) }
+            getMemberIdUseCase().collectWithCallback(
+                onSuccess = { memberId ->
+                    deleteMemberInfoUseCase(memberId)
+                        .collect { isSucceed ->
+                            if (isSucceed) {
+                                kakaoSdkProvider.withdraw(
+                                    onSuccess = {
+                                        setEffect(MemberSettingContract.MemberSettingUiSideEffect.NavigateToLoginScreen)
+                                        setState { copy(isLoading = false) }
+                                    },
+                                    onFailed = {
+                                        setState { copy(isLoading = false) }
+                                    }
+                                )
+                            } else {
+                                setState { copy(isLoading = false) }
+                            }
+                        }
+                },
+                onFailed = {
+                    setState { copy(isLoading = false) }
+                    // 실패했다는 토스트
+                }
+            )
+
+        }
     }
 
     override suspend fun handleEvent(event: MemberSettingContract.MemberSettingUiEvent) {
         when (event) {
             is MemberSettingContract.MemberSettingUiEvent.OnLogoutButtonClicked -> {
                 logout()
+            }
+
+            is MemberSettingContract.MemberSettingUiEvent.OnWithdrawButtonClicked -> {
+                withdraw()
             }
 
             is MemberSettingContract.MemberSettingUiEvent.OnPrivacyPolicyButtonClicked -> {

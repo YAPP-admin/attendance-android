@@ -184,13 +184,10 @@ private fun ChildNavigation(
                 navigateToHelpScreen = {
                     navigateToScreen(AttendanceScreenRoute.HELP.route)
                 },
-                navigateToSessionDetail = { session, attendanceType ->
+                navigateToSessionDetail = { sessionId ->
                     navigateToScreen(
                         AttendanceScreenRoute.SESSION_DETAIL.route
-                            .plus("?title=${session.title}")
-                            .plus("?description=${session.description}")
-                            .plus("?attendanceType=${attendanceType}")
-                            .plus("?date=${session.date}")
+                            .plus("/${sessionId}")
                     )
                 }
             )
