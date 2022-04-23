@@ -24,12 +24,11 @@ class QrCodeViewModel @Inject constructor(
     QrCodeUiState()
 ) {
     var isAvailableToScan = true
-    var upcomingSessionId = AttendanceList.DEFAULT_UPCOMING_SESSION_ID
+    var todaySessionId = AttendanceList.DEFAULT_UPCOMING_SESSION_ID
     var userId = 0L
 
     init {
-        // TODO: Upcoming Session Id 받아오기
-        upcomingSessionId = 3
+        todaySessionId = TodaySessionInfo.todaySessionId
 
         viewModelScope.launch {
             getMaginotlineTime()
@@ -54,7 +53,7 @@ class QrCodeViewModel @Inject constructor(
 
         try {
             val paredSessionId = AttendanceQrCodeParser.getSessionIdFromBarcode(codeValue)
-            if (paredSessionId == upcomingSessionId) markAttendance(paredSessionId)
+            if (paredSessionId == todaySessionId) markAttendance(paredSessionId)
             else handleQRError("잘못된 코드입니다")
         } catch (e: Exception) {
             handleQRError("잘못된 형식의 코드입니다")

@@ -1,16 +1,15 @@
 package com.yapp.presentation.ui.member.todaysession
 
-import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.usecases.GetMemberAttendancesUseCase
 import com.yapp.domain.usecases.GetUpcomingSessionUseCase
 import com.yapp.presentation.model.Attendance.Companion.mapTo
 import com.yapp.presentation.model.AttendanceType
 import com.yapp.presentation.model.Session.Companion.mapTo
+import com.yapp.presentation.ui.member.qrcodescanner.TodaySessionInfo
 import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -52,6 +51,7 @@ class TodaySessionViewModel @Inject constructor(
                 onSuccess = { entity ->
                     val session = entity?.mapTo()
                     val sessionId = session?.sessionId ?: 0
+                    TodaySessionInfo.todaySessionId = sessionId
                     setState {
                         copy(
                             sessionId = sessionId,
