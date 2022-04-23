@@ -6,7 +6,7 @@ import com.yapp.common.base.UiState
 
 class MemberSettingContract {
     data class MemberSettingUiState(
-        val isLoading: Boolean = true,
+        val isLoading: Boolean = false,
         val showDialog: Boolean = false,
     ) : UiState
 
@@ -17,6 +17,7 @@ class MemberSettingContract {
 
     sealed class MemberSettingUiEvent : UiEvent {
         object OnLogoutButtonClicked : MemberSettingUiEvent()
+        object OnWithdrawButtonClicked : MemberSettingUiEvent()
         object OnPrivacyPolicyButtonClicked : MemberSettingUiEvent()
     }
 }

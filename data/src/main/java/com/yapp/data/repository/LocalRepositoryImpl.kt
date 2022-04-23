@@ -45,4 +45,13 @@ class LocalRepositoryImpl @Inject constructor(
             preferences[MEMBER_ID] = memberId
         }
     }
+
+    override suspend fun deleteAllUserInfo(): Flow<Unit> {
+        return flow {
+            context.dataStore.edit { preferences ->
+                preferences.clear()
+                emit(Unit)
+            }
+        }
+    }
 }

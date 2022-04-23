@@ -76,7 +76,7 @@ fun AttendanceScreen(
             SetStatusBarColorByRoute(it.destination.route)
             Login(
                 navigateToQRMainScreen = {
-                    navController.navigate(AttendanceScreenRoute.SIGNUP_NAME.route) {
+                    navController.navigate(AttendanceScreenRoute.MEMBER_MAIN.route) {
                         popUpTo(AttendanceScreenRoute.LOGIN.route) { inclusive = true }
                     }
                 },
