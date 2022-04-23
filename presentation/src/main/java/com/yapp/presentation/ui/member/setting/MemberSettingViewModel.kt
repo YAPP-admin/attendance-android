@@ -64,7 +64,7 @@ class MemberSettingViewModel @Inject constructor(
                 setEffect(MemberSettingContract.MemberSettingUiSideEffect.NavigateToLoginScreen)
             },
             onFailed = {
-                // 실패했다는 토스트
+                setEffect(MemberSettingContract.MemberSettingUiSideEffect.ShowToast)
             }
         )
     }
@@ -84,16 +84,18 @@ class MemberSettingViewModel @Inject constructor(
                                     },
                                     onFailed = {
                                         setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
+                                        setEffect(MemberSettingContract.MemberSettingUiSideEffect.ShowToast)
                                     }
                                 )
                             } else {
                                 setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
+                                setEffect(MemberSettingContract.MemberSettingUiSideEffect.ShowToast)
                             }
                         }
                 },
                 onFailed = {
                     setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
-                    // 실패했다는 토스트
+                    setEffect(MemberSettingContract.MemberSettingUiSideEffect.ShowToast)
                 }
             )
 

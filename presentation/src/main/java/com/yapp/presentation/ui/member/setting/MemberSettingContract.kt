@@ -19,6 +19,7 @@ class MemberSettingContract {
     sealed class MemberSettingUiSideEffect : UiSideEffect {
         object NavigateToLoginScreen : MemberSettingUiSideEffect()
         object NavigateToPrivacyPolicyScreen : MemberSettingUiSideEffect()
+        object ShowToast : MemberSettingUiSideEffect()
     }
 
     sealed class MemberSettingUiEvent : UiEvent {

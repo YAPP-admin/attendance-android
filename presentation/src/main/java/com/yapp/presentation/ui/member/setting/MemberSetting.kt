@@ -1,5 +1,6 @@
 package com.yapp.presentation.ui.member.setting
 
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
@@ -27,7 +28,9 @@ fun MemberSetting(
     onClickLogoutButton: () -> Unit,
     onClickPrivacyPolicyButton: () -> Unit,
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
+    val errorMessage = stringResource(id = string.member_setting_error_message)
 
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collect { effect ->
@@ -37,6 +40,9 @@ fun MemberSetting(
                 }
                 is MemberSettingContract.MemberSettingUiSideEffect.NavigateToPrivacyPolicyScreen -> {
                     onClickPrivacyPolicyButton()
+                }
+                is MemberSettingContract.MemberSettingUiSideEffect.ShowToast -> {
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                 }
             }
         }
