@@ -1,6 +1,5 @@
 package com.yapp.presentation.ui.member.setting
 
-import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
@@ -18,7 +17,6 @@ import com.yapp.common.R
 import com.yapp.common.theme.*
 import com.yapp.common.yds.*
 import com.yapp.presentation.R.*
-import com.yapp.presentation.ui.login.LoginContract
 import kotlinx.coroutines.flow.collect
 
 @Composable
@@ -29,7 +27,7 @@ fun MemberSetting(
     onClickLogoutButton: () -> Unit,
     onClickPrivacyPolicyButton: () -> Unit,
 ) {
-    val uiState = viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collect { effect ->
@@ -58,16 +56,18 @@ fun MemberSetting(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            GroupInfo(uiState.value.generation)
-            Profile(uiState.value.memberName)
+            GroupInfo(uiState.generation)
+            Profile(uiState.memberName)
             ChangeAdminButton(onClickAdminButton)
             Divide()
             MenuList(viewModel)
         }
+    }
 
-        if (uiState.value.isLoading) {
-            YDSProgressBar()
-        }
+    if (uiState.loadState == MemberSettingContract.LoadState.Loading) {
+        YDSProgressBar()
+    } else if (uiState.loadState == MemberSettingContract.LoadState.Error) {
+        YDSEmptyScreen()
     }
 }
 

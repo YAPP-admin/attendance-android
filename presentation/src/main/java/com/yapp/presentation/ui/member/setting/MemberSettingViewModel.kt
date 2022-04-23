@@ -28,25 +28,31 @@ class MemberSettingViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            setState { copy(isLoading = true) }
+            setState { copy(loadState = MemberSettingContract.LoadState.Loading) }
             getFirestoreMemberUseCase().collectWithCallback(
                 onSuccess = {
-                    setState { copy(isLoading = false, memberName = it?.mapTo()?.name ?: "") }
+                    setState {
+                        copy(loadState = MemberSettingContract.LoadState.Idle,
+                            memberName = it?.mapTo()?.name ?: "")
+                    }
                 },
                 onFailed = {
-                    setState { copy(isLoading = false) }
+                    setState { copy(loadState = MemberSettingContract.LoadState.Error) }
                 }
             )
         }
 
         viewModelScope.launch {
-            setState { copy(isLoading = true) }
+            setState { copy(loadState = MemberSettingContract.LoadState.Loading) }
             getConfigUseCase().collectWithCallback(
                 onSuccess = {
-                    setState { copy(isLoading = false, generation = it.mapTo().generation) }
+                    setState {
+                        copy(loadState = MemberSettingContract.LoadState.Idle,
+                            generation = it.mapTo().generation)
+                    }
                 },
                 onFailed = {
-                    setState { copy(isLoading = false) }
+                    setState { copy(loadState = MemberSettingContract.LoadState.Error) }
                 }
             )
         }
@@ -65,7 +71,7 @@ class MemberSettingViewModel @Inject constructor(
 
     private fun withdraw() {
         viewModelScope.launch {
-            setState { copy(isLoading = true) }
+            setState { copy(loadState = MemberSettingContract.LoadState.Loading) }
             getMemberIdUseCase().collectWithCallback(
                 onSuccess = { memberId ->
                     deleteMemberInfoUseCase(memberId)
@@ -74,19 +80,19 @@ class MemberSettingViewModel @Inject constructor(
                                 kakaoSdkProvider.withdraw(
                                     onSuccess = {
                                         setEffect(MemberSettingContract.MemberSettingUiSideEffect.NavigateToLoginScreen)
-                                        setState { copy(isLoading = false) }
+                                        setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
                                     },
                                     onFailed = {
-                                        setState { copy(isLoading = false) }
+                                        setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
                                     }
                                 )
                             } else {
-                                setState { copy(isLoading = false) }
+                                setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
                             }
                         }
                 },
                 onFailed = {
-                    setState { copy(isLoading = false) }
+                    setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
                     // 실패했다는 토스트
                 }
             )
