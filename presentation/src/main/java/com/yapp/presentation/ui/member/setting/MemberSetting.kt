@@ -58,7 +58,7 @@ fun MemberSetting(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            GroupInfo()
+            GroupInfo(uiState.value.generation)
             Profile(uiState.value.memberName)
             ChangeAdminButton(onClickAdminButton)
             Divide()
@@ -72,9 +72,9 @@ fun MemberSetting(
 }
 
 @Composable
-private fun GroupInfo() {
+private fun GroupInfo(generation: Int) {
     Text(
-        text = "YAPP 20기 회원",
+        text = stringResource(id = string.member_setting_generation, generation),
         color = Yapp_Orange,
         modifier = Modifier
             .fillMaxWidth()

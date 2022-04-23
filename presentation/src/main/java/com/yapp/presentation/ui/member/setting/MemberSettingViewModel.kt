@@ -4,8 +4,10 @@ import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.common.KakaoSdkProviderInterface
 import com.yapp.domain.usecases.DeleteMemberInfoUseCase
+import com.yapp.domain.usecases.GetConfigUseCase
 import com.yapp.domain.usecases.GetFirestoreMemberUseCase
 import com.yapp.domain.usecases.GetMemberIdUseCase
+import com.yapp.presentation.model.Config.Companion.mapTo
 import com.yapp.presentation.model.Member.Companion.mapTo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -18,6 +20,7 @@ class MemberSettingViewModel @Inject constructor(
     private val getMemberIdUseCase: GetMemberIdUseCase,
     private val getFirestoreMemberUseCase: GetFirestoreMemberUseCase,
     private val deleteMemberInfoUseCase: DeleteMemberInfoUseCase,
+    private val getConfigUseCase: GetConfigUseCase,
 ) :
     BaseViewModel<MemberSettingContract.MemberSettingUiState, MemberSettingContract.MemberSettingUiSideEffect, MemberSettingContract.MemberSettingUiEvent>(
         MemberSettingContract.MemberSettingUiState()
@@ -29,6 +32,18 @@ class MemberSettingViewModel @Inject constructor(
             getFirestoreMemberUseCase().collectWithCallback(
                 onSuccess = {
                     setState { copy(isLoading = false, memberName = it?.mapTo()?.name ?: "") }
+                },
+                onFailed = {
+                    setState { copy(isLoading = false) }
+                }
+            )
+        }
+
+        viewModelScope.launch {
+            setState { copy(isLoading = true) }
+            getConfigUseCase().collectWithCallback(
+                onSuccess = {
+                    setState { copy(isLoading = false, generation = it.mapTo().generation) }
                 },
                 onFailed = {
                     setState { copy(isLoading = false) }

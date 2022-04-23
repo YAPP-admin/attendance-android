@@ -8,6 +8,7 @@ class MemberSettingContract {
     data class MemberSettingUiState(
         val isLoading: Boolean = false,
         val showDialog: Boolean = false,
+        val generation: Int = 0,
         val memberName: String = "",
     ) : UiState
 
