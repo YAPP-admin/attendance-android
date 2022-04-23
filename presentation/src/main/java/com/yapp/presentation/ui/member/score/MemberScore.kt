@@ -38,6 +38,8 @@ import com.yapp.presentation.R
 import com.yapp.presentation.model.Attendance
 import com.yapp.presentation.model.Session
 import com.yapp.presentation.util.attendance.checkSessionAttendance
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun MemberScore(
@@ -269,7 +271,10 @@ private fun AttendUserSession(
 
     YDSAttendanceList(
         attendanceType = checkSessionAttendance(session, attendance)!!,
-        date = session.date,
+        date = SimpleDateFormat(
+            "MM.dd",
+            Locale.KOREA
+        ).format(SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA).parse(session.date)?.time),
         title = session.title,
         description = session.description,
     ) {
