@@ -22,6 +22,7 @@ class SessionDetailViewModel @Inject constructor(
 ) {
 
     init {
+        setState { copy(loadState = SessionDetailContract.SessionDetailUiState.LoadState.Loading) }
         val sessionId = savedStateHandle.get<Int>("session")
         if (sessionId != null) {
             viewModelScope.launch {
@@ -33,14 +34,19 @@ class SessionDetailViewModel @Inject constructor(
                                 val attendance = entities.second?.map { entity -> entity.mapTo() }
                                 if (!attendance.isNullOrEmpty()) {
                                     val attendanceList = session zip attendance
-                                    setState { copy(session = attendanceList[sessionId]) }
+                                    setState { copy(loadState = SessionDetailContract.SessionDetailUiState.LoadState.Idle, session = attendanceList[sessionId]) }
+                                } else {
+                                    setState { copy(loadState = SessionDetailContract.SessionDetailUiState.LoadState.Error) }
                                 }
                             },
                             onFailed = {
+                                setState { copy(loadState = SessionDetailContract.SessionDetailUiState.LoadState.Error) }
                             }
                         )
                 }
             }
+        } else {
+            setState { copy(loadState = SessionDetailContract.SessionDetailUiState.LoadState.Error) }
         }
     }
 
