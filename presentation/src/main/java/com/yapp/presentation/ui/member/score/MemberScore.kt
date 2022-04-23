@@ -29,9 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.res.ResourcesCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.theme.*
-import com.yapp.common.yds.AttendanceType
-import com.yapp.common.yds.YDSAppBar
-import com.yapp.common.yds.YDSAttendanceList
+import com.yapp.common.yds.*
 import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.domain.util.DateUtil
 import com.yapp.presentation.R
@@ -59,35 +57,55 @@ fun MemberScore(
         modifier = modifier
             .fillMaxSize()
     ) {
-        LazyColumn {
-            item {
-                HelpIcon(navigateToHelpScreen)
-                //todo score 주입 필요!
-                SemiCircleProgressBar(60f)
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(4.dp)
-                )
-                UserAttendanceTable()
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(12.dp)
-                        .background(color = Gray_200)
-                )
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(28.dp)
-                )
-            }
-            items(uiState.attendanceList) { attendanceInfo ->
-                AttendUserSession(attendanceInfo, navigateToSessionDetail)
-            }
+        when (uiState.loadState) {
+            MemberScoreContract.MemberScoreUiState.LoadState.Loading -> YDSProgressBar()
+            MemberScoreContract.MemberScoreUiState.LoadState.Error -> YDSEmptyScreen()
+            MemberScoreContract.MemberScoreUiState.LoadState.Idle -> MemberScoreScreen(
+                uiState = uiState,
+                navigateToHelpScreen = navigateToHelpScreen,
+                navigateToSessionDetail = navigateToSessionDetail
+            )
+        }
+
+    }
+}
+
+
+@Composable
+fun MemberScoreScreen(
+    uiState: MemberScoreContract.MemberScoreUiState,
+    navigateToHelpScreen: () -> Unit,
+    navigateToSessionDetail: (Int) -> Unit
+) {
+    LazyColumn {
+        item {
+            HelpIcon(navigateToHelpScreen)
+            //todo score 주입 필요!
+            SemiCircleProgressBar(60f)
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(4.dp)
+            )
+            UserAttendanceTable()
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(12.dp)
+                    .background(color = Gray_200)
+            )
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(28.dp)
+            )
+        }
+        items(uiState.attendanceList) { attendanceInfo ->
+            AttendUserSession(attendanceInfo, navigateToSessionDetail)
         }
     }
 }
+
 
 @Composable
 private fun HelpIcon(navigateToHelpScreen: () -> Unit) {
