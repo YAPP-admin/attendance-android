@@ -53,8 +53,10 @@ class TeamViewModel @Inject constructor(
                 setState { copy(selectedTeam = uiState.value.selectedTeam.copy(number = event.teamNum)) }
             }
             is TeamUiEvent.ConfirmTeam -> {
-                require(savedStateHandle.get<String>("name") != null) { setEffect(TeamSideEffect.ShowToast("회원가입 실패"))}
-                require(savedStateHandle.get<String>("position") != null) { setEffect(TeamSideEffect.ShowToast("회원가입 실패"))}
+                if(savedStateHandle.get<String>("name") == null || savedStateHandle.get<String>("position") == null) {
+                    setEffect(TeamSideEffect.ShowToast("회원가입 실패"))
+                    return
+                }
 
                 signUpMember(
                     memberName = savedStateHandle.get<String>("name")!!,
