@@ -22,8 +22,8 @@ class QrCodeContract {
     }
 
     sealed class QrCodeUiEvent : UiEvent {
-        class ScanQrCode(val codeValue: String?) : QrCodeUiEvent()
-        class GetScannerError(val errorMessage: String) : QrCodeUiEvent()
+        data class ScanQrCode(val codeValue: String?) : QrCodeUiEvent()
+        data class GetScannerError(val errorMessage: String) : QrCodeUiEvent()
     }
 
     enum class AttendanceState {
