@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -58,16 +59,19 @@ fun QrCodeScanner(
     val context = LocalContext.current
     var showQrScanner by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
-    val uiState by viewModel.uiState.collectAsState()
     var toastVisible by remember { mutableStateOf(false) }
+    val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collect { effect ->
             when (effect) {
                 is QrCodeContract.QrCodeUiSideEffect.ShowToast -> {
-                    toastVisible = !toastVisible
+                    toastVisible = true
+                }
+                is QrCodeContract.QrCodeUiSideEffect.ShowToastAndHide -> {
+                    toastVisible = true
                     delay(1000L)
-                    toastVisible = !toastVisible
+                    toastVisible = false
                 }
             }
         }
@@ -107,7 +111,7 @@ fun QrCodeScanner(
                         viewModel.setEvent(QrCodeContract.QrCodeUiEvent.ScanQrCode(qrCode.rawValue))
                     },
                     detectedError = { informText ->
-                        viewModel.setEvent(QrCodeContract.QrCodeUiEvent.GetErrorMessage(informText))
+                        viewModel.setEvent(QrCodeContract.QrCodeUiEvent.GetScannerError(informText))
                     }
                 )
                 ScannerDecoration(
@@ -126,14 +130,24 @@ fun QrCodeScanner(
 
                 when (uiState.attendanceState) {
                     QrCodeContract.AttendanceState.STAND_BY -> {
-                        NoticeText(
-                            modifier = Modifier.constrainAs(noticeText) {
-                                bottom.linkTo(guideline, 162.dp)
-                                absoluteLeft.linkTo(parent.absoluteLeft)
-                                absoluteRight.linkTo(parent.absoluteRight)
-                            },
-                            maginotlineTime = uiState.maginotlineTime
-                        )
+                        if (uiState.maginotlineTime.isBlank()) {
+                            ErrorText(
+                                modifier = Modifier.constrainAs(noticeText) {
+                                    bottom.linkTo(guideline, 186.dp)
+                                    absoluteLeft.linkTo(parent.absoluteLeft)
+                                    absoluteRight.linkTo(parent.absoluteRight)
+                                }
+                            )
+                        } else {
+                            NoticeText(
+                                modifier = Modifier.constrainAs(noticeText) {
+                                    bottom.linkTo(guideline, 162.dp)
+                                    absoluteLeft.linkTo(parent.absoluteLeft)
+                                    absoluteRight.linkTo(parent.absoluteRight)
+                                },
+                                maginotlineTime = uiState.maginotlineTime
+                            )
+                        }
                     }
                     QrCodeContract.AttendanceState.SUCCESS -> {
                         SuccessLottie(
@@ -159,10 +173,12 @@ fun QrCodeScanner(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 90.dp),
+                .padding(bottom = 110.dp),
             contentAlignment = Alignment.BottomCenter
         ) {
-            YDSToast(text = uiState.toastMsg)
+            YDSToast(
+                text = uiState.toastMessage
+            )
         }
     }
 
@@ -170,8 +186,8 @@ fun QrCodeScanner(
         YDSPopupDialog(
             title = stringResource(id = R.string.member_qr_permission_dialog_title_text),
             content = stringResource(id = R.string.member_qr_permission_dialog_content_text),
-            negativeButtonText = stringResource(id = R.string.member_qr_permission_dialog_negative_text),
-            positiveButtonText = stringResource(id = R.string.member_qr_permission_dialog_positive_text),
+            negativeButtonText = stringResource(id = R.string.member_qr_permission_dialog_negative_button),
+            positiveButtonText = stringResource(id = R.string.member_qr_permission_dialog_positive_button),
             onClickPositiveButton = { intentToAppSetting(context) },
             onClickNegativeButton = { navigateToPreviousScreen() },
             onDismiss = { navigateToPreviousScreen() }
@@ -273,6 +289,19 @@ fun ScannerDecoration(
             contentDescription = null
         )
     }
+}
+
+@Composable
+fun ErrorText(
+    modifier: Modifier = Modifier
+) {
+    Text(
+        modifier = modifier,
+        text = stringResource(id = R.string.member_qr_fail_to_get_information_text),
+        color = Color.White,
+        style = AttendanceTypography.body1,
+        textAlign = TextAlign.Center
+    )
 }
 
 @Composable

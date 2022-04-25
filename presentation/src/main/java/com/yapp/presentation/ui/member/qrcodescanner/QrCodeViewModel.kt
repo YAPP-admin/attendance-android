@@ -8,9 +8,11 @@ import com.yapp.domain.model.AttendanceTypeEntity
 import com.yapp.domain.usecases.GetMaginotlineTimeUseCase
 import com.yapp.domain.usecases.GetMemberIdUseCase
 import com.yapp.domain.usecases.SetMemberAttendanceUseCase
-import com.yapp.presentation.model.collections.AttendanceList
+import com.yapp.presentation.R
 import com.yapp.presentation.common.AttendanceBundle
+import com.yapp.presentation.model.collections.AttendanceList
 import com.yapp.presentation.ui.member.qrcodescanner.QrCodeContract.*
+import com.yapp.presentation.util.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -18,6 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class QrCodeViewModel @Inject constructor(
+    private val resourceProvider: ResourceProvider,
     private val getMaginotlineTimeUseCase: GetMaginotlineTimeUseCase,
     private val getMemberIdUseCase: GetMemberIdUseCase,
     private val setMemberAttendanceUseCase: SetMemberAttendanceUseCase
@@ -29,7 +32,12 @@ class QrCodeViewModel @Inject constructor(
     var userId = 0L
 
     init {
-        todaySessionId = AttendanceBundle.upComingSessionId
+        if (AttendanceBundle.upComingSessionId == AttendanceList.DEFAULT_UPCOMING_SESSION_ID) {
+            guideMoveBackToHomeAndDeactivateScan()
+        } else {
+            todaySessionId = AttendanceBundle.upComingSessionId
+        }
+
         viewModelScope.launch {
             getMaginotlineTime()
             getUserId()
@@ -39,24 +47,41 @@ class QrCodeViewModel @Inject constructor(
     override suspend fun handleEvent(event: QrCodeUiEvent) {
         when (event) {
             is QrCodeUiEvent.ScanQrCode -> {
-                if (isAvailableToScan) afterScannedCode(event.codeValue)
+                if (isAvailableToScan) parseQrCode(event.codeValue)
             }
-            is QrCodeUiEvent.GetErrorMessage -> {
-                setState { copy(toastMsg = event.errorMessage) }
-                setEffect(QrCodeUiSideEffect.ShowToast)
+            is QrCodeUiEvent.GetScannerError -> {
+                notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_get_error_please_retry_message))
             }
         }
     }
 
-    private suspend fun afterScannedCode(codeValue: String?) {
-        isAvailableToScan = false
+    private suspend fun getMaginotlineTime() {
+        setState { copy(isLoading = true) }
+        getMaginotlineTimeUseCase().collectWithCallback(
+            onSuccess = { maginotline -> setState { copy(maginotlineTime = maginotline) } },
+            onFailed = { guideMoveBackToHomeAndDeactivateScan() }
+        )
+        setState { copy(isLoading = false) }
+    }
 
+    private suspend fun getUserId() {
+        getMemberIdUseCase().collectWithCallback(
+            onSuccess = { id ->
+                if (id != null) userId = id
+                else guideMoveBackToHomeAndDeactivateScan()
+            },
+            onFailed = { guideMoveBackToHomeAndDeactivateScan() }
+        )
+    }
+
+    private suspend fun parseQrCode(codeValue: String?) {
+        isAvailableToScan = false
         try {
             val paredSessionId = AttendanceQrCodeParser.getSessionIdFromBarcode(codeValue)
             if (paredSessionId == todaySessionId) markAttendance(paredSessionId)
-            else handleQRError("잘못된 코드입니다")
+            else notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_scan_correct_code_error_message))
         } catch (e: Exception) {
-            handleQRError("잘못된 형식의 코드입니다")
+            notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_scan_correct_code_error_message))
         }
     }
 
@@ -72,35 +97,20 @@ class QrCodeViewModel @Inject constructor(
             )
         ).collectWithCallback(
             onSuccess = { setState { copy(attendanceState = AttendanceState.SUCCESS) } },
-            onFailed = { handleQRError("출석 정보 반영에 실패했습니다") }
+            onFailed = { notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_get_error_please_retry_message)) }
         )
     }
 
-    private suspend fun getUserId() {
-        getMemberIdUseCase().collectWithCallback(
-            onSuccess = { id ->
-                if (id != null) userId = id
-                else handleQRError("ID를 받아오지 못했습니다")
-            },
-            onFailed = { handleQRError("ID를 받아오지 못했습니다") }
-        )
-    }
-
-    private suspend fun getMaginotlineTime() {
-        setState { copy(isLoading = true) }
-        getMaginotlineTimeUseCase().collectWithCallback(
-            onSuccess = { maginotline -> setState { copy(maginotlineTime = maginotline) } },
-            onFailed = {
-                // TODO: 출석 마감 정보 불러오지 못했을 때의 에러 처리
-            }
-        )
-        setState { copy(isLoading = false) }
-    }
-
-    private suspend fun handleQRError(errorMsg: String) {
-        setState { copy(toastMsg = errorMsg) }
-        setEffect(QrCodeUiSideEffect.ShowToast)
+    private suspend fun notifyErrorMessageAndActivateScan(errorMsg: String) {
+        setState { copy(toastMessage = errorMsg) }
+        setEffect(QrCodeUiSideEffect.ShowToastAndHide)
         delay(1500L)
         isAvailableToScan = true
+    }
+
+    private fun guideMoveBackToHomeAndDeactivateScan() {
+        isAvailableToScan = false
+        setState { copy(toastMessage = resourceProvider.getString(R.string.member_qr_move_back_to_home_and_retry_error_message)) }
+        setEffect(QrCodeUiSideEffect.ShowToast)
     }
 }

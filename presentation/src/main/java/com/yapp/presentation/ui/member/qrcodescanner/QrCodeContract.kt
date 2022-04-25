@@ -9,7 +9,7 @@ class QrCodeContract {
         val isLoading: Boolean = false,
         val attendanceState: AttendanceState = AttendanceState.STAND_BY,
         val maginotlineTime: String = "",
-        val toastMsg: String = ""
+        val toastMessage: String = ""
     ) : UiState {
         enum class LoadState {
             Loading, Idle, Error
@@ -18,11 +18,12 @@ class QrCodeContract {
 
     sealed class QrCodeUiSideEffect : UiSideEffect {
         object ShowToast : QrCodeUiSideEffect()
+        object ShowToastAndHide : QrCodeUiSideEffect()
     }
 
     sealed class QrCodeUiEvent : UiEvent {
         class ScanQrCode(val codeValue: String?) : QrCodeUiEvent()
-        class GetErrorMessage(val errorMessage: String) : QrCodeUiEvent()
+        class GetScannerError(val errorMessage: String) : QrCodeUiEvent()
     }
 
     enum class AttendanceState {
