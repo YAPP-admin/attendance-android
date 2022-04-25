@@ -18,7 +18,6 @@ import com.yapp.common.R
 import com.yapp.common.theme.*
 import com.yapp.common.yds.*
 import com.yapp.presentation.R.*
-import com.yapp.presentation.ui.login.LoginContract
 import kotlinx.coroutines.flow.collect
 
 @Composable
@@ -27,9 +26,11 @@ fun MemberSetting(
     onClickBackButton: () -> Unit,
     onClickAdminButton: () -> Unit,
     onClickLogoutButton: () -> Unit,
-    onClickPrivacyPolicyButton: () -> Unit
+    onClickPrivacyPolicyButton: () -> Unit,
 ) {
-    val uiState = viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    val uiState by viewModel.uiState.collectAsState()
+    val errorMessage = stringResource(id = string.member_setting_error_message)
 
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collect { effect ->
@@ -39,6 +40,9 @@ fun MemberSetting(
                 }
                 is MemberSettingContract.MemberSettingUiSideEffect.NavigateToPrivacyPolicyScreen -> {
                     onClickPrivacyPolicyButton()
+                }
+                is MemberSettingContract.MemberSettingUiSideEffect.ShowToast -> {
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -58,23 +62,25 @@ fun MemberSetting(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            GroupInfo()
-            Profile()
+            GroupInfo(uiState.generation)
+            Profile(uiState.memberName)
             ChangeAdminButton(onClickAdminButton)
             Divide()
             MenuList(viewModel)
         }
+    }
 
-        if(uiState.value.isLoading) {
-            YDSProgressBar()
-        }
+    if (uiState.loadState == MemberSettingContract.LoadState.Loading) {
+        YDSProgressBar()
+    } else if (uiState.loadState == MemberSettingContract.LoadState.Error) {
+        YDSEmptyScreen()
     }
 }
 
 @Composable
-private fun GroupInfo() {
+private fun GroupInfo(generation: Int) {
     Text(
-        text = "YAPP 20기 회원",
+        text = stringResource(id = string.member_setting_generation, generation),
         color = Yapp_Orange,
         modifier = Modifier
             .fillMaxWidth()
@@ -85,7 +91,7 @@ private fun GroupInfo() {
 }
 
 @Composable
-private fun Profile() {
+private fun Profile(name: String) {
     Column(
         modifier = Modifier.padding(horizontal = 24.dp, vertical = 28.dp)
     ) {
@@ -96,7 +102,7 @@ private fun Profile() {
                 .fillMaxWidth()
         )
         Text(
-            text = "YAPP@gmail.com 님",
+            text = stringResource(id = string.member_setting_name, name),
             color = Gray_800,
             modifier = Modifier
                 .fillMaxWidth()

@@ -6,13 +6,20 @@ import com.yapp.common.base.UiState
 
 class MemberSettingContract {
     data class MemberSettingUiState(
-        val isLoading: Boolean = false,
+        val loadState: LoadState = LoadState.Idle,
         val showDialog: Boolean = false,
+        val generation: Int = 0,
+        val memberName: String = "",
     ) : UiState
+
+    enum class LoadState {
+        Loading, Idle, Error
+    }
 
     sealed class MemberSettingUiSideEffect : UiSideEffect {
         object NavigateToLoginScreen : MemberSettingUiSideEffect()
         object NavigateToPrivacyPolicyScreen : MemberSettingUiSideEffect()
+        object ShowToast : MemberSettingUiSideEffect()
     }
 
     sealed class MemberSettingUiEvent : UiEvent {
