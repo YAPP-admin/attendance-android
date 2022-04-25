@@ -9,7 +9,7 @@ import com.yapp.presentation.model.Member
 import com.yapp.presentation.model.Member.Companion.mapTo
 import com.yapp.presentation.model.Team
 import com.yapp.presentation.model.collections.AttendanceList
-import com.yapp.presentation.ui.KEY_UPCOMING_SESSION_ID
+import com.yapp.presentation.ui.admin.AdminConstants.KEY_UPCOMING_SESSION_ID
 import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
