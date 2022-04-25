@@ -9,6 +9,7 @@ import com.yapp.domain.usecases.GetMaginotlineTimeUseCase
 import com.yapp.domain.usecases.GetMemberIdUseCase
 import com.yapp.domain.usecases.SetMemberAttendanceUseCase
 import com.yapp.presentation.model.collections.AttendanceList
+import com.yapp.presentation.common.AttendanceBundle
 import com.yapp.presentation.ui.member.qrcodescanner.QrCodeContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -28,8 +29,7 @@ class QrCodeViewModel @Inject constructor(
     var userId = 0L
 
     init {
-        todaySessionId = TodaySessionInfo.todaySessionId
-
+        todaySessionId = AttendanceBundle.upComingSessionId
         viewModelScope.launch {
             getMaginotlineTime()
             getUserId()
