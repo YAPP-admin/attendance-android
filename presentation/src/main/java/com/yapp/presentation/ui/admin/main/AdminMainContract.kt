@@ -17,12 +17,14 @@ class AdminMainContract {
     }
 
     sealed class AdminMainUiSideEffect : UiSideEffect {
-        class NavigateToAdminTotalScore(val upcomingSessionId: Int) : AdminMainUiSideEffect()
-        class NavigateToManagement(val sessionId: Int, val sessionTitle: String) : AdminMainUiSideEffect()
+        data class NavigateToAdminTotalScore(val upcomingSessionId: Int) : AdminMainUiSideEffect()
+        data class NavigateToManagement(val sessionId: Int, val sessionTitle: String) : AdminMainUiSideEffect()
+        object NavigateToLogin: AdminMainUiSideEffect()
     }
 
     sealed class AdminMainUiEvent : UiEvent {
-        class OnUserScoreCardClicked(val upcomingSessionId: Int) : AdminMainUiEvent()
-        class OnSessionClicked(val sessionId: Int, val sessionTitle: String) : AdminMainUiEvent()
+        data class OnUserScoreCardClicked(val upcomingSessionId: Int) : AdminMainUiEvent()
+        data class OnSessionClicked(val sessionId: Int, val sessionTitle: String) : AdminMainUiEvent()
+        object OnLogoutClicked: AdminMainUiEvent()
     }
 }

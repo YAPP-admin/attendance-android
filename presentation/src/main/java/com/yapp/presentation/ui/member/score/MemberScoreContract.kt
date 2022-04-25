@@ -8,9 +8,14 @@ import com.yapp.presentation.model.Session
 
 class MemberScoreContract {
     data class MemberScoreUiState(
-        val isLoading: Boolean = true,
+        val loadState: LoadState = LoadState.Idle,
         val attendanceList: List<Pair<Session, Attendance>> = emptyList(),
-    ) : UiState
+        val lastAttendanceList: List<Pair<Session, Attendance>> = emptyList()
+    ) : UiState {
+        enum class LoadState {
+            Loading, Idle, Error
+        }
+    }
 
     sealed class MemberScoreUiSideEffect : UiSideEffect {
     }

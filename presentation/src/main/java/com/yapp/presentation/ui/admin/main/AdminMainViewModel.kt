@@ -32,6 +32,9 @@ class AdminMainViewModel @Inject constructor(
             is AdminMainUiEvent.OnSessionClicked -> setEffect(
                 AdminMainUiSideEffect.NavigateToManagement(event.sessionId, event.sessionTitle)
             )
+            is AdminMainUiEvent.OnLogoutClicked -> setEffect(
+                AdminMainUiSideEffect.NavigateToLogin
+            )
         }
     }
 

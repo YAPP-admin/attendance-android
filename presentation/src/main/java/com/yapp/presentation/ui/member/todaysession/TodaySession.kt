@@ -143,7 +143,8 @@ private fun SessionDescriptionModal(session: Session?, modifier: Modifier) {
         )
 
         Text(
-            text = session?.title ?: "",
+            text = session?.title
+                ?: stringResource(id = string.admin_main_finish_all_sessions_text),
             style = AttendanceTypography.h1,
             color = Gray_1000,
             modifier = Modifier.padding(top = 28.dp)
