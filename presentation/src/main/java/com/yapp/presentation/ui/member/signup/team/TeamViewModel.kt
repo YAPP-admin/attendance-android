@@ -1,18 +1,13 @@
 package com.yapp.presentation.ui.member.signup.team
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
-import com.yapp.domain.model.AttendanceEntity
-import com.yapp.domain.model.AttendanceTypeEntity
-import com.yapp.domain.model.MemberEntity
 import com.yapp.domain.model.TeamEntity
-import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.domain.model.types.PositionTypeEntity
-import com.yapp.domain.usecases.*
+import com.yapp.domain.usecases.GetTeamListUseCase
+import com.yapp.domain.usecases.SignUpMemberUseCase
 import com.yapp.presentation.model.Team.Companion.mapTo
-import com.yapp.presentation.model.type.PositionType
 import com.yapp.presentation.model.type.TeamType
 import com.yapp.presentation.ui.member.signup.team.TeamContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,13 +16,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TeamViewModel @Inject constructor(
-    private val getSessionListUseCase: GetSessionListUseCase,
     private val getTeamListUseCase: GetTeamListUseCase,
-    private val setMemberUseCase: SetMemberUseCase,
-    private val getMemberIdUseCase: GetMemberIdUseCase,
+    private val signUpMemberUseCase: SignUpMemberUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : BaseViewModel<TeamUiState, TeamSideEffect, TeamUiEvent>(TeamUiState()) {
-    private var defaultAttendance: List<AttendanceEntity>? = null
 
     init {
         viewModelScope.launch {
@@ -61,67 +53,42 @@ class TeamViewModel @Inject constructor(
                 setState { copy(selectedTeam = uiState.value.selectedTeam.copy(number = event.teamNum)) }
             }
             is TeamUiEvent.ConfirmTeam -> {
-                viewModelScope.launch {
-                    createDefaultAttendance()
+                if(savedStateHandle.get<String>("name") == null || savedStateHandle.get<String>("position") == null) {
+                    setEffect(TeamSideEffect.ShowToast("회원가입 실패"))
+                    return
                 }
+
+                signUpMember(
+                    memberName = savedStateHandle.get<String>("name")!!,
+                    memberPosition = PositionTypeEntity.of(savedStateHandle.get<String>("position")!!),
+                    teamEntity = TeamEntity(
+                        type = uiState.value.selectedTeam.type!!.name,
+                        number = uiState.value.selectedTeam.number!!
+                    )
+                )
             }
         }
     }
 
-    private suspend fun setMember() {
-        val memberName = savedStateHandle.get<String>("name")
-        val memberPosition = savedStateHandle.get<String>("position")
-
-        getMemberIdUseCase().collectWithCallback(
-            onSuccess = { memberId ->
-                if ((memberId == null) or (memberName == null) or (memberPosition == null) or (defaultAttendance == null)) {
-                    setEffect(TeamSideEffect.ShowToast("회원가입 실패"))
-                } else {
-                    setMemberToFireBase(memberName!!, memberPosition!!, memberId!!)
-                }
-            },
-            onFailed = { setEffect(TeamSideEffect.ShowToast("회원가입 실패")) }
-        )
-    }
-
-    private suspend fun setMemberToFireBase(
+    private suspend fun signUpMember(
         memberName: String,
-        memberPosition: String,
-        memberId: Long
+        memberPosition: PositionTypeEntity,
+        teamEntity: TeamEntity
     ) {
-
-        setMemberUseCase(
-            MemberEntity(
-                id = memberId,
-                name = memberName,
-                position = PositionTypeEntity.of(memberPosition),
-                team = TeamEntity(
-                    type = uiState.value.selectedTeam.type!!.name,
-                    number = uiState.value.selectedTeam.number!!
-                ),
-                attendances = defaultAttendance!!
+        signUpMemberUseCase(
+            params = SignUpMemberUseCase.Params(
+                memberName = memberName,
+                memberPosition = memberPosition,
+                teamEntity = teamEntity
             )
         ).collectWithCallback(
-            onSuccess = { setEffect(TeamSideEffect.NavigateToMainScreen) },
-            onFailed = { setEffect(TeamSideEffect.ShowToast("회원가입 실패")) }
+            onSuccess = {
+                setEffect(TeamSideEffect.NavigateToMainScreen)
+            },
+            onFailed = {
+                setEffect(TeamSideEffect.ShowToast("회원가입 실패"))
+            }
         )
     }
 
-    private suspend fun createDefaultAttendance() {
-        getSessionListUseCase().collectWithCallback(
-            onSuccess = { sessionList ->
-                 defaultAttendance = sessionList.map { session ->
-                    AttendanceEntity(
-                        sessionId = session.sessionId,
-                        type = when(session.type) {
-                            NeedToAttendType.DONT_NEED_ATTENDANCE, NeedToAttendType.DAY_OFF -> AttendanceTypeEntity.Normal
-                            NeedToAttendType.NEED_ATTENDANCE -> AttendanceTypeEntity.Absent
-                        }
-                    )
-                }
-                setMember()
-            },
-            onFailed = {}
-        )
-    }
 }
