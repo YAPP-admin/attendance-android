@@ -110,8 +110,8 @@ fun QrCodeScanner(
                     afterDetectedCode = { qrCode ->
                         viewModel.setEvent(QrCodeContract.QrCodeUiEvent.ScanQrCode(qrCode.rawValue))
                     },
-                    detectedError = { informText ->
-                        viewModel.setEvent(QrCodeContract.QrCodeUiEvent.GetScannerError(informText))
+                    detectedError = { exception ->
+                        viewModel.setEvent(QrCodeContract.QrCodeUiEvent.GetScannerError(exception))
                     }
                 )
                 ScannerDecoration(
@@ -198,16 +198,22 @@ fun QrCodeScanner(
 @Composable
 fun CameraPreview(
     afterDetectedCode: (code: Barcode) -> Unit,
-    detectedError: (String) -> Unit
+    detectedError: (Exception) -> Unit
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    var preview by remember { mutableStateOf<Preview?>(null) }
+    val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
 
     Surface {
         AndroidView(
             factory = { androidViewContext ->
-                PreviewView(androidViewContext).apply {
+                val mainExecutor = ContextCompat.getMainExecutor(androidViewContext)
+                val cameraExecutor = Executors.newSingleThreadExecutor()
+                val cameraSelector = CameraSelector.Builder()
+                    .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                    .build()
+
+                val previewView = PreviewView(androidViewContext).apply {
                     scaleType = PreviewView.ScaleType.FILL_CENTER
                     layoutParams = ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -215,29 +221,23 @@ fun CameraPreview(
                     )
                     implementationMode = PreviewView.ImplementationMode.COMPATIBLE
                 }
-            },
-            modifier = Modifier.fillMaxSize(),
-            update = { previewView ->
-                val cameraSelector = CameraSelector.Builder()
-                    .requireLensFacing(CameraSelector.LENS_FACING_BACK)
-                    .build()
-                val cameraExecutor = Executors.newSingleThreadExecutor()
-                val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
 
                 cameraProviderFuture.addListener({
-                    preview = Preview.Builder().build().apply {
-                        setSurfaceProvider(previewView.surfaceProvider)
-                    }
                     val cameraProvider = cameraProviderFuture.get()
+                    val preview = Preview.Builder().build().also {
+                        it.setSurfaceProvider(previewView.surfaceProvider)
+                    }
+
                     val barcodeAnalyzer =
                         QrCodeAnalyzer(
                             onQrCodeDetected = { code ->
                                 afterDetectedCode(code)
                             },
                             onFailToAnalysis = { exception ->
-                                detectedError("문제가 발생했습니다 코드를 다시 스캔해 주세요\n$exception")
+                                detectedError(exception)
                             }
                         )
+
                     val imageAnalysis = ImageAnalysis.Builder()
                         .setBackpressureStrategy(STRATEGY_KEEP_ONLY_LATEST)
                         .build()
@@ -245,19 +245,17 @@ fun CameraPreview(
                             setAnalyzer(cameraExecutor, barcodeAnalyzer)
                         }
 
-                    try {
-                        cameraProvider.unbindAll()
-                        cameraProvider.bindToLifecycle(
-                            lifecycleOwner,
-                            cameraSelector,
-                            preview,
-                            imageAnalysis
-                        )
-                    } catch (exception: Exception) {
-                        detectedError("문제가 발생했습니다\n$exception")
-                    }
-                }, ContextCompat.getMainExecutor(context))
-            }
+                    cameraProvider.unbindAll()
+                    cameraProvider.bindToLifecycle(
+                        lifecycleOwner,
+                        cameraSelector,
+                        preview,
+                        imageAnalysis
+                    )
+                }, mainExecutor)
+                previewView
+            },
+            modifier = Modifier.fillMaxSize(),
         )
     }
 }

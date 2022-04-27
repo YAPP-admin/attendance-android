@@ -3,6 +3,7 @@ package com.yapp.presentation.ui.member.qrcodescanner
 import com.yapp.common.base.UiEvent
 import com.yapp.common.base.UiSideEffect
 import com.yapp.common.base.UiState
+import java.lang.Exception
 
 class QrCodeContract {
     data class QrCodeUiState(
@@ -23,7 +24,7 @@ class QrCodeContract {
 
     sealed class QrCodeUiEvent : UiEvent {
         data class ScanQrCode(val codeValue: String?) : QrCodeUiEvent()
-        data class GetScannerError(val errorMessage: String) : QrCodeUiEvent()
+        data class GetScannerError(val exception: Exception) : QrCodeUiEvent()
     }
 
     enum class AttendanceState {
