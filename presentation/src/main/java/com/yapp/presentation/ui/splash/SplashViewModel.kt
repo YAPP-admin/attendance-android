@@ -3,6 +3,7 @@ package com.yapp.presentation.ui.splash
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.common.KakaoSdkProviderInterface
+import com.yapp.domain.usecases.GetFirestoreMemberUseCase
 import com.yapp.domain.usecases.SetMemberIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -12,7 +13,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SplashViewModel @Inject constructor(
     private val kakaoSdkProvider: KakaoSdkProviderInterface,
-    private val setMemberIdUseCase: SetMemberIdUseCase
+    private val getFirestoreMemberUseCase: GetFirestoreMemberUseCase
 ) : BaseViewModel<SplashContract.SplashUiState, SplashContract.SplashUiSideEffect, SplashContract.SplashUiEvent>(
     SplashContract.SplashUiState()
 ) {
@@ -20,8 +21,7 @@ class SplashViewModel @Inject constructor(
         kakaoSdkProvider.validateAccessToken(
             onSuccess = { userAccountId ->
                 viewModelScope.launch {
-                    setMemberId(userAccountId)
-                    setState { copy(loginState = SplashContract.LoginState.SUCCESS) }
+                    validateRegisteredUser()
                 }
             },
             onFailed = {
@@ -30,10 +30,19 @@ class SplashViewModel @Inject constructor(
         )
     }
 
-    private suspend fun setMemberId(id: Long) {
-        withContext(viewModelScope.coroutineContext) {
-            setMemberIdUseCase(id)
-        }
+    private suspend fun validateRegisteredUser() {
+        getFirestoreMemberUseCase().collectWithCallback(
+            onSuccess = { entity ->
+                entity?.let {
+                    setState { copy(loginState = SplashContract.LoginState.SUCCESS) }
+                } ?: run {
+                    setState { copy(loginState = SplashContract.LoginState.REQUIRED) }
+                }
+            },
+            onFailed = {
+                setState { copy(loginState = SplashContract.LoginState.REQUIRED) }
+            }
+        )
     }
 
     override fun setEvent(event: SplashContract.SplashUiEvent) {

@@ -37,7 +37,8 @@ import kotlinx.coroutines.flow.collect
 fun AdminMain(
     viewModel: AdminMainViewModel = hiltViewModel(),
     navigateToAdminTotalScore: (Int) -> Unit,
-    navigateToManagement: (Int, String) -> Unit
+    navigateToManagement: (Int, String) -> Unit,
+    navigateToLogin: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -51,16 +52,12 @@ fun AdminMain(
                     effect.sessionId,
                     effect.sessionTitle
                 )
+                is AdminMainUiSideEffect.NavigateToLogin -> navigateToLogin()
             }
         }
     }
 
     Scaffold(
-        topBar = {
-            YDSAppBar(
-                onClickSettings = {}
-            )
-        },
         modifier = Modifier
             .fillMaxSize()
     ) {
@@ -80,6 +77,11 @@ fun AdminMain(
                     viewModel.setEvent(
                         AdminMainUiEvent.OnSessionClicked(sessionId, sessionTitle)
                     )
+                },
+                onLogoutClicked = {
+                    viewModel.setEvent(
+                        AdminMainUiEvent.OnLogoutClicked
+                    )
                 }
             )
             AdminMainUiState.LoadState.Error -> YDSEmptyScreen()
@@ -91,19 +93,22 @@ fun AdminMain(
 fun AdminMainScreen(
     uiState: AdminMainUiState,
     onUserScoreCardClicked: () -> Unit,
-    onSessionClicked: (Int, String) -> Unit
+    onSessionClicked: (Int, String) -> Unit,
+    onLogoutClicked: () -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
     ) {
+        AdminTopBar(onLogoutClicked)
         YappuUserScoreCard(
             setOnUserScoreCardClickedEvent = { onUserScoreCardClicked() }
         )
         GraySpacing(Modifier.height(12.dp))
         ManagementTitle()
-        uiState.upcomingSession?.let { UpcomingSession(it, onSessionClicked) } ?: FinishAllSessions()
+        uiState.upcomingSession?.let { UpcomingSession(it, onSessionClicked) }
+            ?: FinishAllSessions()
         Spacing()
         GraySpacing(
             Modifier
@@ -115,6 +120,26 @@ fun AdminMainScreen(
             sessions = uiState.sessions,
             onSessionItemClicked = onSessionClicked
         )
+    }
+}
+
+fun LazyListScope.AdminTopBar(onLogoutClicked: () -> Unit) {
+    item {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .padding(horizontal = 24.dp),
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                modifier = Modifier.clickable { onLogoutClicked() },
+                painter = painterResource(id = R.drawable.icon_logout),
+                contentDescription = null,
+                tint = Gray_600,
+            )
+        }
     }
 }
 
@@ -144,7 +169,7 @@ fun LazyListScope.YappuUserScoreCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .padding(24.dp)
+                .padding(top = 15.dp, bottom = 28.dp, start = 24.dp, end = 24.dp)
                 .clickable { setOnUserScoreCardClickedEvent() },
             shape = RoundedCornerShape(12.dp),
             elevation = 0.dp,
@@ -227,7 +252,12 @@ fun LazyListScope.UpcomingSession(
                 YDSButtonSmall(
                     text = stringResource(id = string.admin_main_admin_button),
                     state = if (upcomingSession.type == NeedToAttendType.NEED_ATTENDANCE) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                    onClick = { onManagementButtonClicked(upcomingSession.sessionId, upcomingSession.title) }
+                    onClick = {
+                        onManagementButtonClicked(
+                            upcomingSession.sessionId,
+                            upcomingSession.title
+                        )
+                    }
                 )
             }
         }

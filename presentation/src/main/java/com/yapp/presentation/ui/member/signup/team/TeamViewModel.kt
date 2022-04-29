@@ -1,20 +1,13 @@
 package com.yapp.presentation.ui.member.signup.team
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
-import com.yapp.domain.model.AttendanceEntity
-import com.yapp.domain.model.AttendanceTypeEntity
-import com.yapp.domain.model.MemberEntity
 import com.yapp.domain.model.TeamEntity
 import com.yapp.domain.model.types.PositionTypeEntity
-import com.yapp.domain.usecases.CheckLocalMemberUseCase
-import com.yapp.domain.usecases.GetMemberIdUseCase
 import com.yapp.domain.usecases.GetTeamListUseCase
-import com.yapp.domain.usecases.SetMemberUseCase
+import com.yapp.domain.usecases.SignUpMemberUseCase
 import com.yapp.presentation.model.Team.Companion.mapTo
-import com.yapp.presentation.model.type.PositionType
 import com.yapp.presentation.model.type.TeamType
 import com.yapp.presentation.ui.member.signup.team.TeamContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,8 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TeamViewModel @Inject constructor(
     private val getTeamListUseCase: GetTeamListUseCase,
-    private val setMemberUseCase: SetMemberUseCase,
-    private val getMemberIdUseCase: GetMemberIdUseCase,
+    private val signUpMemberUseCase: SignUpMemberUseCase,
     private val savedStateHandle: SavedStateHandle,
 ) : BaseViewModel<TeamUiState, TeamSideEffect, TeamUiEvent>(TeamUiState()) {
 
@@ -41,7 +33,9 @@ class TeamViewModel @Inject constructor(
                     }
                 )
         }
+
     }
+
     override suspend fun handleEvent(event: TeamUiEvent) {
         when (event) {
             is TeamUiEvent.ChooseTeam -> {
@@ -59,50 +53,42 @@ class TeamViewModel @Inject constructor(
                 setState { copy(selectedTeam = uiState.value.selectedTeam.copy(number = event.teamNum)) }
             }
             is TeamUiEvent.ConfirmTeam -> {
-                viewModelScope.launch {
-                    setMember()
+                if(savedStateHandle.get<String>("name") == null || savedStateHandle.get<String>("position") == null) {
+                    setEffect(TeamSideEffect.ShowToast("회원가입 실패"))
+                    return
                 }
+
+                signUpMember(
+                    memberName = savedStateHandle.get<String>("name")!!,
+                    memberPosition = PositionTypeEntity.of(savedStateHandle.get<String>("position")!!),
+                    teamEntity = TeamEntity(
+                        type = uiState.value.selectedTeam.type!!.name,
+                        number = uiState.value.selectedTeam.number!!
+                    )
+                )
             }
         }
     }
 
-    private suspend fun setMember() {
-        val memberName = savedStateHandle.get<String>("name")
-        val memberPosition = savedStateHandle.get<String>("position")
-
-        getMemberIdUseCase().collectWithCallback(
-            onSuccess = { memberId ->
-                if ((memberId == null) or (memberName == null) or (memberPosition == null)) {
-                    setEffect(TeamSideEffect.ShowToast("회원가입 실패"))
-                } else {
-                    setMemberToFireBase(memberName!!, memberPosition!!, memberId!!)
-                }
-            },
-            onFailed = { setEffect(TeamSideEffect.ShowToast("회원가입 실패")) }
-        )
-    }
-
-    private suspend fun setMemberToFireBase(memberName: String, memberPosition:String, memberId: Long) {
-
-        setMemberUseCase(
-            MemberEntity(
-                id = memberId,
-                name = memberName,
-                position = PositionTypeEntity.of(memberPosition),
-                team = TeamEntity(
-                    type = uiState.value.selectedTeam.type!!.name,
-                    number = uiState.value.selectedTeam.number!!
-                ),
-                attendances = Array(20) { sessionNum ->
-                    AttendanceEntity(
-                        sessionId = sessionNum,
-                        type = AttendanceTypeEntity.Absent
-                    )
-                }.toList(),
+    private suspend fun signUpMember(
+        memberName: String,
+        memberPosition: PositionTypeEntity,
+        teamEntity: TeamEntity
+    ) {
+        signUpMemberUseCase(
+            params = SignUpMemberUseCase.Params(
+                memberName = memberName,
+                memberPosition = memberPosition,
+                teamEntity = teamEntity
             )
         ).collectWithCallback(
-            onSuccess = { setEffect(TeamSideEffect.NavigateToMainScreen) },
-            onFailed = { setEffect(TeamSideEffect.ShowToast("회원가입 실패")) }
+            onSuccess = {
+                setEffect(TeamSideEffect.NavigateToMainScreen)
+            },
+            onFailed = {
+                setEffect(TeamSideEffect.ShowToast("회원가입 실패"))
+            }
         )
     }
+
 }
