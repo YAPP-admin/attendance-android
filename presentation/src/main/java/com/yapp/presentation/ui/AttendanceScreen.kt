@@ -84,7 +84,13 @@ fun AttendanceScreen(
                     navController.navigate(AttendanceScreenRoute.SIGNUP_NAME.route) {
                         popUpTo(AttendanceScreenRoute.LOGIN.route) { inclusive = true }
                     }
-                })
+                },
+                navigateToAdminScreen = {
+                    navController.navigate(AttendanceScreenRoute.ADMIN_MAIN.route) {
+                        popUpTo(AttendanceScreenRoute.LOGIN.route) { inclusive = true }
+                    }
+                }
+            )
         }
 
         composable(

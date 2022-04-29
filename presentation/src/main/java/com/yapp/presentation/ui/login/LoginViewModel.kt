@@ -21,6 +21,10 @@ class LoginViewModel @Inject constructor(
         LoginUiState()
     ) {
 
+    companion object {
+        const val HIDDEN_CONDITION = 15
+    }
+
     private fun kakaoLogin() {
         kakaoSdkProvider.login(
             onSuccess = {
@@ -69,6 +73,16 @@ class LoginViewModel @Inject constructor(
                 setEffect(
                     LoginUiSideEffect.NavigateToQRMainScreen
                 )
+            }
+
+            is LoginUiEvent.OnYappuImageClicked -> {
+                setState {
+                    if(this.clickCount == HIDDEN_CONDITION) {
+                        this.copy(clickCount = 0, isDialogVisible = true)
+                    } else {
+                        this.copy(clickCount = this.clickCount + 1)
+                    }
+                }
             }
         }
     }

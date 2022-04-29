@@ -2,30 +2,41 @@ package com.yapp.presentation.ui.login
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.Modifier
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.airbnb.lottie.compose.*
-import com.yapp.common.R.*
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionResult
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.yapp.common.R.drawable
+import com.yapp.common.R.raw
 import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.YDSButtonLarge
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R
-import com.yapp.presentation.ui.login.LoginContract.*
+import com.yapp.presentation.ui.login.LoginContract.LoginUiEvent
+import com.yapp.presentation.ui.login.LoginContract.LoginUiSideEffect
 import kotlinx.coroutines.flow.collect
 
 @Composable
@@ -33,6 +44,7 @@ fun Login(
     viewModel: LoginViewModel = hiltViewModel(),
     navigateToQRMainScreen: () -> Unit,
     navigateToSignUpScreen: () -> Unit,
+    navigateToAdminScreen: () -> Unit
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
@@ -50,6 +62,10 @@ fun Login(
 
                     is LoginUiSideEffect.NavigateToSignUpScreen -> {
                         navigateToSignUpScreen()
+                    }
+
+                    is LoginUiSideEffect.NavigateToAdminScreen -> {
+                        navigateToAdminScreen()
                     }
                 }
             }
@@ -72,7 +88,9 @@ fun Login(
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            YappuImage()
+            YappuImage(
+                onClickImage = { viewModel.setEvent(LoginUiEvent.OnYappuImageClicked) }
+            )
             if (uiState.isLoading) {
                 YDSProgressBar()
             }
@@ -81,10 +99,17 @@ fun Login(
 }
 
 @Composable
-private fun YappuImage() {
+private fun YappuImage(
+    onClickImage: () -> Unit
+) {
     val composition: LottieCompositionResult =
         rememberLottieComposition(LottieCompositionSpec.RawRes(raw.login_buong))
-    LottieAnimation(composition.value)
+    LottieAnimation(
+        modifier = Modifier.clickable {
+            onClickImage.invoke()
+        },
+        composition = composition.value
+    )
 }
 
 @Composable
@@ -149,6 +174,31 @@ private fun KakaoLoginButton(
         }
     }
 }
+
+@Composable
+fun AdminPasswordDialog(
+    onConfirmClicked: (String) -> Unit,
+    onCancelClicked: () -> Unit
+) {
+    
+}
+
+@Composable
+fun CustomAlertDialog(
+    onConfirmClicked: (String) -> Unit,
+    onDismissClicked: () -> Unit,
+    properties: DialogProperties = DialogProperties(),
+    content: @Composable () -> Unit,
+) {
+    Dialog(
+        onDismissRequest = onDismissClicked,
+        properties = properties
+    ) {
+        content()
+    }
+}
+
+
 
 private fun constraintSet(): ConstraintSet {
     return ConstraintSet {
