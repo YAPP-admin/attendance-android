@@ -51,7 +51,7 @@ class ManagementViewModel @Inject constructor(
 
             is ManagementEvent.OnAttendanceTypeChanged -> {
                 uiState.value.selectedMember?.let { selectedMember ->
-                    changeMemberAttendance(selectedMember = selectedMember, changedAttendanceType = event.attendanceType, sessionId = 0)
+                    changeMemberAttendance(selectedMember = selectedMember, changedAttendanceType = event.attendanceType, sessionId = uiState.value.sessionId)
                 }
             }
         }
