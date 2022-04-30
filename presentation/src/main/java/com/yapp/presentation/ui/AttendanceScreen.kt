@@ -11,7 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -25,11 +24,13 @@ import com.yapp.common.theme.Yapp_Orange
 import com.yapp.common.yds.YDSToast
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_ID
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_TITLE
+import com.yapp.presentation.ui.admin.AdminConstants.KEY_UPCOMING_SESSION_ID
 import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.admin.management.AttendanceManagement
 import com.yapp.presentation.ui.admin.totalscore.AdminTotalScore
 import com.yapp.presentation.ui.login.Login
 import com.yapp.presentation.ui.member.help.Help
+import com.yapp.presentation.ui.member.main.BottomNavigationItem
 import com.yapp.presentation.ui.member.main.MemberMain
 import com.yapp.presentation.ui.member.privacyPolicy.PrivacyPolicyScreen
 import com.yapp.presentation.ui.member.qrcodescanner.QrCodeScanner
@@ -49,12 +50,13 @@ fun AttendanceScreen(
     navController: NavHostController = rememberNavController(),
 ) {
     var qrToastVisible by remember { mutableStateOf(false) }
+    val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collect { effect ->
             when (effect) {
                 is MainContract.MainUiSideEffect.NavigateToQRScreen -> {
-                    navController.navigate(AttendanceScreenRoute.QR_AUTH.route)
+                    navController.navigate(BottomNavigationItem.QR_AUTH.route)
                 }
                 is MainContract.MainUiSideEffect.ShowToast -> {
                     qrToastVisible = !qrToastVisible
@@ -287,7 +289,7 @@ fun AttendanceScreen(
             contentAlignment = Alignment.BottomCenter
         ) {
             YDSToast(
-                text = stringResource(id = com.yapp.presentation.R.string.member_main_qr_enter_failed_toast_message),
+                text = uiState.toastMessage,
             )
         }
     }
@@ -329,4 +331,3 @@ private fun SetStatusBarColorByRoute(route: String?) {
     }
 }
 
-const val KEY_UPCOMING_SESSION_ID = "upcomingSessionId"

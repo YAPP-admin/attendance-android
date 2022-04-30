@@ -5,6 +5,7 @@
     <string name="login_kakao_login_text">카카오 로그인</string>
 
     <string name="member_main_qr_enter_failed_toast_message">지금은 출석할 수 없어요</string>
+    <string name="member_main_qr_enter_completed_toast_message">이미 출석을 완료했어요</string>
 
     <string name="member_main_bottom_navigation_today_session_text">오늘 세션</string>
     <string name="member_main_bottom_navigation_qr_text">QR</string>
@@ -56,13 +57,16 @@
     <string name="member_setting_withdraw_dialog_positive_button">탈퇴합니다</string>
     <string name="member_setting_error_message">에러가 발생했어요! 다시 시도해주세요.</string>
 
-    <string name="member_qr_time_inform_text">2시 5분까지 출석 체크를 완료해 주세요!</string>
-    <string name="member_qr_late_inform_text">이후 출석은 지각으로 처리돼요</string>
-    <string name="member_qr_complete_inform_text">이미 출석을 완료했어요</string>
+    <string name="member_qr_time_inform_text">까지 출석해 주세요.</string>
+    <string name="member_qr_late_inform_text">30분까지는 지각, 그 이후는 결석으로 처리돼요.</string>
+    <string name="member_qr_fail_to_get_information_text">정보를 불러오지 못했어요</string>
     <string name="member_qr_permission_dialog_title_text">카메라 권한이 필요합니다</string>
     <string name="member_qr_permission_dialog_content_text">월활한 출석 체크를 위해 [설정] - [권한]에서 카메라 권한을  \'허용\'으로 활성화해 주세요</string>
-    <string name="member_qr_permission_dialog_negative_text">취소</string>
-    <string name="member_qr_permission_dialog_positive_text">설정</string>
+    <string name="member_qr_permission_dialog_negative_button">취소</string>
+    <string name="member_qr_permission_dialog_positive_button">설정</string>
+    <string name="member_qr_move_back_to_home_and_retry_error_message">오류가 발생했어요\n홈으로 돌아가서 다시 시도해 주세요</string>
+    <string name="member_qr_scan_correct_code_error_message">올바른 QR 코드를 인식해 주세요</string>
+    <string name="member_qr_get_error_please_retry_message">오류가 발생했어요\nQR 코드를 다시 인식해 주세요</string>
 
     <string name="help_title">도움말</string>
     <string name="help_basic_info_yapp_text">YAPP</string>

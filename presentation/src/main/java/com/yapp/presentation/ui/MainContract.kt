@@ -3,12 +3,11 @@ package com.yapp.presentation.ui
 import com.yapp.common.base.UiEvent
 import com.yapp.common.base.UiSideEffect
 import com.yapp.common.base.UiState
-import com.yapp.presentation.model.Session
-import com.yapp.presentation.ui.member.main.BottomNavigationItem
-import com.yapp.presentation.ui.member.setting.MemberSettingContract
 
 class MainContract {
-    object MainUiState : UiState
+    data class MainUiState(
+        val toastMessage: String = ""
+    ) : UiState
 
     sealed class MainUiSideEffect : UiSideEffect {
         object ShowToast : MainUiSideEffect()
