@@ -2,12 +2,14 @@ package com.yapp.presentation.ui.login
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.Modifier
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
@@ -17,15 +19,21 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.airbnb.lottie.compose.*
-import com.yapp.common.R.*
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionResult
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.yapp.common.R.drawable
+import com.yapp.common.R.raw
 import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.YDSButtonLarge
+import com.yapp.common.yds.YDSPopupDialog
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R
-import com.yapp.presentation.ui.login.LoginContract.*
+import com.yapp.presentation.ui.login.LoginContract.LoginUiEvent
+import com.yapp.presentation.ui.login.LoginContract.LoginUiSideEffect
 import kotlinx.coroutines.flow.collect
 
 @Composable
@@ -33,6 +41,7 @@ fun Login(
     viewModel: LoginViewModel = hiltViewModel(),
     navigateToQRMainScreen: () -> Unit,
     navigateToSignUpScreen: () -> Unit,
+    navigateToAdminScreen: () -> Unit,
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
@@ -50,6 +59,10 @@ fun Login(
 
                     is LoginUiSideEffect.NavigateToSignUpScreen -> {
                         navigateToSignUpScreen()
+                    }
+
+                    is LoginUiSideEffect.NavigateToAdminScreen -> {
+                        navigateToAdminScreen()
                     }
                 }
             }
@@ -72,24 +85,52 @@ fun Login(
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            YappuImage()
+            YappuImage(
+                onClickImage = { viewModel.setEvent(LoginUiEvent.OnYappuImageClicked) }
+            )
             if (uiState.isLoading) {
                 YDSProgressBar()
             }
         }
     }
+
+    if (uiState.isDialogVisible) {
+        var password by remember { mutableStateOf("") }
+        YDSPopupDialog(
+            title = stringResource(id = R.string.login_admin_title),
+            content = stringResource(id = R.string.login_admin_content),
+            negativeButtonText = stringResource(id = R.string.Cancel),
+            positiveButtonText = stringResource(id = R.string.Ok),
+            onClickPositiveButton = { viewModel.adminLogin(password) },
+            onClickNegativeButton = { viewModel.setEvent(LoginUiEvent.OnCancelButtonClicked) },
+            editTextInitValue = password,
+            editTextChangedListener = { password = it },
+            editTextHint = stringResource(id = R.string.login_admin_password_placeholder),
+            onDismiss = { }
+        )
+    }
 }
 
 @Composable
-private fun YappuImage() {
+private fun YappuImage(
+    onClickImage: () -> Unit,
+) {
     val composition: LottieCompositionResult =
         rememberLottieComposition(LottieCompositionSpec.RawRes(raw.login_buong))
-    LottieAnimation(composition.value)
+    LottieAnimation(
+        modifier = Modifier.clickable(
+            interactionSource = remember { MutableInteractionSource() },
+            indication = null
+        ) {
+            onClickImage.invoke()
+        },
+        composition = composition.value
+    )
 }
 
 @Composable
 private fun SkipButton(
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
 ) {
     YDSButtonLarge(
         text = "건너뛰기",
@@ -115,7 +156,7 @@ private fun IntroduceTitle() {
 
 @Composable
 private fun KakaoLoginButton(
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
 ) {
     Button(
         modifier = Modifier
