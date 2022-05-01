@@ -1,14 +1,13 @@
 package com.yapp.common.yds
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.yapp.common.theme.*
@@ -21,7 +20,10 @@ fun YDSPopupDialog(
     positiveButtonText: String,
     onClickNegativeButton: () -> Unit,
     onClickPositiveButton: () -> Unit,
-    onDismiss: () -> Unit
+    editTextInitValue: String = "",
+    editTextHint: String? = null,
+    editTextChangedListener: (String) -> Unit = { },
+    onDismiss: () -> Unit,
 ) {
     Dialog(onDismissRequest = { onDismiss() }) {
         Surface(
@@ -47,6 +49,37 @@ fun YDSPopupDialog(
                     style = AttendanceTypography.body1,
                     color = Gray_800
                 )
+
+                if (editTextHint != null) {
+                    TextField(
+                        value = editTextInitValue,
+                        onValueChange = { editTextChangedListener(it) },
+                        singleLine = true,
+                        modifier = Modifier
+                            .padding(top = 20.dp)
+                            .fillMaxWidth()
+                            .background(color = Gray_200, shape = RoundedCornerShape(10.dp)),
+                        placeholder = {
+                            Text(
+                                text = editTextHint,
+                                textAlign = TextAlign.Center,
+                                color = Gray_400,
+                            )
+                        },
+                        textStyle = AttendanceTypography.body2.copy(
+                            color = Gray_800,
+                            textAlign = TextAlign.Center
+                        ),
+                        colors = TextFieldDefaults.textFieldColors(
+                            textColor = Color.Gray,
+                            disabledTextColor = Color.Transparent,
+                            backgroundColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent
+                        )
+                    )
+                }
 
                 Row(
                     modifier = Modifier.padding(top = 18.dp)
