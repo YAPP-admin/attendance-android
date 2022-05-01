@@ -6,10 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,8 +15,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,6 +27,7 @@ import com.yapp.common.R.raw
 import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.YDSButtonLarge
+import com.yapp.common.yds.YDSPopupDialog
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R
@@ -44,7 +40,7 @@ fun Login(
     viewModel: LoginViewModel = hiltViewModel(),
     navigateToQRMainScreen: () -> Unit,
     navigateToSignUpScreen: () -> Unit,
-    navigateToAdminScreen: () -> Unit
+    navigateToAdminScreen: () -> Unit,
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
@@ -95,6 +91,22 @@ fun Login(
                 YDSProgressBar()
             }
         }
+    }
+
+    if (uiState.isDialogVisible) {
+        var text by remember { mutableStateOf("") }
+        YDSPopupDialog(
+            title = "암호를 대라!",
+            content = "코드 넘버를 입력해주세요",
+            negativeButtonText = stringResource(id = R.string.Cancel),
+            positiveButtonText = stringResource(id = R.string.Ok),
+            onClickPositiveButton = { },
+            onClickNegativeButton = { },
+            editTextInitValue = text,
+            editTextChangedListener = { text = it },
+            editTextHint = "****",
+            onDismiss = { }
+        )
     }
 }
 
@@ -174,31 +186,6 @@ private fun KakaoLoginButton(
         }
     }
 }
-
-@Composable
-fun AdminPasswordDialog(
-    onConfirmClicked: (String) -> Unit,
-    onCancelClicked: () -> Unit
-) {
-    
-}
-
-@Composable
-fun CustomAlertDialog(
-    onConfirmClicked: (String) -> Unit,
-    onDismissClicked: () -> Unit,
-    properties: DialogProperties = DialogProperties(),
-    content: @Composable () -> Unit,
-) {
-    Dialog(
-        onDismissRequest = onDismissClicked,
-        properties = properties
-    ) {
-        content()
-    }
-}
-
-
 
 private fun constraintSet(): ConstraintSet {
     return ConstraintSet {
