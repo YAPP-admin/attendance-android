@@ -61,6 +61,7 @@ fun YDSPopupDialog(
                             .background(color = Gray_200, shape = RoundedCornerShape(10.dp)),
                         placeholder = {
                             Text(
+                                modifier = Modifier.fillMaxWidth(),
                                 text = editTextHint,
                                 textAlign = TextAlign.Center,
                                 color = Gray_400,
