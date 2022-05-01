@@ -94,16 +94,16 @@ fun Login(
     }
 
     if (uiState.isDialogVisible) {
-        var text by remember { mutableStateOf("") }
+        var password by remember { mutableStateOf("") }
         YDSPopupDialog(
             title = "암호를 대라!",
             content = "코드 넘버를 입력해주세요",
             negativeButtonText = stringResource(id = R.string.Cancel),
             positiveButtonText = stringResource(id = R.string.Ok),
-            onClickPositiveButton = { },
+            onClickPositiveButton = { viewModel.adminLogin(password) },
             onClickNegativeButton = { },
-            editTextInitValue = text,
-            editTextChangedListener = { text = it },
+            editTextInitValue = password,
+            editTextChangedListener = { password = it },
             editTextHint = "****",
             onDismiss = { }
         )
@@ -112,7 +112,7 @@ fun Login(
 
 @Composable
 private fun YappuImage(
-    onClickImage: () -> Unit
+    onClickImage: () -> Unit,
 ) {
     val composition: LottieCompositionResult =
         rememberLottieComposition(LottieCompositionSpec.RawRes(raw.login_buong))
@@ -126,7 +126,7 @@ private fun YappuImage(
 
 @Composable
 private fun SkipButton(
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
 ) {
     YDSButtonLarge(
         text = "건너뛰기",
@@ -152,7 +152,7 @@ private fun IntroduceTitle() {
 
 @Composable
 private fun KakaoLoginButton(
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
 ) {
     Button(
         modifier = Modifier

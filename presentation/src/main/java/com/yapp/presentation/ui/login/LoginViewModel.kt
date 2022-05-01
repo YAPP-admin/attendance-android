@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.common.util.KakaoSdkProvider
 import com.yapp.domain.common.KakaoSdkProviderInterface
+import com.yapp.domain.usecases.CheckAdminPasswordUseCase
 import com.yapp.domain.usecases.GetFirestoreMemberUseCase
 import com.yapp.domain.usecases.SetMemberIdUseCase
 import com.yapp.presentation.ui.login.LoginContract.*
@@ -23,6 +24,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val setMemberIdUseCase: SetMemberIdUseCase,
     private val getFirestoreMemberUseCase: GetFirestoreMemberUseCase,
+    private val adminPasswordUseCase: CheckAdminPasswordUseCase,
     private val kakaoSdkProvider: KakaoSdkProviderInterface
 ) :
     BaseViewModel<LoginUiState, LoginUiSideEffect, LoginUiEvent>(
@@ -90,6 +92,26 @@ class LoginViewModel @Inject constructor(
         // withContext 로 선언
         withContext(viewModelScope.coroutineContext) {
             setMemberIdUseCase(id)
+        }
+    }
+
+    fun adminLogin(password: String) {
+        viewModelScope.launch {
+            setState { copy(isLoading = true) }
+            adminPasswordUseCase(CheckAdminPasswordUseCase.Params(password)).collectWithCallback(
+                onSuccess = { isSuccess ->
+                    if (isSuccess) {
+                        setEffect(LoginUiSideEffect.NavigateToAdminScreen)
+                    } else {
+                        setEffect(LoginUiSideEffect.ShowToast("로그인 실패"))
+                    }
+                    setState { copy(isLoading = false) }
+                },
+                onFailed = {
+                    setEffect(LoginUiSideEffect.ShowToast("로그인 실패"))
+                    setState { copy(isLoading = false) }
+                }
+            )
         }
     }
 
