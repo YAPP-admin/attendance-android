@@ -130,12 +130,16 @@ class LoginViewModel @Inject constructor(
 
             is LoginUiEvent.OnYappuImageClicked -> {
                 setState {
-                    if(this.clickCount == HIDDEN_CONDITION) {
+                    if (this.clickCount == HIDDEN_CONDITION) {
                         this.copy(clickCount = 0, isDialogVisible = true)
                     } else {
                         this.copy(clickCount = this.clickCount + 1)
                     }
                 }
+            }
+
+            is LoginUiEvent.OnCancelButtonClicked -> {
+                setState { copy(isDialogVisible = false) }
             }
         }
     }

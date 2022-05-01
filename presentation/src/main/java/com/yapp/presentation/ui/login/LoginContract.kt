@@ -22,5 +22,6 @@ class LoginContract {
         object OnLoginButtonClicked : LoginUiEvent()
         object OnSkipButtonClicked : LoginUiEvent()
         object OnYappuImageClicked : LoginUiEvent()
+        object OnCancelButtonClicked: LoginUiEvent()
     }
 }

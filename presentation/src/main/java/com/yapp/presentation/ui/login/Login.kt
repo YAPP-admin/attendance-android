@@ -101,7 +101,7 @@ fun Login(
             negativeButtonText = stringResource(id = R.string.Cancel),
             positiveButtonText = stringResource(id = R.string.Ok),
             onClickPositiveButton = { viewModel.adminLogin(password) },
-            onClickNegativeButton = { },
+            onClickNegativeButton = { viewModel.setEvent(LoginUiEvent.OnCancelButtonClicked) },
             editTextInitValue = password,
             editTextChangedListener = { password = it },
             editTextHint = stringResource(id = R.string.login_admin_password_placeholder),
