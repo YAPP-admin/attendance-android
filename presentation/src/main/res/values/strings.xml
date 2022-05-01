@@ -6,6 +6,9 @@
     <string name="Cancel">취소</string>
     <string name="Ok">확인</string>
 
+    <string name="login_admin_title">암호를 대라!</string>
+    <string name="login_admin_content">코드 넘버를 입력해주세요</string>
+    <string name="login_admin_password_placeholder">****</string>
     <string name="member_main_qr_enter_failed_toast_message">지금은 출석할 수 없어요</string>
 
     <string name="member_main_bottom_navigation_today_session_text">오늘 세션</string>

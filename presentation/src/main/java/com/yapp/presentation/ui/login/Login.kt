@@ -96,15 +96,15 @@ fun Login(
     if (uiState.isDialogVisible) {
         var password by remember { mutableStateOf("") }
         YDSPopupDialog(
-            title = "암호를 대라!",
-            content = "코드 넘버를 입력해주세요",
+            title = stringResource(id = R.string.login_admin_title),
+            content = stringResource(id = R.string.login_admin_content),
             negativeButtonText = stringResource(id = R.string.Cancel),
             positiveButtonText = stringResource(id = R.string.Ok),
             onClickPositiveButton = { viewModel.adminLogin(password) },
             onClickNegativeButton = { },
             editTextInitValue = password,
             editTextChangedListener = { password = it },
-            editTextHint = "****",
+            editTextHint = stringResource(id = R.string.login_admin_password_placeholder),
             onDismiss = { }
         )
     }
