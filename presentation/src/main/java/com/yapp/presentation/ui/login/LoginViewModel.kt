@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.common.util.KakaoSdkProvider
 import com.yapp.domain.common.KakaoSdkProviderInterface
+import com.yapp.domain.usecases.CheckAdminPasswordUseCase
 import com.yapp.domain.usecases.GetFirestoreMemberUseCase
 import com.yapp.domain.usecases.SetMemberIdUseCase
 import com.yapp.presentation.ui.login.LoginContract.*
@@ -23,11 +24,16 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val setMemberIdUseCase: SetMemberIdUseCase,
     private val getFirestoreMemberUseCase: GetFirestoreMemberUseCase,
+    private val adminPasswordUseCase: CheckAdminPasswordUseCase,
     private val kakaoSdkProvider: KakaoSdkProviderInterface
 ) :
     BaseViewModel<LoginUiState, LoginUiSideEffect, LoginUiEvent>(
         LoginUiState()
     ) {
+
+    companion object {
+        const val HIDDEN_CONDITION = 15
+    }
 
     private fun kakaoLogin() {
         kakaoSdkProvider.login(
@@ -89,6 +95,26 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    fun adminLogin(password: String) {
+        viewModelScope.launch {
+            setState { copy(isLoading = true) }
+            adminPasswordUseCase(CheckAdminPasswordUseCase.Params(password)).collectWithCallback(
+                onSuccess = { isSuccess ->
+                    if (isSuccess) {
+                        setEffect(LoginUiSideEffect.NavigateToAdminScreen)
+                    } else {
+                        setEffect(LoginUiSideEffect.ShowToast("로그인 실패"))
+                    }
+                    setState { copy(isLoading = false) }
+                },
+                onFailed = {
+                    setEffect(LoginUiSideEffect.ShowToast("로그인 실패"))
+                    setState { copy(isLoading = false) }
+                }
+            )
+        }
+    }
+
     override suspend fun handleEvent(event: LoginUiEvent) {
         when (event) {
             is LoginUiEvent.OnLoginButtonClicked -> {
@@ -100,6 +126,20 @@ class LoginViewModel @Inject constructor(
                 setEffect(
                     LoginUiSideEffect.NavigateToQRMainScreen
                 )
+            }
+
+            is LoginUiEvent.OnYappuImageClicked -> {
+                setState {
+                    if (this.clickCount == HIDDEN_CONDITION) {
+                        this.copy(clickCount = 0, isDialogVisible = true)
+                    } else {
+                        this.copy(clickCount = this.clickCount + 1)
+                    }
+                }
+            }
+
+            is LoginUiEvent.OnCancelButtonClicked -> {
+                setState { copy(isDialogVisible = false) }
             }
         }
     }

@@ -244,7 +244,7 @@ fun CameraPreview(
                         .apply {
                             setAnalyzer(cameraExecutor, barcodeAnalyzer)
                         }
-
+                    
                     cameraProvider.unbindAll()
                     cameraProvider.bindToLifecycle(
                         lifecycleOwner,
