@@ -64,7 +64,7 @@ fun MemberSetting(
         ) {
             GroupInfo(uiState.generation)
             Profile(uiState.memberName)
-            ChangeAdminButton(onClickAdminButton)
+            //ChangeAdminButton(onClickAdminButton)
             Divide()
             MenuList(viewModel)
         }
@@ -86,7 +86,8 @@ private fun GroupInfo(generation: Int) {
             .fillMaxWidth()
             .background(Yapp_OrangeAlpha)
             .padding(18.dp),
-        textAlign = TextAlign.Center
+        textAlign = TextAlign.Center,
+        style = AttendanceTypography.body1
     )
 }
 
@@ -104,6 +105,7 @@ private fun Profile(name: String) {
         Text(
             text = stringResource(id = string.member_setting_name, name),
             color = Gray_800,
+            style = AttendanceTypography.body1,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp),
@@ -168,12 +170,14 @@ private fun MenuList(viewModel: MemberSettingViewModel) {
             Text(
                 text = stringResource(id = string.member_setting_version_info_text),
                 color = Gray_1200,
+                style = AttendanceTypography.subtitle1
             )
             Text(
                 text = versionName,
                 color = Gray_600,
                 modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.End
+                textAlign = TextAlign.End,
+                style = AttendanceTypography.subtitle1
             )
         }
         Row(
@@ -187,6 +191,7 @@ private fun MenuList(viewModel: MemberSettingViewModel) {
             Text(
                 text = stringResource(id = string.member_setting_privacy_policy_text),
                 color = Gray_1200,
+                style = AttendanceTypography.subtitle1
             )
             Image(
                 painter = painterResource(id = R.drawable.icon_chevron_right),
@@ -201,6 +206,7 @@ private fun MenuList(viewModel: MemberSettingViewModel) {
         Text(
             text = stringResource(id = string.member_setting_logout_text),
             color = Gray_400,
+            style = AttendanceTypography.subtitle1,
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
@@ -211,6 +217,7 @@ private fun MenuList(viewModel: MemberSettingViewModel) {
         Text(
             text = stringResource(id = string.member_setting_withdraw_text),
             color = Gray_400,
+            style = AttendanceTypography.subtitle1,
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
