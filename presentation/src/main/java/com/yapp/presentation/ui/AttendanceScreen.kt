@@ -184,11 +184,6 @@ fun AttendanceScreen(
                 onClickBackButton = {
                     navController.popBackStack()
                 },
-                onClickAdminButton = {
-                    navController.navigate(AttendanceScreenRoute.ADMIN_MAIN.route) {
-                        popUpTo(AttendanceScreenRoute.MEMBER_SETTING.route) { inclusive = true }
-                    }
-                },
                 onClickLogoutButton = {
                     navController.navigate(AttendanceScreenRoute.LOGIN.route) {
                         // TODO: 모든 스택을 다 제거해야함.
