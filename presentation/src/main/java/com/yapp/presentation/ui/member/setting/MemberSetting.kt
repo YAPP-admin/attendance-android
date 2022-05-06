@@ -24,7 +24,6 @@ import kotlinx.coroutines.flow.collect
 fun MemberSetting(
     viewModel: MemberSettingViewModel = hiltViewModel(),
     onClickBackButton: () -> Unit,
-    onClickAdminButton: () -> Unit,
     onClickLogoutButton: () -> Unit,
     onClickPrivacyPolicyButton: () -> Unit,
 ) {
