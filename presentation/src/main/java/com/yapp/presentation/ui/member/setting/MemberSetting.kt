@@ -132,6 +132,17 @@ private fun Profile(name: String) {
 }
 
 @Composable
+private fun ChangeAdminButton(onClickAdminButton: () -> Unit) {
+    YDSButtonMedium(
+        text = "관리자 계정으로 전환하기",
+        state = YdsButtonState.ENABLED,
+        modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 28.dp)
+    ) {
+        onClickAdminButton()
+    }
+}
+
+@Composable
 private fun Divide() {
     Spacer(
         modifier = Modifier
