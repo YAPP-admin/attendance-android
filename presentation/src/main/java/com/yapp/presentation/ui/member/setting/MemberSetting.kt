@@ -1,6 +1,8 @@
 package com.yapp.presentation.ui.member.setting
 
-import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
@@ -18,6 +20,7 @@ import com.yapp.common.R
 import com.yapp.common.theme.*
 import com.yapp.common.yds.*
 import com.yapp.presentation.R.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 
 @Composable
@@ -27,9 +30,8 @@ fun MemberSetting(
     navigateToLogin: () -> Unit,
     navigateToPrivacyPolicy: () -> Unit,
 ) {
-    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
-    val errorMessage = stringResource(id = string.member_setting_error_message)
+    var toastVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collect { effect ->
@@ -41,7 +43,9 @@ fun MemberSetting(
                     navigateToPrivacyPolicy()
                 }
                 is MemberSettingContract.MemberSettingUiSideEffect.ShowToast -> {
-                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                    toastVisible = true
+                    delay(1000L)
+                    toastVisible = false
                 }
             }
         }
@@ -72,6 +76,21 @@ fun MemberSetting(
         YDSProgressBar()
     } else if (uiState.loadState == MemberSettingContract.LoadState.Error) {
         YDSEmptyScreen()
+    }
+
+    AnimatedVisibility(
+        visible = toastVisible,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 110.dp),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            YDSToast(text = stringResource(id = string.member_setting_error_message))
+        }
     }
 }
 

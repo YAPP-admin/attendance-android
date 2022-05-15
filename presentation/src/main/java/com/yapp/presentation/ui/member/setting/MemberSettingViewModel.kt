@@ -10,7 +10,7 @@ import com.yapp.domain.usecases.GetMemberIdUseCase
 import com.yapp.presentation.model.Config.Companion.mapTo
 import com.yapp.presentation.model.Member.Companion.mapTo
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,8 +32,10 @@ class MemberSettingViewModel @Inject constructor(
             getFirestoreMemberUseCase().collectWithCallback(
                 onSuccess = {
                     setState {
-                        copy(loadState = MemberSettingContract.LoadState.Idle,
-                            memberName = it?.mapTo()?.name ?: "")
+                        copy(
+                            loadState = MemberSettingContract.LoadState.Idle,
+                            memberName = it?.mapTo()?.name ?: ""
+                        )
                     }
                 },
                 onFailed = {
@@ -47,8 +49,10 @@ class MemberSettingViewModel @Inject constructor(
             getConfigUseCase().collectWithCallback(
                 onSuccess = {
                     setState {
-                        copy(loadState = MemberSettingContract.LoadState.Idle,
-                            generation = it.mapTo().generation)
+                        copy(
+                            loadState = MemberSettingContract.LoadState.Idle,
+                            generation = it.mapTo().generation
+                        )
                     }
                 },
                 onFailed = {
