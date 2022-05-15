@@ -23,10 +23,9 @@ import kotlinx.coroutines.flow.collect
 @Composable
 fun MemberSetting(
     viewModel: MemberSettingViewModel = hiltViewModel(),
-    onClickBackButton: () -> Unit,
-    onClickAdminButton: () -> Unit,
-    onClickLogoutButton: () -> Unit,
-    onClickPrivacyPolicyButton: () -> Unit,
+    navigateToPreviousScreen: () -> Unit,
+    navigateToLogin: () -> Unit,
+    navigateToPrivacyPolicy: () -> Unit,
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
@@ -36,10 +35,10 @@ fun MemberSetting(
         viewModel.effect.collect { effect ->
             when (effect) {
                 is MemberSettingContract.MemberSettingUiSideEffect.NavigateToLoginScreen -> {
-                    onClickLogoutButton()
+                    navigateToLogin()
                 }
                 is MemberSettingContract.MemberSettingUiSideEffect.NavigateToPrivacyPolicyScreen -> {
-                    onClickPrivacyPolicyButton()
+                    navigateToPrivacyPolicy()
                 }
                 is MemberSettingContract.MemberSettingUiSideEffect.ShowToast -> {
                     Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
@@ -52,7 +51,7 @@ fun MemberSetting(
         topBar = {
             YDSAppBar(
                 title = stringResource(id = string.member_setting_title),
-                onClickBackButton = onClickBackButton
+                onClickBackButton = navigateToPreviousScreen
             )
         },
         modifier = Modifier.fillMaxSize(),

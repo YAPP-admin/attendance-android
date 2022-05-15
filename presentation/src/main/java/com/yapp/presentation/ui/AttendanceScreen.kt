@@ -181,21 +181,15 @@ fun AttendanceScreen(
             route = AttendanceScreenRoute.MEMBER_SETTING.route
         ) {
             MemberSetting(
-                onClickBackButton = {
+                navigateToPreviousScreen = {
                     navController.popBackStack()
                 },
-                onClickAdminButton = {
-                    navController.navigate(AttendanceScreenRoute.ADMIN_MAIN.route) {
-                        popUpTo(AttendanceScreenRoute.MEMBER_SETTING.route) { inclusive = true }
-                    }
-                },
-                onClickLogoutButton = {
+                navigateToLogin = {
                     navController.navigate(AttendanceScreenRoute.LOGIN.route) {
-                        // TODO: 모든 스택을 다 제거해야함.
-                        popUpTo(AttendanceScreenRoute.MEMBER_SETTING.route)
+                        popUpTo(0)
                     }
                 },
-                onClickPrivacyPolicyButton = {
+                navigateToPrivacyPolicy = {
                     navController.navigate(AttendanceScreenRoute.PRIVACY_POLICY.route)
                 }
             )
