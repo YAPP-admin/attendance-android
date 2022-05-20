@@ -93,9 +93,7 @@ fun AdminTotalScoreScreen(
 }
 
 @Composable
-fun TeamItem(
-    teamItemState: AdminTotalScoreUiState.TeamItemState
-) {
+fun TeamItem(teamItemState: AdminTotalScoreUiState.TeamItemState) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
     val iconResourceId =
         if (isExpanded) R.drawable.icon_chevron_up else R.drawable.icon_chevron_down
@@ -156,8 +154,8 @@ fun TeamItem(
                     .wrapContentHeight()
             ) {
                 Divider(modifier = Modifier.padding(horizontal = 24.dp), color = Gray_300)
-                for (i in 0 until teamItemState.teamMembers.size) {
-                    MemberItem(memberWithTotal = teamItemState.teamMembers[i])
+                teamItemState.teamMembers.forEach { teamMember ->
+                    MemberItem(memberWithTotal = teamMember)
                 }
                 Divider(modifier = Modifier.padding(horizontal = 24.dp), color = Gray_300)
             }
