@@ -23,6 +23,7 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionResult
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.google.accompanist.insets.imePadding
 import com.google.accompanist.insets.systemBarsPadding
 import com.yapp.common.R.drawable
 import com.yapp.common.R.raw
@@ -100,6 +101,7 @@ fun Login(
         var password by remember { mutableStateOf("") }
         YDSPopupDialog(
             title = stringResource(id = R.string.login_admin_title),
+            modifier = Modifier.imePadding(),
             content = stringResource(id = R.string.login_admin_content),
             negativeButtonText = stringResource(id = R.string.Cancel),
             positiveButtonText = stringResource(id = R.string.Ok),

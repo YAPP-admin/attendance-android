@@ -16,6 +16,7 @@ import com.yapp.common.theme.*
 fun YDSPopupDialog(
     title: String,
     content: String,
+    modifier: Modifier = Modifier,
     negativeButtonText: String,
     positiveButtonText: String,
     onClickNegativeButton: () -> Unit,
@@ -27,7 +28,7 @@ fun YDSPopupDialog(
 ) {
     Dialog(onDismissRequest = { onDismiss() }) {
         Surface(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .wrapContentHeight()
                 .padding(8.dp),
