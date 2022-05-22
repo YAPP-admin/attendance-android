@@ -23,6 +23,7 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionResult
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.google.accompanist.insets.systemBarsPadding
 import com.yapp.common.R.drawable
 import com.yapp.common.R.raw
 import com.yapp.common.theme.AttendanceTheme
@@ -73,6 +74,7 @@ fun Login(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White)
+                .systemBarsPadding()
                 .padding(24.dp),
         ) {
             IntroduceTitle()

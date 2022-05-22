@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.insets.systemBarsPadding
 import com.yapp.common.R
 import com.yapp.common.theme.*
 import com.yapp.common.yds.*
@@ -60,6 +61,7 @@ fun AdminMain(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
+            .systemBarsPadding()
     ) {
         when (uiState.loadState) {
             AdminMainUiState.LoadState.Loading -> YDSProgressBar()

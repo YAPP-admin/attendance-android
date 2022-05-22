@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.insets.ProvideWindowInsets
 import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.yds.YDSToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,12 +27,15 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             AttendanceTheme {
                 CompositionLocalProvider(
                     LocalOverScrollConfiguration provides null
                 ) {
-                    AttendanceScreen()
+                    ProvideWindowInsets {
+                        AttendanceScreen()
+                    }
                 }
             }
         }

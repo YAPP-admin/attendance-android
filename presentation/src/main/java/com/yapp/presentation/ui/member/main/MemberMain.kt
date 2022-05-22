@@ -22,9 +22,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.insets.systemBarsPadding
 import com.yapp.common.theme.*
 import com.yapp.presentation.R
 import com.yapp.presentation.ui.AttendanceScreenRoute
+import com.yapp.presentation.ui.SetStatusBarColorByRoute
 import com.yapp.presentation.ui.member.score.MemberScore
 import com.yapp.presentation.ui.member.todaysession.TodaySession
 import kotlinx.coroutines.flow.collect
@@ -42,7 +44,8 @@ fun MemberMain(
         Scaffold(
             scaffoldState = scaffoldState,
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .systemBarsPadding(),
             bottomBar = {
                 BottomNavigationTab(
                     navController = childNavController,
@@ -170,6 +173,7 @@ private fun ChildNavigation(
         composable(
             route = BottomNavigationItem.SESSION.route
         ) {
+            SetStatusBarColorByRoute(it.destination.route)
             TodaySession(
                 modifier = modifier,
                 navigateToSetting = navigateToScreen
@@ -179,6 +183,7 @@ private fun ChildNavigation(
         composable(
             route = BottomNavigationItem.MEMBER_SCORE.route
         ) {
+            SetStatusBarColorByRoute(it.destination.route)
             MemberScore(
                 modifier = modifier,
                 navigateToHelpScreen = {

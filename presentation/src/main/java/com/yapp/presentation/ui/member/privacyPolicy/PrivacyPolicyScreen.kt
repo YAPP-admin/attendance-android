@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import com.google.accompanist.insets.systemBarsPadding
 import com.yapp.common.yds.YDSAppBar
 
 
@@ -23,7 +24,9 @@ fun PrivacyPolicyScreen(
 
     Scaffold(
         topBar = { YDSAppBar(onClickBackButton = { onClickBackButton() }, title = "개인정보 처리방침") },
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .systemBarsPadding()
     ) {
         Column(
             modifier = Modifier

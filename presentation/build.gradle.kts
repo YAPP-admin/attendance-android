@@ -58,6 +58,7 @@ dependencies {
     implementation(Dependencies.Google.MATERIAL)
     implementation(Dependencies.Google.GSON)
     implementation(Dependencies.Google.SYSTEM_UI_CONTROLLER)
+    implementation(Dependencies.Google.SYSTEM_WINDOW_INSET)
 
     implementation(Dependencies.Kakao.USER_LOGIN)
     implementation(Dependencies.Lottie.LOTTIE)

@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.insets.systemBarsPadding
 import com.yapp.common.R
 import com.yapp.common.theme.*
 import com.yapp.common.yds.*
@@ -58,7 +59,9 @@ fun MemberSetting(
                 onClickBackButton = navigateToPreviousScreen
             )
         },
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .systemBarsPadding(),
     ) {
         Column(
             modifier = Modifier

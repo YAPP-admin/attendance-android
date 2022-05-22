@@ -54,6 +54,7 @@ object Dependencies {
         const val MATERIAL = "com.google.android.material:material:1.5.0"
         const val GSON = "com.google.code.gson:gson:2.8.5"
         const val SYSTEM_UI_CONTROLLER = "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
+        const val SYSTEM_WINDOW_INSET = "com.google.accompanist:accompanist-insets:0.14.0"
     }
 
     object Square {
