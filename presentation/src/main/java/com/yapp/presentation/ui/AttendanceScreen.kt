@@ -354,10 +354,3 @@ fun SetStatusBarColorByRoute(route: String?) {
         }
     }
 }
-
-
-//    "session_id": 8,
-//    "title": "팀 세션",
-//    "description": "팀으로 모여서 함께 의견을 공유하고, 작업하는 시간입니다. 열정적으로 토론해봐요!",
-//    "type": "DONT_NEED_ATTENDANCE",
-//    "date": "2022-05-28 14:00:00"
