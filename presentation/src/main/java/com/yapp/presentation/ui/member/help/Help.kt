@@ -34,12 +34,14 @@ fun Help( onClickBackButton: () -> Unit) {
                 onClickBackButton = { onClickBackButton() }
             )
         },
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .systemBarsPadding(),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .systemBarsPadding()
+
         ) {
             BasicInfo()
             DetailInfo()
