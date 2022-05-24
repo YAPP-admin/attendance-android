@@ -261,7 +261,7 @@ fun AttendanceScreen(
                 onClickBackButton = { navController.popBackStack() },
                 navigateToMainScreen = {
                     navController.navigate(AttendanceScreenRoute.MEMBER_MAIN.route) {
-                        popUpTo(AttendanceScreenRoute.SIGNUP_TEAM.route)
+                        popUpTo(AttendanceScreenRoute.SIGNUP_NAME.route){ inclusive = true }
                     }
                 })
         }
