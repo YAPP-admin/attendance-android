@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.insets.systemBarsPadding
 import com.yapp.common.theme.*
 import com.yapp.common.theme.Gray_800
 import com.yapp.common.util.KeyboardVisibilityUtils
@@ -39,7 +40,9 @@ fun Name(
 
     Scaffold(
         topBar = { YDSAppBar(onClickBackButton = { showDialog = !showDialog }) },
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .systemBarsPadding()
     ) {
         if (showDialog) {
             YDSPopupDialog(

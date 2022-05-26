@@ -103,8 +103,7 @@ fun QrCodeScanner(
         if (showQrScanner) {
             Surface(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
+                    .fillMaxSize()
             ) {
                 CameraPreview(
                     afterDetectedCode = { qrCode ->

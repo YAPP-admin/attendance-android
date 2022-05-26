@@ -26,6 +26,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.accompanist.insets.systemBarsPadding
 import com.yapp.common.theme.*
 import com.yapp.common.yds.*
 import com.yapp.presentation.R
@@ -105,7 +106,9 @@ fun ManagementScreen(
         sheetBackgroundColor = Color.Transparent
     ) {
         Scaffold(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .systemBarsPadding(),
             topBar = {
                 YDSAppBar(
                     modifier = Modifier.padding(horizontal = 4.dp),

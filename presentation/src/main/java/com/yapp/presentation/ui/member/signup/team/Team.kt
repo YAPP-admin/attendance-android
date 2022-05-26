@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.insets.systemBarsPadding
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.theme.Gray_1200
 import com.yapp.common.yds.*
@@ -50,6 +51,7 @@ fun Team(
         topBar = { YDSAppBar(onClickBackButton = { onClickBackButton() }) },
         modifier = Modifier
             .fillMaxSize()
+            .systemBarsPadding()
     ) {
         Box(
             modifier = Modifier

@@ -7,11 +7,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -19,7 +21,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.yapp.common.theme.Gray_200
+import com.yapp.common.theme.Gray_400
+import com.yapp.common.theme.Gray_600
 import com.yapp.common.theme.Yapp_Orange
 import com.yapp.common.yds.YDSToast
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_ID
@@ -158,6 +164,7 @@ fun AttendanceScreen(
         composable(
             route = AttendanceScreenRoute.QR_AUTH.route
         ) {
+            SetStatusBarColorByRoute(it.destination.route)
             QrCodeScanner {
                 navController.popBackStack()
             }
@@ -172,6 +179,7 @@ fun AttendanceScreen(
                 navArgument(KEY_SESSION_TITLE) { type = NavType.StringType }
             )
         ) {
+            SetStatusBarColorByRoute(it.destination.route)
             AttendanceManagement(
                 onBackButtonClicked = { navController.popBackStack() }
             )
@@ -180,6 +188,7 @@ fun AttendanceScreen(
         composable(
             route = AttendanceScreenRoute.MEMBER_SETTING.route
         ) {
+            SetStatusBarColorByRoute(it.destination.route)
             MemberSetting(
                 navigateToPreviousScreen = {
                     navController.popBackStack()
@@ -198,6 +207,7 @@ fun AttendanceScreen(
         composable(
             route = AttendanceScreenRoute.PRIVACY_POLICY.route
         ) {
+            SetStatusBarColorByRoute(it.destination.route)
             PrivacyPolicyScreen(
                 onClickBackButton = { navController.popBackStack() }
             )
@@ -206,6 +216,7 @@ fun AttendanceScreen(
         composable(
             route = AttendanceScreenRoute.HELP.route
         ) {
+            SetStatusBarColorByRoute(it.destination.route)
             Help { navController.popBackStack() }
         }
 
@@ -219,12 +230,14 @@ fun AttendanceScreen(
                 },
             )
         ) {
+            SetStatusBarColorByRoute(it.destination.route)
             SessionDetail { navController.popBackStack() }
         }
 
         composable(
             route = AttendanceScreenRoute.SIGNUP_NAME.route
         ) {
+            SetStatusBarColorByRoute(it.destination.route)
             Name(
                 onClickBackBtn = { navController.navigate(AttendanceScreenRoute.LOGIN.route) },
                 onClickNextBtn = { userName -> navController.navigate(AttendanceScreenRoute.SIGNUP_POSITION.route + "/${userName}") })
@@ -237,6 +250,7 @@ fun AttendanceScreen(
                 navArgument("name") { type = NavType.StringType })
         )
         {
+            SetStatusBarColorByRoute(it.destination.route)
             Position(
                 onClickBackButton = { navController.popBackStack() },
                 navigateToTeamScreen = { userName, userPosition ->
@@ -257,6 +271,7 @@ fun AttendanceScreen(
                 navArgument("name") { type = NavType.StringType },
                 navArgument("position") { type = NavType.StringType })
         ) {
+            SetStatusBarColorByRoute(it.destination.route)
             Team(
                 onClickBackButton = { navController.popBackStack() },
                 navigateToMainScreen = {
@@ -273,6 +288,7 @@ fun AttendanceScreen(
                 navArgument(KEY_UPCOMING_SESSION_ID) { type = NavType.IntType }
             )
         ) {
+            SetStatusBarColorByRoute(it.destination.route)
             AdminTotalScore(navigateToPreviousScreen = { navController.popBackStack() })
         }
     }
@@ -285,6 +301,7 @@ fun AttendanceScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .systemBarsPadding()
                 .padding(bottom = 90.dp),
             contentAlignment = Alignment.BottomCenter
         ) {
@@ -312,22 +329,28 @@ enum class AttendanceScreenRoute(val route: String) {
     ADMIN_ATTENDANCE_MANAGEMENT("admin-attendance-management");
 }
 
-// status bar color 한번에 지정할 수 있는 방법 찾아보기 !
 @Composable
-private fun SetStatusBarColorByRoute(route: String?) {
+fun SetStatusBarColorByRoute(route: String?) {
     val systemUiController = rememberSystemUiController()
 
-    when (route) {
-        AttendanceScreenRoute.SPLASH.route -> {
-            systemUiController.setSystemBarsColor(
-                color = Yapp_Orange
-            )
-        }
-        else -> {
-            systemUiController.setSystemBarsColor(
-                color = Color.White
-            )
+    SideEffect {
+        when (route) {
+            AttendanceScreenRoute.SPLASH.route -> {
+                systemUiController.setStatusBarColor(
+                    color = Yapp_Orange
+                )
+            }
+            BottomNavigationItem.SESSION.route -> {
+                systemUiController.setStatusBarColor(
+                    color = Gray_200
+                )
+            }
+            else -> {
+                systemUiController.setStatusBarColor(
+                    color = Color.Transparent,
+                    darkIcons = true
+                )
+            }
         }
     }
 }
-
