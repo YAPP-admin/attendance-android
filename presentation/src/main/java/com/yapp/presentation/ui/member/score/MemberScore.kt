@@ -182,8 +182,7 @@ fun SemiCircleProgressBar(score: Float) {
                 drawArc(
                     color = fillColorByUserScore(score.toInt()),
                     startAngle = 180f,
-                    // 반원은 180도, 180도일 때 100점으로 환산하기 위해 9/5 를 곱한다.
-                    sweepAngle = (score * 9 / 5) * animatedValue.value,
+                    sweepAngle = sweepAngleByUserScore(score.toInt(), animatedValue.value),
                     useCenter = false,
                     size = Size(constraints.maxWidth.toFloat(), constraints.maxWidth.toFloat()),
                     style = Stroke(width = 25f, cap = StrokeCap.Round)
@@ -317,6 +316,13 @@ private fun fillColorByUserScore(score: Int): Color {
         in 70..79 -> Score.NORMAL
         else -> Score.DANGEROUS
     }.color
+}
+
+private fun sweepAngleByUserScore(score: Int, animatedValue: Float): Float {
+    // 반원은 180도, 180도일 때 100점으로 환산하기 위해 9/5 를 곱한다.
+    return if (score > 0) (score * 9 / 5) * animatedValue
+    // 점수가 0점 이하인 경우, 무조건 0점으로 표기
+    else 0f
 }
 
 enum class Score(val color: Color) {
