@@ -1,14 +1,11 @@
 package com.yapp.presentation.ui.member.score
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.usecases.GetMemberAttendanceListUseCase
-import com.yapp.domain.usecases.GetSessionListUseCase
 import com.yapp.domain.util.DateUtil
 import com.yapp.presentation.model.Attendance.Companion.mapTo
 import com.yapp.presentation.model.Session.Companion.mapTo
-import com.yapp.presentation.ui.admin.main.AdminMainContract
 import com.yapp.presentation.ui.member.score.MemberScoreContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
