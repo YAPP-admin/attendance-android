@@ -6,7 +6,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -26,6 +28,8 @@ fun YDSPopupDialog(
     editTextChangedListener: (String) -> Unit = { },
     onDismiss: () -> Unit,
 ) {
+    var isTextFieldFocused by remember{ mutableStateOf<Boolean>(false) }
+
     Dialog(onDismissRequest = { onDismiss() }) {
         Surface(
             modifier = modifier
@@ -59,14 +63,19 @@ fun YDSPopupDialog(
                         modifier = Modifier
                             .padding(top = 20.dp)
                             .fillMaxWidth()
+                            .onFocusEvent { state ->
+                                isTextFieldFocused = state.isFocused
+                            }
                             .background(color = Gray_200, shape = RoundedCornerShape(10.dp)),
                         placeholder = {
-                            Text(
-                                modifier = Modifier.fillMaxWidth(),
-                                text = editTextHint,
-                                textAlign = TextAlign.Center,
-                                color = Gray_400,
-                            )
+                            if(!isTextFieldFocused) {
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = editTextHint,
+                                    textAlign = TextAlign.Center,
+                                    color = Gray_400,
+                                )
+                            }
                         },
                         textStyle = AttendanceTypography.body2.copy(
                             color = Gray_800,
