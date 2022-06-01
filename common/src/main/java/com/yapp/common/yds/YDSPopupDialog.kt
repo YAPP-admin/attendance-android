@@ -1,10 +1,12 @@
 package com.yapp.common.yds
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
@@ -12,8 +14,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.yapp.common.theme.*
 
+@ExperimentalComposeUiApi
 @Composable
 fun YDSPopupDialog(
     title: String,
@@ -30,12 +34,17 @@ fun YDSPopupDialog(
 ) {
     var isTextFieldFocused by remember{ mutableStateOf<Boolean>(false) }
 
-    Dialog(onDismissRequest = { onDismiss() }) {
+    Dialog(
+        onDismissRequest = { onDismiss() },
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        )
+    ) {
         Surface(
             modifier = modifier
                 .fillMaxSize()
                 .wrapContentHeight()
-                .padding(8.dp),
+                .padding(horizontal = 32.dp),
             shape = RoundedCornerShape(10.dp),
             color = Color.White
         ) {

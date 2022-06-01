@@ -21,6 +21,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -51,6 +52,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import java.util.concurrent.Executors
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun QrCodeScanner(
     viewModel: QrCodeViewModel = hiltViewModel(),
