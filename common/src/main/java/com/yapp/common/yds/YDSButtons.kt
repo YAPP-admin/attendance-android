@@ -1,8 +1,6 @@
 package com.yapp.common.yds
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -128,15 +126,15 @@ fun YDSButtonRegular(
 
 @Composable
 fun YDSButtonSmall(
+    modifier: Modifier = Modifier,
     text: String,
     state: YdsButtonState,
     onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,
-        modifier = Modifier
-            .wrapContentWidth()
-            .height(32.dp),
+        modifier = modifier
+            .wrapContentHeight(),
         shape = RoundedCornerShape(10.dp),
         colors = when (state) {
             YdsButtonState.ENABLED -> {
