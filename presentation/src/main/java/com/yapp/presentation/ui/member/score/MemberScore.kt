@@ -78,10 +78,12 @@ fun MemberScoreScreen(
     navigateToHelpScreen: () -> Unit,
     navigateToSessionDetail: (Int) -> Unit
 ) {
+    val currentScore = uiState.lastAttendanceList.fold(100) { total, pair -> total + pair.second.attendanceType.point }
+
     LazyColumn {
         item {
             HelpIcon(navigateToHelpScreen)
-            SemiCircleProgressBar(uiState.lastAttendanceList.fold(100f) { total, pair -> total + pair.second.attendanceType.point })
+            SemiCircleProgressBar(if (currentScore > 0) currentScore else 0)
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -134,7 +136,7 @@ private fun HelpIcon(navigateToHelpScreen: () -> Unit) {
 
 // 반원형 곡선의 프로그래스 바
 @Composable
-fun SemiCircleProgressBar(score: Float) {
+fun SemiCircleProgressBar(score: Int) {
     val animatedValue = remember { Animatable(0f) }
 
     LaunchedEffect(animatedValue) {
@@ -180,9 +182,9 @@ fun SemiCircleProgressBar(score: Float) {
                 )
 
                 drawArc(
-                    color = fillColorByUserScore(score.toInt()),
+                    color = fillColorByUserScore(score),
                     startAngle = 180f,
-                    sweepAngle = sweepAngleByUserScore(score.toInt(), animatedValue.value),
+                    sweepAngle = (score * 9 / 5) * animatedValue.value,
                     useCenter = false,
                     size = Size(constraints.maxWidth.toFloat(), constraints.maxWidth.toFloat()),
                     style = Stroke(width = 25f, cap = StrokeCap.Round)
@@ -196,7 +198,7 @@ fun SemiCircleProgressBar(score: Float) {
                 )
 
                 drawContext.canvas.nativeCanvas.drawText(
-                    score.toInt().toString(),
+                    score.toString(),
                     center.x,
                     (center.y * 2) - 10f,
                     scoreTextPaint
@@ -316,13 +318,6 @@ private fun fillColorByUserScore(score: Int): Color {
         in 70..79 -> Score.NORMAL
         else -> Score.DANGEROUS
     }.color
-}
-
-private fun sweepAngleByUserScore(score: Int, animatedValue: Float): Float {
-    // 반원은 180도, 180도일 때 100점으로 환산하기 위해 9/5 를 곱한다.
-    return if (score > 0) (score * 9 / 5) * animatedValue
-    // 점수가 0점 이하인 경우, 무조건 0점으로 표기
-    else 0f
 }
 
 enum class Score(val color: Color) {
