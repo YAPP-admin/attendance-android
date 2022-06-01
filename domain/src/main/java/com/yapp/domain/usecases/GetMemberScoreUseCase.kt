@@ -31,7 +31,7 @@ class GetMemberScoreUseCase @Inject constructor(
                 }
             }
 
-            if(memberScore > 0) memberScore else 0
+            memberScore
         }.toResult()
     }
 }
