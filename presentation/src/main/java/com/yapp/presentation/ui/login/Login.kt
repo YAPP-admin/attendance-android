@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
@@ -38,6 +39,7 @@ import com.yapp.presentation.ui.login.LoginContract.LoginUiEvent
 import com.yapp.presentation.ui.login.LoginContract.LoginUiSideEffect
 import kotlinx.coroutines.flow.collect
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Login(
     viewModel: LoginViewModel = hiltViewModel(),

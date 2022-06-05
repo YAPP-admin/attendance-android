@@ -9,6 +9,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -144,6 +145,7 @@ private fun Divide() {
     )
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun MenuList(viewModel: MemberSettingViewModel) {
     var showDialog by remember { mutableStateOf(false) }

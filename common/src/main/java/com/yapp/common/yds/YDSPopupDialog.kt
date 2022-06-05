@@ -1,17 +1,26 @@
 package com.yapp.common.yds
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.yapp.common.theme.*
 
+@ExperimentalComposeUiApi
 @Composable
 fun YDSPopupDialog(
     title: String,
@@ -24,14 +33,21 @@ fun YDSPopupDialog(
     editTextInitValue: String = "",
     editTextHint: String? = null,
     editTextChangedListener: (String) -> Unit = { },
-    onDismiss: () -> Unit,
+    onDismiss: () -> Unit
 ) {
-    Dialog(onDismissRequest = { onDismiss() }) {
+    var isTextFieldFocused by remember{ mutableStateOf<Boolean>(false) }
+
+    Dialog(
+        onDismissRequest = { onDismiss() },
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        )
+    ) {
         Surface(
             modifier = modifier
                 .fillMaxSize()
                 .wrapContentHeight()
-                .padding(8.dp),
+                .padding(horizontal = 32.dp),
             shape = RoundedCornerShape(10.dp),
             color = Color.White
         ) {
@@ -59,14 +75,19 @@ fun YDSPopupDialog(
                         modifier = Modifier
                             .padding(top = 20.dp)
                             .fillMaxWidth()
+                            .onFocusEvent { state ->
+                                isTextFieldFocused = state.isFocused
+                            }
                             .background(color = Gray_200, shape = RoundedCornerShape(10.dp)),
                         placeholder = {
-                            Text(
-                                modifier = Modifier.fillMaxWidth(),
-                                text = editTextHint,
-                                textAlign = TextAlign.Center,
-                                color = Gray_400,
-                            )
+                            if(!isTextFieldFocused) {
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = editTextHint,
+                                    textAlign = TextAlign.Center,
+                                    color = Gray_400,
+                                )
+                            }
                         },
                         textStyle = AttendanceTypography.body2.copy(
                             color = Gray_800,
@@ -79,7 +100,9 @@ fun YDSPopupDialog(
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
                             disabledIndicatorColor = Color.Transparent
-                        )
+                        ),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        visualTransformation = PasswordVisualTransformation()
                     )
                 }
 

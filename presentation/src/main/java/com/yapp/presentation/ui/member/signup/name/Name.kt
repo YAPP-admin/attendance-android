@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -24,6 +25,7 @@ import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R
 
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Name(
     viewModel: NameViewModel = hiltViewModel(),
