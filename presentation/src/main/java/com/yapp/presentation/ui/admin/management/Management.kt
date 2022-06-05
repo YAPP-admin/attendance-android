@@ -26,6 +26,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.systemBarsPadding
 import com.yapp.common.theme.*
 import com.yapp.common.yds.*
@@ -321,6 +322,7 @@ fun BottomSheetDialog(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .navigationBarsWithImePadding()
     ) {
         Spacer(
             modifier = Modifier

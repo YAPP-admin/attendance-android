@@ -21,12 +21,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.insets.systemBarsPadding
 import com.yapp.common.R
 import com.yapp.common.theme.*
-import com.yapp.common.yds.*
+import com.yapp.common.yds.YDSButtonSmall
+import com.yapp.common.yds.YDSEmptyScreen
+import com.yapp.common.yds.YDSProgressBar
+import com.yapp.common.yds.YdsButtonState
 import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.presentation.R.string
 import com.yapp.presentation.model.Session
@@ -229,29 +236,50 @@ fun LazyListScope.UpcomingSession(
     upcomingSession: Session,
     onManagementButtonClicked: (Int, String) -> Unit
 ) {
+    val MONTH_RANGE = 5..6
+    val DAY_RANGE = 8..9
+
     item {
         Column(
             modifier = Modifier.padding(horizontal = 24.dp)
         ) {
             Text(
-                text = upcomingSession.date.substring(5, 7) +
-                        "." + upcomingSession.date.substring(8, 10),
+                text = upcomingSession.date.substring(MONTH_RANGE) +
+                        "." + upcomingSession.date.substring(DAY_RANGE),
                 color = Gray_600,
                 style = AttendanceTypography.body2
             )
 
-            Row(
+            ConstraintLayout(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 6.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(top = 6.dp)
             ) {
+                val (sessionTitle, managementButton) = createRefs()
+
                 Text(
+                    modifier = Modifier
+                        .padding(end = 12.dp)
+                        .constrainAs(sessionTitle) {
+                            start.linkTo(parent.start)
+                            end.linkTo(managementButton.start)
+                            top.linkTo(parent.top)
+                            width = Dimension.fillToConstraints
+                        },
                     text = upcomingSession.title,
-                    style = AttendanceTypography.h3
+                    style = AttendanceTypography.h3,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
+
                 YDSButtonSmall(
+                    modifier = Modifier
+                        .constrainAs(managementButton) {
+                            end.linkTo(parent.end)
+                            top.linkTo(sessionTitle.top)
+                            bottom.linkTo(sessionTitle.bottom)
+                            width = Dimension.preferredWrapContent
+                        },
                     text = stringResource(id = string.admin_main_admin_button),
                     state = if (upcomingSession.type == NeedToAttendType.NEED_ATTENDANCE) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
                     onClick = {
@@ -262,6 +290,7 @@ fun LazyListScope.UpcomingSession(
                     }
                 )
             }
+
         }
     }
 }
@@ -292,6 +321,9 @@ private fun SessionItem(
     session: Session,
     onSessionItemClicked: (Int, String) -> Unit
 ) {
+    val MONTH_RANGE = 5..6
+    val DAY_RANGE = 8..9
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -306,22 +338,29 @@ private fun SessionItem(
     ) {
         val textColor =
             if (session.type == NeedToAttendType.NEED_ATTENDANCE) Gray_1200 else Gray_400
-        Row {
-            Text(
-                text = "${session.date.substring(5, 7)}.${session.date.substring(8, 10)}",
-                color = textColor,
-                style = AttendanceTypography.body1
-            )
-            Text(
-                text = session.title,
-                color = textColor,
-                style = AttendanceTypography.subtitle1,
-                modifier = Modifier.padding(start = 24.dp)
-            )
-        }
+
+        Text(
+            modifier = Modifier.width(64.dp),
+            text = "${session.date.substring(MONTH_RANGE)}.${session.date.substring(DAY_RANGE)}",
+            color = textColor,
+            style = AttendanceTypography.body1,
+        )
+
+        Text(
+            modifier = Modifier
+                .padding(end = 12.dp)
+                .weight(1F),
+            text = session.title,
+            color = textColor,
+            maxLines = 1,
+            style = AttendanceTypography.subtitle1,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Left
+        )
 
         if (session.type == NeedToAttendType.NEED_ATTENDANCE) {
             Icon(
+                modifier = Modifier.size(24.dp),
                 painter = painterResource(id = R.drawable.icon_chevron_right),
                 contentDescription = null,
                 tint = Color.Unspecified,
