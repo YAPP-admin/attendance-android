@@ -7,13 +7,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -24,8 +22,6 @@ import androidx.navigation.navArgument
 import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yapp.common.theme.Gray_200
-import com.yapp.common.theme.Gray_400
-import com.yapp.common.theme.Gray_600
 import com.yapp.common.theme.Yapp_Orange
 import com.yapp.common.yds.YDSToast
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_ID
@@ -276,7 +272,7 @@ fun AttendanceScreen(
                 onClickBackButton = { navController.popBackStack() },
                 navigateToMainScreen = {
                     navController.navigate(AttendanceScreenRoute.MEMBER_MAIN.route) {
-                        popUpTo(AttendanceScreenRoute.SIGNUP_NAME.route){ inclusive = true }
+                        popUpTo(AttendanceScreenRoute.SIGNUP_NAME.route) { inclusive = true }
                     }
                 })
         }

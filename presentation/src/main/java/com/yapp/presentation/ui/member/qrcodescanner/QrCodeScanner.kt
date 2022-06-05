@@ -272,7 +272,7 @@ fun ScannerDecoration(
         IconButton(
             modifier = modifier
                 .align(Alignment.TopEnd)
-                .padding(top = 14.dp, end = 14.dp),
+                .padding(top = 38.dp, end = 14.dp),
             onClick = navigateToPreviousScreen
         ) {
             Icon(

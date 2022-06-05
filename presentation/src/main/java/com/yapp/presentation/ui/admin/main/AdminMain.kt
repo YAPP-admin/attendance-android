@@ -321,6 +321,9 @@ private fun SessionItem(
     session: Session,
     onSessionItemClicked: (Int, String) -> Unit
 ) {
+    val MONTH_RANGE = 5..6
+    val DAY_RANGE = 8..9
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -338,7 +341,7 @@ private fun SessionItem(
 
         Text(
             modifier = Modifier.width(64.dp),
-            text = "${session.date.substring(5, 7)}.${session.date.substring(8, 10)}",
+            text = "${session.date.substring(MONTH_RANGE)}.${session.date.substring(DAY_RANGE)}",
             color = textColor,
             style = AttendanceTypography.body1,
         )
