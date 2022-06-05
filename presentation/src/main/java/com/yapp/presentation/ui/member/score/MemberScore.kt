@@ -276,7 +276,8 @@ fun RowScope.AttendanceCell(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(20.dp),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            style = AttendanceTypography.h3
         )
     }
 }
