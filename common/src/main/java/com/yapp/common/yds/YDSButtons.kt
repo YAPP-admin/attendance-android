@@ -44,7 +44,8 @@ fun YDSButtonLarge(
     ) {
         Text(
             text = text,
-            color = Color.White
+            color = Color.White,
+            style = AttendanceTypography.h3
         )
     }
 }
