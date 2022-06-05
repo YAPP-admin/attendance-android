@@ -8,13 +8,10 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.yapp.common.theme.Gray_200
-import com.yapp.common.theme.Gray_400
-import com.yapp.common.theme.Gray_800
-import com.yapp.common.theme.Yapp_Orange
+import androidx.compose.ui.unit.sp
 import com.yapp.common.theme.*
-import java.lang.IllegalStateException
 
 @Composable
 fun YDSButtonLarge(
@@ -193,8 +190,13 @@ fun YDSChoiceButton(
         elevation = null
     ) {
         Text(
+            modifier = Modifier
+                .padding(horizontal = 6.dp, vertical = 4.dp),
             text = text,
-            style = AttendanceTypography.body1,
+            fontFamily = Pretendard,
+            fontWeight = FontWeight.SemiBold,
+            letterSpacing = 0.01.sp,
+            fontSize = 16.sp,
             color = when (state) {
                 YdsButtonState.DISABLED -> {
                     Gray_800
