@@ -64,7 +64,7 @@ fun Position(
 
             }
             YDSButtonLarge(
-                text = stringResource(R.string.member_signup_position_confirm),
+                text = stringResource(R.string.member_signup_position_next),
                 modifier = Modifier
                     .padding(bottom = 40.dp)
                     .height(60.dp)
@@ -90,7 +90,7 @@ fun PositionOption(userPosition:PositionType?, onPositionTypeClicked: (PositionT
                     val position = positionList[rowNum * row + index]
                     YDSChoiceButton(
                         text = position.displayName,
-                        modifier = Modifier.padding(end = 12.dp),
+                        modifier = Modifier.padding(end = 12.dp, bottom = 12.dp),
                         state = if (userPosition == position) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
                         onClick = { onPositionTypeClicked(position) }
                     )

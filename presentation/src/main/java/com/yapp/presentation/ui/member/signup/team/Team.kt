@@ -110,7 +110,7 @@ fun TeamOption(uiState: TeamContract.TeamUiState, onTeamTypeClicked: (String) ->
                     val team = uiState.teams[rowNum * row + index]
                     YDSChoiceButton(
                         text = team.type!!.displayName,
-                        modifier = Modifier.padding(end = 12.dp),
+                        modifier = Modifier.padding(end = 12.dp, bottom = 12.dp),
                         state = if (uiState.selectedTeam.type == team.type) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
                         onClick = { onTeamTypeClicked(team.type.name) }
                     )
@@ -143,7 +143,7 @@ fun TeamNumberOption(uiState: TeamContract.TeamUiState, onTeamNumberClicked: (In
                     repeat(selectedTeamType[0].number!!) { teamNum ->
                         YDSChoiceButton(
                             text = stringResource(R.string.member_signup_team_number, teamNum + 1),
-                            modifier = Modifier.padding(end = 12.dp),
+                            modifier = Modifier.padding(end = 12.dp, bottom = 12.dp),
                             state = if (uiState.selectedTeam.number == teamNum + 1) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
                             onClick = { onTeamNumberClicked(teamNum + 1) }
                         )

@@ -35,6 +35,7 @@ import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.domain.util.DateUtil
 import com.yapp.presentation.R
 import com.yapp.presentation.model.Attendance
+import com.yapp.presentation.model.AttendanceType
 import com.yapp.presentation.model.Session
 import com.yapp.presentation.util.attendance.checkSessionAttendance
 import java.text.SimpleDateFormat
@@ -221,21 +222,21 @@ fun UserAttendanceTable(lastAttendanceList: List<Pair<Session, Attendance>>) {
             topText = stringResource(R.string.member_score_attend_text),
             topIconResId = R.drawable.icon_attend,
             bottomText = lastAttendanceList.filter {
-                (it.first.type == NeedToAttendType.NEED_ATTENDANCE) and
-                        (it.second.attendanceType == com.yapp.presentation.model.AttendanceType.Normal)
+                ((it.first.type == NeedToAttendType.NEED_ATTENDANCE) and (it.second.attendanceType == AttendanceType.Normal)) or
+                        ((it.first.type == NeedToAttendType.DONT_NEED_ATTENDANCE) and (it.second.attendanceType == AttendanceType.Admit))
             }.size.toString()
         )
 
         AttendanceCell(
             topText = stringResource(R.string.member_score_tardy_text),
             topIconResId = R.drawable.icon_tardy,
-            bottomText = lastAttendanceList.filter { it.second.attendanceType == com.yapp.presentation.model.AttendanceType.Late }.size.toString()
+            bottomText = lastAttendanceList.filter { it.second.attendanceType == AttendanceType.Late }.size.toString()
         )
 
         AttendanceCell(
             topText = stringResource(R.string.member_score_absent_text),
             topIconResId = R.drawable.icon_absent,
-            bottomText = lastAttendanceList.filter { it.second.attendanceType == com.yapp.presentation.model.AttendanceType.Absent }.size.toString()
+            bottomText = lastAttendanceList.filter { it.second.attendanceType == AttendanceType.Absent }.size.toString()
         )
     }
 }
@@ -276,7 +277,8 @@ fun RowScope.AttendanceCell(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(20.dp),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            style = AttendanceTypography.h3
         )
     }
 }
