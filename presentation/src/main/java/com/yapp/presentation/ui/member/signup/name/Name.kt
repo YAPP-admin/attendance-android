@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.systemBarsPadding
 import com.yapp.common.theme.*
 import com.yapp.common.theme.Gray_800
@@ -39,6 +40,7 @@ fun Name(
         window = (LocalContext.current as Activity).window,
         onShowKeyboard = { isKeyboardOpened = true },
         onHideKeyboard = { isKeyboardOpened = false })
+
 
     Scaffold(
         topBar = { YDSAppBar(onClickBackButton = { showDialog = !showDialog }) },
@@ -74,7 +76,9 @@ fun Name(
             NextButton(
                 name = uiState.name,
                 isKeyboardOpened = isKeyboardOpened,
-                modifier = Modifier.align(Alignment.BottomCenter),
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .navigationBarsWithImePadding(),
                 onClickNextBtn = onClickNextBtn
             )
         }
@@ -147,10 +151,13 @@ fun NextButton(
             YDSButtonLarge(
                 text = stringResource(id = R.string.name_next_button),
                 state = if (name.isBlank()) YdsButtonState.DISABLED else YdsButtonState.ENABLED,
-                onClick = { if (name.isNotBlank()) {onClickNextBtn(name)} },
-                modifier = Modifier.padding(horizontal = 24.dp)
+                onClick = {
+                    if (name.isNotBlank()) {
+                        onClickNextBtn(name)
+                    }
+                },
+                modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 40.dp)
             )
-            Spacer(modifier = Modifier.height(40.dp))
         }
     }
 }
@@ -164,7 +171,9 @@ fun OnKeyboardNextButton(
 ) {
     Button(
         onClick = {
-            if (name.isNotBlank()) { onClickNextBtn(name) }
+            if (name.isNotBlank()) {
+                onClickNextBtn(name)
+            }
         },
         modifier = Modifier
             .fillMaxWidth()
