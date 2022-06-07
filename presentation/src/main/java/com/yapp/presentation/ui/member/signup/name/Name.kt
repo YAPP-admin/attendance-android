@@ -80,7 +80,9 @@ fun Name(
                 isKeyboardOpened = isKeyboardOpened,
                 modifier = Modifier
                     .align(Alignment.BottomCenter),
-                onClickNextBtn = onClickNextBtn
+                onClickNextBtn = onClickNextBtn,
+                keyboardVisibilityUtils= keyboardVisibilityUtils
+
             )
         }
     }
@@ -139,7 +141,8 @@ fun NextButton(
     name: String,
     isKeyboardOpened: Boolean,
     modifier: Modifier,
-    onClickNextBtn: (String) -> Unit
+    onClickNextBtn: (String) -> Unit,
+    keyboardVisibilityUtils: KeyboardVisibilityUtils
 ) {
     Box(
         modifier = modifier,
@@ -148,7 +151,8 @@ fun NextButton(
             OnKeyboardNextButton(
                 name = name,
                 state = if (name.isBlank()) YdsButtonState.DISABLED else YdsButtonState.ENABLED,
-                onClickNextBtn = onClickNextBtn
+                onClickNextBtn = onClickNextBtn,
+                keyboardVisibilityUtils= keyboardVisibilityUtils
             )
         } else {
             YDSButtonLarge(
@@ -157,6 +161,7 @@ fun NextButton(
                 onClick = {
                     if (name.isNotBlank()) {
                         onClickNextBtn(name)
+                        keyboardVisibilityUtils.detachKeyboardListener()
                     }
                 },
                 modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 40.dp)
@@ -171,12 +176,14 @@ fun OnKeyboardNextButton(
     name: String,
     state: YdsButtonState,
     onClickNextBtn: (String) -> Unit,
+    keyboardVisibilityUtils: KeyboardVisibilityUtils
 ) {
     Button(
         contentPadding = PaddingValues(0.dp),
         onClick = {
             if (name.isNotBlank()) {
                 onClickNextBtn(name)
+                keyboardVisibilityUtils.detachKeyboardListener()
             }
         },
         modifier = Modifier
