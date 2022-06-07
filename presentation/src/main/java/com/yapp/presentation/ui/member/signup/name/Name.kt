@@ -10,12 +10,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.insets.navigationBarsWithImePadding
-import com.google.accompanist.insets.systemBarsPadding
+import com.google.accompanist.insets.*
 import com.yapp.common.theme.*
 import com.yapp.common.theme.Gray_800
 import com.yapp.common.util.KeyboardVisibilityUtils
@@ -41,12 +41,12 @@ fun Name(
         onShowKeyboard = { isKeyboardOpened = true },
         onHideKeyboard = { isKeyboardOpened = false })
 
-
     Scaffold(
         topBar = { YDSAppBar(onClickBackButton = { showDialog = !showDialog }) },
         modifier = Modifier
             .fillMaxSize()
-            .systemBarsPadding()
+            .statusBarsPadding()
+            .navigationBarsWithImePadding()
     ) {
         if (showDialog) {
             YDSPopupDialog(
@@ -65,7 +65,9 @@ fun Name(
                 .fillMaxSize()
         ) {
             Column(
-                modifier = Modifier.padding(horizontal = 24.dp)
+                modifier = Modifier
+                    .padding(horizontal = 24.dp)
+                    .align(Alignment.TopCenter)
             ) {
                 Title()
                 InputName(
@@ -77,8 +79,7 @@ fun Name(
                 name = uiState.name,
                 isKeyboardOpened = isKeyboardOpened,
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .navigationBarsWithImePadding(),
+                    .align(Alignment.BottomCenter),
                 onClickNextBtn = onClickNextBtn
             )
         }
@@ -140,7 +141,9 @@ fun NextButton(
     modifier: Modifier,
     onClickNextBtn: (String) -> Unit
 ) {
-    Column(modifier = modifier) {
+    Box(
+        modifier = modifier,
+    ) {
         if (isKeyboardOpened) {
             OnKeyboardNextButton(
                 name = name,
@@ -167,9 +170,10 @@ fun NextButton(
 fun OnKeyboardNextButton(
     name: String,
     state: YdsButtonState,
-    onClickNextBtn: (String) -> Unit
+    onClickNextBtn: (String) -> Unit,
 ) {
     Button(
+        contentPadding = PaddingValues(0.dp),
         onClick = {
             if (name.isNotBlank()) {
                 onClickNextBtn(name)
@@ -178,6 +182,7 @@ fun OnKeyboardNextButton(
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp),
+        shape = RoundedCornerShape(0.dp),
         colors = when (state) {
             YdsButtonState.DISABLED -> {
                 ButtonDefaults.buttonColors(

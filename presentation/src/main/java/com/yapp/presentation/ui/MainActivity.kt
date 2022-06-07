@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
                 CompositionLocalProvider(
                     LocalOverScrollConfiguration provides null
                 ) {
-                    ProvideWindowInsets {
+                    ProvideWindowInsets (windowInsetsAnimationsEnabled = true){
                         AttendanceScreen()
                     }
                 }
