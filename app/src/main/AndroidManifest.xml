@@ -18,7 +18,7 @@
             android:name="com.yapp.presentation.ui.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Attendance.NoActionBar"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
