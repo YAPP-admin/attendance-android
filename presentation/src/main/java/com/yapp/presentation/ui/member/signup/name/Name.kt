@@ -10,11 +10,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.insets.systemBarsPadding
+import com.google.accompanist.insets.*
 import com.yapp.common.theme.*
 import com.yapp.common.theme.Gray_800
 import com.yapp.common.util.KeyboardVisibilityUtils
@@ -44,7 +45,8 @@ fun Name(
         topBar = { YDSAppBar(onClickBackButton = { showDialog = !showDialog }) },
         modifier = Modifier
             .fillMaxSize()
-            .systemBarsPadding()
+            .statusBarsPadding()
+            .navigationBarsWithImePadding()
     ) {
         if (showDialog) {
             YDSPopupDialog(
@@ -63,7 +65,9 @@ fun Name(
                 .fillMaxSize()
         ) {
             Column(
-                modifier = Modifier.padding(horizontal = 24.dp)
+                modifier = Modifier
+                    .padding(horizontal = 24.dp)
+                    .align(Alignment.TopCenter)
             ) {
                 Title()
                 InputName(
@@ -74,8 +78,11 @@ fun Name(
             NextButton(
                 name = uiState.name,
                 isKeyboardOpened = isKeyboardOpened,
-                modifier = Modifier.align(Alignment.BottomCenter),
-                onClickNextBtn = onClickNextBtn
+                modifier = Modifier
+                    .align(Alignment.BottomCenter),
+                onClickNextBtn = onClickNextBtn,
+                keyboardVisibilityUtils= keyboardVisibilityUtils
+
             )
         }
     }
@@ -134,23 +141,31 @@ fun NextButton(
     name: String,
     isKeyboardOpened: Boolean,
     modifier: Modifier,
-    onClickNextBtn: (String) -> Unit
+    onClickNextBtn: (String) -> Unit,
+    keyboardVisibilityUtils: KeyboardVisibilityUtils
 ) {
-    Column(modifier = modifier) {
+    Box(
+        modifier = modifier,
+    ) {
         if (isKeyboardOpened) {
             OnKeyboardNextButton(
                 name = name,
                 state = if (name.isBlank()) YdsButtonState.DISABLED else YdsButtonState.ENABLED,
-                onClickNextBtn = onClickNextBtn
+                onClickNextBtn = onClickNextBtn,
+                keyboardVisibilityUtils = keyboardVisibilityUtils
             )
         } else {
             YDSButtonLarge(
                 text = stringResource(id = R.string.name_next_button),
                 state = if (name.isBlank()) YdsButtonState.DISABLED else YdsButtonState.ENABLED,
-                onClick = { if (name.isNotBlank()) {onClickNextBtn(name)} },
-                modifier = Modifier.padding(horizontal = 24.dp)
+                onClick = {
+                    if (name.isNotBlank()) {
+                        onClickNextBtn(name)
+                        keyboardVisibilityUtils.detachKeyboardListener()
+                    }
+                },
+                modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 40.dp)
             )
-            Spacer(modifier = Modifier.height(40.dp))
         }
     }
 }
@@ -160,15 +175,21 @@ fun NextButton(
 fun OnKeyboardNextButton(
     name: String,
     state: YdsButtonState,
-    onClickNextBtn: (String) -> Unit
+    onClickNextBtn: (String) -> Unit,
+    keyboardVisibilityUtils: KeyboardVisibilityUtils
 ) {
     Button(
+        contentPadding = PaddingValues(0.dp),
         onClick = {
-            if (name.isNotBlank()) { onClickNextBtn(name) }
+            if (name.isNotBlank()) {
+                onClickNextBtn(name)
+                keyboardVisibilityUtils.detachKeyboardListener()
+            }
         },
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp),
+        shape = RoundedCornerShape(0.dp),
         colors = when (state) {
             YdsButtonState.DISABLED -> {
                 ButtonDefaults.buttonColors(
