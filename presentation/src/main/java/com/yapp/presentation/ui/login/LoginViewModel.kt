@@ -76,7 +76,6 @@ class LoginViewModel @Inject constructor(
                     // 존재하지 않는다면, signup 화면으로 이동한다.
                     setEffect(
                         LoginUiSideEffect.NavigateToSignUpScreen,
-                        LoginUiSideEffect.ShowToast("로그인 성공")
                     )
                 }
             },
