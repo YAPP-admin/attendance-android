@@ -152,7 +152,7 @@ fun NextButton(
                 name = name,
                 state = if (name.isBlank()) YdsButtonState.DISABLED else YdsButtonState.ENABLED,
                 onClickNextBtn = onClickNextBtn,
-                keyboardVisibilityUtils= keyboardVisibilityUtils
+                keyboardVisibilityUtils = keyboardVisibilityUtils
             )
         } else {
             YDSButtonLarge(
