@@ -81,7 +81,6 @@ fun Login(
                 .padding(24.dp),
         ) {
             IntroduceTitle()
-            SkipButton()
             KakaoLoginButton()
         }
 
@@ -131,21 +130,6 @@ private fun YappuImage(
             onClickImage.invoke()
         },
         composition = composition.value
-    )
-}
-
-@Composable
-private fun SkipButton(
-    viewModel: LoginViewModel = hiltViewModel(),
-) {
-    YDSButtonLarge(
-        text = "건너뛰기",
-        modifier = Modifier
-            .layoutId("skipButton"),
-        state = YdsButtonState.ENABLED,
-        onClick = {
-            viewModel.setEvent(LoginUiEvent.OnSkipButtonClicked)
-        }
     )
 }
 
@@ -200,18 +184,11 @@ private fun KakaoLoginButton(
 private fun constraintSet(): ConstraintSet {
     return ConstraintSet {
         val introduce = createRefFor("introduce")
-        val skipButton = createRefFor("skipButton")
         val kakaoLoginButton = createRefFor("kakaoLoginButton")
 
         constrain(introduce) {
             start.linkTo(parent.start)
-            bottom.linkTo(skipButton.top, 60.dp)
-            end.linkTo(parent.end)
-        }
-
-        constrain(skipButton) {
-            start.linkTo(parent.start)
-            bottom.linkTo(kakaoLoginButton.top, 8.dp)
+            bottom.linkTo(kakaoLoginButton.top, 60.dp)
             end.linkTo(parent.end)
         }
 
