@@ -37,6 +37,7 @@ import com.yapp.presentation.R
 import com.yapp.presentation.model.Attendance
 import com.yapp.presentation.model.AttendanceType
 import com.yapp.presentation.model.Session
+import com.yapp.presentation.ui.member.todaysession.TodaySessionContract
 import com.yapp.presentation.util.attendance.checkSessionAttendance
 import java.text.SimpleDateFormat
 import java.util.*
@@ -70,7 +71,12 @@ fun MemberScore(
         }
 
     }
+
+    LaunchedEffect(key1 = true) {
+        viewModel.setEvent(MemberScoreContract.MemberScoreUiEvent.GetMemberScore())
+    }
 }
+
 
 
 @Composable

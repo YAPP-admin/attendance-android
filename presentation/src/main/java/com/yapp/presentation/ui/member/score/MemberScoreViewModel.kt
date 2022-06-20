@@ -21,36 +21,38 @@ class MemberScoreViewModel @Inject constructor(
     MemberScoreUiState()
 ) {
     init {
+
+    }
+
+    private suspend fun fetchMemberScore() = viewModelScope.launch {
         setState { copy(loadState = MemberScoreUiState.LoadState.Loading) }
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                getMemberAttendanceListUseCase()
-                    .collectWithCallback(
-                        onSuccess = { entities ->
-                            val session = entities.first.map { entity -> entity.mapTo() }
-                            val attendance = entities.second?.map { entity -> entity.mapTo() }
-                            if (!attendance.isNullOrEmpty()) {
-                                val attendanceList = session zip attendance
-                                setState {
-                                    copy(
-                                        loadState = MemberScoreUiState.LoadState.Idle,
-                                        attendanceList = attendanceList,
-                                        lastAttendanceList = attendanceList.filter {
-                                            DateUtil.isPastSession(
-                                                it.first.date
-                                            )
-                                        }
-                                    )
-                                }
-                            } else {
-                                setState { copy(loadState = MemberScoreUiState.LoadState.Error) }
+        withContext(Dispatchers.IO) {
+            getMemberAttendanceListUseCase()
+                .collectWithCallback(
+                    onSuccess = { entities ->
+                        val session = entities.first.map { entity -> entity.mapTo() }
+                        val attendance = entities.second?.map { entity -> entity.mapTo() }
+                        if (!attendance.isNullOrEmpty()) {
+                            val attendanceList = session zip attendance
+                            setState {
+                                copy(
+                                    loadState = MemberScoreUiState.LoadState.Idle,
+                                    attendanceList = attendanceList,
+                                    lastAttendanceList = attendanceList.filter {
+                                        DateUtil.isPastSession(
+                                            it.first.date
+                                        )
+                                    }
+                                )
                             }
-                        },
-                        onFailed = {
+                        } else {
                             setState { copy(loadState = MemberScoreUiState.LoadState.Error) }
                         }
-                    )
-            }
+                    },
+                    onFailed = {
+                        setState { copy(loadState = MemberScoreUiState.LoadState.Error) }
+                    }
+                )
         }
     }
 
@@ -59,6 +61,8 @@ class MemberScoreViewModel @Inject constructor(
     }
 
     override suspend fun handleEvent(event: MemberScoreUiEvent) {
-        TODO("Not yet implemented")
+        when(event) {
+            is MemberScoreUiEvent.GetMemberScore -> fetchMemberScore()
+        }
     }
 }
