@@ -14,7 +14,6 @@ import javax.inject.Inject
 class SetMemberAttendanceUseCase @Inject constructor(
     private val memberRepository: MemberRepository,
     private val dispatcherProvider: DispatcherProvider
-
 ) : BaseUseCase<Flow<TaskResult<Unit>>, SetMemberAttendanceUseCase.Params>(dispatcherProvider) {
 
     override suspend fun invoke(params: Params?): Flow<TaskResult<Unit>> {

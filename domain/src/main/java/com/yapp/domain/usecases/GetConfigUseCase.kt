@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class GetConfigUseCase @Inject constructor(
     private val firebaseRemoteConfig: FirebaseRemoteConfig,
-    coroutineDispatcher: DispatcherProvider,
+    coroutineDispatcher: DispatcherProvider
 ) : BaseUseCase<@JvmSuppressWildcards Flow<TaskResult<ConfigEntity>>, Unit>(
     coroutineDispatcher) {
 

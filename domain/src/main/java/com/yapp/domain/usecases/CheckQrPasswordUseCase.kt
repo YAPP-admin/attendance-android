@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class CheckQrPasswordUseCase @Inject constructor(
     private val firebaseRemoteConfig: FirebaseRemoteConfig,
-    private val coroutineDispatcher: DispatcherProvider,
+    private val coroutineDispatcher: DispatcherProvider
 ) : BaseUseCase<Flow<TaskResult<Boolean>>, String>(coroutineDispatcher) {
 
     override suspend fun invoke(params: String?): Flow<TaskResult<Boolean>> {

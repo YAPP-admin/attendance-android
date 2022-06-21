@@ -14,7 +14,7 @@ import javax.inject.Inject
 class GetMemberAttendancesUseCase @Inject constructor(
     private val memberRepository: MemberRepository,
     private val localRepository: LocalRepository,
-    private val coroutineDispatcher: DispatcherProvider,
+    private val coroutineDispatcher: DispatcherProvider
 ) : BaseUseCase<@JvmSuppressWildcards Flow<TaskResult<List<AttendanceEntity>?>>, Unit>(coroutineDispatcher) {
 
     override suspend fun invoke(params: Unit?): Flow<TaskResult<List<AttendanceEntity>?>> {
