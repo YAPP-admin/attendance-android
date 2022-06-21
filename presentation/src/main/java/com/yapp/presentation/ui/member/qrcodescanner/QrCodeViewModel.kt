@@ -1,5 +1,6 @@
 package com.yapp.presentation.ui.member.qrcodescanner
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.presentation.common.AttendanceQrCodeParser
@@ -72,7 +73,7 @@ class QrCodeViewModel @Inject constructor(
     private suspend fun checkQrPassword(qrInformation: QrInformation) {
         checkQrPasswordUseCase(qrInformation.password).collectWithCallback(
             onSuccess = { isCorrectPassword ->
-                if (isCorrectPassword) markAttendance(qrInformation.sessionId)
+                if (isCorrectPassword) markAttendance()
                 else notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_scan_correct_code_error_message))
             },
             onFailed = { notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_get_error_please_retry_message)) }
@@ -80,8 +81,6 @@ class QrCodeViewModel @Inject constructor(
     }
 
     private suspend fun markAttendance() {
-        Log.w("Debug QrCodeViewModel","markAttendance")
-        Log.w("Debug QrCodeViewModel","${todaySession.toEntity()}")
         markAttendanceUseCase(todaySession.toEntity()).collectWithCallback(
             onSuccess = { setState { copy(attendanceState = AttendanceState.SUCCESS) } },
             onFailed = { notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_get_error_please_retry_message)) }
