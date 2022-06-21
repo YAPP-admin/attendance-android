@@ -8,7 +8,7 @@ import com.yapp.presentation.model.Session
 
 class TodaySessionContract {
     data class TodaySessionUiState(
-        val loadState: LoadState = LoadState.Idle,
+        val loadState: LoadState = LoadState.Loading,
         val sessionId: Int = 0,
         val attendanceType: AttendanceType = AttendanceType.Absent,
         val todaySession: Session? = null,

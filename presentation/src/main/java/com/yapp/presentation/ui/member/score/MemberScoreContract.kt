@@ -8,7 +8,7 @@ import com.yapp.presentation.model.Session
 
 class MemberScoreContract {
     data class MemberScoreUiState(
-        val loadState: LoadState = LoadState.Idle,
+        val loadState: LoadState = LoadState.Loading,
         val attendanceList: List<Pair<Session, Attendance>> = emptyList(),
         val lastAttendanceList: List<Pair<Session, Attendance>> = emptyList()
     ) : UiState {
@@ -21,5 +21,6 @@ class MemberScoreContract {
     }
 
     sealed class MemberScoreUiEvent : UiEvent {
+        class GetMemberScore() : MemberScoreUiEvent()
     }
 }
