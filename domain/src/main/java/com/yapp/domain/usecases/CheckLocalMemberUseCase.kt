@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-
 class CheckLocalMemberUseCase @Inject constructor(
     private val memberRepository: MemberRepository,
     private val localRepository: LocalRepository,

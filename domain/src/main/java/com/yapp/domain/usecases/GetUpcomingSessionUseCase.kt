@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class GetUpcomingSessionUseCase @Inject constructor(
     private val firebaseRemoteConfig: FirebaseRemoteConfig,
-    private val coroutineDispatcher: DispatcherProvider,
+    private val coroutineDispatcher: DispatcherProvider
 ) : BaseUseCase<@JvmSuppressWildcards Flow<TaskResult<SessionEntity?>>, Unit>(coroutineDispatcher) {
 
     override suspend fun invoke(params: Unit?): Flow<TaskResult<SessionEntity?>> {

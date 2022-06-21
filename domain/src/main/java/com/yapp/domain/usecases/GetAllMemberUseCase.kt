@@ -12,7 +12,6 @@ import javax.inject.Inject
 class GetAllMemberUseCase @Inject constructor(
     private val memberRepository: MemberRepository,
     private val dispatcherProvider: DispatcherProvider
-
 ) : BaseUseCase<Flow<TaskResult<List<MemberEntity>>>, Unit>(dispatcherProvider) {
 
     override suspend fun invoke(params: Unit?): Flow<TaskResult<List<MemberEntity>>> {

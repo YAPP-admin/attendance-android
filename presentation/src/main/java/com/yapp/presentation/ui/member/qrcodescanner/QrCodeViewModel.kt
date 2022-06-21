@@ -1,13 +1,14 @@
 package com.yapp.presentation.ui.member.qrcodescanner
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
-import com.yapp.common.util.AttendanceQrCodeParser
+import com.yapp.presentation.common.AttendanceQrCodeParser
 import com.yapp.domain.usecases.GetMaginotlineTimeUseCase
+import com.yapp.domain.usecases.CheckQrPasswordUseCase
 import com.yapp.domain.usecases.MarkAttendanceUseCase
 import com.yapp.presentation.R
 import com.yapp.presentation.common.AttendanceBundle
+import com.yapp.presentation.model.QrInformation
 import com.yapp.presentation.model.Session
 import com.yapp.presentation.ui.member.qrcodescanner.QrCodeContract.*
 import com.yapp.presentation.util.ResourceProvider
@@ -21,6 +22,7 @@ class QrCodeViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val getMaginotlineTimeUseCase: GetMaginotlineTimeUseCase,
     private val markAttendanceUseCase: MarkAttendanceUseCase,
+    private val checkQrPasswordUseCase: CheckQrPasswordUseCase,
 ) : BaseViewModel<QrCodeUiState, QrCodeUiSideEffect, QrCodeUiEvent>(
     QrCodeUiState()
 ) {
@@ -59,12 +61,22 @@ class QrCodeViewModel @Inject constructor(
     private suspend fun parseQrCode(codeValue: String?) {
         isAvailableToScan = false
         try {
-            val paredSessionId = AttendanceQrCodeParser.getSessionIdFromBarcode(codeValue)
-            if (paredSessionId == todaySession.sessionId) markAttendance()
+            val qrInformation = AttendanceQrCodeParser.getSessionInformationFromQrcode(codeValue)
+            if (qrInformation.sessionId == todaySession.sessionId) checkQrPassword(qrInformation)
             else notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_scan_correct_code_error_message))
         } catch (e: Exception) {
             notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_scan_correct_code_error_message))
         }
+    }
+
+    private suspend fun checkQrPassword(qrInformation: QrInformation) {
+        checkQrPasswordUseCase(qrInformation.password).collectWithCallback(
+            onSuccess = { isCorrectPassword ->
+                if (isCorrectPassword) markAttendance(qrInformation.sessionId)
+                else notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_scan_correct_code_error_message))
+            },
+            onFailed = { notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_get_error_please_retry_message)) }
+        )
     }
 
     private suspend fun markAttendance() {
