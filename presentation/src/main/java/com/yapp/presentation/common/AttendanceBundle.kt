@@ -1,8 +1,8 @@
 package com.yapp.presentation.common
 
-import com.yapp.presentation.model.collections.AttendanceList
+import com.yapp.presentation.model.Session
 
 object AttendanceBundle {
     var isAbsent = true
-    var upComingSessionId = AttendanceList.DEFAULT_UPCOMING_SESSION_ID
+    var upComingSession: Session? = null
 }

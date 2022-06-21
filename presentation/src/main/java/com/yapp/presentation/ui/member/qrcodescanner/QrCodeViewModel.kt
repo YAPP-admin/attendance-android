@@ -1,16 +1,14 @@
 package com.yapp.presentation.ui.member.qrcodescanner
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.common.util.AttendanceQrCodeParser
-import com.yapp.domain.model.AttendanceEntity
-import com.yapp.domain.model.AttendanceTypeEntity
 import com.yapp.domain.usecases.GetMaginotlineTimeUseCase
-import com.yapp.domain.usecases.GetMemberIdUseCase
-import com.yapp.domain.usecases.SetMemberAttendanceUseCase
+import com.yapp.domain.usecases.MarkAttendanceUseCase
 import com.yapp.presentation.R
 import com.yapp.presentation.common.AttendanceBundle
-import com.yapp.presentation.model.collections.AttendanceList
+import com.yapp.presentation.model.Session
 import com.yapp.presentation.ui.member.qrcodescanner.QrCodeContract.*
 import com.yapp.presentation.util.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,25 +20,19 @@ import javax.inject.Inject
 class QrCodeViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val getMaginotlineTimeUseCase: GetMaginotlineTimeUseCase,
-    private val getMemberIdUseCase: GetMemberIdUseCase,
-    private val setMemberAttendanceUseCase: SetMemberAttendanceUseCase
+    private val markAttendanceUseCase: MarkAttendanceUseCase,
 ) : BaseViewModel<QrCodeUiState, QrCodeUiSideEffect, QrCodeUiEvent>(
     QrCodeUiState()
 ) {
     var isAvailableToScan = true
-    var todaySessionId = AttendanceList.DEFAULT_UPCOMING_SESSION_ID
-    var userId = 0L
+    lateinit var todaySession: Session
 
     init {
-        if (AttendanceBundle.upComingSessionId == AttendanceList.DEFAULT_UPCOMING_SESSION_ID) {
-            guideMoveBackToHomeAndDeactivateScan()
-        } else {
-            todaySessionId = AttendanceBundle.upComingSessionId
-        }
+        AttendanceBundle.upComingSession?.let { todaySession = it }
+            ?: guideMoveBackToHomeAndDeactivateScan()
 
         viewModelScope.launch {
             getMaginotlineTime()
-            getUserId()
         }
     }
 
@@ -64,38 +56,21 @@ class QrCodeViewModel @Inject constructor(
         setState { copy(isLoading = false) }
     }
 
-    private suspend fun getUserId() {
-        getMemberIdUseCase().collectWithCallback(
-            onSuccess = { id ->
-                if (id != null) userId = id
-                else guideMoveBackToHomeAndDeactivateScan()
-            },
-            onFailed = { guideMoveBackToHomeAndDeactivateScan() }
-        )
-    }
-
     private suspend fun parseQrCode(codeValue: String?) {
         isAvailableToScan = false
         try {
             val paredSessionId = AttendanceQrCodeParser.getSessionIdFromBarcode(codeValue)
-            if (paredSessionId == todaySessionId) markAttendance(paredSessionId)
+            if (paredSessionId == todaySession.sessionId) markAttendance()
             else notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_scan_correct_code_error_message))
         } catch (e: Exception) {
             notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_scan_correct_code_error_message))
         }
     }
 
-    private suspend fun markAttendance(targetSessionId: Int) {
-        setMemberAttendanceUseCase(
-            params = SetMemberAttendanceUseCase.Params(
-                memberId = userId,
-                sessionId = targetSessionId,
-                changedAttendance = AttendanceEntity(
-                    sessionId = targetSessionId,
-                    type = AttendanceTypeEntity.Normal
-                )
-            )
-        ).collectWithCallback(
+    private suspend fun markAttendance() {
+        Log.w("Debug QrCodeViewModel","markAttendance")
+        Log.w("Debug QrCodeViewModel","${todaySession.toEntity()}")
+        markAttendanceUseCase(todaySession.toEntity()).collectWithCallback(
             onSuccess = { setState { copy(attendanceState = AttendanceState.SUCCESS) } },
             onFailed = { notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_get_error_please_retry_message)) }
         )

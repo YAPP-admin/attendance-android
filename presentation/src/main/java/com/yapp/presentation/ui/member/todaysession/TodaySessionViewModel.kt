@@ -1,5 +1,6 @@
 package com.yapp.presentation.ui.member.todaysession
 
+import android.util.Log
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.usecases.GetMemberAttendancesUseCase
 import com.yapp.domain.usecases.GetUpcomingSessionUseCase
@@ -27,13 +28,17 @@ class TodaySessionViewModel @Inject constructor(
     }
 
     private suspend fun getMemberAttendances() = coroutineScope {
+        Log.w("Debug", "uiState session id: ${uiState.value.sessionId}")
         setState { this.copy(loadState = LoadState.Loading) }
         getMemberAttendancesUseCase().collectWithCallback(
             onSuccess = { attendances ->
                 val attendance =
                     attendances?.first { it.sessionId == uiState.value.sessionId }?.mapTo()
                 val attendanceType = attendance?.attendanceType ?: AttendanceType.Absent
+                Log.w("Debug", "attendance: $attendance")
+                Log.w("Debug", "attendanceType: ${attendanceType.text}")
                 AttendanceBundle.isAbsent = attendanceType is AttendanceType.Absent
+                Log.w("Debug", "${AttendanceBundle.isAbsent}")
                 setState {
                     copy(
                         loadState = LoadState.Idle,
@@ -47,16 +52,16 @@ class TodaySessionViewModel @Inject constructor(
     }
 
     private suspend fun getUpcomingSession() = coroutineScope {
+        Log.w("Debug", "getUpcomingSession")
         setState { this.copy(loadState = LoadState.Loading) }
         getUpcomingSessionUseCase()
             .collectWithCallback(
                 onSuccess = { entity ->
                     val session = entity?.mapTo()
-                    val sessionId = session?.sessionId ?: 0
-                    AttendanceBundle.upComingSessionId = sessionId
+                    AttendanceBundle.upComingSession = session
                     setState {
                         copy(
-                            sessionId = sessionId,
+                            sessionId = session?.sessionId ?: 0,
                             todaySession = session
                         )
                     }
