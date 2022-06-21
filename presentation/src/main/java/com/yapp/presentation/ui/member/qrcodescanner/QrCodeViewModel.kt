@@ -18,6 +18,7 @@ import com.yapp.presentation.util.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
 import javax.inject.Inject
 
 @HiltViewModel
@@ -80,7 +81,7 @@ class QrCodeViewModel @Inject constructor(
     private suspend fun parseQrCode(codeValue: String?) {
         isAvailableToScan = false
         try {
-            val qrInformation = AttendanceQrCodeParser.getSessionInformationFromBarcode(codeValue)
+            val qrInformation = AttendanceQrCodeParser.getSessionInformationFromQrcode(codeValue)
             if (qrInformation.sessionId == todaySessionId) {
                 checkQrPassword(qrInformation)
             }
