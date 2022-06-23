@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.usecases.GetSessionListUseCase
 import com.yapp.domain.util.DateUtil
+import com.yapp.presentation.model.Session
 import com.yapp.presentation.model.Session.Companion.mapTo
 import com.yapp.presentation.model.collections.AttendanceList
 import com.yapp.presentation.ui.admin.main.AdminMainContract.*
@@ -46,18 +47,17 @@ class AdminMainViewModel @Inject constructor(
                     val sessions = entities.map { entity -> entity.mapTo() }
                     val upcomingSession =
                         sessions.firstOrNull { DateUtil.isUpcomingSession(it.date) }
-                    val lastSessionId = when {
-                        upcomingSession == null -> AttendanceList.DEFAULT_UPCOMING_SESSION_ID
-                        upcomingSession.sessionId == 0 -> AttendanceList.DEFAULT_UPCOMING_SESSION_ID
-                        DateUtil.isPastSession(upcomingSession.date) -> upcomingSession.sessionId
-                        else -> upcomingSession.sessionId - 1
+
+                    upcomingSession?.let {
+                        var lastSessionId = if (isUpcomingSessionIsStarted(it)) it.sessionId else it.sessionId - 1
+                        if (lastSessionId < 0) lastSessionId = AttendanceList.DEFAULT_UPCOMING_SESSION_ID
+                        setState { copy(lastSessionId = lastSessionId) }
                     }
 
                     setState {
                         copy(
                             loadState = AdminMainUiState.LoadState.Idle,
                             upcomingSession = upcomingSession,
-                            lastSessionId = lastSessionId,
                             sessions = sessions
                         )
                     }
@@ -66,5 +66,9 @@ class AdminMainViewModel @Inject constructor(
                     setState { copy(loadState = AdminMainUiState.LoadState.Error) }
                 }
             )
+    }
+
+    private fun isUpcomingSessionIsStarted(upcomingSession: Session): Boolean {
+        return DateUtil.isPastSession(upcomingSession.date)
     }
 }
