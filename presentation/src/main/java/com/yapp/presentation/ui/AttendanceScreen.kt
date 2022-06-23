@@ -26,7 +26,7 @@ import com.yapp.common.theme.Yapp_Orange
 import com.yapp.common.yds.YDSToast
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_ID
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_TITLE
-import com.yapp.presentation.ui.admin.AdminConstants.KEY_UPCOMING_SESSION_ID
+import com.yapp.presentation.ui.admin.AdminConstants.KEY_LAST_SESSION_ID
 import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.admin.management.AttendanceManagement
 import com.yapp.presentation.ui.admin.totalscore.AdminTotalScore
@@ -281,9 +281,9 @@ fun AttendanceScreen(
 
         composable(
             route = AttendanceScreenRoute.ADMIN_TOTAL_SCORE.route
-                .plus("/{$KEY_UPCOMING_SESSION_ID}"),
+                .plus("/{$KEY_LAST_SESSION_ID}"),
             arguments = listOf(
-                navArgument(KEY_UPCOMING_SESSION_ID) { type = NavType.IntType }
+                navArgument(KEY_LAST_SESSION_ID) { type = NavType.IntType }
             )
         ) {
             SetStatusBarColorByRoute(it.destination.route)
