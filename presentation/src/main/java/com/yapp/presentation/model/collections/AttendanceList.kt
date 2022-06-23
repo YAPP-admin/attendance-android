@@ -28,10 +28,11 @@ class AttendanceList private constructor(
         if (upcomingSessionId == DEFAULT_UPCOMING_SESSION_ID) return getTotalAttendanceScore()
         var totalScore = MAX_SCORE
         value.forEach { attendance ->
+            totalScore += attendance.attendanceType.point
+
             if (attendance.sessionId == upcomingSessionId) {
                 return if (totalScore > 0) totalScore else 0
             }
-            totalScore += attendance.attendanceType.point
         }
         return if (totalScore > 0) totalScore else 0
     }
