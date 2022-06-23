@@ -1,5 +1,6 @@
 package com.yapp.presentation.ui.login
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.common.util.KakaoSdkProvider
@@ -42,7 +43,7 @@ class LoginViewModel @Inject constructor(
                 setState { copy(isLoading = false) }
             },
             onFailed = {
-                setEffect(LoginUiSideEffect.ShowToast("로그인 실패"))
+                setEffect(LoginUiSideEffect.ShowToast("로그인 실패1"))
                 setState { copy(isLoading = false) }
             }
         )
@@ -57,7 +58,7 @@ class LoginViewModel @Inject constructor(
                 }
             },
             onFailed = {
-                setEffect(LoginUiSideEffect.ShowToast("로그인 실패"))
+                setEffect(LoginUiSideEffect.ShowToast("로그인 실패2"))
                 setState { copy(isLoading = false) }
             }
         )
@@ -80,7 +81,7 @@ class LoginViewModel @Inject constructor(
                 }
             },
             onFailed = {
-                setEffect(LoginUiSideEffect.ShowToast("로그인 실패"))
+                setEffect(LoginUiSideEffect.ShowToast("로그인 실패3"))
                 setState { copy(isLoading = false) }
             }
         )
@@ -102,12 +103,12 @@ class LoginViewModel @Inject constructor(
                     if (isSuccess) {
                         setEffect(LoginUiSideEffect.NavigateToAdminScreen)
                     } else {
-                        setEffect(LoginUiSideEffect.ShowToast("로그인 실패"))
+                        setEffect(LoginUiSideEffect.ShowToast("로그인 실패4"))
                     }
                     setState { copy(isLoading = false) }
                 },
                 onFailed = {
-                    setEffect(LoginUiSideEffect.ShowToast("로그인 실패"))
+                    setEffect(LoginUiSideEffect.ShowToast("로그인 실패5"))
                     setState { copy(isLoading = false) }
                 }
             )

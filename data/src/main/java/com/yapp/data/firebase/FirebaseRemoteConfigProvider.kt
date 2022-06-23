@@ -1,5 +1,6 @@
 package com.yapp.data.firebase
 
+import android.util.Log
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
@@ -68,7 +69,9 @@ class FirebaseRemoteConfigProvider @Inject constructor() : FirebaseRemoteConfig 
             emit(firebaseRemoteConfig.getString(RemoteConfigData.AttendanceSelectTeams.key))
         }.map { jsonString ->
             Json.decodeFromString<List<TeamModel>>(jsonString)
-                .map { model -> model.mapToEntity() }
+                .map { model ->
+                    model.mapToEntity()
+                }
         }
     }
 

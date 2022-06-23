@@ -1,5 +1,6 @@
 package com.yapp.data.model
 
+import com.google.firebase.firestore.PropertyName
 import com.yapp.data.model.AttendanceTypeModel.Companion.mapToEntity
 import com.yapp.domain.model.AttendanceEntity
 import com.yapp.domain.model.AttendanceTypeEntity
@@ -8,7 +9,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AttendanceModel(
+    @PropertyName("sessionId")
     val sessionId: Int? = null,
+    @PropertyName("type")
     val type: AttendanceTypeModel? = null
 ) {
 
