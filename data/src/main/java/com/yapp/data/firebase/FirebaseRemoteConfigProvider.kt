@@ -68,11 +68,8 @@ class FirebaseRemoteConfigProvider @Inject constructor() : FirebaseRemoteConfig 
             firebaseRemoteConfig.fetchAndActivate().await()
             emit(firebaseRemoteConfig.getString(RemoteConfigData.AttendanceSelectTeams.key))
         }.map { jsonString ->
-            Log.e("####", jsonString)
             Json.decodeFromString<List<TeamModel>>(jsonString)
                 .map { model ->
-                    Log.e("22####", model.toString())
-
                     model.mapToEntity()
                 }
         }
