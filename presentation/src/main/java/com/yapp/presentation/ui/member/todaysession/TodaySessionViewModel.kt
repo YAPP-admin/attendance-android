@@ -1,5 +1,6 @@
 package com.yapp.presentation.ui.member.todaysession
 
+import android.util.Log
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.usecases.GetMemberAttendancesUseCase
 import com.yapp.domain.usecases.GetUpcomingSessionUseCase
@@ -52,11 +53,10 @@ class TodaySessionViewModel @Inject constructor(
             .collectWithCallback(
                 onSuccess = { entity ->
                     val session = entity?.mapTo()
-                    val sessionId = session?.sessionId ?: 0
-                    AttendanceBundle.upComingSessionId = sessionId
+                    AttendanceBundle.upComingSession = session
                     setState {
                         copy(
-                            sessionId = sessionId,
+                            sessionId = session?.sessionId ?: 0,
                             todaySession = session
                         )
                     }

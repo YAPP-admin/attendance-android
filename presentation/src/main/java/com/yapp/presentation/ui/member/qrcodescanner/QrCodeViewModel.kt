@@ -3,48 +3,38 @@ package com.yapp.presentation.ui.member.qrcodescanner
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.presentation.common.AttendanceQrCodeParser
-import com.yapp.domain.model.AttendanceEntity
-import com.yapp.domain.model.AttendanceTypeEntity
 import com.yapp.domain.usecases.GetMaginotlineTimeUseCase
-import com.yapp.domain.usecases.GetMemberIdUseCase
 import com.yapp.domain.usecases.CheckQrPasswordUseCase
-import com.yapp.domain.usecases.SetMemberAttendanceUseCase
+import com.yapp.domain.usecases.MarkAttendanceUseCase
 import com.yapp.presentation.R
 import com.yapp.presentation.common.AttendanceBundle
 import com.yapp.presentation.model.QrInformation
-import com.yapp.presentation.model.collections.AttendanceList
+import com.yapp.presentation.model.Session
 import com.yapp.presentation.ui.member.qrcodescanner.QrCodeContract.*
 import com.yapp.presentation.util.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 import javax.inject.Inject
 
 @HiltViewModel
 class QrCodeViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
     private val getMaginotlineTimeUseCase: GetMaginotlineTimeUseCase,
-    private val getMemberIdUseCase: GetMemberIdUseCase,
-    private val setMemberAttendanceUseCase: SetMemberAttendanceUseCase,
+    private val markAttendanceUseCase: MarkAttendanceUseCase,
     private val checkQrPasswordUseCase: CheckQrPasswordUseCase,
 ) : BaseViewModel<QrCodeUiState, QrCodeUiSideEffect, QrCodeUiEvent>(
     QrCodeUiState()
 ) {
     var isAvailableToScan = true
-    var todaySessionId = AttendanceList.DEFAULT_UPCOMING_SESSION_ID
-    var userId = 0L
+    lateinit var todaySession: Session
 
     init {
-        if (AttendanceBundle.upComingSessionId == AttendanceList.DEFAULT_UPCOMING_SESSION_ID) {
-            guideMoveBackToHomeAndDeactivateScan()
-        } else {
-            todaySessionId = AttendanceBundle.upComingSessionId
-        }
+        AttendanceBundle.upComingSession?.let { todaySession = it }
+            ?: guideMoveBackToHomeAndDeactivateScan()
 
         viewModelScope.launch {
             getMaginotlineTime()
-            getUserId()
         }
     }
 
@@ -68,23 +58,11 @@ class QrCodeViewModel @Inject constructor(
         setState { copy(isLoading = false) }
     }
 
-    private suspend fun getUserId() {
-        getMemberIdUseCase().collectWithCallback(
-            onSuccess = { id ->
-                if (id != null) userId = id
-                else guideMoveBackToHomeAndDeactivateScan()
-            },
-            onFailed = { guideMoveBackToHomeAndDeactivateScan() }
-        )
-    }
-
     private suspend fun parseQrCode(codeValue: String?) {
         isAvailableToScan = false
         try {
             val qrInformation = AttendanceQrCodeParser.getSessionInformationFromQrcode(codeValue)
-            if (qrInformation.sessionId == todaySessionId) {
-                checkQrPassword(qrInformation)
-            }
+            if (qrInformation.sessionId == todaySession.sessionId) checkQrPassword(qrInformation)
             else notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_scan_correct_code_error_message))
         } catch (e: Exception) {
             notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_scan_correct_code_error_message))
@@ -94,24 +72,15 @@ class QrCodeViewModel @Inject constructor(
     private suspend fun checkQrPassword(qrInformation: QrInformation) {
         checkQrPasswordUseCase(qrInformation.password).collectWithCallback(
             onSuccess = { isCorrectPassword ->
-                if (isCorrectPassword) markAttendance(qrInformation.sessionId)
+                if (isCorrectPassword) markAttendance()
                 else notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_scan_correct_code_error_message))
             },
             onFailed = { notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_get_error_please_retry_message)) }
         )
     }
 
-    private suspend fun markAttendance(targetSessionId: Int) {
-        setMemberAttendanceUseCase(
-            params = SetMemberAttendanceUseCase.Params(
-                memberId = userId,
-                sessionId = targetSessionId,
-                changedAttendance = AttendanceEntity(
-                    sessionId = targetSessionId,
-                    type = AttendanceTypeEntity.Normal
-                )
-            )
-        ).collectWithCallback(
+    private suspend fun markAttendance() {
+        markAttendanceUseCase(todaySession.toEntity()).collectWithCallback(
             onSuccess = { setState { copy(attendanceState = AttendanceState.SUCCESS) } },
             onFailed = { notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_get_error_please_retry_message)) }
         )
