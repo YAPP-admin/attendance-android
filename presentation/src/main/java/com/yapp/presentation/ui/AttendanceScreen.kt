@@ -235,7 +235,9 @@ fun AttendanceScreen(
         ) {
             SetStatusBarColorByRoute(it.destination.route)
             Name(
-                onClickBackBtn = { navController.navigate(AttendanceScreenRoute.LOGIN.route) },
+                onClickBackBtn = { navController.navigate(AttendanceScreenRoute.LOGIN.route) {
+                    popUpTo(AttendanceScreenRoute.SIGNUP_NAME.route) { inclusive = true }
+                } },
                 onClickNextBtn = { userName -> navController.navigate(AttendanceScreenRoute.SIGNUP_POSITION.route + "/${userName}") })
         }
 

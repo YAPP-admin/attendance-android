@@ -1,6 +1,5 @@
 package com.yapp.presentation.ui.member.qrcodescanner
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.presentation.common.AttendanceQrCodeParser
