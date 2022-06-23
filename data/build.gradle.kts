@@ -3,8 +3,8 @@ plugins {
     id(Configs.KOTLIN_ANDROID)
     id(Configs.KOTLIN_PARCELIZE)
     id(Configs.KOTLIN_KAPT)
+    id(Configs.KOTLINX_SERIALIZATION)
     id(Configs.HILT_ANDROID_PLUGIN)
-    id("kotlinx-serialization")
 }
 
 android {

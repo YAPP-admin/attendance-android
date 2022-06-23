@@ -3,6 +3,7 @@ plugins {
     id(Configs.KOTLIN_ANDROID)
     id(Configs.KOTLIN_PARCELIZE)
     id(Configs.KOTLIN_KAPT)
+    id(Configs.KOTLINX_SERIALIZATION)
     id(Configs.HILT_ANDROID_PLUGIN)
     id(Configs.GOOGLE_SERVICE)
     id(Configs.CRASHLYTICS)
@@ -88,6 +89,7 @@ dependencies {
     //coroutine
     implementation(Dependencies.Kotlin.COROUTINE_CORE)
     implementation(Dependencies.Kotlin.COROUTINE_ANDROID)
+    implementation(Dependencies.Kotlin.SERIALIZATION)
 
     //coil
     implementation(Dependencies.Coil.COIL)

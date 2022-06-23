@@ -72,4 +72,10 @@ class FirebaseRemoteConfigProvider @Inject constructor() : FirebaseRemoteConfig 
         }
     }
 
+    override suspend fun getQrPassword(): Flow<String> {
+        return flow {
+            firebaseRemoteConfig.fetchAndActivate().await()
+            emit(firebaseRemoteConfig.getString(RemoteConfigData.QrPassword.key))
+        }
+    }
 }
