@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AdminMainViewModel @Inject constructor(
-    private val getSessionListUseCase: GetSessionListUseCase,
+    private val getSessionListUseCase: GetSessionListUseCase
 ) : BaseViewModel<AdminMainUiState, AdminMainUiSideEffect, AdminMainUiEvent>(
     AdminMainUiState()
 ) {
