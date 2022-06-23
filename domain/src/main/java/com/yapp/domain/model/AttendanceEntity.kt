@@ -1,6 +1,5 @@
 package com.yapp.domain.model
 
-
 data class AttendanceEntity(
     val sessionId: Int,
     val type: AttendanceTypeEntity
