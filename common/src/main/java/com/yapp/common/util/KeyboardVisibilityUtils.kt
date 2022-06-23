@@ -1,6 +1,7 @@
 package com.yapp.common.util
 
 import android.graphics.Rect
+import android.util.Log
 import android.view.ViewTreeObserver
 import android.view.Window
 
@@ -10,7 +11,7 @@ class KeyboardVisibilityUtils(
     private val onHideKeyboard: () -> Unit
 ) {
     private val windowVisibleDisplayFrame = Rect()
-    private var lastVisibleDecorViewHeight: Int = 0
+    private var lastVisibleDecorViewHeight: Int = Int.MAX_VALUE
     private val MIN_KEYBOARD_HEIGHT_PX = 100
 
     private val onGlobalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
