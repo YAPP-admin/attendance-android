@@ -5,6 +5,7 @@ plugins {
     id(Configs.HILT_ANDROID_PLUGIN)
     id(Configs.GOOGLE_SERVICE)
     id(Configs.CRASHLYTICS)
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -59,6 +60,7 @@ android {
         }
     }
 }
+
 
 dependencies {
     implementation(project(":presentation"))
