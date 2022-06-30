@@ -10,7 +10,10 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    
+    env:
+      KAKAO_NATIVE_API_KEY: ${{ secrets.KAKAO_NATIVE_API_KEY }}
+  
     steps:
     - uses: actions/checkout@v2
     - name: set up JDK 11
@@ -19,8 +22,14 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         cache: gradle
+        
+    - name: Access KAKAO_NATIVE_API_KEY
+      run: echo KAKAO_NATIVE_API_KEY=\"$KAKAO_NATIVE_API_KEY\" >> ./local.properties
+      working-directory: ${{ env.working-directory }}
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
+  
+    
