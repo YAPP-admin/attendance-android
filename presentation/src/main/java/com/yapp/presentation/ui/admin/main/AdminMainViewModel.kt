@@ -4,7 +4,9 @@ import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.usecases.GetSessionListUseCase
 import com.yapp.domain.util.DateUtil
+import com.yapp.presentation.model.Session
 import com.yapp.presentation.model.Session.Companion.mapTo
+import com.yapp.presentation.model.collections.AttendanceList
 import com.yapp.presentation.ui.admin.main.AdminMainContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -27,7 +29,7 @@ class AdminMainViewModel @Inject constructor(
     override suspend fun handleEvent(event: AdminMainUiEvent) {
         when (event) {
             is AdminMainUiEvent.OnUserScoreCardClicked -> setEffect(
-                AdminMainUiSideEffect.NavigateToAdminTotalScore(event.upcomingSessionId)
+                AdminMainUiSideEffect.NavigateToAdminTotalScore(event.lastSessionId)
             )
             is AdminMainUiEvent.OnSessionClicked -> setEffect(
                 AdminMainUiSideEffect.NavigateToManagement(event.sessionId, event.sessionTitle)
@@ -45,6 +47,13 @@ class AdminMainViewModel @Inject constructor(
                     val sessions = entities.map { entity -> entity.mapTo() }
                     val upcomingSession =
                         sessions.firstOrNull { DateUtil.isUpcomingSession(it.date) }
+
+                    upcomingSession?.let {
+                        var lastSessionId = if (isUpcomingSessionIsStarted(it)) it.sessionId else it.sessionId - 1
+                        if (lastSessionId < 0) lastSessionId = AttendanceList.DEFAULT_UPCOMING_SESSION_ID
+                        setState { copy(lastSessionId = lastSessionId) }
+                    }
+
                     setState {
                         copy(
                             loadState = AdminMainUiState.LoadState.Idle,
@@ -57,5 +66,9 @@ class AdminMainViewModel @Inject constructor(
                     setState { copy(loadState = AdminMainUiState.LoadState.Error) }
                 }
             )
+    }
+
+    private fun isUpcomingSessionIsStarted(upcomingSession: Session): Boolean {
+        return DateUtil.isPastSession(upcomingSession.date)
     }
 }

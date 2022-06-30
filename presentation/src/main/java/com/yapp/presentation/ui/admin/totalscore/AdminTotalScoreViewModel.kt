@@ -1,6 +1,5 @@
 package com.yapp.presentation.ui.admin.totalscore
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
@@ -9,7 +8,7 @@ import com.yapp.presentation.model.Member
 import com.yapp.presentation.model.Member.Companion.mapTo
 import com.yapp.presentation.model.Team
 import com.yapp.presentation.model.collections.AttendanceList
-import com.yapp.presentation.ui.admin.AdminConstants.KEY_UPCOMING_SESSION_ID
+import com.yapp.presentation.ui.admin.AdminConstants.KEY_LAST_SESSION_ID
 import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -39,9 +38,9 @@ class AdminTotalScoreViewModel @Inject constructor(
         getAllMemberUseCase().collectWithCallback(
             onSuccess = { memberEntity ->
                 val members = memberEntity.map { it.mapTo() }.groupBy { it.team }
-                val upcomingSessionId = savedStateHandle.get<Int>(KEY_UPCOMING_SESSION_ID)
+                val lastSessionId = savedStateHandle.get<Int>(KEY_LAST_SESSION_ID)
                     ?: AttendanceList.DEFAULT_UPCOMING_SESSION_ID
-                val teamItemStates = getTeamItemStates(members, upcomingSessionId)
+                val teamItemStates = getTeamItemStates(members, lastSessionId)
                 setState {
                     copy(
                         loadState = AdminTotalScoreUiState.LoadState.Idle,
@@ -57,7 +56,7 @@ class AdminTotalScoreViewModel @Inject constructor(
 
     private fun getTeamItemStates(
         teamMembersMap: Map<Team, List<Member>>,
-        upcomingSessionId: Int
+        lastSessionId: Int
     ): List<AdminTotalScoreUiState.TeamItemState> {
         return teamMembersMap.map { team ->
             AdminTotalScoreUiState.TeamItemState(
@@ -65,7 +64,7 @@ class AdminTotalScoreViewModel @Inject constructor(
                 teamMembers = team.value.map { member ->
                     AdminTotalScoreUiState.MemberWithTotalScore(
                         member.name,
-                        member.attendances.getTotalAttendanceScore(upcomingSessionId)
+                        member.attendances.getTotalAttendanceScore(lastSessionId)
                     )
                 }
             )

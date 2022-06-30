@@ -54,7 +54,7 @@ fun AdminMain(
         viewModel.effect.collect { effect ->
             when (effect) {
                 is AdminMainUiSideEffect.NavigateToAdminTotalScore -> navigateToAdminTotalScore(
-                    effect.upcomingSessionId
+                    effect.lastSessionId
                 )
                 is AdminMainUiSideEffect.NavigateToManagement -> navigateToManagement(
                     effect.sessionId,
@@ -76,10 +76,7 @@ fun AdminMain(
                 uiState = uiState,
                 onUserScoreCardClicked = {
                     viewModel.setEvent(
-                        AdminMainUiEvent.OnUserScoreCardClicked(
-                            uiState.upcomingSession?.sessionId
-                                ?: AttendanceList.DEFAULT_UPCOMING_SESSION_ID
-                        )
+                        AdminMainUiEvent.OnUserScoreCardClicked(uiState.lastSessionId)
                     )
                 },
                 onSessionClicked = { sessionId, sessionTitle ->
