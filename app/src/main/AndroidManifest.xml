@@ -2,24 +2,51 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.yapp.attendance">
 
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Attendanceandroid">
+        android:theme="@style/Theme.Attendance"
+        android:usesCleartextTraffic="true">
         <activity
-            android:name=".MainActivity"
+            android:name="com.yapp.presentation.ui.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.Attendanceandroid.NoActionBar">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Attendance.NoActionBar"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- Redirect URI: "kakao{NATIVE_APP_KEY}://oauth" -->
+                <data
+                    android:host="oauth"
+                    android:scheme="kakao${KAKAO_NATIVE_API_KEY}" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.yapp.presentation.util.permission.PermissionActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Attendance.NoActionBar" />
     </application>
 
 </manifest>

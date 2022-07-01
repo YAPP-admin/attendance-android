@@ -1,6 +1,6 @@
 # Add project specific ProGuard rules here.
 # You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
+# proguardFiles setting in build.gradle.kts.kts.kts.
 #
 # For more details, see
 #   http://developer.android.com/guide/developing/tools/proguard.html
@@ -19,3 +19,27 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+
+-keep class com.kakao.sdk.**.model.* { <fields>; }
+-keep class * extends com.google.gson.TypeAdapter
+
+-dontwarn kotlin.**
+
+#파이어베이스
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+-keep public class * extends java.lang.Exception
+-keep class com.google.firebase.crashlytics.** { *; }
+-dontwarn com.google.firebase.crashlytics.**
+
+
+#파이어베이스 리모트컨피그
+-keepattributes EnclosingMethod
+-keepattributes InnerClasses
+
+#keep data classes
+-keep class com.firebase.** {*;}
+-keep class com.yapp.presentation.model.** {*;}
+-keep class com.yapp.data.model.** {*;}
+-keep class com.yapp.domain.model.** {*;}

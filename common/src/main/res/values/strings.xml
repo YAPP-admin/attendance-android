@@ -1,0 +1,9 @@
+<resources>
+  <string name="attend">출석</string>
+  <string name="absent">결석</string>
+  <string name="tardy">지각</string>
+  <string name="tbd">예정</string>
+  <string name="no_yapp">쉬어가는 날</string>
+  <string name="no_attendance">출석 체크 없는 날</string>
+  <string name="empty_message">정보를 불러오지 못했어요</string>
+</resources>

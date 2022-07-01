@@ -1,0 +1,96 @@
+<resources>
+    <!-- convention -->
+    <!-- screen name_description_component name -->
+    <string name="login_attendance_introduce_text">3초만에 끝나는\n간편한 출석체크</string>
+    <string name="login_kakao_login_text">카카오 로그인</string>
+    <string name="Cancel">취소</string>
+    <string name="Ok">확인</string>
+
+    <string name="login_admin_title">암호를 대라!</string>
+    <string name="login_admin_content">코드 넘버를 입력해주세요</string>
+    <string name="login_admin_password_placeholder">****</string>
+    <string name="member_main_qr_enter_failed_toast_message">지금은 출석할 수 없어요</string>
+    <string name="member_main_qr_enter_completed_toast_message">이미 출석을 완료했어요</string>
+
+    <string name="member_main_bottom_navigation_today_session_text">오늘 세션</string>
+    <string name="member_main_bottom_navigation_qr_text">QR</string>
+    <string name="member_main_bottom_navigation_attendance_detail_text">출결 확인</string>
+
+    <string name="today_session_attendance_before_text">아직 출석 전이에요</string>
+    <string name="today_session_attendance_after_text">출석을 완료했어요</string>
+
+    <string name="member_score_title">출결 점수 확인</string>
+    <string name="member_score_now_my_score_text">지금 내 점수는</string>
+    <string name="member_score_attend_text">출석</string>
+    <string name="member_score_absent_text">결석</string>
+    <string name="member_score_tardy_text">지각</string>
+
+    <string name="admin_main_attend_management_text">출결 관리</string>
+    <string name="admin_main_finish_all_sessions_text">모든 세션을 끝마쳤습니다</string>
+    <string name="admin_main_see_all_session_text">전체 보기</string>
+    <string name="admin_main_admin_button">관리</string>
+    <string name="admin_main_all_score_text">20기 누적 출결 점수</string>
+    <string name="admin_main_see_all_score_text">누적 점수 확인하기</string>
+    
+    <string name="member_signup_choose_position">속한 직군을\n알려주세요</string>
+    <string name="member_signup_position_next">다음</string>
+
+    <string name="member_signup_choose_team">소속 팀을\n알려주세요</string>
+    <string name="member_signup_choose_team_number">하나만 더 알려주세요</string>
+    <string name="member_signup_team_number">%d팀</string>
+    <string name="member_signup_team_confirm">확인</string>
+
+    <string name="name_title">이름을 작성해주세요</string>
+    <string name="name_subtitle">실명을 작성해야 출석을 확인할 수 있어요</string>
+    <string name="name_example_hint">ex. 야뿌</string>
+    <string name="name_next_button">다음</string>
+    <string name="name_cancel_dialog_title">입력을 취소할까요?</string>
+    <string name="name_cancel_dialog_subtitle">언제든 다시 돌아올 수 있어요</string>
+    <string name="name_cancel_dialog_no">아니오</string>
+    <string name="name_cancel_dialog_cancel">취소합니다</string>
+
+    <string name="member_setting_title">설정</string>
+    <string name="member_setting_generation">YAPP %s기 회원</string>
+    <string name="member_setting_name">%s 님</string>
+    <string name="member_setting_version_info_text">버전 정보</string>
+    <string name="member_setting_privacy_policy_text">개인정보 처리방침</string>
+    <string name="member_setting_logout_text">로그아웃</string>
+    <string name="member_setting_withdraw_text">회원탈퇴</string>
+    <string name="member_setting_withdraw_dialog_title_text">정말 탈퇴하시겠어요?</string>
+    <string name="member_setting_withdraw_dialog_content_text">탈퇴하면 모든 정보가 사라져요.</string>
+    <string name="member_setting_withdraw_dialog_negative_button">취소</string>
+    <string name="member_setting_withdraw_dialog_positive_button">탈퇴합니다</string>
+    <string name="member_setting_error_message">오류가 발생했어요. 다시 시도해주세요.</string>
+
+    <string name="member_qr_time_inform_text">까지 출석해 주세요.</string>
+    <string name="member_qr_late_inform_text">30분까지는 지각, 그 이후는 결석으로 처리돼요.</string>
+    <string name="member_qr_fail_to_get_information_text">정보를 불러오지 못했어요</string>
+    <string name="member_qr_permission_dialog_title_text">카메라 권한이 필요합니다</string>
+    <string name="member_qr_permission_dialog_content_text">월활한 출석 체크를 위해 [설정] - [권한]에서 카메라 권한을  \'허용\'으로 활성화해 주세요</string>
+    <string name="member_qr_permission_dialog_negative_button">취소</string>
+    <string name="member_qr_permission_dialog_positive_button">설정</string>
+    <string name="member_qr_move_back_to_home_and_retry_error_message">오류가 발생했어요\n홈으로 돌아가서 다시 시도해 주세요</string>
+    <string name="member_qr_scan_correct_code_error_message">올바른 QR 코드를 인식해 주세요</string>
+    <string name="member_qr_get_error_please_retry_message">오류가 발생했어요\nQR 코드를 다시 인식해 주세요</string>
+
+    <string name="help_title">도움말</string>
+    <string name="help_basic_info_yapp_text">YAPP</string>
+    <string name="help_basic_info_title_text">의 구성원은\n모든 세션에 필수적으로 참여해야 해요!</string>
+    <string name="help_basic_info_content_text">전체 세션만 출석체크를 진행해요.</string>
+    <string name="help_basic_info_tardy_text">지각</string>
+    <string name="help_basic_info_absent_text">결석</string>
+    <string name="help_basic_info_score_text">%s점</string>
+    <string name="help_basic_info_tip_text">*운영진에게 요청 시 결석 1회는 출석으로 인정돼요.</string>
+    <string name="help_detail_info_title_text">읽어보세요!</string>
+    <string name="help_detail_info_content1_start_text">출결 점수는&#160;</string>
+    <string name="help_detail_info_content1_bold_text">100점</string>
+    <string name="help_detail_info_content1_end_text">에서 시작해요.</string>
+    <string name="help_detail_info_content2_start_text">점수가&#160;</string>
+    <string name="help_detail_info_content2_bold_text">70점 미만</string>
+    <string name="help_detail_info_content2_end_text">이 되는 회원은 운영진의 심의 하에 제명될 수 있으니 출결에 유의해주세요.</string>
+    <string name="help_detail_info_content3_text">회비 납부 무단 연체 시 연체 1일마다 5점이 감점돼요.</string>
+    <string name="help_detail_info_content4_text">아르바이트, 인턴, 직장인 우대사항은 없어요.</string>
+
+    <string name="admin_total_score_title">누적 출결 점수</string>
+    <string name="admin_total_score_box_text">점수가 실시간으로 반영되고 있어요</string>
+</resources>
