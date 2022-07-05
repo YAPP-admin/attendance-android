@@ -82,8 +82,11 @@ fun Login(
                 .padding(24.dp),
         ) {
             IntroduceTitle()
-            GuestButton()
             KakaoLoginButton()
+
+            if (uiState.isGuestButtonVisible) {
+                GuestButton()
+            }
         }
 
         Box(
