@@ -60,7 +60,7 @@ class LoginViewModel @Inject constructor(
                 setState { copy(isLoading = false) }
             },
             onFailed = {
-                setEffect(LoginUiSideEffect.ShowToast("로그인 실패1"))
+                setEffect(LoginUiSideEffect.ShowToast("로그인 실패"))
                 setState { copy(isLoading = false) }
             }
         )
@@ -75,7 +75,7 @@ class LoginViewModel @Inject constructor(
                 }
             },
             onFailed = {
-                setEffect(LoginUiSideEffect.ShowToast("로그인 실패2"))
+                setEffect(LoginUiSideEffect.ShowToast("로그인 실패"))
                 setState { copy(isLoading = false) }
             }
         )
@@ -98,7 +98,7 @@ class LoginViewModel @Inject constructor(
                 }
             },
             onFailed = {
-                setEffect(LoginUiSideEffect.ShowToast("로그인 실패3"))
+                setEffect(LoginUiSideEffect.ShowToast("로그인 실패"))
                 setState { copy(isLoading = false) }
             }
         )
@@ -120,12 +120,12 @@ class LoginViewModel @Inject constructor(
                     if (isSuccess) {
                         setEffect(LoginUiSideEffect.NavigateToAdminScreen)
                     } else {
-                        setEffect(LoginUiSideEffect.ShowToast("로그인 실패4"))
+                        setEffect(LoginUiSideEffect.ShowToast("로그인 실패"))
                     }
                     setState { copy(isLoading = false) }
                 },
                 onFailed = {
-                    setEffect(LoginUiSideEffect.ShowToast("로그인 실패5"))
+                    setEffect(LoginUiSideEffect.ShowToast("로그인 실패"))
                     setState { copy(isLoading = false) }
                 }
             )
