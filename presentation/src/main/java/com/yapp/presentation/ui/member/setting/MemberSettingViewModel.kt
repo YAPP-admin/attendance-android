@@ -1,12 +1,10 @@
 package com.yapp.presentation.ui.member.setting
 
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.common.KakaoSdkProviderInterface
-import com.yapp.domain.usecases.DeleteMemberInfoUseCase
-import com.yapp.domain.usecases.GetConfigUseCase
-import com.yapp.domain.usecases.GetFirestoreMemberUseCase
-import com.yapp.domain.usecases.GetMemberIdUseCase
+import com.yapp.domain.usecases.*
 import com.yapp.presentation.model.Config.Companion.mapTo
 import com.yapp.presentation.model.Member.Companion.mapTo
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +19,7 @@ class MemberSettingViewModel @Inject constructor(
     private val getFirestoreMemberUseCase: GetFirestoreMemberUseCase,
     private val deleteMemberInfoUseCase: DeleteMemberInfoUseCase,
     private val getConfigUseCase: GetConfigUseCase,
+    private val shouldShowGuestButtonUseCase: ShouldShowGuestButtonUseCase
 ) :
     BaseViewModel<MemberSettingContract.MemberSettingUiState, MemberSettingContract.MemberSettingUiSideEffect, MemberSettingContract.MemberSettingUiEvent>(
         MemberSettingContract.MemberSettingUiState()
@@ -42,10 +41,7 @@ class MemberSettingViewModel @Inject constructor(
                     setState { copy(loadState = MemberSettingContract.LoadState.Error) }
                 }
             )
-        }
 
-        viewModelScope.launch {
-            setState { copy(loadState = MemberSettingContract.LoadState.Loading) }
             getConfigUseCase().collectWithCallback(
                 onSuccess = {
                     setState {
@@ -57,6 +53,15 @@ class MemberSettingViewModel @Inject constructor(
                 },
                 onFailed = {
                     setState { copy(loadState = MemberSettingContract.LoadState.Error) }
+                }
+            )
+
+            shouldShowGuestButtonUseCase().collectWithCallback(
+                onSuccess = {
+                    setState { copy(isGuest = it) }
+                },
+                onFailed = {
+                    FirebaseCrashlytics.getInstance().recordException(it)
                 }
             )
         }
@@ -83,8 +88,8 @@ class MemberSettingViewModel @Inject constructor(
                             if (isSucceed) {
                                 kakaoSdkProvider.withdraw(
                                     onSuccess = {
-                                        setEffect(MemberSettingContract.MemberSettingUiSideEffect.NavigateToLoginScreen)
                                         setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
+                                        setEffect(MemberSettingContract.MemberSettingUiSideEffect.NavigateToLoginScreen)
                                     },
                                     onFailed = {
                                         setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
@@ -109,11 +114,13 @@ class MemberSettingViewModel @Inject constructor(
     override suspend fun handleEvent(event: MemberSettingContract.MemberSettingUiEvent) {
         when (event) {
             is MemberSettingContract.MemberSettingUiEvent.OnLogoutButtonClicked -> {
-                logout()
+                if (uiState.value.isGuest) guestLogout()
+                else logout()
             }
 
             is MemberSettingContract.MemberSettingUiEvent.OnWithdrawButtonClicked -> {
-                withdraw()
+                if (uiState.value.isGuest) guestWithdraw()
+                else withdraw()
             }
 
             is MemberSettingContract.MemberSettingUiEvent.OnPrivacyPolicyButtonClicked -> {
@@ -121,4 +128,34 @@ class MemberSettingViewModel @Inject constructor(
             }
         }
     }
+
+    // 심사 후 제거할 로직이라 아래에 선언함 !
+    // 심사를 위한 게스트용 로그아웃, 탈퇴기능
+    private fun guestLogout() {
+        setEffect(MemberSettingContract.MemberSettingUiSideEffect.NavigateToLoginScreen)
+    }
+
+    private fun guestWithdraw() {
+        viewModelScope.launch {
+            setState { copy(loadState = MemberSettingContract.LoadState.Loading) }
+            getMemberIdUseCase().collectWithCallback(
+                onSuccess = { memberId ->
+                    deleteMemberInfoUseCase(memberId)
+                        .collect { isSucceed ->
+                            if (isSucceed) {
+                                setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
+                                setEffect(MemberSettingContract.MemberSettingUiSideEffect.NavigateToLoginScreen)
+                            } else {
+                                setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
+                                setEffect(MemberSettingContract.MemberSettingUiSideEffect.ShowToast)
+                            }
+                        }
+                },
+                onFailed = {
+                    setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
+                    setEffect(MemberSettingContract.MemberSettingUiSideEffect.ShowToast)
+                })
+        }
+    }
 }
+

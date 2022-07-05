@@ -5,7 +5,7 @@ import com.yapp.common.base.UiSideEffect
 import com.yapp.common.base.UiState
 import com.yapp.presentation.model.Team
 
-class TeamContract {
+sealed class TeamContract {
     data class TeamUiState(
         val isLoading: Boolean = false,
         val teams: List<Team> = emptyList(),

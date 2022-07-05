@@ -8,7 +8,8 @@ class LoginContract {
     data class LoginUiState(
         val isLoading: Boolean = false,
         val clickCount: Int = 0,
-        val isDialogVisible: Boolean = false
+        val isDialogVisible: Boolean = false,
+        val isGuestButtonVisible: Boolean = false,
     ) : UiState
 
     sealed class LoginUiSideEffect : UiSideEffect {
@@ -22,6 +23,7 @@ class LoginContract {
         object OnLoginButtonClicked : LoginUiEvent()
         object OnSkipButtonClicked : LoginUiEvent()
         object OnYappuImageClicked : LoginUiEvent()
-        object OnCancelButtonClicked: LoginUiEvent()
+        object OnCancelButtonClicked : LoginUiEvent()
+        object OnGuestButtonClicked : LoginUiEvent()
     }
 }
