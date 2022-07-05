@@ -2,18 +2,26 @@ package com.yapp.presentation.ui.login
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.ktx.app
 import com.yapp.common.base.BaseViewModel
 import com.yapp.common.util.KakaoSdkProvider
 import com.yapp.domain.common.KakaoSdkProviderInterface
 import com.yapp.domain.usecases.CheckAdminPasswordUseCase
 import com.yapp.domain.usecases.GetFirestoreMemberUseCase
 import com.yapp.domain.usecases.SetMemberIdUseCase
+import com.yapp.domain.usecases.ShouldShowGuestButtonUseCase
 import com.yapp.presentation.ui.login.LoginContract.*
 import com.yapp.presentation.ui.splash.SplashContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
+import kotlin.random.Random
 
 /**
  * flow
@@ -26,14 +34,23 @@ class LoginViewModel @Inject constructor(
     private val setMemberIdUseCase: SetMemberIdUseCase,
     private val getFirestoreMemberUseCase: GetFirestoreMemberUseCase,
     private val adminPasswordUseCase: CheckAdminPasswordUseCase,
+    private val shouldShowGuestButtonUseCase: ShouldShowGuestButtonUseCase,
     private val kakaoSdkProvider: KakaoSdkProviderInterface
 ) :
     BaseViewModel<LoginUiState, LoginUiSideEffect, LoginUiEvent>(
         LoginUiState()
     ) {
-
-    companion object {
-        const val HIDDEN_CONDITION = 15
+    init {
+        viewModelScope.launch {
+            shouldShowGuestButtonUseCase().collectWithCallback(
+                onSuccess = {
+                    setState { copy(isGuestButtonVisible = it) }
+                },
+                onFailed = {
+                    FirebaseCrashlytics.getInstance().recordException(it)
+                }
+            )
+        }
     }
 
     private fun kakaoLogin() {
@@ -141,6 +158,18 @@ class LoginViewModel @Inject constructor(
             is LoginUiEvent.OnCancelButtonClicked -> {
                 setState { copy(isDialogVisible = false) }
             }
+
+            is LoginUiEvent.OnGuestButtonClicked -> {
+                //게스트 로그인의 경우 랜덤으로 memberId 삽입
+                setMemberId(Random.nextLong())
+                setEffect(
+                    LoginUiSideEffect.NavigateToSignUpScreen
+                )
+            }
         }
+    }
+
+    companion object {
+        const val HIDDEN_CONDITION = 15
     }
 }

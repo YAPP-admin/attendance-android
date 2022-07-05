@@ -30,6 +30,7 @@ import com.yapp.common.R.drawable
 import com.yapp.common.R.raw
 import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
+import com.yapp.common.theme.Yapp_Orange
 import com.yapp.common.yds.YDSButtonLarge
 import com.yapp.common.yds.YDSPopupDialog
 import com.yapp.common.yds.YDSProgressBar
@@ -81,6 +82,7 @@ fun Login(
                 .padding(24.dp),
         ) {
             IntroduceTitle()
+            GuestButton()
             KakaoLoginButton()
         }
 
@@ -142,6 +144,33 @@ private fun IntroduceTitle() {
         text = stringResource(id = R.string.login_attendance_introduce_text),
         style = AttendanceTypography.h1
     )
+}
+
+/**
+ * 플레이 스토어 심사를 위한 게스트 버튼
+ */
+@Composable
+private fun GuestButton(
+    viewModel: LoginViewModel = hiltViewModel(),
+) {
+    Button(
+        modifier = Modifier
+            .layoutId("guestButton")
+            .fillMaxWidth()
+            .height(45.dp),
+        shape = RoundedCornerShape(12.dp),
+        onClick = {
+            viewModel.setEvent(LoginUiEvent.OnGuestButtonClicked)
+        },
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = Yapp_Orange
+        ),
+        elevation = null
+    ) {
+        Text(
+            "Guest Login"
+        )
+    }
 }
 
 @Composable

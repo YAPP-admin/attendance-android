@@ -10,6 +10,7 @@ class MemberSettingContract {
         val showDialog: Boolean = false,
         val generation: Int = 0,
         val memberName: String = "",
+        val isGuest: Boolean = false,
     ) : UiState
 
     enum class LoadState {

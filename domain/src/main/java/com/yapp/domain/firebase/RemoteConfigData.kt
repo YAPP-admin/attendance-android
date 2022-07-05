@@ -24,6 +24,11 @@ sealed class RemoteConfigData<T> {
         override val defaultValue: String = ""
     }
 
+    object ShouldShowGuestButton : RemoteConfigData<String>() {
+        override val key: String = SHOULD_SHOW_GUEST_BUTTON
+        override val defaultValue: String = "false"
+    }
+
     object QrPassword : RemoteConfigData<String>() {
         override val key: String = ATTENDANCE_QR_PASSWORD
         override val defaultValue: String = "fail"
@@ -35,13 +40,15 @@ sealed class RemoteConfigData<T> {
         private const val ATTENDANCE_SELECT_TEAMS = "attendance_select_teams"
         private const val ATTENDANCE_CONFIG = "config"
         private const val ATTENDANCE_QR_PASSWORD = "attendance_qr_password"
+        private const val SHOULD_SHOW_GUEST_BUTTON = "should_show_guest_button"
 
         val defaultMaps = mapOf(
             MaginotlineTime.defaultValue to MaginotlineTime.key,
             SessionList.defaultValue to SessionList.key,
             AttendanceSelectTeams.defaultValue to AttendanceSelectTeams.key,
             Config.defaultValue to Config.key,
-            QrPassword.defaultValue to QrPassword.key
+            QrPassword.defaultValue to QrPassword.key,
+            ShouldShowGuestButton.defaultValue to ShouldShowGuestButton.key
         )
     }
 
