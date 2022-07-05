@@ -11,4 +11,5 @@ interface FirebaseRemoteConfig {
     suspend fun getConfig(): Flow<ConfigEntity>
     suspend fun getTeamList(): Flow<List<TeamEntity>>
     suspend fun getQrPassword(): Flow<String>
+    suspend fun shouldShowGuestButton(): Flow<Boolean>
 }
