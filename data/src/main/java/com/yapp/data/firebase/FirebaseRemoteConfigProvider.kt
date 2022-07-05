@@ -81,4 +81,11 @@ class FirebaseRemoteConfigProvider @Inject constructor() : FirebaseRemoteConfig 
             emit(firebaseRemoteConfig.getString(RemoteConfigData.QrPassword.key))
         }
     }
+
+    override suspend fun shouldShowGuestButton(): Flow<Boolean> {
+        return flow {
+            firebaseRemoteConfig.fetchAndActivate().await()
+            emit(firebaseRemoteConfig.getString(RemoteConfigData.ShouldShowGuestButton.key).toBooleanStrict())
+        }
+    }
 }
