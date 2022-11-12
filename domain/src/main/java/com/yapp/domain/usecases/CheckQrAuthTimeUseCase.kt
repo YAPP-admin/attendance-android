@@ -1,33 +1,27 @@
 package com.yapp.domain.usecases
 
-import com.yapp.domain.firebase.FirebaseRemoteConfig
-import com.yapp.domain.util.BaseUseCase
+import com.yapp.domain.model.SessionEntity
+import com.yapp.domain.repository.RemoteConfigRepository
 import com.yapp.domain.util.DateUtil
-import com.yapp.domain.util.DispatcherProvider
-import com.yapp.domain.util.TaskResult
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 
 class CheckQrAuthTimeUseCase @Inject constructor(
-    private val firebaseRemoteConfig: FirebaseRemoteConfig,
-    coroutineDispatcher: DispatcherProvider
-) : BaseUseCase<Flow<TaskResult<Boolean>>, Unit>(coroutineDispatcher) {
+    private val remoteConfigRepository: RemoteConfigRepository,
+) {
 
     companion object {
         private const val BEFORE_5_MINUTE = -5
         private const val AFTER_30_MINUTE = 30
     }
 
-    override suspend fun invoke(params: Unit?): Flow<TaskResult<Boolean>> {
-        return firebaseRemoteConfig.getSessionList()
-            .map { list ->
-                val upComingSession = list.firstOrNull { DateUtil.isUpcomingSession(it.date) } ?: return@map false
-                val elapsedTime = DateUtil.getElapsedTime(upComingSession.date)
+    suspend fun invoke(): Result<Boolean> {
+        return remoteConfigRepository.getSessionList().mapCatching { sessionList: List<SessionEntity> ->
+            val upCommingSession = sessionList.firstOrNull { DateUtil.isUpcomingSession(it.date) } ?: return@mapCatching false
+            val elapsedTime = DateUtil.getElapsedTime(upCommingSession.date)
 
-                return@map elapsedTime in BEFORE_5_MINUTE..AFTER_30_MINUTE
-            }.toResult()
+            return@mapCatching elapsedTime in BEFORE_5_MINUTE..AFTER_30_MINUTE
+        }
     }
 
 }

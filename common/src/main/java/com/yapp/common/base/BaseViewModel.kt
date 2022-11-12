@@ -2,8 +2,7 @@ package com.yapp.common.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yapp.domain.util.TaskResult
-import kotlinx.coroutines.CoroutineScope
+import com.yapp.domain.util.Resources
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -47,17 +46,17 @@ abstract class BaseViewModel<S : UiState, A : UiSideEffect, E : UiEvent>(
         }
     }
 
-    protected suspend fun <T> Flow<TaskResult<T>>.collectWithCallback(
+    protected suspend fun <T> Flow<Resources<T>>.collectWithCallback(
         onSuccess: suspend (T) -> Unit,
         onFailed: suspend (Throwable) -> Unit
     ) {
         collect { result ->
             when (result) {
-                is TaskResult.Success -> {
+                is com.yapp.domain.util.TaskResult.Result.Success -> {
                     onSuccess.invoke(result.data)
                 }
 
-                is TaskResult.Failed -> {
+                is com.yapp.domain.util.TaskResult.Result.Failed -> {
                     onFailed.invoke(result.throwable)
                 }
             }

@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 
 interface TeamRepository {
-    fun getTeamMembers(team: String): Flow<List<MemberEntity>>
+    suspend fun getTeamMembers(team: String): Result<List<MemberEntity>>
 }

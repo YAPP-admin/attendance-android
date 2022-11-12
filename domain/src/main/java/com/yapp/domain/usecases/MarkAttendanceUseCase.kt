@@ -2,13 +2,13 @@ package com.yapp.domain.usecases
 
 import com.yapp.domain.model.AttendanceEntity
 import com.yapp.domain.model.AttendanceTypeEntity
+import com.yapp.domain.model.MemberEntity
 import com.yapp.domain.model.SessionEntity
 import com.yapp.domain.repository.LocalRepository
 import com.yapp.domain.repository.MemberRepository
-import com.yapp.domain.util.BaseUseCase
 import com.yapp.domain.util.DateUtil
 import com.yapp.domain.util.DispatcherProvider
-import com.yapp.domain.util.TaskResult
+import com.yapp.domain.util.Resources
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapConcat
@@ -16,32 +16,26 @@ import javax.inject.Inject
 
 class MarkAttendanceUseCase @Inject constructor(
     private val localRepository: LocalRepository,
-    private val memberRepository: MemberRepository,
-    private val dispatcherProvider: DispatcherProvider,
-) : BaseUseCase<Flow<TaskResult<Unit>>, SessionEntity>(dispatcherProvider) {
-    override suspend fun invoke(params: SessionEntity?): Flow<TaskResult<Unit>> {
-        val attendanceState = AttendanceEntity(
-            sessionId = params!!.sessionId,
-            type = checkAttendanceState(params.date)
-        )
-        val userId = localRepository.getMemberId().firstOrNull()
+    private val memberRepository: MemberRepository
+) {
+    suspend fun invoke(checkedSession: SessionEntity?): Result<Unit> {
+        return localRepository.getMemberId().mapCatching { currentUserId: Long? ->
+            require(currentUserId != null)
 
-        return memberRepository.getMember(userId!!)
-            .flatMapConcat { member ->
-                val attendances = member!!.attendances.toMutableList().apply {
-                    this[params.sessionId] = attendanceState
-                }
+            val markedAttendanceState = AttendanceEntity(
+                sessionId = checkedSession!!.sessionId,
+                type = checkAttendanceState(checkedSession.date)
+            )
 
-                memberRepository.setMember(
-                    memberEntity = com.yapp.domain.model.MemberEntity(
-                        id = member.id,
-                        name = member.name,
-                        position = member.position,
-                        team = member.team,
-                        attendances = attendances.toList()
-                    )
-                )
-            }.toResult()
+            val currentMemberInfo = memberRepository.getMember(currentUserId).getOrThrow()
+
+            val markedAttendanceList = currentMemberInfo!!.attendances.toMutableList()
+                .apply { this[checkedSession.sessionId] = markedAttendanceState }
+
+            memberRepository.setMember(
+                memberEntity = currentMemberInfo.copy(attendances = markedAttendanceList)
+            )
+        }
     }
 
     private fun checkAttendanceState(sessionDate: String): AttendanceTypeEntity {

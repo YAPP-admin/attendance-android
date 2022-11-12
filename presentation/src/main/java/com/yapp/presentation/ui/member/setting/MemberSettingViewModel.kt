@@ -16,7 +16,7 @@ import javax.inject.Inject
 class MemberSettingViewModel @Inject constructor(
     private val kakaoSdkProvider: KakaoSdkProviderInterface,
     private val getMemberIdUseCase: GetMemberIdUseCase,
-    private val getFirestoreMemberUseCase: GetFirestoreMemberUseCase,
+    private val getCurrentMemberInfoUseCase: GetCurrentMemberInfoUseCase,
     private val deleteMemberInfoUseCase: DeleteMemberInfoUseCase,
     private val getConfigUseCase: GetConfigUseCase,
     private val shouldShowGuestButtonUseCase: ShouldShowGuestButtonUseCase
@@ -28,7 +28,7 @@ class MemberSettingViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             setState { copy(loadState = MemberSettingContract.LoadState.Loading) }
-            getFirestoreMemberUseCase().collectWithCallback(
+            getCurrentMemberInfoUseCase().collectWithCallback(
                 onSuccess = {
                     setState {
                         copy(

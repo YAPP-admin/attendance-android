@@ -1,61 +1,69 @@
 package com.yapp.domain.usecases
 
-import com.yapp.domain.firebase.FirebaseRemoteConfig
-import com.yapp.domain.model.AttendanceEntity
-import com.yapp.domain.model.AttendanceTypeEntity
-import com.yapp.domain.model.MemberEntity
-import com.yapp.domain.model.TeamEntity
+import com.yapp.domain.model.*
 import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.domain.model.types.PositionTypeEntity
 import com.yapp.domain.repository.LocalRepository
 import com.yapp.domain.repository.MemberRepository
-import com.yapp.domain.util.BaseUseCase
-import com.yapp.domain.util.DispatcherProvider
-import com.yapp.domain.util.TaskResult
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.map
+import com.yapp.domain.repository.RemoteConfigRepository
 import javax.inject.Inject
 
 
 class SignUpMemberUseCase @Inject constructor(
-    private val firebaseRemoteConfig: FirebaseRemoteConfig,
+    private val remoteConfigRepository: RemoteConfigRepository,
     private val localRepository: LocalRepository,
     private val memberRepository: MemberRepository,
-    dispatcherProvider: DispatcherProvider
-) : BaseUseCase<Flow<TaskResult<Unit>>, SignUpMemberUseCase.Params>(dispatcherProvider) {
+) {
 
-    override suspend fun invoke(params: Params?): Flow<TaskResult<Unit>> {
-        return firebaseRemoteConfig.getSessionList().map { sessionList ->
-            return@map sessionList.map { session ->
-                AttendanceEntity(
-                    sessionId = session.sessionId,
-                    type = when (session.type) {
-                        NeedToAttendType.DONT_NEED_ATTENDANCE, NeedToAttendType.DAY_OFF -> AttendanceTypeEntity.Normal
-                        NeedToAttendType.NEED_ATTENDANCE -> AttendanceTypeEntity.Absent
-                    }
-                )
-            }
-        }.flatMapConcat { editedSessionList ->
-            localRepository.getMemberId()
-                .map { memberId ->
-                    MemberEntity(
-                        id = memberId!!,
-                        name = params!!.memberName,
-                        position = params.memberPosition,
-                        team = params.teamEntity,
-                        attendances = editedSessionList
-                    )
-                }
-        }.flatMapConcat { memberEntity ->
+    suspend fun invoke(params: Params): Result<Unit> {
+        return localRepository.getMemberId().mapCatching { currentMemberId: Long? ->
+            require(currentMemberId != null)
+
+            val sessionList = remoteConfigRepository.getSessionList().getOrThrow()
+            val editedSessionList = createAttendanceEntities(sessionList)
+
+            val memberEntity = createMemberEntity(memberId = currentMemberId, params = params, attendanceEntities = editedSessionList)
+
             memberRepository.setMember(memberEntity)
-        }.toResult()
+        }
     }
 
+    private fun createAttendanceEntities(sessionList: List<SessionEntity>): List<AttendanceEntity> {
+        return sessionList.map { session ->
+            AttendanceEntity(
+                sessionId = session.sessionId,
+                type = when (session.type) {
+                    NeedToAttendType.NEED_ATTENDANCE -> AttendanceTypeEntity.Absent
+                    NeedToAttendType.DONT_NEED_ATTENDANCE -> AttendanceTypeEntity.Normal
+                    NeedToAttendType.DAY_OFF -> AttendanceTypeEntity.Normal
+                }
+            )
+        }
+    }
+
+    private fun createMemberEntity(
+        memberId: Long,
+        params: Params,
+        attendanceEntities: List<AttendanceEntity>,
+    ): MemberEntity {
+        return MemberEntity(
+            id = memberId,
+            name = params.memberName,
+            position = params.memberPosition,
+            team = params.teamEntity,
+            attendances = attendanceEntities
+        )
+    }
+
+    /**
+     * @param memberName 회원가입 이름입력 화면에서 입력된 Member 이름
+     * @param memberPosition 회원가입 포지션/팀 화면의 선택된 Member 포지션
+     * @param teamEntit: 회원가입 포지션/팀 화면의 선택된 Member Team
+     * */
     class Params(
         val memberName: String,
         val memberPosition: PositionTypeEntity,
-        val teamEntity: TeamEntity
+        val teamEntity: TeamEntity,
     )
 
 }

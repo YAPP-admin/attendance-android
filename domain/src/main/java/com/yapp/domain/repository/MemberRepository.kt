@@ -5,8 +5,8 @@ import kotlinx.coroutines.flow.Flow
 
 
 interface MemberRepository {
-    fun setMember(memberEntity: MemberEntity): Flow<Unit>
-    fun getMember(id: Long): Flow<MemberEntity?>
-    fun deleteMember(id: Long): Flow<Boolean>
-    fun getAllMember(): Flow<List<MemberEntity>>
+    suspend fun setMember(memberEntity: MemberEntity): Result<Unit>
+    suspend fun getMember(id: Long): Result<MemberEntity?>
+    suspend fun deleteMember(id: Long): Result<Unit>
+    suspend fun getAllMember(): Flow<Result<List<MemberEntity>>>
 }

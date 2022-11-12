@@ -1,35 +1,36 @@
 package com.yapp.domain.usecases
 
-import com.yapp.domain.firebase.FirebaseRemoteConfig
 import com.yapp.domain.model.AttendanceEntity
 import com.yapp.domain.model.SessionEntity
 import com.yapp.domain.repository.LocalRepository
 import com.yapp.domain.repository.MemberRepository
-import com.yapp.domain.util.BaseUseCase
-import com.yapp.domain.util.DispatcherProvider
-import com.yapp.domain.util.TaskResult
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.zip
+import com.yapp.domain.repository.RemoteConfigRepository
 import javax.inject.Inject
 
 class GetMemberAttendanceListUseCase @Inject constructor(
     private val localRepository: LocalRepository,
     private val memberRepository: MemberRepository,
-    private val firebaseRemoteConfig: FirebaseRemoteConfig,
-    private val coroutineDispatcher: DispatcherProvider
-) : BaseUseCase<@JvmSuppressWildcards Flow<TaskResult<Pair<List<SessionEntity>, List<AttendanceEntity>?>>>, Unit>(coroutineDispatcher) {
+    private val remoteConfigRepository: RemoteConfigRepository,
+) {
 
-    override suspend fun invoke(params: Unit?): Flow<TaskResult<Pair<List<SessionEntity>, List<AttendanceEntity>?>>> {
-        val sessions = firebaseRemoteConfig.getSessionList()
-        val memberId = localRepository.getMemberId().firstOrNull()
-        val member = memberId?.let { id ->
-            memberRepository.getMember(id)
-        } ?: emptyFlow()
+    suspend fun invoke(): Result<Pair<List<SessionEntity>, List<AttendanceEntity>>> {
+        kotlin.runCatching {
+            val sessionList = remoteConfigRepository.getSessionList().getOrThrow()
+            val currentMemberId = localRepository.getMemberId().getOrNull()
 
-        return sessions.zip(member) { sessions, member ->
-            sessions to member?.attendances
-        }.toResult()
+            require(currentMemberId != null)
+
+            val currentMemberInfo = memberRepository.getMember(currentMemberId).getOrThrow()
+
+            sessionList to currentMemberInfo!!.attendances
+        }.fold(
+            onSuccess = { memberAttendances ->
+                return Result.success(memberAttendances)
+            },
+            onFailure = { exception ->
+                return Result.failure(exception)
+            }
+        )
     }
+
 }

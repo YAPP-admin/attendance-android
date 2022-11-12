@@ -1,21 +1,14 @@
 package com.yapp.presentation.ui.login
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.ktx.app
 import com.yapp.common.base.BaseViewModel
-import com.yapp.common.util.KakaoSdkProvider
 import com.yapp.domain.common.KakaoSdkProviderInterface
 import com.yapp.domain.usecases.CheckAdminPasswordUseCase
-import com.yapp.domain.usecases.GetFirestoreMemberUseCase
+import com.yapp.domain.usecases.GetCurrentMemberInfoUseCase
 import com.yapp.domain.usecases.SetMemberIdUseCase
 import com.yapp.domain.usecases.ShouldShowGuestButtonUseCase
 import com.yapp.presentation.ui.login.LoginContract.*
-import com.yapp.presentation.ui.splash.SplashContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -32,7 +25,7 @@ import kotlin.random.Random
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val setMemberIdUseCase: SetMemberIdUseCase,
-    private val getFirestoreMemberUseCase: GetFirestoreMemberUseCase,
+    private val getCurrentMemberInfoUseCase: GetCurrentMemberInfoUseCase,
     private val adminPasswordUseCase: CheckAdminPasswordUseCase,
     private val shouldShowGuestButtonUseCase: ShouldShowGuestButtonUseCase,
     private val kakaoSdkProvider: KakaoSdkProviderInterface
@@ -82,7 +75,7 @@ class LoginViewModel @Inject constructor(
     }
 
     private suspend fun validateRegisteredUser() {
-        getFirestoreMemberUseCase().collectWithCallback(
+        getCurrentMemberInfoUseCase().collectWithCallback(
             onSuccess = { entity ->
                 // 이미 firebase 에 존재하는 유저인 경우,
                 entity?.let {
