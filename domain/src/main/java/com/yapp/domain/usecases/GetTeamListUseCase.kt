@@ -8,7 +8,8 @@ import javax.inject.Inject
 class GetTeamListUseCase @Inject constructor(
     private val remoteConfigRepository: RemoteConfigRepository,
 ) {
-    suspend fun invoke(params: Unit?): Result<List<TeamEntity>> {
+
+    suspend operator fun invoke(): Result<List<TeamEntity>> {
         return remoteConfigRepository.getTeamList()
     }
 

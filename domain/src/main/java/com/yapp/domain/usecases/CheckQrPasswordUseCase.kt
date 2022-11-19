@@ -7,7 +7,7 @@ class CheckQrPasswordUseCase @Inject constructor(
     private val remoteConfigRepository: RemoteConfigRepository,
 ) {
 
-    suspend fun invoke(inputPassword: String): Result<Boolean> {
+    suspend operator fun invoke(inputPassword: String): Result<Boolean> {
         return remoteConfigRepository.getQrPassword().mapCatching { qrPassword: String ->
             inputPassword == qrPassword
         }

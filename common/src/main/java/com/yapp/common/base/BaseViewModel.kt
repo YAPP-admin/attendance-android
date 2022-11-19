@@ -48,15 +48,15 @@ abstract class BaseViewModel<S : UiState, A : UiSideEffect, E : UiEvent>(
 
     protected suspend fun <T> Flow<Resources<T>>.collectWithCallback(
         onSuccess: suspend (T) -> Unit,
-        onFailed: suspend (Throwable) -> Unit
+        onFailed: suspend (Throwable) -> Unit,
     ) {
         collect { result ->
             when (result) {
-                is com.yapp.domain.util.TaskResult.Result.Success -> {
+                is Resources.Success -> {
                     onSuccess.invoke(result.data)
                 }
 
-                is com.yapp.domain.util.TaskResult.Result.Failed -> {
+                is Resources.Failed -> {
                     onFailed.invoke(result.throwable)
                 }
             }

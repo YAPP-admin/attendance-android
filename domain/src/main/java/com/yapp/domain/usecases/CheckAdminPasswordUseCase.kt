@@ -1,11 +1,6 @@
 package com.yapp.domain.usecases
 
-import com.yapp.domain.firebase.FirebaseRemoteConfig
 import com.yapp.domain.repository.RemoteConfigRepository
-import com.yapp.domain.util.DispatcherProvider
-import com.yapp.domain.util.Resources
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 
@@ -17,7 +12,7 @@ class CheckAdminPasswordUseCase @Inject constructor(
         val configEntity = remoteConfigRepository.getConfig()
             .getOrThrow()
 
-        configEntity.adminPassword == params!!.inputText
+        configEntity.adminPassword == params.inputText
     }.fold(
         onSuccess = { isPasswordEquals ->
             Result.success(isPasswordEquals)
@@ -25,7 +20,6 @@ class CheckAdminPasswordUseCase @Inject constructor(
         onFailure = { exception ->
             Result.failure(exception)
         }
-
     )
 
     class Params(

@@ -10,7 +10,7 @@ class GetAllMemberUseCase @Inject constructor(
     private val memberRepository: MemberRepository,
 ) {
 
-    suspend fun invoke(): Flow<Result<List<MemberEntity>>> {
+    suspend operator fun invoke(): Flow<Result<List<MemberEntity>>> {
         return memberRepository.getAllMember()
     }
 

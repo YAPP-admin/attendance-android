@@ -8,7 +8,7 @@ class GetSessionListUseCase @Inject constructor(
     private val remoteConfigRepository: RemoteConfigRepository,
 ) {
 
-    suspend fun invoke(params: Unit?): Result<List<SessionEntity>> {
+    suspend operator fun invoke(): Result<List<SessionEntity>> {
         return remoteConfigRepository.getSessionList()
     }
 

@@ -1,9 +1,8 @@
-package com.yapp.data.remote
+package com.yapp.data.datasource
 
 import com.yapp.domain.model.ConfigEntity
 import com.yapp.domain.model.SessionEntity
 import com.yapp.domain.model.TeamEntity
-import kotlinx.coroutines.flow.Flow
 
 
 interface FirebaseRemoteConfigDataSource {

@@ -10,7 +10,7 @@ class GetCurrentMemberInfoUseCase @Inject constructor(
     private val memberRepository: MemberRepository,
 ) {
 
-    suspend fun invoke(): Result<MemberEntity?> {
+    suspend operator fun invoke(): Result<MemberEntity?> {
         return localRepository.getMemberId().mapCatching { currentMemberId ->
             if (currentMemberId == null) {
                 return@mapCatching null

@@ -11,7 +11,7 @@ class GetMemberAttendancesUseCase @Inject constructor(
     private val localRepository: LocalRepository,
 ) {
 
-    suspend fun invoke(params: Unit?): Result<List<AttendanceEntity>?> {
+    suspend operator fun invoke(): Result<List<AttendanceEntity>?> {
         return localRepository.getMemberId().mapCatching { currentMemberId: Long? ->
             require(currentMemberId != null)
 

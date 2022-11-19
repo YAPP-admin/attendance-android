@@ -1,4 +1,4 @@
-package com.yapp.data.remote
+package com.yapp.data.datasource
 
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
@@ -21,7 +21,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 
-internal class FirebaseRemoteConfigDataSourceImpl @Inject constructor() : FirebaseRemoteConfigDataSource {
+class FirebaseRemoteConfigDataSourceImpl @Inject constructor() : FirebaseRemoteConfigDataSource {
 
     private val firebaseRemoteConfig = Firebase.remoteConfig
     private val configSettings = remoteConfigSettings { minimumFetchIntervalInSeconds = 3600 }

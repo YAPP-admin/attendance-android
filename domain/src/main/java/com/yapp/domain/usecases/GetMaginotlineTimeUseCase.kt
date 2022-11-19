@@ -7,7 +7,7 @@ class GetMaginotlineTimeUseCase @Inject constructor(
     private val remoteConfigRepository: RemoteConfigRepository,
 ) {
 
-    suspend fun invoke(): Result<String> {
+    suspend operator fun invoke(): Result<String> {
         return remoteConfigRepository.getMaginotlineTime()
     }
 

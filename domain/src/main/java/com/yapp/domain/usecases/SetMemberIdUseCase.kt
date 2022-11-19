@@ -6,7 +6,9 @@ import javax.inject.Inject
 class SetMemberIdUseCase @Inject constructor(
     private val localRepository: LocalRepository,
 ) {
-    suspend fun invoke(params: Long?) {
-        localRepository.setMemberId(params!!)
+
+    suspend operator fun invoke(params: Long) {
+        localRepository.setMemberId(params)
     }
+
 }

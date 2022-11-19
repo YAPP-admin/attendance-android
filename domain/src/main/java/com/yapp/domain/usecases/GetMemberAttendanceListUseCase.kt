@@ -13,8 +13,8 @@ class GetMemberAttendanceListUseCase @Inject constructor(
     private val remoteConfigRepository: RemoteConfigRepository,
 ) {
 
-    suspend fun invoke(): Result<Pair<List<SessionEntity>, List<AttendanceEntity>>> {
-        kotlin.runCatching {
+    suspend operator fun invoke(): Result<Pair<List<SessionEntity>, List<AttendanceEntity>>> {
+        runCatching {
             val sessionList = remoteConfigRepository.getSessionList().getOrThrow()
             val currentMemberId = localRepository.getMemberId().getOrNull()
 

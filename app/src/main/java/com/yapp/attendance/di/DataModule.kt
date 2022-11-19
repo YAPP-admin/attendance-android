@@ -2,6 +2,7 @@ package com.yapp.attendance.di
 
 import android.content.Context
 import com.google.firebase.firestore.FirebaseFirestore
+import com.yapp.data.datasource.*
 import com.yapp.data.repository.LocalRepositoryImpl
 import com.yapp.data.repository.MemberRepositoryImpl
 import com.yapp.data.repository.TeamRepositoryImpl
@@ -28,7 +29,7 @@ object DataModule {
     @Provides
     @Singleton
     fun provideLocalRepository(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
     ): LocalRepository {
         return LocalRepositoryImpl(context)
     }
@@ -36,17 +37,47 @@ object DataModule {
     @Provides
     @Singleton
     fun provideMemberRepository(
-        fireStore: FirebaseFirestore
+        memberRemoteDataSource: MemberRemoteDataSource
     ): MemberRepository {
-        return MemberRepositoryImpl(fireStore)
+        return MemberRepositoryImpl(memberRemoteDataSource)
     }
 
     @Provides
     @Singleton
     fun provideTeamRepository(
+        teamDataSource: TeamRemoteDataSource
+    ): TeamRepository {
+        return TeamRepositoryImpl(teamDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRemoteConfigRepository(
+        teamDataSource: TeamRemoteDataSource,
+    ): TeamRepository {
+        return TeamRepositoryImpl(teamDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseRemoteConfigDataSource(): FirebaseRemoteConfigDataSource {
+        return FirebaseRemoteConfigDataSourceImpl()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMemberRemoteDataSource(
         fireStore: FirebaseFirestore
-    ) : TeamRepository {
-        return TeamRepositoryImpl(fireStore)
+    ): MemberRemoteDataSource {
+        return MemberRemoteDataSourceImpl(fireStore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTeamRemoteDataSource(
+        fireStore: FirebaseFirestore
+    ): TeamRemoteDataSource {
+        return TeamRemoteDataSourceImpl(fireStore)
     }
 
 }

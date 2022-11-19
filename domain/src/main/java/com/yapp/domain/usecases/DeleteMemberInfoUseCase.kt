@@ -9,8 +9,8 @@ class DeleteMemberInfoUseCase @Inject constructor(
     private val memberRepository: MemberRepository,
 ) {
 
-    suspend fun invoke(memberId: Long): Result<Boolean> {
-        return kotlin.runCatching {
+    suspend operator fun invoke(memberId: Long): Result<Boolean> {
+        return runCatching {
             localRepository.deleteAllUserInfo()
             memberRepository.deleteMember(memberId)
         }.fold(

@@ -15,7 +15,7 @@ class SignUpMemberUseCase @Inject constructor(
     private val memberRepository: MemberRepository,
 ) {
 
-    suspend fun invoke(params: Params): Result<Unit> {
+    suspend operator fun invoke(params: Params): Result<Unit> {
         return localRepository.getMemberId().mapCatching { currentMemberId: Long? ->
             require(currentMemberId != null)
 

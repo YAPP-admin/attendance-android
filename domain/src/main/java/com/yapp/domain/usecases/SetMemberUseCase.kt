@@ -8,7 +8,9 @@ import javax.inject.Inject
 class SetMemberUseCase @Inject constructor(
     private val memberRepository: MemberRepository,
 ) {
-    suspend fun invoke(params: MemberEntity?): Result<Unit> {
-        return memberRepository.setMember(memberEntity = params!!)
+
+    suspend operator fun invoke(params: MemberEntity): Result<Unit> {
+        return memberRepository.setMember(memberEntity = params)
     }
+
 }

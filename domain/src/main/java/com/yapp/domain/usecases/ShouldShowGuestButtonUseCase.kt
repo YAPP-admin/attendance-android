@@ -10,7 +10,9 @@ import javax.inject.Inject
 class ShouldShowGuestButtonUseCase @Inject constructor(
     private val remoteConfigRepository: RemoteConfigRepository
 ) {
-    suspend fun invoke(): Result<Boolean> {
+
+    suspend operator fun invoke(): Result<Boolean> {
         return remoteConfigRepository.shouldShowGuestButton()
     }
+
 }

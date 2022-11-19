@@ -1,4 +1,4 @@
-package com.yapp.data.remote
+package com.yapp.data.datasource
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.yapp.data.model.MemberModel
@@ -13,7 +13,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 
-internal class MemberRemoteDataSourceImpl @Inject constructor(
+class MemberRemoteDataSourceImpl @Inject constructor(
     private val fireStore: FirebaseFirestore,
 ) : MemberRemoteDataSource {
 

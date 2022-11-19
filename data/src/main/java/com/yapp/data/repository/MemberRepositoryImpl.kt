@@ -1,6 +1,6 @@
 package com.yapp.data.repository
 
-import com.yapp.data.remote.MemberRemoteDataSource
+import com.yapp.data.datasource.MemberRemoteDataSource
 import com.yapp.domain.model.MemberEntity
 import com.yapp.domain.repository.MemberRepository
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +13,7 @@ class MemberRepositoryImpl @Inject constructor(
 ) : MemberRepository {
 
     override suspend fun setMember(memberEntity: MemberEntity): Result<Unit> {
-        return kotlin.runCatching {
+        return runCatching {
             memberRemoteDataSource.setMember(memberEntity)
         }.fold(
             onSuccess = {
@@ -26,7 +26,7 @@ class MemberRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getMember(id: Long): Result<MemberEntity?> {
-        return kotlin.runCatching {
+        return runCatching {
             memberRemoteDataSource.getMember(id)
         }.fold(
             onSuccess = { memberEntity ->
@@ -39,7 +39,7 @@ class MemberRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteMember(id: Long): Result<Unit> {
-        return kotlin.runCatching {
+        return runCatching {
             memberRemoteDataSource.deleteMember(id)
         }.fold(
             onSuccess = {

@@ -1,43 +1,37 @@
 package com.yapp.domain.usecases
 
 import com.yapp.domain.model.AttendanceEntity
-import com.yapp.domain.model.MemberEntity
 import com.yapp.domain.repository.MemberRepository
-import com.yapp.domain.util.Resources
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapConcat
 import javax.inject.Inject
 
 
-/**
- * MarkAttendanceListUseCase 와 동일한 동작을 하고 있음
- * **/
+class SetMemberAttendanceUseCase @Inject constructor(
+    private val memberRepository: MemberRepository,
+) {
 
-//class SetMemberAttendanceUseCase @Inject constructor(
-//    private val memberRepository: MemberRepository,
-//) {
-//    suspend fun invoke(params: Params?): Result<Unit> {
-//        return memberRepository.getMember(params!!.memberId)
-//            .flatMapConcat { member ->
-//                val editableAttendances = member!!.attendances.toMutableList().apply {
-//                    this[params.sessionId] = params.changedAttendance
-//                }
-//
-//                memberRepository.setMember(
-//                    memberEntity = MemberEntity(
-//                        id = member.id,
-//                        name = member.name,
-//                        position = member.position,
-//                        team = member.team,
-//                        attendances = editableAttendances.toList()
-//                    )
-//                )
-//            }.toResult()
-//    }
-//
-//    class Params(
-//        val memberId: Long,
-//        val sessionId: Int,
-//        val changedAttendance: AttendanceEntity,
-//    )
-//}
+    suspend fun invoke(params: Params): Result<Unit> {
+        return memberRepository.getMember(params.memberId).mapCatching { targetMemeber ->
+            require(targetMemeber != null)
+
+            val changedAttendances = targetMemeber.attendances.toMutableList().apply {
+                this[params.sessionId] = params.changedAttendance
+            }
+
+            memberRepository.setMember(
+                memberEntity = targetMemeber.copy(attendances = changedAttendances)
+            )
+        }
+    }
+
+    /**
+     * @param memberId : 수정하고자 하는 멤버의 ID
+     * @param sessionId : 수정하고자 하는 세션
+     * @param changedAttendance : 수정하고자 하는 출석타입
+     */
+    class Params(
+        val memberId: Long,
+        val sessionId: Int,
+        val changedAttendance: AttendanceEntity,
+    )
+
+}

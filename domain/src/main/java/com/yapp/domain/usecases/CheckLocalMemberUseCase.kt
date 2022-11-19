@@ -9,7 +9,7 @@ class CheckLocalMemberUseCase @Inject constructor(
     private val localRepository: LocalRepository
 ) {
 
-    suspend fun invoke(): Result<Boolean> {
+    suspend operator fun invoke(): Result<Boolean> {
         return localRepository.getMemberId().mapCatching { localMemberId ->
             localMemberId != null
         }

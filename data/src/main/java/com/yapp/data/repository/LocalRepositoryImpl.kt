@@ -28,7 +28,7 @@ class LocalRepositoryImpl @Inject constructor(
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(DATASTORE_NAME)
 
     override suspend fun getMemberId(): Result<Long?> {
-        return kotlin.runCatching {
+        return runCatching {
             context.dataStore.data
                 .catch {
                     if (it is IOException) {
@@ -44,7 +44,7 @@ class LocalRepositoryImpl @Inject constructor(
     }
 
     override suspend fun setMemberId(memberId: Long): Result<Unit> {
-        return kotlin.runCatching {
+        return runCatching {
             context.dataStore.edit { preferences ->
                 preferences[MEMBER_ID] = memberId
             }
@@ -52,7 +52,7 @@ class LocalRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteAllUserInfo(): Result<Unit> {
-        return kotlin.runCatching {
+        return runCatching {
             context.dataStore.edit { preferences ->
                 preferences.clear()
             }

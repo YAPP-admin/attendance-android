@@ -1,6 +1,6 @@
 package com.yapp.data.repository
 
-import com.yapp.data.remote.FirebaseRemoteConfigDataSource
+import com.yapp.data.datasource.FirebaseRemoteConfigDataSource
 import com.yapp.domain.model.ConfigEntity
 import com.yapp.domain.model.SessionEntity
 import com.yapp.domain.model.TeamEntity
@@ -13,7 +13,7 @@ internal class RemoteConfigRepositoryImpl @Inject constructor(
 ) : RemoteConfigRepository {
 
     override suspend fun getMaginotlineTime(): Result<String> {
-        return kotlin.runCatching {
+        return runCatching {
             firebaseRemoteConfigDataSource.getMaginotlineTime()
         }.fold(
             onSuccess = { maginotlineTime: String ->
@@ -26,7 +26,7 @@ internal class RemoteConfigRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getSessionList(): Result<List<SessionEntity>> {
-        return kotlin.runCatching {
+        return runCatching {
             firebaseRemoteConfigDataSource.getSessionList()
         }.fold(
             onSuccess = { sessionList: List<SessionEntity> ->
@@ -39,7 +39,7 @@ internal class RemoteConfigRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getConfig(): Result<ConfigEntity> {
-        return kotlin.runCatching {
+        return runCatching {
             firebaseRemoteConfigDataSource.getConfig()
         }.fold(
             onSuccess = { config: ConfigEntity ->
@@ -52,7 +52,7 @@ internal class RemoteConfigRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTeamList(): Result<List<TeamEntity>> {
-        return kotlin.runCatching {
+        return runCatching {
             firebaseRemoteConfigDataSource.getTeamList()
         }.fold(
             onSuccess = { temaList: List<TeamEntity> ->
@@ -65,7 +65,7 @@ internal class RemoteConfigRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getQrPassword(): Result<String> {
-        return kotlin.runCatching {
+        return runCatching {
             firebaseRemoteConfigDataSource.getQrPassword()
         }.fold(
             onSuccess = { qrPassword: String ->
@@ -78,7 +78,7 @@ internal class RemoteConfigRepositoryImpl @Inject constructor(
     }
 
     override suspend fun shouldShowGuestButton(): Result<Boolean> {
-        return kotlin.runCatching {
+        return runCatching {
             firebaseRemoteConfigDataSource.shouldShowGuestButton()
         }.fold(
             onSuccess = { shouldShowGuestButton: Boolean ->

@@ -9,7 +9,7 @@ class GetUpcomingSessionUseCase @Inject constructor(
     private val remoteConfigRepository: RemoteConfigRepository,
 ) {
 
-    suspend fun invoke(params: Unit?): Result<SessionEntity?> {
+    suspend operator fun invoke(): Result<SessionEntity?> {
         // 세션 당일 밤 12시까지
         return remoteConfigRepository.getSessionList().mapCatching { sessionList ->
             sessionList.firstOrNull { session -> DateUtil.isUpcomingSession(session.date) }
