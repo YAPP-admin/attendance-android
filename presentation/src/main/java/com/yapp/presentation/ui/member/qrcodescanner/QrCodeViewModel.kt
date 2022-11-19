@@ -2,14 +2,14 @@ package com.yapp.presentation.ui.member.qrcodescanner
 
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
-import com.yapp.presentation.common.AttendanceQrCodeParser
-import com.yapp.domain.usecases.GetMaginotlineTimeUseCase
+import com.yapp.domain.model.Session
 import com.yapp.domain.usecases.CheckQrPasswordUseCase
+import com.yapp.domain.usecases.GetMaginotlineTimeUseCase
 import com.yapp.domain.usecases.MarkAttendanceUseCase
 import com.yapp.presentation.R
 import com.yapp.presentation.common.AttendanceBundle
+import com.yapp.presentation.common.AttendanceQrCodeParser
 import com.yapp.presentation.model.QrInformation
-import com.yapp.presentation.model.Session
 import com.yapp.presentation.ui.member.qrcodescanner.QrCodeContract.*
 import com.yapp.presentation.util.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -51,10 +51,10 @@ class QrCodeViewModel @Inject constructor(
 
     private suspend fun getMaginotlineTime() {
         setState { copy(isLoading = true) }
-        getMaginotlineTimeUseCase().collectWithCallback(
-            onSuccess = { maginotline -> setState { copy(maginotlineTime = maginotline) } },
-            onFailed = { guideMoveBackToHomeAndDeactivateScan() }
-        )
+        getMaginotlineTimeUseCase()
+            .onSuccess { maginotline -> setState { copy(maginotlineTime = maginotline) } }
+            .onFailure { guideMoveBackToHomeAndDeactivateScan() }
+
         setState { copy(isLoading = false) }
     }
 
@@ -70,20 +70,22 @@ class QrCodeViewModel @Inject constructor(
     }
 
     private suspend fun checkQrPassword(qrInformation: QrInformation) {
-        checkQrPasswordUseCase(qrInformation.password).collectWithCallback(
-            onSuccess = { isCorrectPassword ->
-                if (isCorrectPassword) markAttendance()
-                else notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_scan_correct_code_error_message))
-            },
-            onFailed = { notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_get_error_please_retry_message)) }
-        )
+        checkQrPasswordUseCase(qrInformation.password)
+            .onSuccess { isCorrectPassword ->
+                if (!isCorrectPassword) {
+                    notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_scan_correct_code_error_message))
+                    return@onSuccess
+                }
+
+                markAttendance()
+            }
+            .onFailure { notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_get_error_please_retry_message)) }
     }
 
     private suspend fun markAttendance() {
-        markAttendanceUseCase(todaySession.toEntity()).collectWithCallback(
-            onSuccess = { setState { copy(attendanceState = AttendanceState.SUCCESS) } },
-            onFailed = { notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_get_error_please_retry_message)) }
-        )
+        markAttendanceUseCase(todaySession)
+            .onSuccess { setState { copy(attendanceState = AttendanceState.SUCCESS) } }
+            .onFailure { notifyErrorMessageAndActivateScan(resourceProvider.getString(R.string.member_qr_get_error_please_retry_message)) }
     }
 
     private suspend fun notifyErrorMessageAndActivateScan(errorMsg: String) {

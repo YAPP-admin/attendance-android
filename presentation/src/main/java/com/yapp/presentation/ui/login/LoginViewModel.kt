@@ -26,7 +26,7 @@ import kotlin.random.Random
 class LoginViewModel @Inject constructor(
     private val setMemberIdUseCase: SetMemberIdUseCase,
     private val getCurrentMemberInfoUseCase: GetCurrentMemberInfoUseCase,
-    private val adminPasswordUseCase: CheckAdminPasswordUseCase,
+    private val checkAdminPasswordUseCase: CheckAdminPasswordUseCase,
     private val shouldShowGuestButtonUseCase: ShouldShowGuestButtonUseCase,
     private val kakaoSdkProvider: KakaoSdkProviderInterface
 ) :
@@ -35,14 +35,9 @@ class LoginViewModel @Inject constructor(
     ) {
     init {
         viewModelScope.launch {
-            shouldShowGuestButtonUseCase().collectWithCallback(
-                onSuccess = {
-                    setState { copy(isGuestButtonVisible = it) }
-                },
-                onFailed = {
-                    FirebaseCrashlytics.getInstance().recordException(it)
-                }
-            )
+            shouldShowGuestButtonUseCase()
+                .onSuccess { setState { copy(isGuestButtonVisible = it) } }
+                .onFailure { FirebaseCrashlytics.getInstance().recordException(it) }
         }
     }
 
@@ -75,26 +70,21 @@ class LoginViewModel @Inject constructor(
     }
 
     private suspend fun validateRegisteredUser() {
-        getCurrentMemberInfoUseCase().collectWithCallback(
-            onSuccess = { entity ->
-                // 이미 firebase 에 존재하는 유저인 경우,
-                entity?.let {
-                    // 바로 메인화면으로 이동한다.
-                    setEffect(
-                        LoginUiSideEffect.NavigateToQRMainScreen,
-                    )
-                } ?: run {
+        getCurrentMemberInfoUseCase()
+            .onSuccess { currentMemberInfo ->
+                if(currentMemberInfo == null) {
                     // 존재하지 않는다면, signup 화면으로 이동한다.
-                    setEffect(
-                        LoginUiSideEffect.NavigateToSignUpScreen,
-                    )
+                    setEffect(LoginUiSideEffect.NavigateToSignUpScreen)
+                    return@onSuccess
                 }
-            },
-            onFailed = {
+
+                // 이미 firebase 에 존재하는 유저인 경우 바로 메인화면으로 이동한다. (일반적)
+                setEffect(LoginUiSideEffect.NavigateToQRMainScreen)
+            }
+            .onFailure {
                 setEffect(LoginUiSideEffect.ShowToast("로그인 실패3"))
                 setState { copy(isLoading = false) }
             }
-        )
     }
 
     private suspend fun setMemberId(id: Long) {
@@ -108,20 +98,19 @@ class LoginViewModel @Inject constructor(
     fun adminLogin(password: String) {
         viewModelScope.launch {
             setState { copy(isLoading = true) }
-            adminPasswordUseCase(CheckAdminPasswordUseCase.Params(password)).collectWithCallback(
-                onSuccess = { isSuccess ->
-                    if (isSuccess) {
+            checkAdminPasswordUseCase(CheckAdminPasswordUseCase.Params(password))
+                .onSuccess { isCorrect ->
+                    if (isCorrect) {
                         setEffect(LoginUiSideEffect.NavigateToAdminScreen)
                     } else {
                         setEffect(LoginUiSideEffect.ShowToast("로그인 실패4"))
                     }
                     setState { copy(isLoading = false) }
-                },
-                onFailed = {
-                    setEffect(LoginUiSideEffect.ShowToast("로그인 실패5"))
+                }
+                .onFailure { exception ->
+                    setEffect(LoginUiSideEffect.ShowToast("${exception.message}"))
                     setState { copy(isLoading = false) }
                 }
-            )
         }
     }
 

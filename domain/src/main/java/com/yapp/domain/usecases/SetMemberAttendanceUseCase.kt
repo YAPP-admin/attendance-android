@@ -1,6 +1,6 @@
 package com.yapp.domain.usecases
 
-import com.yapp.domain.model.AttendanceEntity
+import com.yapp.domain.model.Attendance
 import com.yapp.domain.repository.MemberRepository
 import javax.inject.Inject
 
@@ -9,17 +9,18 @@ class SetMemberAttendanceUseCase @Inject constructor(
     private val memberRepository: MemberRepository,
 ) {
 
-    suspend fun invoke(params: Params): Result<Unit> {
+    suspend operator fun invoke(params: Params): Result<Unit> {
         return memberRepository.getMember(params.memberId).mapCatching { targetMemeber ->
             require(targetMemeber != null)
 
-            val changedAttendances = targetMemeber.attendances.toMutableList().apply {
-                this[params.sessionId] = params.changedAttendance
+            val changedAttendances =  targetMemeber.attendances.changeAttendanceType(
+                sessionId = params.sessionId,
+                changingAttendance = params.changedAttendance
+            ).also {
+
             }
 
-            memberRepository.setMember(
-                memberEntity = targetMemeber.copy(attendances = changedAttendances)
-            )
+            memberRepository.setMember(member = targetMemeber.copy(attendances = changedAttendances))
         }
     }
 
@@ -31,7 +32,7 @@ class SetMemberAttendanceUseCase @Inject constructor(
     class Params(
         val memberId: Long,
         val sessionId: Int,
-        val changedAttendance: AttendanceEntity,
+        val changedAttendance: Attendance,
     )
 
 }

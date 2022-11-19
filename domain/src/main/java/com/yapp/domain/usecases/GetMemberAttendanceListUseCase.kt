@@ -1,7 +1,7 @@
 package com.yapp.domain.usecases
 
-import com.yapp.domain.model.AttendanceEntity
-import com.yapp.domain.model.SessionEntity
+import com.yapp.domain.model.Attendance
+import com.yapp.domain.model.Session
 import com.yapp.domain.repository.LocalRepository
 import com.yapp.domain.repository.MemberRepository
 import com.yapp.domain.repository.RemoteConfigRepository
@@ -13,7 +13,7 @@ class GetMemberAttendanceListUseCase @Inject constructor(
     private val remoteConfigRepository: RemoteConfigRepository,
 ) {
 
-    suspend operator fun invoke(): Result<Pair<List<SessionEntity>, List<AttendanceEntity>>> {
+    suspend operator fun invoke(): Result<Pair<List<Session>, List<Attendance>>> {
         runCatching {
             val sessionList = remoteConfigRepository.getSessionList().getOrThrow()
             val currentMemberId = localRepository.getMemberId().getOrNull()

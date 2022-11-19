@@ -1,10 +1,8 @@
 package com.yapp.data.datasource
 
 import com.google.firebase.firestore.FirebaseFirestore
-import com.yapp.data.model.MemberModel
-import com.yapp.data.model.MemberModel.Companion.mapToEntity
+import com.yapp.data.model.MemberEntity
 import com.yapp.data.util.memberRef
-import com.yapp.domain.model.MemberEntity
 import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -12,7 +10,7 @@ import kotlin.coroutines.resumeWithException
 
 
 class TeamRemoteDataSourceImpl @Inject constructor(
-    private val fireStore: FirebaseFirestore
+    private val fireStore: FirebaseFirestore,
 ) : TeamRemoteDataSource {
 
     override suspend fun getTeamMembers(team: String): List<MemberEntity> {
@@ -21,12 +19,12 @@ class TeamRemoteDataSourceImpl @Inject constructor(
                 .whereEqualTo("team", team)
                 .get()
                 .addOnSuccessListener { documents ->
-                    if(documents.isEmpty) {
+                    if (documents.isEmpty) {
                         cancellableContinuation.resume(emptyList())
                         return@addOnSuccessListener
                     }
 
-                    documents.toObjects(MemberModel::class.java).map { it.mapToEntity() }
+                    documents.toObjects(MemberEntity::class.java)
                         .also { entities -> cancellableContinuation.resume(entities) }
 
                 }.addOnFailureListener { exception ->

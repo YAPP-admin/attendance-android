@@ -1,8 +1,9 @@
 package com.yapp.domain.usecases
 
 import com.yapp.domain.model.*
+import com.yapp.domain.model.collections.AttendanceList
 import com.yapp.domain.model.types.NeedToAttendType
-import com.yapp.domain.model.types.PositionTypeEntity
+import com.yapp.domain.model.types.PositionType
 import com.yapp.domain.repository.LocalRepository
 import com.yapp.domain.repository.MemberRepository
 import com.yapp.domain.repository.RemoteConfigRepository
@@ -22,36 +23,36 @@ class SignUpMemberUseCase @Inject constructor(
             val sessionList = remoteConfigRepository.getSessionList().getOrThrow()
             val editedSessionList = createAttendanceEntities(sessionList)
 
-            val memberEntity = createMemberEntity(memberId = currentMemberId, params = params, attendanceEntities = editedSessionList)
+            val memberEntity = createMember(memberId = currentMemberId, params = params, attendanceEntities = editedSessionList)
 
             memberRepository.setMember(memberEntity)
         }
     }
 
-    private fun createAttendanceEntities(sessionList: List<SessionEntity>): List<AttendanceEntity> {
+    private fun createAttendanceEntities(sessionList: List<Session>): List<Attendance> {
         return sessionList.map { session ->
-            AttendanceEntity(
+            Attendance(
                 sessionId = session.sessionId,
                 type = when (session.type) {
-                    NeedToAttendType.NEED_ATTENDANCE -> AttendanceTypeEntity.Absent
-                    NeedToAttendType.DONT_NEED_ATTENDANCE -> AttendanceTypeEntity.Normal
-                    NeedToAttendType.DAY_OFF -> AttendanceTypeEntity.Normal
+                    NeedToAttendType.NEED_ATTENDANCE -> AttendanceType.Absent
+                    NeedToAttendType.DONT_NEED_ATTENDANCE -> AttendanceType.Normal
+                    NeedToAttendType.DAY_OFF -> AttendanceType.Normal
                 }
             )
         }
     }
 
-    private fun createMemberEntity(
+    private fun createMember(
         memberId: Long,
         params: Params,
-        attendanceEntities: List<AttendanceEntity>,
-    ): MemberEntity {
-        return MemberEntity(
+        attendanceEntities: List<Attendance>,
+    ): Member {
+        return Member(
             id = memberId,
             name = params.memberName,
             position = params.memberPosition,
-            team = params.teamEntity,
-            attendances = attendanceEntities
+            team = params.team,
+            attendances = AttendanceList.from(attendanceEntities)
         )
     }
 
@@ -62,8 +63,8 @@ class SignUpMemberUseCase @Inject constructor(
      * */
     class Params(
         val memberName: String,
-        val memberPosition: PositionTypeEntity,
-        val teamEntity: TeamEntity,
+        val memberPosition: PositionType,
+        val team: Team,
     )
 
 }

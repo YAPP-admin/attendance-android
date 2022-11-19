@@ -8,7 +8,7 @@ class CheckAdminPasswordUseCase @Inject constructor(
     private val remoteConfigRepository: RemoteConfigRepository
 ) {
 
-    suspend fun invoke(params: Params): Result<Boolean> = kotlin.runCatching{
+    suspend operator fun invoke(params: Params): Result<Boolean> = kotlin.runCatching{
         val configEntity = remoteConfigRepository.getConfig()
             .getOrThrow()
 

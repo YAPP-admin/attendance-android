@@ -1,13 +1,12 @@
 package com.yapp.presentation.ui.member.todaysession
 
-import android.util.Log
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.usecases.GetMemberAttendancesUseCase
 import com.yapp.domain.usecases.GetUpcomingSessionUseCase
+import com.yapp.presentation.common.AttendanceBundle
 import com.yapp.presentation.model.Attendance.Companion.mapTo
 import com.yapp.presentation.model.AttendanceType
 import com.yapp.presentation.model.Session.Companion.mapTo
-import com.yapp.presentation.common.AttendanceBundle
 import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
@@ -23,7 +22,9 @@ class TodaySessionViewModel @Inject constructor(
 
     override suspend fun handleEvent(event: TodaySessionUiEvent) {
         when (event) {
-            is TodaySessionUiEvent.OnInitializeComposable -> { getUpcomingSession() }
+            is TodaySessionUiEvent.OnInitializeComposable -> {
+                getUpcomingSession()
+            }
         }
     }
 

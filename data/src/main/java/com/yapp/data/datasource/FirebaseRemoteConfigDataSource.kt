@@ -1,8 +1,9 @@
 package com.yapp.data.datasource
 
-import com.yapp.domain.model.ConfigEntity
-import com.yapp.domain.model.SessionEntity
-import com.yapp.domain.model.TeamEntity
+import com.yapp.data.model.ConfigEntity
+import com.yapp.data.model.SessionEntity
+import com.yapp.data.model.TeamEntity
+import com.yapp.domain.model.Config
 
 
 interface FirebaseRemoteConfigDataSource {

@@ -1,6 +1,6 @@
 package com.yapp.data
 
-import com.yapp.data.model.SessionModel
+import com.yapp.data.model.SessionEntity
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.junit.Test
@@ -144,7 +144,7 @@ class ExampleUnitTest {
 
     @Test
     fun addition_isCorrect() {
-        val s = Json.decodeFromString<List<SessionModel>>(json)
+        val s = Json.decodeFromString<List<SessionEntity>>(json)
         println(s.toString())
     }
 }

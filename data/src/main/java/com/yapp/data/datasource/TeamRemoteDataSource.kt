@@ -1,6 +1,6 @@
 package com.yapp.data.datasource
 
-import com.yapp.domain.model.MemberEntity
+import com.yapp.data.model.MemberEntity
 
 
 interface TeamRemoteDataSource {

@@ -1,7 +1,9 @@
 package com.yapp.data.repository
 
 import com.yapp.data.datasource.MemberRemoteDataSource
-import com.yapp.domain.model.MemberEntity
+import com.yapp.data.model.toData
+import com.yapp.data.model.toDomain
+import com.yapp.domain.model.Member
 import com.yapp.domain.repository.MemberRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -12,9 +14,9 @@ class MemberRepositoryImpl @Inject constructor(
     private val memberRemoteDataSource: MemberRemoteDataSource,
 ) : MemberRepository {
 
-    override suspend fun setMember(memberEntity: MemberEntity): Result<Unit> {
+    override suspend fun setMember(member: Member): Result<Unit> {
         return runCatching {
-            memberRemoteDataSource.setMember(memberEntity)
+            memberRemoteDataSource.setMember(member.toData())
         }.fold(
             onSuccess = {
                 Result.success(Unit)
@@ -25,9 +27,9 @@ class MemberRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun getMember(id: Long): Result<MemberEntity?> {
+    override suspend fun getMember(id: Long): Result<Member?> {
         return runCatching {
-            memberRemoteDataSource.getMember(id)
+            memberRemoteDataSource.getMember(id)?.toDomain()
         }.fold(
             onSuccess = { memberEntity ->
                 Result.success(memberEntity)
@@ -51,9 +53,11 @@ class MemberRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun getAllMember(): Flow<Result<List<MemberEntity>>> {
+    override suspend fun getAllMember(): Flow<Result<List<Member>>> {
         return memberRemoteDataSource.getAllMember()
-            .map { Result.success(it) }
+            .map { entities ->
+                Result.success(entities.map { it.toDomain() })
+            }
     }
 
 }

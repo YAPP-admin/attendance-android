@@ -1,10 +1,10 @@
 package com.yapp.data.datasource
 
 import com.google.firebase.firestore.FirebaseFirestore
-import com.yapp.data.model.MemberModel
-import com.yapp.data.model.MemberModel.Companion.mapToEntity
+import com.yapp.data.model.MemberEntity
 import com.yapp.data.util.memberRef
-import com.yapp.domain.model.MemberEntity
+import com.yapp.domain.model.Member
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -17,11 +17,11 @@ class MemberRemoteDataSourceImpl @Inject constructor(
     private val fireStore: FirebaseFirestore,
 ) : MemberRemoteDataSource {
 
-    override suspend fun setMember(memberEntity: MemberEntity) {
+    override suspend fun setMember(member: MemberEntity) {
         return suspendCancellableCoroutine { cancellableContinuation ->
             fireStore.memberRef()
-                .document(memberEntity.id.toString())
-                .set(memberEntity)
+                .document(member.id.toString())
+                .set(member)
                 .addOnSuccessListener {
                     cancellableContinuation.resume(Unit)
                 }
@@ -42,8 +42,9 @@ class MemberRemoteDataSourceImpl @Inject constructor(
                         return@addOnSuccessListener
                     }
 
-                    document.toObject(MemberModel::class.java)?.mapToEntity()
-                        .also { entity -> cancellableContinuation.resume(entity) }
+                    document.toObject(MemberEntity::class.java).also { entity ->
+                        cancellableContinuation.resume(entity)
+                    }
                 }
                 .addOnFailureListener { exception ->
                     cancellableContinuation.resumeWithException(exception)
@@ -65,6 +66,7 @@ class MemberRemoteDataSourceImpl @Inject constructor(
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun getAllMember(): Flow<List<MemberEntity>> {
         return callbackFlow<List<MemberEntity>> {
             fireStore.memberRef()
@@ -77,7 +79,7 @@ class MemberRemoteDataSourceImpl @Inject constructor(
                     }
 
                     val entities = snapshot.documents.map { document ->
-                        document.toObject(MemberModel::class.java)!!.mapToEntity()
+                        document.toObject(MemberEntity::class.java)!!
                     }
 
                     trySend(entities)

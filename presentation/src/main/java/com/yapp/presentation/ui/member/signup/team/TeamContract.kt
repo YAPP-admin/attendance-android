@@ -3,6 +3,7 @@ package com.yapp.presentation.ui.member.signup.team
 import com.yapp.common.base.UiEvent
 import com.yapp.common.base.UiSideEffect
 import com.yapp.common.base.UiState
+import com.yapp.domain.model.Team
 import com.yapp.presentation.model.Team
 
 sealed class TeamContract {

@@ -1,15 +1,19 @@
 package com.yapp.data.repository
 
 import com.yapp.data.datasource.FirebaseRemoteConfigDataSource
-import com.yapp.domain.model.ConfigEntity
-import com.yapp.domain.model.SessionEntity
-import com.yapp.domain.model.TeamEntity
+import com.yapp.data.model.ConfigEntity
+import com.yapp.data.model.SessionEntity
+import com.yapp.data.model.TeamEntity
+import com.yapp.data.model.toDomain
+import com.yapp.domain.model.Config
+import com.yapp.domain.model.Session
+import com.yapp.domain.model.Team
 import com.yapp.domain.repository.RemoteConfigRepository
 import javax.inject.Inject
 
 
 internal class RemoteConfigRepositoryImpl @Inject constructor(
-    private val firebaseRemoteConfigDataSource: FirebaseRemoteConfigDataSource
+    private val firebaseRemoteConfigDataSource: FirebaseRemoteConfigDataSource,
 ) : RemoteConfigRepository {
 
     override suspend fun getMaginotlineTime(): Result<String> {
@@ -25,12 +29,12 @@ internal class RemoteConfigRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun getSessionList(): Result<List<SessionEntity>> {
+    override suspend fun getSessionList(): Result<List<Session>> {
         return runCatching {
             firebaseRemoteConfigDataSource.getSessionList()
         }.fold(
-            onSuccess = { sessionList: List<SessionEntity> ->
-                Result.success(sessionList)
+            onSuccess = { entities: List<SessionEntity> ->
+                Result.success(entities.map { it.toDomain() })
             },
             onFailure = { exception ->
                 Result.failure(exception)
@@ -38,12 +42,12 @@ internal class RemoteConfigRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun getConfig(): Result<ConfigEntity> {
+    override suspend fun getConfig(): Result<Config> {
         return runCatching {
             firebaseRemoteConfigDataSource.getConfig()
         }.fold(
-            onSuccess = { config: ConfigEntity ->
-                Result.success(config)
+            onSuccess = { entity: ConfigEntity ->
+                Result.success(entity.toDomain())
             },
             onFailure = { exception ->
                 Result.failure(exception)
@@ -51,12 +55,12 @@ internal class RemoteConfigRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun getTeamList(): Result<List<TeamEntity>> {
+    override suspend fun getTeamList(): Result<List<Team>> {
         return runCatching {
             firebaseRemoteConfigDataSource.getTeamList()
         }.fold(
-            onSuccess = { temaList: List<TeamEntity> ->
-                Result.success(temaList)
+            onSuccess = { entities: List<TeamEntity> ->
+                Result.success(entities.map { it.toDomain() })
             },
             onFailure = { exception ->
                 Result.failure(exception)
