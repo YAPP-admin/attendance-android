@@ -5,6 +5,7 @@ import com.yapp.data.model.MemberEntity
 import com.yapp.data.util.memberRef
 import com.yapp.domain.model.Member
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -84,6 +85,7 @@ class MemberRemoteDataSourceImpl @Inject constructor(
 
                     trySend(entities)
                 }
+            awaitClose()
         }
     }
 }

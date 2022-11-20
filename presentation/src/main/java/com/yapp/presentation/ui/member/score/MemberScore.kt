@@ -38,11 +38,11 @@ import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSAttendanceList
 import com.yapp.common.yds.YDSEmptyScreen
 import com.yapp.common.yds.YDSProgressBar
+import com.yapp.domain.model.Attendance
+import com.yapp.domain.model.Session
+import com.yapp.domain.model.types.AttendanceType
 import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.presentation.R
-import com.yapp.presentation.model.Attendance
-import com.yapp.presentation.model.AttendanceType
-import com.yapp.presentation.model.Session
 import com.yapp.presentation.util.attendance.checkSessionAttendance
 import java.text.SimpleDateFormat
 import java.util.*
@@ -90,7 +90,7 @@ fun MemberScoreScreen(
     navigateToHelpScreen: () -> Unit,
     navigateToSessionDetail: (Int) -> Unit
 ) {
-    val currentScore = uiState.lastAttendanceList.fold(100) { total, pair -> total + pair.second.attendanceType.point }
+    val currentScore = uiState.lastAttendanceList.fold(100) { total, pair -> total + pair.second.type.point }
 
     LazyColumn {
         item {
@@ -236,7 +236,7 @@ fun UserAttendanceTable(lastAttendanceList: List<Pair<Session, Attendance>>) {
             topIconResId = R.drawable.icon_attend,
             bottomText = lastAttendanceList
                 .filter { it.first.type == NeedToAttendType.NEED_ATTENDANCE }
-                .count { (it.second.attendanceType == AttendanceType.Normal) or (it.second.attendanceType == AttendanceType.Admit) }.toString()
+                .count { (it.second.type == AttendanceType.Normal) or (it.second.type == AttendanceType.Admit) }.toString()
         )
 
         AttendanceCell(
@@ -244,7 +244,7 @@ fun UserAttendanceTable(lastAttendanceList: List<Pair<Session, Attendance>>) {
             topIconResId = R.drawable.icon_tardy,
             bottomText = lastAttendanceList
                 .filter { it.first.type == NeedToAttendType.NEED_ATTENDANCE }
-                .count { it.second.attendanceType == AttendanceType.Late }.toString()
+                .count { it.second.type == AttendanceType.Late }.toString()
         )
 
         AttendanceCell(
@@ -252,7 +252,7 @@ fun UserAttendanceTable(lastAttendanceList: List<Pair<Session, Attendance>>) {
             topIconResId = R.drawable.icon_absent,
             bottomText = lastAttendanceList
                 .filter { it.first.type == NeedToAttendType.NEED_ATTENDANCE }
-                .count { it.second.attendanceType == AttendanceType.Absent }.toString()
+                .count { it.second.type == AttendanceType.Absent }.toString()
         )
     }
 }

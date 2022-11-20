@@ -89,9 +89,9 @@ fun Team(
                     .padding(bottom = 40.dp)
                     .height(60.dp)
                     .align(Alignment.BottomCenter),
-                state = if ((uiState.selectedTeam.type != null) and (uiState.selectedTeam.number != null)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+                state = if ((uiState.selectedTeamType != null) and (uiState.selectedTeamNumber != null)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
                 onClick = {
-                    if ((uiState.selectedTeam.type != null) and (uiState.selectedTeam.number != null)) {
+                    if ((uiState.selectedTeamType != null) and (uiState.selectedTeamNumber != null)) {
                         viewModel.setEvent(TeamContract.TeamUiEvent.ConfirmTeam)
                     }
                 },
@@ -109,10 +109,10 @@ fun TeamOption(uiState: TeamContract.TeamUiState, onTeamTypeClicked: (String) ->
                 repeat(rowNum) { index ->
                     val team = uiState.teams[rowNum * row + index]
                     YDSChoiceButton(
-                        text = team.type!!.displayName,
+                        text = team.type.value,
                         modifier = Modifier.padding(end = 12.dp, bottom = 12.dp),
-                        state = if (uiState.selectedTeam.type == team.type) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                        onClick = { onTeamTypeClicked(team.type.name) }
+                        state = if (uiState.selectedTeamType == team.type) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+                        onClick = { onTeamTypeClicked(team.type.value) }
                     )
                 }
             }
@@ -122,10 +122,10 @@ fun TeamOption(uiState: TeamContract.TeamUiState, onTeamTypeClicked: (String) ->
 
 @Composable
 fun TeamNumberOption(uiState: TeamContract.TeamUiState, onTeamNumberClicked: (Int) -> Unit) {
-    val selectedTeamType = uiState.teams.filter { it.type == uiState.selectedTeam.type }
+    val selectedTeamType = uiState.teams.filter { it.type == uiState.selectedTeamType }
     val density = LocalDensity.current
     AnimatedVisibility(
-        visible = uiState.selectedTeam.type != null,
+        visible = uiState.selectedTeamType != null,
         enter = slideInVertically { with(density) { -40.dp.roundToPx() } }
                 + expandVertically(expandFrom = Alignment.CenterVertically)
                 + fadeIn(initialAlpha = 0.3f)
@@ -144,7 +144,7 @@ fun TeamNumberOption(uiState: TeamContract.TeamUiState, onTeamNumberClicked: (In
                         YDSChoiceButton(
                             text = stringResource(R.string.member_signup_team_number, teamNum + 1),
                             modifier = Modifier.padding(end = 12.dp, bottom = 12.dp),
-                            state = if (uiState.selectedTeam.number == teamNum + 1) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+                            state = if (uiState.selectedTeamNumber == teamNum + 1) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
                             onClick = { onTeamNumberClicked(teamNum + 1) }
                         )
                     }

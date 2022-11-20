@@ -1,8 +1,8 @@
 package com.yapp.domain.usecases
 
 import com.yapp.domain.model.Attendance
-import com.yapp.domain.model.AttendanceType
 import com.yapp.domain.model.Session
+import com.yapp.domain.model.types.AttendanceType
 import com.yapp.domain.repository.LocalRepository
 import com.yapp.domain.repository.MemberRepository
 import com.yapp.domain.util.DateUtil

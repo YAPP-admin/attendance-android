@@ -12,7 +12,7 @@ import com.yapp.domain.repository.RemoteConfigRepository
 import javax.inject.Inject
 
 
-internal class RemoteConfigRepositoryImpl @Inject constructor(
+class RemoteConfigRepositoryImpl @Inject constructor(
     private val firebaseRemoteConfigDataSource: FirebaseRemoteConfigDataSource,
 ) : RemoteConfigRepository {
 

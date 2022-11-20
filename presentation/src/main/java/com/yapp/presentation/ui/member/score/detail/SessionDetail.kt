@@ -16,14 +16,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.insets.systemBarsPadding
 import com.yapp.common.theme.*
-import com.yapp.common.yds.AttendanceType
+import com.yapp.common.yds.YDSAttendanceType
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSEmptyScreen
 import com.yapp.common.yds.YDSProgressBar
-import com.yapp.presentation.model.Attendance
-import com.yapp.presentation.model.Session
-import com.yapp.presentation.ui.member.score.MemberScoreContract
-import com.yapp.presentation.ui.member.score.MemberScoreScreen
+import com.yapp.domain.model.Session
 import com.yapp.presentation.util.attendance.checkSessionAttendance
 import java.text.SimpleDateFormat
 import java.util.*
@@ -61,7 +58,7 @@ fun SessionDetail(
 }
 
 @Composable
-fun SessionDetailScreen(session: Session?, attendance: AttendanceType?) {
+fun SessionDetailScreen(session: Session?, attendance: YDSAttendanceType?) {
 
     Column(
         modifier = Modifier
@@ -76,9 +73,9 @@ fun SessionDetailScreen(session: Session?, attendance: AttendanceType?) {
         ) {
             if (attendance != null) {
                 if (attendance in listOf(
-                        AttendanceType.ABSENT,
-                        AttendanceType.ATTEND,
-                        AttendanceType.TARDY
+                        YDSAttendanceType.ABSENT,
+                        YDSAttendanceType.ATTEND,
+                        YDSAttendanceType.TARDY
                     )
                 ) {
                     Icon(
@@ -94,10 +91,10 @@ fun SessionDetailScreen(session: Session?, attendance: AttendanceType?) {
                         .weight(1f)
                         .padding(horizontal = 4.dp),
                     color = when (attendance) {
-                        AttendanceType.ATTEND -> Etc_Green
-                        AttendanceType.ABSENT -> Etc_Red
-                        AttendanceType.TARDY -> Etc_Yellow_Font
-                        AttendanceType.TBD, AttendanceType.NO_ATTENDANCE, AttendanceType.NO_YAPP -> Gray_400
+                        YDSAttendanceType.ATTEND -> Etc_Green
+                        YDSAttendanceType.ABSENT -> Etc_Red
+                        YDSAttendanceType.TARDY -> Etc_Yellow_Font
+                        YDSAttendanceType.TBD, YDSAttendanceType.NO_ATTENDANCE, YDSAttendanceType.NO_YAPP -> Gray_400
                     }
                 )
             }

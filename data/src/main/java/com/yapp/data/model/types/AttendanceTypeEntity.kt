@@ -8,7 +8,7 @@ import com.yapp.data.model.types.AttendanceTypeEntity.Companion.TEXT_ABSENT
 import com.yapp.data.model.types.AttendanceTypeEntity.Companion.TEXT_ADMIT
 import com.yapp.data.model.types.AttendanceTypeEntity.Companion.TEXT_LATE
 import com.yapp.data.model.types.AttendanceTypeEntity.Companion.TEXT_NORMAL
-import com.yapp.domain.model.AttendanceType
+import com.yapp.domain.model.types.AttendanceType
 import kotlinx.serialization.Serializable
 
 

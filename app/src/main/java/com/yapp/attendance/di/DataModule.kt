@@ -5,9 +5,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.yapp.data.datasource.*
 import com.yapp.data.repository.LocalRepositoryImpl
 import com.yapp.data.repository.MemberRepositoryImpl
+import com.yapp.data.repository.RemoteConfigRepositoryImpl
 import com.yapp.data.repository.TeamRepositoryImpl
 import com.yapp.domain.repository.LocalRepository
 import com.yapp.domain.repository.MemberRepository
+import com.yapp.domain.repository.RemoteConfigRepository
 import com.yapp.domain.repository.TeamRepository
 import dagger.Module
 import dagger.Provides
@@ -53,9 +55,9 @@ object DataModule {
     @Provides
     @Singleton
     fun provideRemoteConfigRepository(
-        teamDataSource: TeamRemoteDataSource,
-    ): TeamRepository {
-        return TeamRepositoryImpl(teamDataSource)
+        remoteConfigDataSource: FirebaseRemoteConfigDataSource,
+    ): RemoteConfigRepository {
+        return RemoteConfigRepositoryImpl(remoteConfigDataSource)
     }
 
     @Provides

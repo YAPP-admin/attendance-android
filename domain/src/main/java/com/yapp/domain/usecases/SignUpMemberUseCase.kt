@@ -2,6 +2,7 @@ package com.yapp.domain.usecases
 
 import com.yapp.domain.model.*
 import com.yapp.domain.model.collections.AttendanceList
+import com.yapp.domain.model.types.AttendanceType
 import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.domain.model.types.PositionType
 import com.yapp.domain.repository.LocalRepository

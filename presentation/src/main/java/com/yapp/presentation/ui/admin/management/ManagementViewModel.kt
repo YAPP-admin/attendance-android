@@ -58,20 +58,18 @@ class ManagementViewModel @Inject constructor(
     }
 
     private suspend fun getAllMemberState(sessionId: Int) {
-        viewModelScope.launch {
-            getAllMemberUseCase().collect { result ->
-                result.onSuccess { members ->
-                    val membersByTeam = members.groupBy { member -> member.team }
-                        .map { (team, members) -> mapToTeamState(team, members, sessionId) }
-                        .sortedBy { teamState -> teamState.teamName }
+        getAllMemberUseCase().collect { result ->
+            result.onSuccess { members ->
+                val membersByTeam = members.groupBy { member -> member.team }
+                    .map { (team, members) -> mapToTeamState(team, members, sessionId) }
+                    .sortedBy { teamState -> teamState.teamName }
 
-                    val attendCount = membersByTeam.flatMap { it.members }
-                        .count { it.attendance.type == AttendanceType.Normal }
+                val attendCount = membersByTeam.flatMap { it.members }
+                    .count { it.attendance.type == AttendanceType.Normal }
 
-                    setState { this.copy(loadState = LoadState.Idle, memberCount = attendCount, teams = teams) }
-                }.onFailure {
-                    setState { this.copy(loadState = LoadState.Error) }
-                }
+                setState { this.copy(loadState = LoadState.Idle, memberCount = attendCount, teams = membersByTeam) }
+            }.onFailure {
+                setState { this.copy(loadState = LoadState.Error) }
             }
         }
     }

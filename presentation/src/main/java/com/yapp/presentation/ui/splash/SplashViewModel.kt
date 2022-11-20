@@ -29,25 +29,19 @@ class SplashViewModel @Inject constructor(
     }
 
     private suspend fun validateRegisteredUser() {
-        getCurrentMemberInfoUseCase().collectWithCallback(
-            onSuccess = { entity ->
-                entity?.let {
+        getCurrentMemberInfoUseCase()
+            .onSuccess { currentMember ->
+                currentMember?.let {
                     setState { copy(loginState = SplashContract.LoginState.SUCCESS) }
                 } ?: run {
                     setState { copy(loginState = SplashContract.LoginState.REQUIRED) }
                 }
-            },
-            onFailed = {
+            }
+            .onFailure {
                 setState { copy(loginState = SplashContract.LoginState.REQUIRED) }
             }
-        )
     }
 
-    override fun setEvent(event: SplashContract.SplashUiEvent) {
-        super.setEvent(event)
-    }
+    override suspend fun handleEvent(event: SplashContract.SplashUiEvent) = Unit
 
-    override suspend fun handleEvent(event: SplashContract.SplashUiEvent) {
-        TODO("Not yet implemented")
-    }
 }
