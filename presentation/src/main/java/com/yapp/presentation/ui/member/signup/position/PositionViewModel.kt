@@ -8,9 +8,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PositionViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
-) : BaseViewModel<PositionContract.PositionUiState, PositionContract.PositionSideEffect, PositionContract.PositionUiEvent>(
-    PositionContract.PositionUiState()
-) {
+) : BaseViewModel<PositionContract.PositionUiState, PositionContract.PositionSideEffect, PositionContract.PositionUiEvent>(PositionContract.PositionUiState()) {
     override suspend fun handleEvent(event: PositionContract.PositionUiEvent) {
         when (event) {
             is PositionContract.PositionUiEvent.ChoosePosition -> {
