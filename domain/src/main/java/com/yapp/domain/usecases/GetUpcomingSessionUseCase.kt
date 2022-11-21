@@ -1,25 +1,19 @@
 package com.yapp.domain.usecases
 
-import com.yapp.domain.firebase.FirebaseRemoteConfig
-import com.yapp.domain.model.SessionEntity
-import com.yapp.domain.util.BaseUseCase
+import com.yapp.domain.model.Session
+import com.yapp.domain.repository.RemoteConfigRepository
 import com.yapp.domain.util.DateUtil
-import com.yapp.domain.util.DispatcherProvider
-import com.yapp.domain.util.TaskResult
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class GetUpcomingSessionUseCase @Inject constructor(
-    private val firebaseRemoteConfig: FirebaseRemoteConfig,
-    private val coroutineDispatcher: DispatcherProvider
-) : BaseUseCase<@JvmSuppressWildcards Flow<TaskResult<SessionEntity?>>, Unit>(coroutineDispatcher) {
+    private val remoteConfigRepository: RemoteConfigRepository,
+) {
 
-    override suspend fun invoke(params: Unit?): Flow<TaskResult<SessionEntity?>> {
+    suspend operator fun invoke(): Result<Session?> {
         // 세션 당일 밤 12시까지
-        return firebaseRemoteConfig.getSessionList()
-            .map { list ->
-                list.firstOrNull { DateUtil.isUpcomingSession(it.date) }
-            }.toResult()
+        return remoteConfigRepository.getSessionList().mapCatching { sessionList ->
+            sessionList.firstOrNull { session -> DateUtil.isUpcomingSession(session.date) }
+        }
     }
+
 }

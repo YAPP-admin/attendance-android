@@ -1,6 +1,6 @@
 package com.yapp.presentation.common
 
-import com.yapp.presentation.model.Session
+import com.yapp.domain.model.Session
 
 object AttendanceBundle {
     var isAbsent = true

@@ -1,12 +1,17 @@
 package com.yapp.domain.model.types
 
 
-enum class PositionTypeEntity {
-    DEV_ANDROID, DEV_WEB, DEV_IOS, DEV_SERVER, DESIGNER, PROJECT_MANAGER;
+enum class PositionType(val value: String) {
+    PROJECT_MANAGER("PM"),
+    DESIGNER("UI/UX Design"),
+    DEV_ANDROID("Android"),
+    DEV_IOS("iOS"),
+    DEV_WEB("Web"),
+    DEV_SERVER("Server");
 
     companion object {
-        fun of(value: String): PositionTypeEntity {
-            return when(value) {
+        fun of(value: String): PositionType {
+            return when (value) {
                 "DEV_ANDROID" -> DEV_ANDROID
                 "DEV_WEB" -> DEV_WEB
                 "DEV_IOS" -> DEV_IOS

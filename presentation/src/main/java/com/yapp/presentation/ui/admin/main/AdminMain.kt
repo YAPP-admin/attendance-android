@@ -34,10 +34,9 @@ import com.yapp.common.yds.YDSButtonSmall
 import com.yapp.common.yds.YDSEmptyScreen
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.common.yds.YdsButtonState
+import com.yapp.domain.model.Session
 import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.presentation.R.string
-import com.yapp.presentation.model.Session
-import com.yapp.presentation.model.collections.AttendanceList
 import com.yapp.presentation.ui.admin.main.AdminMainContract.*
 import kotlinx.coroutines.flow.collect
 
@@ -157,7 +156,7 @@ fun LazyListScope.Spacing() {
 
 fun LazyListScope.Sessions(
     sessions: List<Session>,
-    onSessionItemClicked: (Int, String) -> Unit
+    onSessionItemClicked: (Int, String) -> Unit,
 ) {
     items(sessions) { session ->
         SessionItem(
@@ -168,7 +167,7 @@ fun LazyListScope.Sessions(
 }
 
 fun LazyListScope.YappuUserScoreCard(
-    setOnUserScoreCardClickedEvent: () -> Unit
+    setOnUserScoreCardClickedEvent: () -> Unit,
 ) {
     item {
         Card(
@@ -231,7 +230,7 @@ fun LazyListScope.GraySpacing(modifier: Modifier) {
 
 fun LazyListScope.UpcomingSession(
     upcomingSession: Session,
-    onManagementButtonClicked: (Int, String) -> Unit
+    onManagementButtonClicked: (Int, String) -> Unit,
 ) {
     val MONTH_RANGE = 5..6
     val DAY_RANGE = 8..9
@@ -316,7 +315,7 @@ fun LazyListScope.ManagementSubTitle() {
 @Composable
 private fun SessionItem(
     session: Session,
-    onSessionItemClicked: (Int, String) -> Unit
+    onSessionItemClicked: (Int, String) -> Unit,
 ) {
     val MONTH_RANGE = 5..6
     val DAY_RANGE = 8..9

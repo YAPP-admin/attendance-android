@@ -2,7 +2,7 @@ package com.yapp.domain.model
 
 import com.yapp.domain.model.types.NeedToAttendType
 
-data class SessionEntity(
+data class Session(
     val sessionId: Int,
     val title: String,
     val type: NeedToAttendType,
