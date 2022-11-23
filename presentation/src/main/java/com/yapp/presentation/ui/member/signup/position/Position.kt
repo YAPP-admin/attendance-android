@@ -30,6 +30,7 @@ fun Position(
     navigateToTeamScreen: (String, String) -> Unit
 ){
     val uiState by viewModel.uiState.collectAsState()
+
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collect { effect ->
             when (effect) {
@@ -43,14 +44,32 @@ fun Position(
         }
     }
 
+    PositionScreen(
+        onClickBackButton = { onClickBackButton() },
+        onClickPositionButton = { position ->
+            viewModel.setEvent(PositionContract.PositionUiEvent.ChoosePosition(position))
+        },
+        onClickButton = { viewModel.setEvent(PositionContract.PositionUiEvent.ConfirmPosition) },
+        position = uiState.position
+    )
+}
+
+@Composable
+internal fun PositionScreen(
+    onClickBackButton: () -> Unit,
+    onClickPositionButton: (PositionType) -> Unit,
+    onClickButton: () -> Unit,
+    position: PositionType?,
+    modifier: Modifier = Modifier
+) {
     Scaffold(
-        topBar = { YDSAppBar(onClickBackButton = { onClickBackButton() }) },
-        modifier = Modifier
+        topBar = { YDSAppBar(onClickBackButton = onClickBackButton) },
+        modifier = modifier
             .fillMaxSize()
             .systemBarsPadding()
     ){
         Box(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .padding(horizontal = 24.dp)
         ){
@@ -62,7 +81,7 @@ fun Position(
                     color = Gray_1200
                 )
                 Spacer(modifier = Modifier.height(28.dp))
-                PositionOption(uiState.position) { viewModel.setEvent(PositionContract.PositionUiEvent.ChoosePosition(it)) }
+                PositionOption(position, onPositionTypeClicked = onClickPositionButton)
             }
             YDSButtonLarge(
                 text = stringResource(R.string.member_signup_position_next),
@@ -70,18 +89,17 @@ fun Position(
                     .padding(bottom = 40.dp)
                     .height(60.dp)
                     .align(Alignment.BottomCenter),
-                onClick = { if (uiState.position != null) {
-                    viewModel.setEvent(PositionContract.PositionUiEvent.ConfirmPosition)
-
+                onClick = { if (position != null) {
+                    onClickButton.invoke()
                 } },
-                state = if (uiState.position != null) YdsButtonState.ENABLED else YdsButtonState.DISABLED
+                state = if (position != null) YdsButtonState.ENABLED else YdsButtonState.DISABLED
             )
         }
     }
 }
 
 @Composable
-fun PositionOption(userPosition: PositionType?, onPositionTypeClicked: (PositionType) -> Unit) {
+private fun PositionOption(userPosition: PositionType?, onPositionTypeClicked: (PositionType) -> Unit) {
     val rowNum = 2
     val positionList = PositionType.values()
     Column {
