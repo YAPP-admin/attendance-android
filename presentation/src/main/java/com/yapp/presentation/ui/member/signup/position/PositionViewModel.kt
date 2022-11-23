@@ -15,8 +15,14 @@ class PositionViewModel @Inject constructor(
                 setState { copy(position = event.position) }
             }
             is PositionContract.PositionUiEvent.ConfirmPosition -> {
-                val memberName = savedStateHandle.get<String>("name")
-                setEffect(PositionContract.PositionSideEffect.NavigateToTeamScreen(memberName!!, uiState.value.position!! ))
+                val memberName = savedStateHandle.get<String>("name").orEmpty()
+
+                if(memberName.isEmpty()) {
+                    setEffect(PositionContract.PositionSideEffect.NavigateToNameScreen(NameNotFoundError))
+                } else {
+                    setEffect(PositionContract.PositionSideEffect.NavigateToTeamScreen(memberName, uiState.value.position!! ))
+                }
+
             }
         }
 

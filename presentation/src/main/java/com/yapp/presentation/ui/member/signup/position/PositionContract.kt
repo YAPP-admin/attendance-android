@@ -12,6 +12,8 @@ class PositionContract {
 
     sealed class PositionSideEffect : UiSideEffect {
         data class NavigateToTeamScreen(val name: String, val position: PositionType) : PositionSideEffect()
+
+        data class NavigateToNameScreen(val throwable: Throwable) : PositionSideEffect()
     }
 
     sealed class PositionUiEvent : UiEvent {

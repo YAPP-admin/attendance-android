@@ -33,6 +33,9 @@ fun Position(
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collect { effect ->
             when (effect) {
+                is PositionContract.PositionSideEffect.NavigateToNameScreen -> {
+                    onClickBackButton()
+                }
                 is PositionContract.PositionSideEffect.NavigateToTeamScreen -> {
                     navigateToTeamScreen(effect.name, effect.position.name)
                 }
