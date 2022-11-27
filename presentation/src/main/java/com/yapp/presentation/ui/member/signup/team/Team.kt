@@ -32,6 +32,8 @@ import com.yapp.common.theme.Gray_1200
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSButtonLarge
 import com.yapp.common.yds.YDSChoiceButton
+import com.yapp.common.yds.YDSEmptyScreen
+import com.yapp.common.yds.YDSProgressBar
 import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R
 import kotlinx.coroutines.flow.collect
@@ -63,54 +65,72 @@ fun Team(
             .fillMaxSize()
             .systemBarsPadding()
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 24.dp)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.TopStart),
-            ) {
-                Spacer(modifier = Modifier.height(32.dp))
-                Text(
-                    text = stringResource(R.string.member_signup_choose_team),
-                    style = AttendanceTypography.h1,
-                    color = Gray_1200,
-                )
-                Spacer(modifier = Modifier.height(28.dp))
-                TeamOption(
-                    uiState = uiState,
-                    onTeamTypeClicked = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeam(it)) }
-                )
-                Spacer(modifier = Modifier.height(52.dp))
-                TeamNumberOption(
-                    uiState = uiState,
-                    onTeamNumberClicked = {
-                        viewModel.setEvent(
-                            TeamContract.TeamUiEvent.ChooseTeamNumber(
-                                it
-                            )
-                        )
-                    }
-                )
-            }
 
-            YDSButtonLarge(
-                text = stringResource(R.string.member_signup_team_confirm),
-                modifier = Modifier
-                    .padding(bottom = 40.dp)
-                    .height(60.dp)
-                    .align(Alignment.BottomCenter),
-                state = if ((uiState.selectedTeamType != null) and (uiState.selectedTeamNumber != null)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                onClick = {
-                    if ((uiState.selectedTeamType != null) and (uiState.selectedTeamNumber != null)) {
-                        viewModel.setEvent(TeamContract.TeamUiEvent.ConfirmTeam)
-                    }
+        when (uiState.loadState) {
+            TeamContract.TeamUiState.LoadState.Loading -> YDSProgressBar()
+            TeamContract.TeamUiState.LoadState.Error -> YDSEmptyScreen()
+            TeamContract.TeamUiState.LoadState.Idle -> TeamScreen(
+                uiState = uiState,
+                onTeamTypeClicked = { teamType ->
+                    viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeam(teamType))
                 },
+                onTeamNumberClicked = { teamNum ->
+                    viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeamNumber(teamNum))
+                },
+                onConfirmClicked = {
+                    viewModel.setEvent(TeamContract.TeamUiEvent.ConfirmTeam)
+                }
             )
         }
+    }
+}
+
+@Composable
+fun TeamScreen(
+    uiState: TeamContract.TeamUiState,
+    onTeamTypeClicked: (String) -> Unit,
+    onTeamNumberClicked: (Int) -> Unit,
+    onConfirmClicked: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 24.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.TopStart),
+        ) {
+            Spacer(modifier = Modifier.height(32.dp))
+            Text(
+                text = stringResource(R.string.member_signup_choose_team),
+                style = AttendanceTypography.h1,
+                color = Gray_1200,
+            )
+            Spacer(modifier = Modifier.height(28.dp))
+            TeamOption(
+                uiState = uiState,
+                onTeamTypeClicked = onTeamTypeClicked
+            )
+            Spacer(modifier = Modifier.height(52.dp))
+            TeamNumberOption(
+                uiState = uiState,
+                onTeamNumberClicked = onTeamNumberClicked
+            )
+        }
+
+        YDSButtonLarge(
+            text = stringResource(R.string.member_signup_team_confirm),
+            modifier = Modifier
+                .padding(bottom = 40.dp)
+                .height(60.dp)
+                .align(Alignment.BottomCenter),
+            state = if ((uiState.selectedTeamType != null) and (uiState.selectedTeamNumber != null)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+            onClick = {
+                if ((uiState.selectedTeamType != null) and (uiState.selectedTeamNumber != null)) onConfirmClicked()
+            },
+        )
     }
 }
 

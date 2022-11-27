@@ -8,12 +8,16 @@ import com.yapp.presentation.model.type.TeamType
 
 sealed class TeamContract {
     data class TeamUiState(
-        val isLoading: Boolean = false,
+        val loadState: LoadState = LoadState.Loading,
         val teams: List<Team> = emptyList(),
         val selectedTeamType: TeamType? = null,
         val selectedTeamNumber: Int? = null,
         val numberOfSelectedTeamType: Int? = null,
-    ) : UiState
+    ) : UiState {
+        enum class LoadState {
+            Loading, Idle, Error
+        }
+    }
 
     sealed class TeamSideEffect : UiSideEffect {
         object NavigateToMainScreen : TeamSideEffect()

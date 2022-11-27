@@ -28,10 +28,16 @@ class TeamViewModel @Inject constructor(
             getTeamListUseCase()
                 .collectWithCallback(
                     onSuccess = { teamEntities ->
-                        setState { copy(teams = teamEntities.map { it.mapTo() }) }
+                        setState {
+                            copy(
+                                loadState = TeamUiState.LoadState.Idle,
+                                teams = teamEntities.map { it.mapTo() })
+                        }
                     },
                     onFailed = {
-                        //에러 핸들링 필요합니다
+                        setState {
+                            copy(loadState = TeamUiState.LoadState.Error)
+                        }
                     }
                 )
         }
