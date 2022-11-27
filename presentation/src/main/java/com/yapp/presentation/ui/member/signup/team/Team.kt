@@ -5,7 +5,14 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +29,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.insets.systemBarsPadding
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.theme.Gray_1200
-import com.yapp.common.yds.*
+import com.yapp.common.yds.YDSAppBar
+import com.yapp.common.yds.YDSButtonLarge
+import com.yapp.common.yds.YDSChoiceButton
+import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R
 import kotlinx.coroutines.flow.collect
 
@@ -48,7 +58,7 @@ fun Team(
         }
     }
     Scaffold(
-        topBar = { YDSAppBar(onClickBackButton = { onClickBackButton() }) },
+        topBar = { YDSAppBar(onClickBackButton = onClickBackButton) },
         modifier = Modifier
             .fillMaxSize()
             .systemBarsPadding()
@@ -67,20 +77,18 @@ fun Team(
                 Text(
                     text = stringResource(R.string.member_signup_choose_team),
                     style = AttendanceTypography.h1,
-                    color = Gray_1200
+                    color = Gray_1200,
                 )
                 Spacer(modifier = Modifier.height(28.dp))
                 TeamOption(
-                    uiState,
-                    onTeamTypeClicked = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeam(it)) })
+                    uiState = uiState,
+                    onTeamTypeClicked = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeam(it)) }
+                )
                 Spacer(modifier = Modifier.height(52.dp))
                 TeamNumberOption(
-                    uiState,
-                    onTeamNumberClicked = {
-                        viewModel.setEvent(
-                            TeamContract.TeamUiEvent.ChooseTeamNumber(it)
-                        )
-                    })
+                    uiState = uiState,
+                    onTeamNumberClicked = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeamNumber(it)) }
+                )
             }
 
             YDSButtonLarge(
@@ -103,9 +111,9 @@ fun Team(
 @Composable
 fun TeamOption(uiState: TeamContract.TeamUiState, onTeamTypeClicked: (String) -> Unit) {
     val rowNum = 2
-    Column() {
+    Column {
         repeat(uiState.teams.size / rowNum) { row ->
-            Row() {
+            Row {
                 repeat(rowNum) { index ->
                     val team = uiState.teams[rowNum * row + index]
                     YDSChoiceButton(
@@ -124,21 +132,21 @@ fun TeamOption(uiState: TeamContract.TeamUiState, onTeamTypeClicked: (String) ->
 fun TeamNumberOption(uiState: TeamContract.TeamUiState, onTeamNumberClicked: (Int) -> Unit) {
     val selectedTeamType = uiState.teams.filter { it.type == uiState.selectedTeam.type }
     val density = LocalDensity.current
+
     AnimatedVisibility(
         visible = uiState.selectedTeam.type != null,
         enter = slideInVertically { with(density) { -40.dp.roundToPx() } }
                 + expandVertically(expandFrom = Alignment.CenterVertically)
                 + fadeIn(initialAlpha = 0.3f)
     ) {
-        Column(
-        ) {
+        Column {
             Text(
                 text = stringResource(R.string.member_signup_choose_team_number),
                 style = AttendanceTypography.h3,
                 color = Gray_1200
             )
             Spacer(modifier = Modifier.height(10.dp))
-            Row() {
+            Row {
                 if (selectedTeamType.isNotEmpty()) {
                     repeat(selectedTeamType[0].number!!) { teamNum ->
                         YDSChoiceButton(

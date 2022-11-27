@@ -9,7 +9,9 @@ import com.yapp.domain.usecases.GetTeamListUseCase
 import com.yapp.domain.usecases.SignUpMemberUseCase
 import com.yapp.presentation.model.Team.Companion.mapTo
 import com.yapp.presentation.model.type.TeamType
-import com.yapp.presentation.ui.member.signup.team.TeamContract.*
+import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamSideEffect
+import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamUiEvent
+import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -53,7 +55,7 @@ class TeamViewModel @Inject constructor(
                 setState { copy(selectedTeam = uiState.value.selectedTeam.copy(number = event.teamNum)) }
             }
             is TeamUiEvent.ConfirmTeam -> {
-                if(savedStateHandle.get<String>("name") == null || savedStateHandle.get<String>("position") == null) {
+                if (savedStateHandle.get<String>("name") == null || savedStateHandle.get<String>("position") == null) {
                     setEffect(TeamSideEffect.ShowToast("회원가입 실패"))
                     return
                 }
