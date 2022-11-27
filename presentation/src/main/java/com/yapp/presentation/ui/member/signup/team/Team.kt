@@ -87,7 +87,13 @@ fun Team(
                 Spacer(modifier = Modifier.height(52.dp))
                 TeamNumberOption(
                     uiState = uiState,
-                    onTeamNumberClicked = { viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeamNumber(it)) }
+                    onTeamNumberClicked = {
+                        viewModel.setEvent(
+                            TeamContract.TeamUiEvent.ChooseTeamNumber(
+                                it
+                            )
+                        )
+                    }
                 )
             }
 
@@ -130,7 +136,6 @@ fun TeamOption(uiState: TeamContract.TeamUiState, onTeamTypeClicked: (String) ->
 
 @Composable
 fun TeamNumberOption(uiState: TeamContract.TeamUiState, onTeamNumberClicked: (Int) -> Unit) {
-    val selectedTeamType = uiState.teams.filter { it.type == uiState.selectedTeamType }
     val density = LocalDensity.current
 
     AnimatedVisibility(
@@ -147,8 +152,8 @@ fun TeamNumberOption(uiState: TeamContract.TeamUiState, onTeamNumberClicked: (In
             )
             Spacer(modifier = Modifier.height(10.dp))
             Row {
-                if (selectedTeamType.isNotEmpty()) {
-                    repeat(selectedTeamType[0].number!!) { teamNum ->
+                if (uiState.numberOfSelectedTeamType != null) {
+                    repeat(uiState.numberOfSelectedTeamType) { teamNum ->
                         YDSChoiceButton(
                             text = stringResource(R.string.member_signup_team_number, teamNum + 1),
                             modifier = Modifier.padding(end = 12.dp, bottom = 12.dp),

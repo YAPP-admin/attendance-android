@@ -12,6 +12,7 @@ sealed class TeamContract {
         val teams: List<Team> = emptyList(),
         val selectedTeamType: TeamType? = null,
         val selectedTeamNumber: Int? = null,
+        val numberOfSelectedTeamType: Int? = null,
     ) : UiState
 
     sealed class TeamSideEffect : UiSideEffect {
