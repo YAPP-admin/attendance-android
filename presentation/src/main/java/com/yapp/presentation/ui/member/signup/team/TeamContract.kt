@@ -4,12 +4,14 @@ import com.yapp.common.base.UiEvent
 import com.yapp.common.base.UiSideEffect
 import com.yapp.common.base.UiState
 import com.yapp.presentation.model.Team
+import com.yapp.presentation.model.type.TeamType
 
 sealed class TeamContract {
     data class TeamUiState(
         val isLoading: Boolean = false,
         val teams: List<Team> = emptyList(),
-        val selectedTeam: Team = Team()
+        val selectedTeamType: TeamType? = null,
+        val selectedTeamNumber: Int? = null,
     ) : UiState
 
     sealed class TeamSideEffect : UiSideEffect {

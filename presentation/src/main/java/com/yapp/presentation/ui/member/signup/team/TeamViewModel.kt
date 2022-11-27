@@ -41,18 +41,10 @@ class TeamViewModel @Inject constructor(
     override suspend fun handleEvent(event: TeamUiEvent) {
         when (event) {
             is TeamUiEvent.ChooseTeam -> {
-                setState {
-                    copy(
-                        selectedTeam = uiState.value.selectedTeam.copy(
-                            type = TeamType.of(
-                                event.teamType
-                            )
-                        )
-                    )
-                }
+                setState { copy(selectedTeamType = TeamType.of(event.teamType)) }
             }
             is TeamUiEvent.ChooseTeamNumber -> {
-                setState { copy(selectedTeam = uiState.value.selectedTeam.copy(number = event.teamNum)) }
+                setState { copy(selectedTeamNumber = event.teamNum) }
             }
             is TeamUiEvent.ConfirmTeam -> {
                 if (savedStateHandle.get<String>("name") == null || savedStateHandle.get<String>("position") == null) {
@@ -64,8 +56,8 @@ class TeamViewModel @Inject constructor(
                     memberName = savedStateHandle.get<String>("name")!!,
                     memberPosition = PositionTypeEntity.of(savedStateHandle.get<String>("position")!!),
                     teamEntity = TeamEntity(
-                        type = uiState.value.selectedTeam.type!!.name,
-                        number = uiState.value.selectedTeam.number!!
+                        type = uiState.value.selectedTeamType!!.name,
+                        number = uiState.value.selectedTeamNumber!!
                     )
                 )
             }
@@ -92,5 +84,4 @@ class TeamViewModel @Inject constructor(
             }
         )
     }
-
 }
