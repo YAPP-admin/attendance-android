@@ -1,6 +1,7 @@
 package com.yapp.presentation.ui.member.signup.name
 
 import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -93,6 +94,10 @@ fun Name(
                 keyboardVisibilityUtils = keyboardVisibilityUtils
             )
         }
+    }
+
+    BackHandler {
+        showDialog = true
     }
 
     LaunchedEffect(key1 = viewModel.effect) {
