@@ -24,8 +24,7 @@ import com.yapp.common.yds.YDSButtonLarge
 import com.yapp.common.yds.YDSPopupDialog
 import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R
-import com.yapp.presentation.ui.member.signup.name.NameContract.NameUiEvent.OnBackButtonClick
-import com.yapp.presentation.ui.member.signup.name.NameContract.NameUiEvent.OnNextButtonClick
+import com.yapp.presentation.ui.member.signup.name.NameContract.NameUiEvent.*
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -46,9 +45,10 @@ fun Name(
 
     val onBackButtonClick by remember { mutableStateOf({ viewModel.setEvent(OnBackButtonClick) }) }
     val onNextButtonClick: (String) -> Unit by remember {
-        mutableStateOf({
-            viewModel.setEvent(OnNextButtonClick(it))
-        })
+        mutableStateOf({ viewModel.setEvent(OnNextButtonClick(it)) })
+    }
+    val onInputNameChange: (String) -> Unit by remember {
+        mutableStateOf({ viewModel.setEvent(InputName(it)) })
     }
 
     Scaffold(
@@ -82,7 +82,7 @@ fun Name(
                 Title()
                 InputName(
                     name = uiState.name,
-                    onInputName = { viewModel.setEvent(NameContract.NameUiEvent.InputName(it)) }
+                    onInputName = { onInputNameChange(it) }
                 )
             }
 
