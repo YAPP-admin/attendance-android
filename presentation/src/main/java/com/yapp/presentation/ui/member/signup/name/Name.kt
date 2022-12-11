@@ -51,7 +51,7 @@ fun Name(
     }
 
     Scaffold(
-        topBar = { YDSAppBar(onClickBackButton = { showDialog = !showDialog }) },
+        topBar = { YDSAppBar(onClickBackButton = { showDialog = true }) },
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding()
@@ -64,8 +64,8 @@ fun Name(
                 negativeButtonText = stringResource(id = R.string.name_cancel_dialog_no),
                 positiveButtonText = stringResource(id = R.string.name_cancel_dialog_cancel),
                 onClickPositiveButton = { onBackButtonClick() },
-                onClickNegativeButton = { showDialog = !showDialog },
-                onDismiss = { showDialog = !showDialog }
+                onClickNegativeButton = { showDialog = false },
+                onDismiss = { showDialog = false }
             )
         }
 
