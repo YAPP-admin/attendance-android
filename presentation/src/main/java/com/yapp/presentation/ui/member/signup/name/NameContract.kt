@@ -7,11 +7,17 @@ import com.yapp.common.base.UiState
 class NameContract {
     data class NameUiState(
         val isLoading: Boolean = false,
-        val name: String = ""
+        val name: String = "",
     ) : UiState
 
-    sealed class NameSideEffect : UiSideEffect {}
+    sealed class NameSideEffect : UiSideEffect {
+        object NavigateToPreviousScreen : NameSideEffect()
+        data class NavigateToNextScreen(val name: String) : NameSideEffect()
+    }
+
     sealed class NameUiEvent : UiEvent {
-        data class InputName(val name:String) : NameUiEvent()
+        data class InputName(val name: String) : NameUiEvent()
+        object OnBackButtonClick : NameUiEvent()
+        data class OnNextButtonClick(val name: String) : NameUiEvent()
     }
 }
