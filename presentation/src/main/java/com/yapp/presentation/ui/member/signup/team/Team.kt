@@ -19,6 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -65,22 +67,37 @@ fun Team(
             .fillMaxSize()
             .systemBarsPadding()
     ) {
-
         when (uiState.loadState) {
             TeamContract.TeamUiState.LoadState.Loading -> YDSProgressBar()
             TeamContract.TeamUiState.LoadState.Error -> YDSEmptyScreen()
-            TeamContract.TeamUiState.LoadState.Idle -> TeamScreen(
-                uiState = uiState,
-                onTeamTypeClicked = { teamType ->
-                    viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeam(teamType))
-                },
-                onTeamNumberClicked = { teamNum ->
-                    viewModel.setEvent(TeamContract.TeamUiEvent.ChooseTeamNumber(teamNum))
-                },
-                onConfirmClicked = {
-                    viewModel.setEvent(TeamContract.TeamUiEvent.ConfirmTeam)
+            TeamContract.TeamUiState.LoadState.Idle -> {
+                val onTeamTypeClicked: (String) -> Unit by remember {
+                    mutableStateOf({ teamType ->
+                        viewModel.setEvent(
+                            TeamContract.TeamUiEvent.ChooseTeam(teamType)
+                        )
+                    })
                 }
-            )
+
+                val onTeamNumberClicked: (Int) -> Unit by remember {
+                    mutableStateOf({ teamNum ->
+                        viewModel.setEvent(
+                            TeamContract.TeamUiEvent.ChooseTeamNumber(teamNum)
+                        )
+                    })
+                }
+
+                val onConfirmClicked: () -> Unit by remember {
+                    mutableStateOf({ viewModel.setEvent(TeamContract.TeamUiEvent.ConfirmTeam) })
+                }
+
+                TeamScreen(
+                    uiState = uiState,
+                    onTeamTypeClicked = onTeamTypeClicked,
+                    onTeamNumberClicked = onTeamNumberClicked,
+                    onConfirmClicked = onConfirmClicked,
+                )
+            }
         }
     }
 }
