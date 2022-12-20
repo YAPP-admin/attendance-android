@@ -1,8 +1,11 @@
 package com.yapp.presentation.ui.member.todaysession
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -26,9 +29,9 @@ import com.yapp.common.theme.*
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSEmptyScreen
 import com.yapp.common.yds.YDSProgressBar
-import com.yapp.presentation.R.*
-import com.yapp.presentation.model.AttendanceType
-import com.yapp.presentation.model.Session
+import com.yapp.domain.model.Session
+import com.yapp.domain.model.types.AttendanceType
+import com.yapp.presentation.R.string
 import com.yapp.presentation.ui.AttendanceScreenRoute
 
 @Composable

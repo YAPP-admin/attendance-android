@@ -1,7 +1,6 @@
 package com.yapp.presentation.ui.member.score
 
 import android.graphics.Paint
-import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
@@ -14,14 +13,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -30,14 +34,15 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.res.ResourcesCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.theme.*
-import com.yapp.common.yds.*
+import com.yapp.common.yds.YDSAppBar
+import com.yapp.common.yds.YDSAttendanceList
+import com.yapp.common.yds.YDSEmptyScreen
+import com.yapp.common.yds.YDSProgressBar
+import com.yapp.domain.model.Attendance
+import com.yapp.domain.model.Session
+import com.yapp.domain.model.types.AttendanceType
 import com.yapp.domain.model.types.NeedToAttendType
-import com.yapp.domain.util.DateUtil
 import com.yapp.presentation.R
-import com.yapp.presentation.model.Attendance
-import com.yapp.presentation.model.AttendanceType
-import com.yapp.presentation.model.Session
-import com.yapp.presentation.ui.member.todaysession.TodaySessionContract
 import com.yapp.presentation.util.attendance.checkSessionAttendance
 import java.text.SimpleDateFormat
 import java.util.*
@@ -85,7 +90,7 @@ fun MemberScoreScreen(
     navigateToHelpScreen: () -> Unit,
     navigateToSessionDetail: (Int) -> Unit
 ) {
-    val currentScore = uiState.lastAttendanceList.fold(100) { total, pair -> total + pair.second.attendanceType.point }
+    val currentScore = uiState.lastAttendanceList.fold(100) { total, pair -> total + pair.second.type.point }
 
     LazyColumn {
         item {
@@ -229,22 +234,25 @@ fun UserAttendanceTable(lastAttendanceList: List<Pair<Session, Attendance>>) {
         AttendanceCell(
             topText = stringResource(R.string.member_score_attend_text),
             topIconResId = R.drawable.icon_attend,
-            bottomText = lastAttendanceList.filter {
-                ((it.first.type == NeedToAttendType.NEED_ATTENDANCE) and (it.second.attendanceType == AttendanceType.Normal)) or
-                        ((it.first.type == NeedToAttendType.DONT_NEED_ATTENDANCE) and (it.second.attendanceType == AttendanceType.Admit))
-            }.size.toString()
+            bottomText = lastAttendanceList
+                .filter { it.first.type == NeedToAttendType.NEED_ATTENDANCE }
+                .count { (it.second.type == AttendanceType.Normal) or (it.second.type == AttendanceType.Admit) }.toString()
         )
 
         AttendanceCell(
             topText = stringResource(R.string.member_score_tardy_text),
             topIconResId = R.drawable.icon_tardy,
-            bottomText = lastAttendanceList.filter { it.second.attendanceType == AttendanceType.Late }.size.toString()
+            bottomText = lastAttendanceList
+                .filter { it.first.type == NeedToAttendType.NEED_ATTENDANCE }
+                .count { it.second.type == AttendanceType.Late }.toString()
         )
 
         AttendanceCell(
             topText = stringResource(R.string.member_score_absent_text),
             topIconResId = R.drawable.icon_absent,
-            bottomText = lastAttendanceList.filter { it.second.attendanceType == AttendanceType.Absent }.size.toString()
+            bottomText = lastAttendanceList
+                .filter { it.first.type == NeedToAttendType.NEED_ATTENDANCE }
+                .count { it.second.type == AttendanceType.Absent }.toString()
         )
     }
 }

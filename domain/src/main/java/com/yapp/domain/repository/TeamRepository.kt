@@ -1,9 +1,8 @@
 package com.yapp.domain.repository
 
-import com.yapp.domain.model.MemberEntity
-import kotlinx.coroutines.flow.Flow
+import com.yapp.domain.model.Member
 
 
 interface TeamRepository {
-    fun getTeamMembers(team: String): Flow<List<MemberEntity>>
+    suspend fun getTeamMembers(team: String): Result<List<Member>>
 }

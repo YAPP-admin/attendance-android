@@ -3,8 +3,8 @@ package com.yapp.presentation.ui.member.todaysession
 import com.yapp.common.base.UiEvent
 import com.yapp.common.base.UiSideEffect
 import com.yapp.common.base.UiState
-import com.yapp.presentation.model.AttendanceType
-import com.yapp.presentation.model.Session
+import com.yapp.domain.model.Session
+import com.yapp.domain.model.types.AttendanceType
 
 class TodaySessionContract {
     data class TodaySessionUiState(

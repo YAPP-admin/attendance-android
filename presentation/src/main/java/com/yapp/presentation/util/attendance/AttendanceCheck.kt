@@ -1,31 +1,32 @@
 package com.yapp.presentation.util.attendance
 
-import com.yapp.common.yds.AttendanceType
+import com.yapp.common.yds.YDSAttendanceType
+import com.yapp.domain.model.Attendance
+import com.yapp.domain.model.Session
+import com.yapp.domain.model.types.AttendanceType
 import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.domain.util.DateUtil
-import com.yapp.presentation.model.Attendance
-import com.yapp.presentation.model.Session
 
 fun checkSessionAttendance(
     session: Session?,
     attendance: Attendance?
-): AttendanceType? {
+): YDSAttendanceType? {
     if ((session == null) or (attendance == null)) {
         return null
     }
     if (!DateUtil.isPastSession(session!!.date)) {
-        return AttendanceType.TBD
+        return YDSAttendanceType.TBD
     }
     if (session.type == NeedToAttendType.DONT_NEED_ATTENDANCE) {
-        return AttendanceType.NO_ATTENDANCE
+        return YDSAttendanceType.NO_ATTENDANCE
     }
     if (session.type == NeedToAttendType.DAY_OFF) {
-        return AttendanceType.NO_YAPP
+        return YDSAttendanceType.NO_YAPP
     }
-    return when (attendance!!.attendanceType) {
-        com.yapp.presentation.model.AttendanceType.Absent -> AttendanceType.ABSENT
-        com.yapp.presentation.model.AttendanceType.Admit -> AttendanceType.ATTEND
-        com.yapp.presentation.model.AttendanceType.Late -> AttendanceType.TARDY
-        com.yapp.presentation.model.AttendanceType.Normal -> AttendanceType.ATTEND
+    return when (attendance!!.type) {
+        AttendanceType.Absent -> YDSAttendanceType.ABSENT
+        AttendanceType.Admit -> YDSAttendanceType.ATTEND
+        AttendanceType.Late -> YDSAttendanceType.TARDY
+        AttendanceType.Normal -> YDSAttendanceType.ATTEND
     }
 }

@@ -25,18 +25,17 @@ class MainViewModel @Inject constructor(
 
     private suspend fun checkAttendanceValidate() = coroutineScope {
         if (AttendanceBundle.isAbsent) {
-            checkQrAuthTime().collectWithCallback(
-                onSuccess = { isEnable ->
-                    if (isEnable) {
+            checkQrAuthTime()
+                .onSuccess { isQRCheckEnable ->
+                    if (isQRCheckEnable) {
                         setEffect(MainContract.MainUiSideEffect.NavigateToQRScreen)
                     } else {
                         showToast(resourcesProvider.getString(R.string.member_main_qr_enter_failed_toast_message))
                     }
-                },
-                onFailed = {
+                }
+                .onFailure {
                     showToast(resourcesProvider.getString(R.string.member_main_qr_enter_failed_toast_message))
                 }
-            )
         } else {
             showToast(resourcesProvider.getString(R.string.member_main_qr_enter_completed_toast_message))
         }

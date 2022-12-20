@@ -3,9 +3,8 @@ package com.yapp.presentation.ui.admin.management
 import com.yapp.common.base.UiEvent
 import com.yapp.common.base.UiSideEffect
 import com.yapp.common.base.UiState
-import com.yapp.presentation.model.Attendance
-import com.yapp.presentation.model.AttendanceType
-import com.yapp.presentation.model.AttendanceType.Normal
+import com.yapp.domain.model.Attendance
+import com.yapp.domain.model.types.AttendanceType
 
 
 class ManagementContract {
@@ -15,22 +14,22 @@ class ManagementContract {
         val sessionTitle: String = "",
         val memberCount: Int = 0,
         val selectedMember: MemberState? = null,
-        val teams: List<TeamState> = emptyList()
-    ): UiState {
+        val teams: List<TeamState> = emptyList(),
+    ) : UiState {
 
         enum class LoadState {
             Loading, Idle, Error
         }
 
-        data class TeamState (
+        data class TeamState(
             val teamName: String = "",
-            val members: List<MemberState> = emptyList()
+            val members: List<MemberState> = emptyList(),
         )
 
         data class MemberState(
             val id: Long = 0L,
             val name: String = "",
-            val attendance: Attendance = Attendance(sessionId = 0, attendanceType = Normal)
+            val attendance: Attendance = Attendance(sessionId = 0, type = AttendanceType.Normal),
         )
     }
 

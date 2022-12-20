@@ -19,8 +19,8 @@ import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSButtonLarge
 import com.yapp.common.yds.YDSChoiceButton
 import com.yapp.common.yds.YdsButtonState
+import com.yapp.domain.model.types.PositionType
 import com.yapp.presentation.R
-import com.yapp.presentation.model.type.PositionType
 import kotlinx.coroutines.flow.collect
 
 @Composable
@@ -59,9 +59,7 @@ fun Position(
                     color = Gray_1200
                 )
                 Spacer(modifier = Modifier.height(28.dp))
-                PositionOption(uiState.position
-                ) { viewModel.setEvent(PositionContract.PositionUiEvent.ChoosePosition(it)) }
-
+                PositionOption(uiState.position) { viewModel.setEvent(PositionContract.PositionUiEvent.ChoosePosition(it)) }
             }
             YDSButtonLarge(
                 text = stringResource(R.string.member_signup_position_next),
@@ -80,7 +78,7 @@ fun Position(
 }
 
 @Composable
-fun PositionOption(userPosition:PositionType?, onPositionTypeClicked: (PositionType) -> Unit) {
+fun PositionOption(userPosition: PositionType?, onPositionTypeClicked: (PositionType) -> Unit) {
     val rowNum = 2
     val positionList = PositionType.values()
     Column {
@@ -89,7 +87,7 @@ fun PositionOption(userPosition:PositionType?, onPositionTypeClicked: (PositionT
                 repeat(rowNum) { index ->
                     val position = positionList[rowNum * row + index]
                     YDSChoiceButton(
-                        text = position.displayName,
+                        text = position.value,
                         modifier = Modifier.padding(end = 12.dp, bottom = 12.dp),
                         state = if (userPosition == position) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
                         onClick = { onPositionTypeClicked(position) }

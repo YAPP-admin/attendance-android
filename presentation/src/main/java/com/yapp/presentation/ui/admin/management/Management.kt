@@ -29,9 +29,12 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.systemBarsPadding
 import com.yapp.common.theme.*
-import com.yapp.common.yds.*
+import com.yapp.common.yds.YDSAppBar
+import com.yapp.common.yds.YDSDropDownButton
+import com.yapp.common.yds.YDSEmptyScreen
+import com.yapp.common.yds.YDSProgressBar
+import com.yapp.domain.model.types.AttendanceType
 import com.yapp.presentation.R
-import com.yapp.presentation.model.AttendanceType
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementEvent
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState.LoadState.*
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState.MemberState
@@ -99,7 +102,7 @@ fun ManagementScreen(
         modifier = Modifier,
         sheetContent = {
             BottomSheetDialog(
-                attendanceTypes = AttendanceType.getAllTypes(),
+                attendanceTypes = listOf(AttendanceType.Absent,AttendanceType.Normal, AttendanceType.Late, AttendanceType.Admit),
                 onClickItem = { attendanceType -> onBottomSheetDialogItemClicked.invoke(attendanceType) }
             )
         },
@@ -305,7 +308,7 @@ fun MemberContent(
                     top.linkTo(parent.top, margin = 13.dp)
                     bottom.linkTo(parent.bottom, margin = 13.dp)
                 },
-            text = state.attendance.attendanceType.text,
+            text = state.attendance.type.text,
             onClick = { onDropDownClicked.invoke(state) }
         )
     }
