@@ -190,8 +190,8 @@ fun TeamNumberOption(uiState: TeamContract.TeamUiState, onTeamNumberClicked: (In
             )
             Spacer(modifier = Modifier.height(10.dp))
             Row {
-                if (uiState.numberOfSelectedTeamType != null) {
-                    repeat(uiState.numberOfSelectedTeamType) { teamNum ->
+                if (selectedTeamType.isNotEmpty()) {
+                    repeat(selectedTeamType[0].number) { teamNum ->
                         YDSChoiceButton(
                             text = stringResource(R.string.member_signup_team_number, teamNum + 1),
                             modifier = Modifier.padding(end = 12.dp, bottom = 12.dp),
