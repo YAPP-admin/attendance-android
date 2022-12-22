@@ -1,4 +1,14 @@
-# attendance-android
+# YAPP 출석체크 앱 
+
+
+---
+🙌 **Contributors**
+### 20th 운영진 (프로젝트 초기 생성/구현)
+- 정세희, 한지희, 추지온, 김준영, 전영상
+### 21st 운영진 (유지보수)
+- 한지희, 김정호, 권대원, 윤태성, 전영상(운영진X)
+---
+
 
 ![1](https://user-images.githubusercontent.com/39688690/162011524-7c47c51a-bd14-4b4f-a01d-083efe46a866.png)
 ![2](https://user-images.githubusercontent.com/39688690/162011557-b498f1bb-38b8-429f-8bd0-bf51ee2527af.png)

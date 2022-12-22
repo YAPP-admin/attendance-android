@@ -8,7 +8,9 @@ import com.yapp.domain.model.types.PositionType
 import com.yapp.domain.model.types.TeamType
 import com.yapp.domain.usecases.GetTeamListUseCase
 import com.yapp.domain.usecases.SignUpMemberUseCase
-import com.yapp.presentation.ui.member.signup.team.TeamContract.*
+import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamSideEffect
+import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamUiEvent
+import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,21 +25,31 @@ class TeamViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             getTeamListUseCase()
-                .onSuccess { teamEntities -> setState { copy(teams = teamEntities) } }
-                .onFailure { setEffect(TeamSideEffect.ShowToast("팀 리스트를 불러오는데 실패했습니다.")) }
+                .onSuccess { teamEntities ->
+                    setState { copy(loadState = TeamUiState.LoadState.Idle, teams = teamEntities) }
+                }
+                .onFailure {
+                    setState { copy(loadState = TeamUiState.LoadState.Error) }
+                    setEffect(TeamSideEffect.ShowToast("팀 리스트를 불러오는데 실패했습니다."))
+                }
         }
     }
 
     override suspend fun handleEvent(event: TeamUiEvent) {
         when (event) {
             is TeamUiEvent.ChooseTeam -> {
-                setState { copy(selectedTeamType = TeamType.from(event.teamType)) }
-            }
+                val selectedTeamType = TeamType.from(event.teamType)
 
+                setState {
+                    copy(
+                        selectedTeamType = selectedTeamType,
+                        numberOfSelectedTeamType = uiState.value.teams.find { it.type == selectedTeamType }?.number
+                    )
+                }
+            }
             is TeamUiEvent.ChooseTeamNumber -> {
                 setState { copy(selectedTeamNumber = event.teamNum) }
             }
-
             is TeamUiEvent.ConfirmTeam -> {
                 if (savedStateHandle.get<String>("name") == null || savedStateHandle.get<String>("position") == null) {
                     setEffect(TeamSideEffect.ShowToast("회원가입 실패"))
@@ -73,5 +85,4 @@ class TeamViewModel @Inject constructor(
             setEffect(TeamSideEffect.ShowToast("회원가입 실패"))
         }
     }
-
 }
