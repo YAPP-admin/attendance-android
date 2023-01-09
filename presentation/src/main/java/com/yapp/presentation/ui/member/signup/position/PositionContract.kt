@@ -15,7 +15,7 @@ class PositionContract {
     }
 
     sealed class PositionUiEvent : UiEvent {
-        data class ChoosePosition(val position: PositionType) : PositionUiEvent()
+        data class ChoosePosition(val position: PositionType?) : PositionUiEvent()
         object ConfirmPosition : PositionUiEvent()
     }
 }
