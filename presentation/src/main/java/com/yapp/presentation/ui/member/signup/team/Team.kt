@@ -39,6 +39,9 @@ import com.yapp.common.yds.YDSOption
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R
+import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamSideEffect
+import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamUiEvent
+import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamUiState
 import kotlinx.coroutines.flow.collect
 
 @Composable
@@ -53,10 +56,10 @@ fun Team(
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is TeamContract.TeamSideEffect.NavigateToMainScreen -> {
+                is TeamSideEffect.NavigateToMainScreen -> {
                     navigateToMainScreen()
                 }
-                is TeamContract.TeamSideEffect.ShowToast -> {
+                is TeamSideEffect.ShowToast -> {
                     Toast.makeText(context, effect.msg, Toast.LENGTH_LONG).show()
                 }
             }
@@ -69,13 +72,13 @@ fun Team(
             .systemBarsPadding()
     ) {
         when (uiState.loadState) {
-            TeamContract.TeamUiState.LoadState.Loading -> YDSProgressBar()
-            TeamContract.TeamUiState.LoadState.Error -> YDSEmptyScreen()
-            TeamContract.TeamUiState.LoadState.Idle -> {
+            TeamUiState.LoadState.Loading -> YDSProgressBar()
+            TeamUiState.LoadState.Error -> YDSEmptyScreen()
+            TeamUiState.LoadState.Idle -> {
                 val onTeamTypeClicked: (String) -> Unit by remember {
                     mutableStateOf({ teamType ->
                         viewModel.setEvent(
-                            TeamContract.TeamUiEvent.ChooseTeam(teamType)
+                            TeamUiEvent.ChooseTeam(teamType)
                         )
                     })
                 }
@@ -83,13 +86,13 @@ fun Team(
                 val onTeamNumberClicked: (Int) -> Unit by remember {
                     mutableStateOf({ teamNum ->
                         viewModel.setEvent(
-                            TeamContract.TeamUiEvent.ChooseTeamNumber(teamNum)
+                            TeamUiEvent.ChooseTeamNumber(teamNum)
                         )
                     })
                 }
 
                 val onConfirmClicked: () -> Unit by remember {
-                    mutableStateOf({ viewModel.setEvent(TeamContract.TeamUiEvent.ConfirmTeam) })
+                    mutableStateOf({ viewModel.setEvent(TeamUiEvent.ConfirmTeam) })
                 }
 
                 TeamScreen(
@@ -105,7 +108,7 @@ fun Team(
 
 @Composable
 fun TeamScreen(
-    uiState: TeamContract.TeamUiState,
+    uiState: TeamUiState,
     onTeamTypeClicked: (String) -> Unit,
     onTeamNumberClicked: (Int) -> Unit,
     onConfirmClicked: () -> Unit,
@@ -154,7 +157,7 @@ fun TeamScreen(
 }
 
 @Composable
-fun TeamNumberOption(uiState: TeamContract.TeamUiState, onTeamNumberClicked: (Int) -> Unit) {
+fun TeamNumberOption(uiState: TeamUiState, onTeamNumberClicked: (Int) -> Unit) {
     val selectedTeamType = uiState.teams.filter { it.type == uiState.selectedTeamType }
     val density = LocalDensity.current
 

@@ -1,6 +1,11 @@
 package com.yapp.presentation.ui.member.signup.position
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +26,8 @@ import com.yapp.common.yds.YDSOption
 import com.yapp.common.yds.YdsButtonState
 import com.yapp.domain.model.types.PositionType
 import com.yapp.presentation.R
+import com.yapp.presentation.ui.member.signup.position.PositionContract.PositionSideEffect
+import com.yapp.presentation.ui.member.signup.position.PositionContract.PositionUiEvent
 import kotlinx.coroutines.flow.collect
 
 @Composable
@@ -28,12 +35,12 @@ fun Position(
     viewModel: PositionViewModel = hiltViewModel(),
     onClickBackButton: () -> Unit,
     navigateToTeamScreen: (String, String) -> Unit
-){
+) {
     val uiState by viewModel.uiState.collectAsState()
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is PositionContract.PositionSideEffect.NavigateToTeamScreen -> {
+                is PositionSideEffect.NavigateToTeamScreen -> {
                     navigateToTeamScreen(effect.name, effect.position.name)
                 }
             }
@@ -45,12 +52,12 @@ fun Position(
         modifier = Modifier
             .fillMaxSize()
             .systemBarsPadding()
-    ){
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 24.dp)
-        ){
+        ) {
             Column {
                 Spacer(modifier = Modifier.height(32.dp))
                 Text(
@@ -63,7 +70,7 @@ fun Position(
                     types = PositionType.values().map { it.value },
                     onTypeClicked = { select ->
                         viewModel.setEvent(
-                            PositionContract.PositionUiEvent.ChoosePosition(
+                            PositionUiEvent.ChoosePosition(
                                 PositionType.values().find { it.value == select })
                         )
                     },
@@ -76,10 +83,12 @@ fun Position(
                     .padding(bottom = 40.dp)
                     .height(60.dp)
                     .align(Alignment.BottomCenter),
-                onClick = { if (uiState.position != null) {
-                    viewModel.setEvent(PositionContract.PositionUiEvent.ConfirmPosition)
+                onClick = {
+                    if (uiState.position != null) {
+                        viewModel.setEvent(PositionUiEvent.ConfirmPosition)
 
-                } },
+                    }
+                },
                 state = if (uiState.position != null) YdsButtonState.ENABLED else YdsButtonState.DISABLED
             )
         }
