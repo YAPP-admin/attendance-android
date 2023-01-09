@@ -38,7 +38,7 @@ class TeamViewModel @Inject constructor(
     override suspend fun handleEvent(event: TeamUiEvent) {
         when (event) {
             is TeamUiEvent.ChooseTeam -> {
-                val selectedTeamType = TeamType.from(event.teamType)
+                val selectedTeamType = TeamType.values().find { it.value == event.teamType }
 
                 setState {
                     copy(

@@ -35,6 +35,7 @@ import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSButtonLarge
 import com.yapp.common.yds.YDSChoiceButton
 import com.yapp.common.yds.YDSEmptyScreen
+import com.yapp.common.yds.YDSOption
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R
@@ -126,9 +127,10 @@ fun TeamScreen(
                 color = Gray_1200,
             )
             Spacer(modifier = Modifier.height(28.dp))
-            TeamOption(
-                uiState = uiState,
-                onTeamTypeClicked = onTeamTypeClicked
+            YDSOption(
+                types = uiState.teams.map { it.type.value },
+                selectedType = uiState.selectedTeamType?.value,
+                onTypeClicked = onTeamTypeClicked
             )
             Spacer(modifier = Modifier.height(52.dp))
             TeamNumberOption(
@@ -148,26 +150,6 @@ fun TeamScreen(
                 if ((uiState.selectedTeamType != null) and (uiState.selectedTeamNumber != null)) onConfirmClicked()
             },
         )
-    }
-}
-
-@Composable
-fun TeamOption(uiState: TeamContract.TeamUiState, onTeamTypeClicked: (String) -> Unit) {
-    val rowNum = 2
-    Column {
-        repeat(uiState.teams.size / rowNum) { row ->
-            Row {
-                repeat(rowNum) { index ->
-                    val team = uiState.teams[rowNum * row + index]
-                    YDSChoiceButton(
-                        text = team.type.value,
-                        modifier = Modifier.padding(end = 12.dp, bottom = 12.dp),
-                        state = if (uiState.selectedTeamType == team.type) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                        onClick = { onTeamTypeClicked(team.type.name) }
-                    )
-                }
-            }
-        }
     }
 }
 
