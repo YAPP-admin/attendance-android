@@ -1,5 +1,6 @@
 package com.yapp.presentation.ui.member.signup.position
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,12 +38,17 @@ fun Position(
     onClickBackButton: () -> Unit,
     navigateToTeamScreen: (String, String) -> Unit
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
+
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collect { effect ->
             when (effect) {
                 is PositionSideEffect.NavigateToTeamScreen -> {
                     navigateToTeamScreen(effect.name, effect.position.name)
+                }
+                is PositionSideEffect.ShowToast -> {
+                    Toast.makeText(context, effect.msg, Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -69,10 +76,7 @@ fun Position(
                 YDSOption(
                     types = PositionType.values().map { it.value },
                     onTypeClicked = { select ->
-                        viewModel.setEvent(
-                            PositionUiEvent.ChoosePosition(
-                                PositionType.values().find { it.value == select })
-                        )
+                        viewModel.setEvent(PositionUiEvent.ChoosePosition(select))
                     },
                     selectedType = uiState.position?.value
                 )
@@ -86,7 +90,6 @@ fun Position(
                 onClick = {
                     if (uiState.position != null) {
                         viewModel.setEvent(PositionUiEvent.ConfirmPosition)
-
                     }
                 },
                 state = if (uiState.position != null) YdsButtonState.ENABLED else YdsButtonState.DISABLED
