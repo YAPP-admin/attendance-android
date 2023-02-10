@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun Name(
     viewModel: NameViewModel = hiltViewModel(),
     onClickBackBtn: () -> Unit,
-    onClickNextBtn: (String) -> Unit,
+    onClickNextBtn: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var isKeyboardOpened by remember { mutableStateOf(false) }
@@ -174,7 +174,7 @@ fun NextButton(
     isKeyboardOpened: Boolean,
     modifier: Modifier,
     onClickNextBtn: () -> Unit,
-    keyboardVisibilityUtils: KeyboardVisibilityUtils,
+    keyboardVisibilityUtils: KeyboardVisibilityUtils
 ) {
     Box(
         modifier = modifier,
@@ -206,7 +206,7 @@ fun NextButton(
 fun OnKeyboardNextButton(
     enabled: Boolean,
     onClickNextBtn: () -> Unit,
-    keyboardVisibilityUtils: KeyboardVisibilityUtils,
+    keyboardVisibilityUtils: KeyboardVisibilityUtils
 ) {
     Button(
         enabled = enabled,
