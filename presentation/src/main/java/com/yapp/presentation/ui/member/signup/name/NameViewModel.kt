@@ -16,11 +16,17 @@ class NameViewModel @Inject constructor() :
             is NameContract.NameUiEvent.InputName -> {
                 setState { copy(name = event.name) }
             }
-            is NameContract.NameUiEvent.OnBackButtonClick -> {
+            is NameContract.NameUiEvent.OnCancelButtonClick -> {
                 setEffect(NavigateToPreviousScreen)
             }
             is NameContract.NameUiEvent.OnNextButtonClick -> {
                 setEffect(NavigateToNextScreen(uiState.value.name))
+            }
+            is NameContract.NameUiEvent.OnBackButtonClick -> {
+                setState { copy(showDialog = true) }
+            }
+            is NameContract.NameUiEvent.OnDismissDialogButtonClick -> {
+                setState { copy(showDialog = false) }
             }
         }
     }

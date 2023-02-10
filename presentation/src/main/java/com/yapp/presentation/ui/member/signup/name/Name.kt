@@ -33,10 +33,9 @@ import kotlinx.coroutines.flow.collectLatest
 fun Name(
     viewModel: NameViewModel = hiltViewModel(),
     onClickBackBtn: () -> Unit,
-    onClickNextBtn: (String) -> Unit
+    onClickNextBtn: (String) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    var showDialog by remember { mutableStateOf(false) }
     var isKeyboardOpened by remember { mutableStateOf(false) }
     val keyboardVisibilityUtils = KeyboardVisibilityUtils(
         window = (LocalContext.current as Activity).window,
@@ -44,30 +43,36 @@ fun Name(
         onHideKeyboard = { isKeyboardOpened = false }
     )
 
-    val onBackButtonClick by remember { mutableStateOf({ viewModel.setEvent(OnBackButtonClick) }) }
+    val onCancelButtonClick by remember { mutableStateOf({ viewModel.setEvent(OnCancelButtonClick) }) }
     val onNextButtonClick: () -> Unit by remember {
         mutableStateOf({ viewModel.setEvent(OnNextButtonClick) })
     }
     val onInputNameChange: (String) -> Unit by remember {
         mutableStateOf({ viewModel.setEvent(InputName(it)) })
     }
+    val onBackButtonClick: () -> Unit by remember {
+        mutableStateOf({ viewModel.setEvent(OnBackButtonClick) })
+    }
+    val onDismissDialogButtonClick: () -> Unit by remember {
+        mutableStateOf({ viewModel.setEvent(OnDismissDialogButtonClick) })
+    }
 
     Scaffold(
-        topBar = { YDSAppBar(onClickBackButton = { showDialog = true }) },
+        topBar = { YDSAppBar(onClickBackButton = { onBackButtonClick() }) },
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding()
             .navigationBarsWithImePadding()
     ) {
-        if (showDialog) {
+        if (uiState.showDialog) {
             YDSPopupDialog(
                 title = stringResource(id = R.string.name_cancel_dialog_title),
                 content = stringResource(id = R.string.name_cancel_dialog_subtitle),
                 negativeButtonText = stringResource(id = R.string.name_cancel_dialog_no),
                 positiveButtonText = stringResource(id = R.string.name_cancel_dialog_cancel),
-                onClickPositiveButton = { onBackButtonClick() },
-                onClickNegativeButton = { showDialog = false },
-                onDismiss = { showDialog = false }
+                onClickPositiveButton = { onCancelButtonClick() },
+                onClickNegativeButton = { onDismissDialogButtonClick() },
+                onDismiss = { onDismissDialogButtonClick() }
             )
         }
 
@@ -98,7 +103,7 @@ fun Name(
     }
 
     BackHandler {
-        showDialog = true
+        onBackButtonClick()
     }
 
     LaunchedEffect(key1 = viewModel.effect) {
@@ -169,7 +174,7 @@ fun NextButton(
     isKeyboardOpened: Boolean,
     modifier: Modifier,
     onClickNextBtn: () -> Unit,
-    keyboardVisibilityUtils: KeyboardVisibilityUtils
+    keyboardVisibilityUtils: KeyboardVisibilityUtils,
 ) {
     Box(
         modifier = modifier,
@@ -201,7 +206,7 @@ fun NextButton(
 fun OnKeyboardNextButton(
     enabled: Boolean,
     onClickNextBtn: () -> Unit,
-    keyboardVisibilityUtils: KeyboardVisibilityUtils
+    keyboardVisibilityUtils: KeyboardVisibilityUtils,
 ) {
     Button(
         enabled = enabled,
