@@ -20,7 +20,7 @@ class NameViewModel @Inject constructor() :
                 setEffect(NavigateToPreviousScreen)
             }
             is NameContract.NameUiEvent.OnNextButtonClick -> {
-                setEffect(NavigateToNextScreen(event.name))
+                setEffect(NavigateToNextScreen(uiState.value.name))
             }
         }
     }

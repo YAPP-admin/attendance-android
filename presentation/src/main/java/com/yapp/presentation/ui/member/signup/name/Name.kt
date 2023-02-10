@@ -24,6 +24,7 @@ import com.yapp.common.yds.YDSButtonLarge
 import com.yapp.common.yds.YDSPopupDialog
 import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R
+import com.yapp.presentation.ui.member.signup.name.NameContract.NameSideEffect
 import com.yapp.presentation.ui.member.signup.name.NameContract.NameUiEvent.*
 import kotlinx.coroutines.flow.collectLatest
 
@@ -44,8 +45,8 @@ fun Name(
     )
 
     val onBackButtonClick by remember { mutableStateOf({ viewModel.setEvent(OnBackButtonClick) }) }
-    val onNextButtonClick: (String) -> Unit by remember {
-        mutableStateOf({ viewModel.setEvent(OnNextButtonClick(it)) })
+    val onNextButtonClick: () -> Unit by remember {
+        mutableStateOf({ viewModel.setEvent(OnNextButtonClick) })
     }
     val onInputNameChange: (String) -> Unit by remember {
         mutableStateOf({ viewModel.setEvent(InputName(it)) })
@@ -87,10 +88,10 @@ fun Name(
             }
 
             NextButton(
-                name = uiState.name,
+                enabled = uiState.name.isNotBlank(),
                 isKeyboardOpened = isKeyboardOpened,
                 modifier = Modifier.align(Alignment.BottomCenter),
-                onClickNextBtn = { onNextButtonClick(it) },
+                onClickNextBtn = { onNextButtonClick() },
                 keyboardVisibilityUtils = keyboardVisibilityUtils
             )
         }
@@ -103,10 +104,11 @@ fun Name(
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
-                is NameContract.NameSideEffect.NavigateToPreviousScreen -> {
+                is NameSideEffect.NavigateToPreviousScreen -> {
                     onClickBackBtn()
                 }
-                is NameContract.NameSideEffect.NavigateToNextScreen -> {
+
+                is NameSideEffect.NavigateToNextScreen -> {
                     onClickNextBtn(effect.name)
                 }
             }
@@ -163,10 +165,10 @@ fun InputName(name: String, onInputName: (String) -> Unit) {
 
 @Composable
 fun NextButton(
-    name: String,
+    enabled: Boolean,
     isKeyboardOpened: Boolean,
     modifier: Modifier,
-    onClickNextBtn: (String) -> Unit,
+    onClickNextBtn: () -> Unit,
     keyboardVisibilityUtils: KeyboardVisibilityUtils
 ) {
     Box(
@@ -174,18 +176,17 @@ fun NextButton(
     ) {
         if (isKeyboardOpened) {
             OnKeyboardNextButton(
-                name = name,
-                state = if (name.isBlank()) YdsButtonState.DISABLED else YdsButtonState.ENABLED,
+                enabled = enabled,
                 onClickNextBtn = onClickNextBtn,
                 keyboardVisibilityUtils = keyboardVisibilityUtils
             )
         } else {
             YDSButtonLarge(
                 text = stringResource(id = R.string.name_next_button),
-                state = if (name.isBlank()) YdsButtonState.DISABLED else YdsButtonState.ENABLED,
+                state = if (enabled) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
                 onClick = {
-                    if (name.isNotBlank()) {
-                        onClickNextBtn(name)
+                    if (enabled) {
+                        onClickNextBtn()
                         keyboardVisibilityUtils.detachKeyboardListener()
                     }
                 },
@@ -198,43 +199,31 @@ fun NextButton(
 
 @Composable
 fun OnKeyboardNextButton(
-    name: String,
-    state: YdsButtonState,
-    onClickNextBtn: (String) -> Unit,
+    enabled: Boolean,
+    onClickNextBtn: () -> Unit,
     keyboardVisibilityUtils: KeyboardVisibilityUtils
 ) {
     Button(
+        enabled = enabled,
         contentPadding = PaddingValues(0.dp),
         onClick = {
-            if (name.isNotBlank()) {
-                onClickNextBtn(name)
-                keyboardVisibilityUtils.detachKeyboardListener()
-            }
+            onClickNextBtn()
+            keyboardVisibilityUtils.detachKeyboardListener()
         },
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp),
         shape = RoundedCornerShape(0.dp),
-        colors = when (state) {
-            YdsButtonState.DISABLED -> {
-                ButtonDefaults.buttonColors(
-                    backgroundColor = Gray_400
-                )
-            }
-            YdsButtonState.ENABLED,
-            YdsButtonState.PRESSED
-            -> {
-                ButtonDefaults.buttonColors(
-                    backgroundColor = Yapp_Orange
-                )
-            }
-        },
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = Yapp_Orange,
+            disabledBackgroundColor = Gray_400
+        ),
         elevation = null
     ) {
         Text(
+            style = AttendanceTypography.h3,
             text = stringResource(id = R.string.name_next_button),
             color = Color.White
         )
     }
-
 }

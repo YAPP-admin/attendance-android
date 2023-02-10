@@ -18,6 +18,6 @@ class NameContract {
     sealed class NameUiEvent : UiEvent {
         data class InputName(val name: String) : NameUiEvent()
         object OnBackButtonClick : NameUiEvent()
-        data class OnNextButtonClick(val name: String) : NameUiEvent()
+        object OnNextButtonClick : NameUiEvent()
     }
 }
