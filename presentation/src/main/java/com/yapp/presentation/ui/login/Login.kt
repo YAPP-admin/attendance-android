@@ -30,11 +30,8 @@ import com.yapp.common.R.drawable
 import com.yapp.common.R.raw
 import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
-import com.yapp.common.theme.Yapp_Orange
-import com.yapp.common.yds.YDSButtonLarge
 import com.yapp.common.yds.YDSPopupDialog
 import com.yapp.common.yds.YDSProgressBar
-import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R
 import com.yapp.presentation.ui.login.LoginContract.LoginUiEvent
 import com.yapp.presentation.ui.login.LoginContract.LoginUiSideEffect
@@ -77,7 +74,7 @@ fun Login(
             constraintSet = constraintSet(),
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .background(AttendanceTheme.colors.backgroundColors.background)
                 .systemBarsPadding()
                 .padding(24.dp),
         ) {
@@ -145,7 +142,8 @@ private fun IntroduceTitle() {
             .fillMaxWidth()
             .layoutId("introduce"),
         text = stringResource(id = R.string.login_attendance_introduce_text),
-        style = AttendanceTypography.h1
+        style = AttendanceTypography.h1,
+        color = AttendanceTheme.colors.grayScale.Gray1200
     )
 }
 
@@ -166,7 +164,7 @@ private fun GuestButton(
             viewModel.setEvent(LoginUiEvent.OnGuestButtonClicked)
         },
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = Yapp_Orange
+            backgroundColor = AttendanceTheme.colors.mainColors.YappOrange
         ),
         elevation = null
     ) {
