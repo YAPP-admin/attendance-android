@@ -1,5 +1,6 @@
 package com.yapp.presentation.ui.member.score.detail
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
@@ -38,12 +39,14 @@ fun SessionDetail(
     Scaffold(
         topBar = {
             YDSAppBar(
+                modifier = Modifier.background(AttendanceTheme.colors.backgroundColors.background),
                 title = session?.title ?: "",
                 onClickBackButton = onClickBackButton
             )
         },
         modifier = Modifier
             .fillMaxSize()
+            .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
             .systemBarsPadding()
     ) {
         when (uiState.loadState) {
@@ -63,6 +66,7 @@ fun SessionDetailScreen(session: Session?, attendance: YDSAttendanceType?) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(AttendanceTheme.colors.backgroundColors.background)
             .padding(horizontal = 24.dp, vertical = 40.dp)
     ) {
         Row(
@@ -91,10 +95,10 @@ fun SessionDetailScreen(session: Session?, attendance: YDSAttendanceType?) {
                         .weight(1f)
                         .padding(horizontal = 4.dp),
                     color = when (attendance) {
-                        YDSAttendanceType.ATTEND -> Etc_Green
-                        YDSAttendanceType.ABSENT -> Etc_Red
-                        YDSAttendanceType.TARDY -> Etc_Yellow_Font
-                        YDSAttendanceType.TBD, YDSAttendanceType.NO_ATTENDANCE, YDSAttendanceType.NO_YAPP -> Gray_400
+                        YDSAttendanceType.ATTEND -> AttendanceTheme.colors.etcColors.EtcGreen
+                        YDSAttendanceType.ABSENT -> AttendanceTheme.colors.etcColors.EtcRed
+                        YDSAttendanceType.TARDY -> AttendanceTheme.colors.etcColors.EtcYellowFont
+                        YDSAttendanceType.TBD, YDSAttendanceType.NO_ATTENDANCE, YDSAttendanceType.NO_YAPP -> AttendanceTheme.colors.grayScale.Gray400
                     }
                 )
             }
@@ -104,7 +108,7 @@ fun SessionDetailScreen(session: Session?, attendance: YDSAttendanceType?) {
                 Text(
                     text = SimpleDateFormat("MM.dd", Locale.KOREA).format(sessionDate),
                     style = AttendanceTypography.body1,
-                    color = Gray_600
+                    color = AttendanceTheme.colors.grayScale.Gray600
                 )
             }
 
@@ -114,14 +118,14 @@ fun SessionDetailScreen(session: Session?, attendance: YDSAttendanceType?) {
             text = session?.title ?: "",
             modifier = Modifier.padding(top = 28.dp),
             style = AttendanceTypography.h1,
-            color = Gray_1000
+            color = AttendanceTheme.colors.grayScale.Gray1000
         )
 
         Text(
             text = session?.description ?: "",
             modifier = Modifier.padding(top = 12.dp),
             style = AttendanceTypography.body1,
-            color = Gray_800
+            color = AttendanceTheme.colors.grayScale.Gray800
         )
     }
 }

@@ -99,7 +99,6 @@ fun ManagementScreen(
     onDropDownClicked: ((MemberState) -> Unit)
 ) {
     ModalBottomSheetLayout(
-        modifier = Modifier,
         sheetContent = {
             BottomSheetDialog(
                 attendanceTypes = listOf(AttendanceType.Absent,AttendanceType.Normal, AttendanceType.Late, AttendanceType.Admit),
@@ -116,7 +115,9 @@ fun ManagementScreen(
                 .systemBarsPadding(),
             topBar = {
                 YDSAppBar(
-                    modifier = Modifier.padding(horizontal = 4.dp),
+                    modifier = Modifier
+                        .background(AttendanceTheme.colors.backgroundColors.background)
+                        .padding(horizontal = 4.dp),
                     title = uiState.sessionTitle,
                     onClickBackButton = { onBackButtonClicked.invoke() }
                 )
@@ -125,6 +126,7 @@ fun ManagementScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(AttendanceTheme.colors.backgroundColors.background)
                     .padding(start = 24.dp, end = 24.dp, bottom = 24.dp)
             ) {
 

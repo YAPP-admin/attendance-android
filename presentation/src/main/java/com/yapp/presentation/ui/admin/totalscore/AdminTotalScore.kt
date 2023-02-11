@@ -43,6 +43,7 @@ fun AdminTotalScore(
     Scaffold(
         topBar = {
             YDSAppBar(
+                modifier = Modifier.background(AttendanceTheme.colors.backgroundColors.background),
                 title = stringResource(id = R.string.admin_total_score_title),
                 onClickBackButton = { viewModel.setEvent(AdminTotalScoreUiEvent.OnBackArrowClick) }
             )
@@ -76,8 +77,7 @@ fun AdminTotalScoreScreen(
 ) {
     LazyColumn(
         modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
+            .fillMaxSize()
             .background(AttendanceTheme.colors.backgroundColors.background)
     ) {
         item {

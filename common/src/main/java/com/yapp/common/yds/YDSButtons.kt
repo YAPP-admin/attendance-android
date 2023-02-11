@@ -29,14 +29,14 @@ fun YDSButtonLarge(
         colors = when (state) {
             YdsButtonState.DISABLED -> {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = Gray_400
+                    backgroundColor = AttendanceTheme.colors.grayScale.Gray400
                 )
             }
             YdsButtonState.ENABLED,
             YdsButtonState.PRESSED
             -> {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = Yapp_Orange
+                    backgroundColor = AttendanceTheme.colors.mainColors.YappOrange
                 )
             }
         },
@@ -66,7 +66,7 @@ fun YDSButtonMedium(
         colors = when (state) {
             YdsButtonState.ENABLED -> {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = Gray_1200
+                    backgroundColor = AttendanceTheme.colors.grayScale.Gray1200
                 )
             }
             YdsButtonState.PRESSED -> {
@@ -104,7 +104,7 @@ fun YDSButtonRegular(
         colors = when (state) {
             YdsButtonState.ENABLED -> {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = Yapp_Orange
+                    backgroundColor = AttendanceTheme.colors.mainColors.YappOrange
                 )
             }
             else -> {
@@ -137,12 +137,12 @@ fun YDSButtonSmall(
         colors = when (state) {
             YdsButtonState.ENABLED -> {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = Yapp_Orange
+                    backgroundColor = AttendanceTheme.colors.mainColors.YappOrange
                 )
             }
             YdsButtonState.DISABLED -> {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = Gray_400
+                    backgroundColor = AttendanceTheme.colors.grayScale.Gray400
                 )
             }
             YdsButtonState.PRESSED -> {
@@ -177,14 +177,14 @@ fun YDSChoiceButton(
         colors = when (state) {
             YdsButtonState.DISABLED -> {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = Gray_200
+                    backgroundColor = AttendanceTheme.colors.grayScale.Gray200
                 )
             }
             YdsButtonState.ENABLED,
             YdsButtonState.PRESSED
             -> {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = Yapp_Orange
+                    backgroundColor = AttendanceTheme.colors.mainColors.YappOrange
                 )
             }
         },
@@ -200,7 +200,7 @@ fun YDSChoiceButton(
             fontSize = 16.sp,
             color = when (state) {
                 YdsButtonState.DISABLED -> {
-                    Gray_800
+                    AttendanceTheme.colors.grayScale.Gray800
                 }
                 YdsButtonState.ENABLED,
                 YdsButtonState.PRESSED

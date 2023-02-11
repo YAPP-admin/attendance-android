@@ -5,6 +5,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -56,17 +57,20 @@ fun MemberSetting(
     Scaffold(
         topBar = {
             YDSAppBar(
+                modifier = Modifier.background(AttendanceTheme.colors.backgroundColors.background),
                 title = stringResource(id = string.member_setting_title),
                 onClickBackButton = navigateToPreviousScreen
             )
         },
         modifier = Modifier
             .fillMaxSize()
+            .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
             .systemBarsPadding(),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(AttendanceTheme.colors.backgroundColors.background)
                 .verticalScroll(rememberScrollState())
         ) {
             GroupInfo(uiState.generation)
@@ -102,10 +106,10 @@ fun MemberSetting(
 private fun GroupInfo(generation: Int) {
     Text(
         text = stringResource(id = string.member_setting_generation, generation),
-        color = Yapp_Orange,
+        color = AttendanceTheme.colors.mainColors.YappOrange,
         modifier = Modifier
             .fillMaxWidth()
-            .background(Yapp_OrangeAlpha)
+            .background(AttendanceTheme.colors.mainColors.YappOrangeAlpha)
             .padding(18.dp),
         textAlign = TextAlign.Center,
         style = AttendanceTypography.body1
@@ -125,7 +129,7 @@ private fun Profile(name: String) {
         )
         Text(
             text = stringResource(id = string.member_setting_name, name),
-            color = Gray_800,
+            color = AttendanceTheme.colors.grayScale.Gray800,
             style = AttendanceTypography.body1,
             modifier = Modifier
                 .fillMaxWidth()
@@ -141,7 +145,7 @@ private fun Divide() {
         modifier = Modifier
             .fillMaxWidth()
             .height(12.dp)
-            .background(Gray_200)
+            .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
     )
 }
 
@@ -175,17 +179,18 @@ private fun MenuList(viewModel: MemberSettingViewModel) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .background(AttendanceTheme.colors.backgroundColors.background)
                 .clickable {}
                 .padding(horizontal = 24.dp, vertical = 16.dp)
         ) {
             Text(
                 text = stringResource(id = string.member_setting_version_info_text),
-                color = Gray_1200,
+                color = AttendanceTheme.colors.grayScale.Gray1200,
                 style = AttendanceTypography.subtitle1
             )
             Text(
                 text = versionName,
-                color = Gray_600,
+                color = AttendanceTheme.colors.grayScale.Gray600,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.End,
                 style = AttendanceTypography.subtitle1
@@ -194,29 +199,29 @@ private fun MenuList(viewModel: MemberSettingViewModel) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(60.dp)
                 .clickable {
                     viewModel.setEvent(MemberSettingContract.MemberSettingUiEvent.OnPrivacyPolicyButtonClicked)
                 }
                 .padding(horizontal = 24.dp, vertical = 16.dp)
         ) {
             Text(
+                modifier = Modifier.weight(1F),
                 text = stringResource(id = string.member_setting_privacy_policy_text),
-                color = Gray_1200,
+                color = AttendanceTheme.colors.grayScale.Gray1200,
                 style = AttendanceTypography.subtitle1
             )
-            Image(
+            Icon(
+                modifier = Modifier.align(Alignment.CenterVertically),
                 painter = painterResource(id = R.drawable.icon_chevron_right),
                 contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .align(Alignment.CenterVertically),
-                alignment = Alignment.CenterEnd
+                tint = AttendanceTheme.colors.grayScale.Gray600
             )
         }
         Spacer(Modifier.height(32.dp))
         Text(
             text = stringResource(id = string.member_setting_logout_text),
-            color = Gray_400,
+            color = AttendanceTheme.colors.grayScale.Gray400,
             style = AttendanceTypography.subtitle1,
             modifier = Modifier
                 .fillMaxWidth()
@@ -227,7 +232,7 @@ private fun MenuList(viewModel: MemberSettingViewModel) {
         )
         Text(
             text = stringResource(id = string.member_setting_withdraw_text),
-            color = Gray_400,
+            color = AttendanceTheme.colors.grayScale.Gray400,
             style = AttendanceTypography.subtitle1,
             modifier = Modifier
                 .fillMaxWidth()

@@ -13,9 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.yapp.common.R.drawable
+import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
-import com.yapp.common.theme.Gray_200
-import com.yapp.common.theme.Gray_800
 
 @Composable
 fun YDSDropDownButton(
@@ -28,7 +27,7 @@ fun YDSDropDownButton(
         modifier = modifier
             .wrapContentWidth(),
         shape = RoundedCornerShape(8.dp),
-        colors = ButtonDefaults.buttonColors(backgroundColor = Gray_200),
+        colors = ButtonDefaults.buttonColors(backgroundColor = AttendanceTheme.colors.grayScale.Gray200),
         elevation = null
     ) {
         Row(
@@ -44,14 +43,14 @@ fun YDSDropDownButton(
                         .height(20.dp)
                         .align(alignment = Alignment.CenterVertically),
                     style = AttendanceTypography.subtitle2,
-                    color = Gray_800
+                    color = AttendanceTheme.colors.grayScale.Gray800
                 )
             }
             Spacer(modifier = Modifier.width(8.dp))
             Icon(
                 painter = painterResource(id = drawable.icon_rounded_drop_down),
                 contentDescription = "drop down",
-                tint = Gray_800
+                tint = AttendanceTheme.colors.grayScale.Gray800
             )
         }
     }

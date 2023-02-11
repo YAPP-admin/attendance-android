@@ -58,7 +58,12 @@ fun Name(
     }
 
     Scaffold(
-        topBar = { YDSAppBar(onClickBackButton = { onBackButtonClick() }) },
+        topBar = {
+            YDSAppBar(
+                modifier = Modifier.background(AttendanceTheme.colors.backgroundColors.background),
+                onClickBackButton = { onBackButtonClick() }
+            )
+        },
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding()
@@ -79,6 +84,7 @@ fun Name(
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .background(AttendanceTheme.colors.backgroundColors.background)
         ) {
             Column(
                 modifier = Modifier
@@ -127,13 +133,13 @@ fun Title() {
         Spacer(modifier = Modifier.height(32.dp))
         Text(
             text = stringResource(id = R.string.name_title),
-            color = Color.Black,
+            color = AttendanceTheme.colors.grayScale.Gray1200,
             style = AttendanceTypography.h1
         )
         Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = stringResource(id = R.string.name_subtitle),
-            color = Gray_800,
+            color = AttendanceTheme.colors.grayScale.Gray800,
             style = AttendanceTypography.body1
         )
         Spacer(modifier = Modifier.height(28.dp))
@@ -148,15 +154,15 @@ fun InputName(name: String, onInputName: (String) -> Unit) {
         singleLine = true,
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = Gray_200, shape = RoundedCornerShape(50.dp)),
+            .background(color = AttendanceTheme.colors.grayScale.Gray200, shape = RoundedCornerShape(50.dp)),
         placeholder = {
             Text(
                 text = stringResource(id = R.string.name_example_hint),
-                color = Gray_400,
+                color = AttendanceTheme.colors.grayScale.Gray400,
                 style = AttendanceTypography.body1
             )
         },
-        textStyle = AttendanceTypography.body2.copy(color = Gray_800),
+        textStyle = AttendanceTypography.body2.copy(color = AttendanceTheme.colors.grayScale.Gray800),
         colors = TextFieldDefaults.textFieldColors(
             textColor = Color.Gray,
             disabledTextColor = Color.Transparent,
@@ -220,8 +226,8 @@ fun OnKeyboardNextButton(
             .height(60.dp),
         shape = RoundedCornerShape(0.dp),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = Yapp_Orange,
-            disabledBackgroundColor = Gray_400
+            backgroundColor = AttendanceTheme.colors.mainColors.YappOrange,
+            disabledBackgroundColor = AttendanceTheme.colors.grayScale.Gray400
         ),
         elevation = null
     ) {
