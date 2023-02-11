@@ -67,6 +67,7 @@ fun AdminMain(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
+            .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
             .systemBarsPadding()
     ) {
         when (uiState.loadState) {
@@ -134,6 +135,7 @@ fun LazyListScope.AdminTopBar(onLogoutClicked: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
+                .background(AttendanceTheme.colors.backgroundColors.background)
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.Center
@@ -142,7 +144,7 @@ fun LazyListScope.AdminTopBar(onLogoutClicked: () -> Unit) {
                 modifier = Modifier.clickable { onLogoutClicked() },
                 painter = painterResource(id = R.drawable.icon_logout),
                 contentDescription = null,
-                tint = Gray_600,
+                tint = AttendanceTheme.colors.grayScale.Gray600,
             )
         }
     }
@@ -174,11 +176,12 @@ fun LazyListScope.YappuUserScoreCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
+                .background(AttendanceTheme.colors.backgroundColors.background)
                 .padding(top = 15.dp, bottom = 28.dp, start = 24.dp, end = 24.dp)
                 .clickable { setOnUserScoreCardClickedEvent() },
             shape = RoundedCornerShape(12.dp),
             elevation = 0.dp,
-            backgroundColor = Gray_200
+            backgroundColor = AttendanceTheme.colors.grayScale.Gray200
         ) {
             Image(
                 painter = painterResource(id = R.drawable.illust_manager_home),
@@ -195,13 +198,13 @@ fun LazyListScope.YappuUserScoreCard(
                 Text(
                     text = stringResource(id = string.admin_main_all_score_text),
                     style = AttendanceTypography.h3,
-                    color = Gray_1200
+                    color = AttendanceTheme.colors.grayScale.Gray1200
                 )
                 Text(
                     text = stringResource(id = string.admin_main_see_all_score_text),
                     modifier = Modifier.padding(top = 4.dp),
                     style = AttendanceTypography.body1,
-                    color = Yapp_Orange
+                    color = AttendanceTheme.colors.mainColors.YappOrange
                 )
             }
         }
@@ -223,7 +226,7 @@ fun LazyListScope.GraySpacing(modifier: Modifier) {
         Spacer(
             modifier = modifier
                 .fillMaxWidth()
-                .background(Gray_200)
+                .background(AttendanceTheme.colors.grayScale.Gray200)
         )
     }
 }
@@ -242,7 +245,7 @@ fun LazyListScope.UpcomingSession(
             Text(
                 text = upcomingSession.date.substring(MONTH_RANGE) +
                         "." + upcomingSession.date.substring(DAY_RANGE),
-                color = Gray_600,
+                color = AttendanceTheme.colors.grayScale.Gray600,
                 style = AttendanceTypography.body2
             )
 
@@ -305,7 +308,7 @@ fun LazyListScope.ManagementSubTitle() {
     item {
         Text(
             text = stringResource(id = string.admin_main_see_all_session_text),
-            color = Gray_600,
+            color = AttendanceTheme.colors.grayScale.Gray600,
             style = AttendanceTypography.body2,
             modifier = Modifier.padding(start = 24.dp, top = 28.dp, end = 24.dp, bottom = 4.dp)
         )
@@ -324,6 +327,7 @@ private fun SessionItem(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .background(AttendanceTheme.colors.backgroundColors.background)
             .clickable {
                 if (session.type == NeedToAttendType.NEED_ATTENDANCE)
                     onSessionItemClicked(session.sessionId, session.title)
@@ -333,7 +337,7 @@ private fun SessionItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         val textColor =
-            if (session.type == NeedToAttendType.NEED_ATTENDANCE) Gray_1200 else Gray_400
+            if (session.type == NeedToAttendType.NEED_ATTENDANCE) AttendanceTheme.colors.grayScale.Gray1200 else AttendanceTheme.colors.grayScale.Gray400
 
         Text(
             modifier = Modifier.width(64.dp),

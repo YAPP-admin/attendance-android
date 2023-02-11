@@ -4,6 +4,7 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -48,6 +49,7 @@ fun AdminTotalScore(
         },
         modifier = Modifier
             .fillMaxSize()
+            .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
             .systemBarsPadding(),
     ) {
         val uiState = viewModel.uiState.collectAsState()
@@ -76,6 +78,7 @@ fun AdminTotalScoreScreen(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .background(AttendanceTheme.colors.backgroundColors.background)
     ) {
         item {
             YDSBox(
@@ -116,6 +119,7 @@ fun TeamItem(teamItemState: AdminTotalScoreUiState.TeamItemState) {
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
+                .background(AttendanceTheme.colors.backgroundColors.background)
                 .clickable { isExpanded = !isExpanded }
                 .padding(vertical = 18.dp, horizontal = 24.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -123,13 +127,13 @@ fun TeamItem(teamItemState: AdminTotalScoreUiState.TeamItemState) {
         ) {
             Text(
                 text = teamItemState.teamName,
-                color = Gray_1200,
+                color = AttendanceTheme.colors.grayScale.Gray1200,
                 style = AttendanceTypography.h3
             )
 
             Icon(
                 painter = painterResource(id = iconResourceId),
-                tint = Color.Unspecified,
+                tint = AttendanceTheme.colors.grayScale.Gray600,
                 contentDescription = null
             )
         }
@@ -155,12 +159,13 @@ fun TeamItem(teamItemState: AdminTotalScoreUiState.TeamItemState) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
+                    .background(AttendanceTheme.colors.backgroundColors.background)
             ) {
-                Divider(modifier = Modifier.padding(horizontal = 24.dp), color = Gray_300)
+                Divider(modifier = Modifier.padding(horizontal = 24.dp), color = AttendanceTheme.colors.grayScale.Gray300)
                 teamItemState.teamMembers.forEach { teamMember ->
                     MemberItem(memberWithTotal = teamMember)
                 }
-                Divider(modifier = Modifier.padding(horizontal = 24.dp), color = Gray_300)
+                Divider(modifier = Modifier.padding(horizontal = 24.dp), color = AttendanceTheme.colors.grayScale.Gray300)
             }
         }
     }
@@ -176,6 +181,7 @@ fun MemberItem(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .background(AttendanceTheme.colors.backgroundColors.background)
             .padding(vertical = 18.dp)
             .padding(start = startPadding.dp, end = 32.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -193,14 +199,14 @@ fun MemberItem(
 
             Text(
                 text = memberWithTotal.name,
-                color = Gray_800,
+                color = AttendanceTheme.colors.grayScale.Gray800,
                 style = AttendanceTypography.body1
             )
         }
 
         Text(
             text = memberWithTotal.totalScore.toString(),
-            color = Yapp_Orange,
+            color = AttendanceTheme.colors.mainColors.YappOrange,
             style = AttendanceTypography.subtitle1
         )
     }
