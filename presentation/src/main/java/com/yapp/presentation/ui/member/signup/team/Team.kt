@@ -132,7 +132,7 @@ fun TeamScreen(
             Spacer(modifier = Modifier.height(28.dp))
             YDSOption(
                 types = uiState.teams.map { it.type.value },
-                selectedType = uiState.selectedTeamType?.value,
+                selectedType = uiState.teamOptionState.selectedOption?.value,
                 onTypeClicked = onTeamTypeClicked
             )
             Spacer(modifier = Modifier.height(52.dp))
@@ -148,9 +148,10 @@ fun TeamScreen(
                 .padding(bottom = 40.dp)
                 .height(60.dp)
                 .align(Alignment.BottomCenter),
-            state = if ((uiState.selectedTeamType != null) and (uiState.selectedTeamNumber != null)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+            state = if ((uiState.teamOptionState.selectedOption != null) and (uiState.teamNumberOptionState.selectedOption != null)) YdsButtonState.ENABLED
+            else YdsButtonState.DISABLED,
             onClick = {
-                if ((uiState.selectedTeamType != null) and (uiState.selectedTeamNumber != null)) onConfirmClicked()
+                if ((uiState.teamOptionState.selectedOption != null) and (uiState.teamNumberOptionState.selectedOption != null)) onConfirmClicked()
             },
         )
     }
@@ -158,11 +159,10 @@ fun TeamScreen(
 
 @Composable
 fun TeamNumberOption(uiState: TeamUiState, onTeamNumberClicked: (Int) -> Unit) {
-    val selectedTeamType = uiState.teams.filter { it.type == uiState.selectedTeamType }
     val density = LocalDensity.current
 
     AnimatedVisibility(
-        visible = uiState.selectedTeamType != null,
+        visible = uiState.teamOptionState.selectedOption != null,
         enter = slideInVertically { with(density) { -40.dp.roundToPx() } }
                 + expandVertically(expandFrom = Alignment.CenterVertically)
                 + fadeIn(initialAlpha = 0.3f)
@@ -175,15 +175,13 @@ fun TeamNumberOption(uiState: TeamUiState, onTeamNumberClicked: (Int) -> Unit) {
             )
             Spacer(modifier = Modifier.height(10.dp))
             Row {
-                if (selectedTeamType.isNotEmpty()) {
-                    repeat(selectedTeamType[0].number) { teamNum ->
-                        YDSChoiceButton(
-                            text = stringResource(R.string.member_signup_team_number, teamNum + 1),
-                            modifier = Modifier.padding(end = 12.dp, bottom = 12.dp),
-                            state = if (uiState.selectedTeamNumber == teamNum + 1) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                            onClick = { onTeamNumberClicked(teamNum + 1) }
-                        )
-                    }
+                repeat(uiState.numberOfSelectedTeamType ?: 0) { teamNum ->
+                    YDSChoiceButton(
+                        text = stringResource(R.string.member_signup_team_number, teamNum + 1),
+                        modifier = Modifier.padding(end = 12.dp, bottom = 12.dp),
+                        state = if (uiState.teamNumberOptionState.selectedOption == teamNum + 1) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+                        onClick = { onTeamNumberClicked(teamNum + 1) }
+                    )
                 }
             }
         }

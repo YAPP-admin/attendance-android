@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.model.Team
 import com.yapp.domain.model.types.PositionType
-import com.yapp.domain.model.types.TeamType
 import com.yapp.domain.usecases.GetTeamListUseCase
 import com.yapp.domain.usecases.SignUpMemberUseCase
 import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamSideEffect
@@ -38,17 +37,26 @@ class TeamViewModel @Inject constructor(
     override suspend fun handleEvent(event: TeamUiEvent) {
         when (event) {
             is TeamUiEvent.ChooseTeam -> {
-                val selectedTeamType = TeamType.values().find { it.value == event.teamType }
+                val selectedTeamType =
+                    uiState.value.teamOptionState.items.find { it.value == event.teamType }
+                val numberOfSelectedTeamType =
+                    uiState.value.teams.find { it.type == selectedTeamType }?.number
 
                 setState {
                     copy(
-                        selectedTeamType = selectedTeamType,
-                        numberOfSelectedTeamType = uiState.value.teams.find { it.type == selectedTeamType }?.number
+                        teamOptionState = teamOptionState.select {
+                            TeamContract.TeamOptionState(selectedOption = selectedTeamType)
+                        },
+                        numberOfSelectedTeamType = numberOfSelectedTeamType
                     )
                 }
             }
             is TeamUiEvent.ChooseTeamNumber -> {
-                setState { copy(selectedTeamNumber = event.teamNum) }
+                setState {
+                    copy(teamNumberOptionState = teamNumberOptionState.select {
+                        TeamContract.TeamNumberOptionState(selectedOption = event.teamNum)
+                    })
+                }
             }
             is TeamUiEvent.ConfirmTeam -> {
                 if (savedStateHandle.get<String>("name") == null || savedStateHandle.get<String>("position") == null) {
@@ -60,8 +68,8 @@ class TeamViewModel @Inject constructor(
                     memberName = savedStateHandle.get<String>("name")!!,
                     memberPosition = PositionType.of(savedStateHandle.get<String>("position")!!),
                     team = Team(
-                        type = uiState.value.selectedTeamType!!,
-                        number = uiState.value.selectedTeamNumber!!
+                        type = uiState.value.teamOptionState.selectedOption!!,
+                        number = uiState.value.teamNumberOptionState.selectedOption!!
                     )
                 )
             }
