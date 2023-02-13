@@ -26,7 +26,6 @@ import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSButtonLarge
 import com.yapp.common.yds.YDSOption
 import com.yapp.common.yds.YdsButtonState
-import com.yapp.domain.model.types.PositionType
 import com.yapp.presentation.R
 import com.yapp.presentation.ui.member.signup.position.PositionContract.PositionSideEffect
 import com.yapp.presentation.ui.member.signup.position.PositionContract.PositionUiEvent
@@ -74,11 +73,14 @@ fun Position(
                 )
                 Spacer(modifier = Modifier.height(28.dp))
                 YDSOption(
-                    types = PositionType.values().map { it.value },
+                    types = uiState.ydsOption.items.map { it.value },
                     onTypeClicked = { select ->
-                        viewModel.setEvent(PositionUiEvent.ChoosePosition(select))
+                        viewModel.setEvent(
+                            PositionUiEvent.ChoosePosition(
+                                uiState.ydsOption.items.find { it.value == select })
+                        )
                     },
-                    selectedType = uiState.position?.value
+                    selectedType = uiState.ydsOption.selectedOption?.value
                 )
             }
             YDSButtonLarge(
@@ -87,12 +89,8 @@ fun Position(
                     .padding(bottom = 40.dp)
                     .height(60.dp)
                     .align(Alignment.BottomCenter),
-                onClick = {
-                    if (uiState.position != null) {
-                        viewModel.setEvent(PositionUiEvent.ConfirmPosition)
-                    }
-                },
-                state = if (uiState.position != null) YdsButtonState.ENABLED else YdsButtonState.DISABLED
+                onClick = { viewModel.setEvent(PositionUiEvent.ConfirmPosition) },
+                state = if (uiState.ydsOption.selectedOption != null) YdsButtonState.ENABLED else YdsButtonState.DISABLED
             )
         }
     }
