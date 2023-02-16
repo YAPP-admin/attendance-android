@@ -331,7 +331,7 @@ enum class AttendanceScreenRoute(val route: String) {
 fun SetStatusBarColorByRoute(route: String?) {
     val systemUiController = rememberSystemUiController()
 
-    val shouldShowLighIcon = !isSystemInDarkTheme()
+    val shouldShowLightIcon = !isSystemInDarkTheme()
     val yappOrange = AttendanceTheme.colors.mainColors.YappOrange
     val backgroundBase = AttendanceTheme.colors.backgroundColors.backgroundBase
 
@@ -345,13 +345,13 @@ fun SetStatusBarColorByRoute(route: String?) {
             BottomNavigationItem.SESSION.route -> {
                 systemUiController.setStatusBarColor(
                     color = backgroundBase,
-                    darkIcons = shouldShowLighIcon
+                    darkIcons = shouldShowLightIcon
                 )
             }
             else -> {
                 systemUiController.setStatusBarColor(
                     color = Color.Transparent,
-                    darkIcons = shouldShowLighIcon
+                    darkIcons = shouldShowLightIcon
                 )
             }
         }
