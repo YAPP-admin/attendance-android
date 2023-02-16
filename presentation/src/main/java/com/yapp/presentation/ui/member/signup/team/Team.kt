@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,8 +30,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.insets.systemBarsPadding
+import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
-import com.yapp.common.theme.Gray_1200
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSButtonLarge
 import com.yapp.common.yds.YDSChoiceButton
@@ -62,7 +63,12 @@ fun Team(
         }
     }
     Scaffold(
-        topBar = { YDSAppBar(onClickBackButton = onClickBackButton) },
+        topBar = {
+            YDSAppBar(
+                modifier = Modifier.background(AttendanceTheme.colors.backgroundColors.background),
+                onClickBackButton = onClickBackButton
+            )
+        },
         modifier = Modifier
             .fillMaxSize()
             .systemBarsPadding()
@@ -112,6 +118,7 @@ fun TeamScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(AttendanceTheme.colors.backgroundColors.background)
             .padding(horizontal = 24.dp)
     ) {
         Column(
@@ -123,7 +130,7 @@ fun TeamScreen(
             Text(
                 text = stringResource(R.string.member_signup_choose_team),
                 style = AttendanceTypography.h1,
-                color = Gray_1200,
+                color = AttendanceTheme.colors.grayScale.Gray1200,
             )
             Spacer(modifier = Modifier.height(28.dp))
             TeamOption(
@@ -186,7 +193,7 @@ fun TeamNumberOption(uiState: TeamContract.TeamUiState, onTeamNumberClicked: (In
             Text(
                 text = stringResource(R.string.member_signup_choose_team_number),
                 style = AttendanceTypography.h3,
-                color = Gray_1200
+                color = AttendanceTheme.colors.grayScale.Gray1200
             )
             Spacer(modifier = Modifier.height(10.dp))
             Row {

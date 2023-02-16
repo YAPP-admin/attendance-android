@@ -30,12 +30,14 @@ fun Help( onClickBackButton: () -> Unit) {
     Scaffold(
         topBar = {
             YDSAppBar(
+                modifier = Modifier.background(AttendanceTheme.colors.backgroundColors.background),
                 title = stringResource(id = R.string.help_title),
                 onClickBackButton = { onClickBackButton() }
             )
         },
         modifier = Modifier
             .fillMaxSize()
+            .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
             .systemBarsPadding(),
     ) {
         Column(
@@ -51,16 +53,20 @@ fun Help( onClickBackButton: () -> Unit) {
 
 @Composable
 private fun BasicInfo() {
-    Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 72.dp)) {
+    Column(
+        modifier = Modifier
+            .background(AttendanceTheme.colors.backgroundColors.background)
+            .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 72.dp)
+    ) {
         Text(
             buildAnnotatedString {
                 withStyle(
-                    style = AttendanceTypography.h3.copy(color = Yapp_Orange).toSpanStyle()
+                    style = AttendanceTypography.h3.copy(color = AttendanceTheme.colors.mainColors.YappOrange).toSpanStyle()
                 ) {
                     append(stringResource(id = R.string.help_basic_info_yapp_text))
                 }
                 withStyle(
-                    style = AttendanceTypography.h3.copy(color = Gray_1200).toSpanStyle()
+                    style = AttendanceTypography.h3.copy(color = AttendanceTheme.colors.grayScale.Gray1200).toSpanStyle()
                 ) {
                     append(stringResource(id = R.string.help_basic_info_title_text))
                 }
@@ -68,7 +74,7 @@ private fun BasicInfo() {
         )
         Text(
             text = stringResource(id = R.string.help_basic_info_content_text),
-            color = Gray_600,
+            color = AttendanceTheme.colors.grayScale.Gray600,
             modifier = Modifier.padding(top = 8.dp),
             fontSize = 16.sp,
             style = AttendanceTypography.body1
@@ -77,7 +83,7 @@ private fun BasicInfo() {
         Spacer(modifier = Modifier.height(38.dp))
         Text(
             text = stringResource(id = R.string.help_basic_info_tip_text),
-            color = Gray_600,
+            color = AttendanceTheme.colors.grayScale.Gray600,
             style = AttendanceTypography.body1
         )
     }
@@ -87,14 +93,14 @@ private fun BasicInfo() {
 private fun DetailInfo() {
     Column(
         modifier = Modifier
-            .background(Gray_200)
             .fillMaxSize()
+            .background(AttendanceTheme.colors.grayScale.Gray200)
             .padding(top = 40.dp, start = 24.dp, end=24.dp)
     ) {
         Text(
             text = stringResource(id = R.string.help_detail_info_title_text),
             modifier = Modifier.padding(bottom = 12.dp),
-            color = Gray_800,
+            color = AttendanceTheme.colors.grayScale.Gray600,
             fontWeight = FontWeight.Bold,
             fontSize = 14.sp,
         )
@@ -104,7 +110,7 @@ private fun DetailInfo() {
             withStyle(
                 style = SpanStyle(
                     fontWeight = FontWeight.Bold,
-                    color = Gray_800,
+                    color = AttendanceTheme.colors.grayScale.Gray800,
                 )
             ) {
                 append(stringResource(id = R.string.help_detail_info_content1_bold_text))
@@ -116,7 +122,7 @@ private fun DetailInfo() {
             withStyle(
                 style = SpanStyle(
                     fontWeight = FontWeight.Bold,
-                    color = Gray_800
+                    color = AttendanceTheme.colors.grayScale.Gray800
                 )
             ) {
                 append(stringResource(id = R.string.help_detail_info_content2_bold_text))
@@ -135,11 +141,11 @@ private fun DetailInfoItem(text: AnnotatedString) {
             modifier = Modifier.padding(horizontal = 5.dp),
             text = "·",
             fontSize = 12.sp,
-            color = Gray_600
+            color = AttendanceTheme.colors.grayScale.Gray600
         )
         Text(
             text = text,
-            color = Gray_600,
+            color = AttendanceTheme.colors.grayScale.Gray600,
             style = AttendanceTypography.caption.copy(lineHeight = 18.sp),
             fontWeight = FontWeight.W400,
         )
@@ -153,7 +159,7 @@ fun ScoreRuleTable(tardyScore: Int, absentScore: Int) {
             .fillMaxWidth()
             .padding(top = 28.dp)
             .clip(RoundedCornerShape(10.dp))
-            .border(BorderStroke(1.dp, Gray_200)),
+            .border(BorderStroke(1.dp, AttendanceTheme.colors.grayScale.Gray200)),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -182,16 +188,16 @@ fun RowScope.ScoreRuleCell(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .background(Gray_200)
+                .background(AttendanceTheme.colors.grayScale.Gray200)
                 .padding(12.dp),
             text = topText,
-            color = Gray_600,
+            color = AttendanceTheme.colors.grayScale.Gray600,
             textAlign = TextAlign.Center,
             fontSize = 14.sp
         )
         Text(
             text = bottomText,
-            color = Gray_800,
+            color = AttendanceTheme.colors.grayScale.Gray800,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(19.dp),

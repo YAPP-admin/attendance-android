@@ -16,18 +16,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.yapp.common.R
+import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
-import com.yapp.common.theme.Gray_600
+
 
 @Composable
 fun YDSEmptyScreen() {
     Surface(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
+            .fillMaxSize(),
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize()
+                .background(AttendanceTheme.colors.backgroundColors.background),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -38,7 +39,7 @@ fun YDSEmptyScreen() {
             Text(
                 text = stringResource(id = R.string.empty_message),
                 style = AttendanceTypography.h3,
-                color = Gray_600,
+                color = AttendanceTheme.colors.grayScale.Gray600,
                 modifier = Modifier.padding(top = 12.dp)
             )
         }

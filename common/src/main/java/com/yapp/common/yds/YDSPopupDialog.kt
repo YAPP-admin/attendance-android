@@ -47,24 +47,26 @@ fun YDSPopupDialog(
             modifier = modifier
                 .fillMaxSize()
                 .wrapContentHeight()
+
                 .padding(horizontal = 32.dp),
             shape = RoundedCornerShape(10.dp),
             color = Color.White
         ) {
             Column(
                 modifier = Modifier
+                    .background(AttendanceTheme.colors.backgroundColors.backgroundElevated)
                     .padding(24.dp)
             ) {
                 Text(
                     text = title,
                     style = AttendanceTypography.h3,
-                    color = Gray_1200
+                    color = AttendanceTheme.colors.grayScale.Gray1200
                 )
                 Text(
                     text = content,
                     modifier = Modifier.padding(top = 8.dp),
                     style = AttendanceTypography.body1,
-                    color = Gray_800
+                    color = AttendanceTheme.colors.grayScale.Gray800
                 )
 
                 if (editTextHint != null) {
@@ -78,19 +80,19 @@ fun YDSPopupDialog(
                             .onFocusEvent { state ->
                                 isTextFieldFocused = state.isFocused
                             }
-                            .background(color = Gray_200, shape = RoundedCornerShape(10.dp)),
+                            .background(color = AttendanceTheme.colors.grayScale.Gray200, shape = RoundedCornerShape(10.dp)),
                         placeholder = {
                             if(!isTextFieldFocused) {
                                 Text(
                                     modifier = Modifier.fillMaxWidth(),
                                     text = editTextHint,
                                     textAlign = TextAlign.Center,
-                                    color = Gray_400,
+                                    color = AttendanceTheme.colors.grayScale.Gray400,
                                 )
                             }
                         },
                         textStyle = AttendanceTypography.body2.copy(
-                            color = Gray_800,
+                            color = AttendanceTheme.colors.grayScale.Gray800,
                             textAlign = TextAlign.Center
                         ),
                         colors = TextFieldDefaults.textFieldColors(
@@ -116,7 +118,7 @@ fun YDSPopupDialog(
                             .height(46.dp)
                             .padding(end = 6.dp),
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Gray_200,
+                            backgroundColor = AttendanceTheme.colors.grayScale.Gray200,
                         ),
                         shape = RoundedCornerShape(10.dp),
                         elevation = null
@@ -124,7 +126,7 @@ fun YDSPopupDialog(
                         Text(
                             text = negativeButtonText,
                             style = AttendanceTypography.body1,
-                            color = Gray_800
+                            color = AttendanceTheme.colors.grayScale.Gray800
                         )
                     }
 
@@ -135,7 +137,7 @@ fun YDSPopupDialog(
                             .height(46.dp)
                             .padding(start = 6.dp),
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Etc_Red,
+                            backgroundColor = AttendanceTheme.colors.etcColors.EtcRed,
                         ),
                         shape = RoundedCornerShape(10.dp),
                         elevation = null

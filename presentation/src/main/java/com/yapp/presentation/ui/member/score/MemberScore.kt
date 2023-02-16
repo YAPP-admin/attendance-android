@@ -59,11 +59,13 @@ fun MemberScore(
     Scaffold(
         topBar = {
             YDSAppBar(
+                modifier = Modifier.background(AttendanceTheme.colors.backgroundColors.background),
                 title = stringResource(R.string.member_score_title),
             )
         },
         modifier = modifier
             .fillMaxSize()
+            .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
     ) {
         when (uiState.loadState) {
             MemberScoreContract.MemberScoreUiState.LoadState.Loading -> YDSProgressBar()
@@ -92,7 +94,9 @@ fun MemberScoreScreen(
 ) {
     val currentScore = uiState.lastAttendanceList.fold(100) { total, pair -> total + pair.second.type.point }
 
-    LazyColumn {
+    LazyColumn(
+        modifier = Modifier.background(AttendanceTheme.colors.backgroundColors.background)
+    ) {
         item {
             HelpIcon(navigateToHelpScreen)
             SemiCircleProgressBar(if (currentScore > 0) currentScore else 0)
@@ -100,18 +104,19 @@ fun MemberScoreScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(4.dp)
+                    .background(AttendanceTheme.colors.backgroundColors.background)
             )
             UserAttendanceTable(uiState.lastAttendanceList)
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(12.dp)
-                    .background(color = Gray_200)
+                    .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
             )
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(28.dp)
+                    .background(AttendanceTheme.colors.backgroundColors.background)
             )
         }
         items(uiState.attendanceList) { attendanceInfo ->
@@ -127,6 +132,7 @@ private fun HelpIcon(navigateToHelpScreen: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .background(AttendanceTheme.colors.backgroundColors.background)
     ) {
         Icon(
             painter = painterResource(R.drawable.icon_help),
@@ -161,7 +167,7 @@ fun SemiCircleProgressBar(score: Int) {
     val scoreTextPaint = Paint().apply {
         textAlign = Paint.Align.CENTER
         textSize = 150f
-        color = Gray_1000.toArgb()
+        color = AttendanceTheme.colors.grayScale.Gray1000.toArgb()
         typeface = ResourcesCompat.getFont(LocalContext.current, R.font.pretendard_bold)
     }
 
@@ -169,7 +175,7 @@ fun SemiCircleProgressBar(score: Int) {
     val myScoreDescriptionPaint = Paint().apply {
         textAlign = Paint.Align.CENTER
         textSize = 50f
-        color = Gray_600.toArgb()
+        color = AttendanceTheme.colors.grayScale.Gray600.toArgb()
         typeface = ResourcesCompat.getFont(LocalContext.current, R.font.pretendard_medium)
     }
 
@@ -180,12 +186,27 @@ fun SemiCircleProgressBar(score: Int) {
             modifier = Modifier
                 .padding(start = 64.dp, end = 64.dp),
         ) {
+
+            val gray200 = AttendanceTheme.colors.grayScale.Gray200
+            val etcGreen = AttendanceTheme.colors.etcColors.EtcGreen
+            val etcYellow = AttendanceTheme.colors.etcColors.EtcYellow
+            val etcRed = AttendanceTheme.colors.etcColors.EtcRed
+
             androidx.compose.foundation.Canvas(
                 modifier = Modifier
                     .size(maxWidth, (maxWidth.value / 2).dp)
             ) {
+
+                val arcColor = fillColorByUserScore(score).let { score ->
+                    when(score) {
+                        Score.GOOD -> etcGreen
+                        Score.NORMAL -> etcYellow
+                        Score.DANGEROUS -> etcRed
+                    }
+                }
+
                 drawArc(
-                    color = Gray_200,
+                    color = gray200,
                     startAngle = 180f,
                     sweepAngle = 180f,
                     useCenter = false,
@@ -193,8 +214,9 @@ fun SemiCircleProgressBar(score: Int) {
                     style = Stroke(width = 25f, cap = StrokeCap.Round)
                 )
 
+
                 drawArc(
-                    color = fillColorByUserScore(score),
+                    color = arcColor,
                     startAngle = 180f,
                     sweepAngle = (score * 9 / 5) * animatedValue.value,
                     useCenter = false,
@@ -227,7 +249,7 @@ fun UserAttendanceTable(lastAttendanceList: List<Pair<Session, Attendance>>) {
             .fillMaxWidth()
             .padding(24.dp)
             .clip(RoundedCornerShape(10.dp))
-            .border(BorderStroke(1.dp, Gray_200)),
+            .border(BorderStroke(1.dp, AttendanceTheme.colors.grayScale.Gray200)),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -271,7 +293,7 @@ fun RowScope.AttendanceCell(
             Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .background(Gray_200)
+                .background(AttendanceTheme.colors.grayScale.Gray200)
                 .padding(10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
@@ -283,13 +305,13 @@ fun RowScope.AttendanceCell(
             )
             Text(
                 text = topText,
-                color = Gray_600,
+                color = AttendanceTheme.colors.grayScale.Gray600,
                 modifier = Modifier.padding(start = 4.dp)
             )
         }
         Text(
             text = bottomText,
-            color = Gray_800,
+            color = AttendanceTheme.colors.grayScale.Gray800,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(20.dp),
@@ -324,18 +346,19 @@ private fun AttendUserSession(
             .fillMaxWidth()
             .height(1.dp)
             .padding(horizontal = 24.dp)
-            .background(Gray_200)
+            .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
     )
 }
 
-private fun fillColorByUserScore(score: Int): Color {
+//TODO Type으로 빼고
+private fun fillColorByUserScore(score: Int): Score {
     return when (score) {
         in 80..100 -> Score.GOOD
         in 70..79 -> Score.NORMAL
         else -> Score.DANGEROUS
-    }.color
+    }
 }
 
-enum class Score(val color: Color) {
-    GOOD(Etc_Green), NORMAL(Etc_Yellow), DANGEROUS(Etc_Red)
+enum class Score {
+    GOOD, NORMAL, DANGEROUS
 }
