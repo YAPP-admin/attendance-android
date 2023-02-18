@@ -20,7 +20,7 @@ import com.yapp.common.theme.AttendanceTypography
 fun YDSDropDownButton(
     modifier: Modifier = Modifier,
     text: String,
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,
