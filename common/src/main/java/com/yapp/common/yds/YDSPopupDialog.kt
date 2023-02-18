@@ -47,7 +47,6 @@ fun YDSPopupDialog(
             modifier = modifier
                 .fillMaxSize()
                 .wrapContentHeight()
-
                 .padding(horizontal = 32.dp),
             shape = RoundedCornerShape(10.dp),
             color = AttendanceTheme.colors.backgroundColors.backgroundElevated
@@ -99,7 +98,7 @@ fun YDSPopupDialog(
                             textAlign = TextAlign.Center
                         ),
                         colors = TextFieldDefaults.textFieldColors(
-                            textColor = Color.Gray, // <- ??
+                            textColor = AttendanceTheme.colors.grayScale.Gray800,
                             disabledTextColor = Color.Transparent,
                             backgroundColor = Color.Transparent,
                             focusedIndicatorColor = Color.Transparent,
