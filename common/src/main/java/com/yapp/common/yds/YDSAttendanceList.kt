@@ -41,7 +41,8 @@ fun YDSAttendanceList(
             contentDescription = null,
             tint = Color.Unspecified,
             modifier = Modifier.alpha(
-                if ((attendanceType == YDSAttendanceType.TBD) or (attendanceType == YDSAttendanceType.NO_ATTENDANCE) or (attendanceType == YDSAttendanceType.NO_YAPP)) 0f else 1f)
+                if ((attendanceType == YDSAttendanceType.TBD) or (attendanceType == YDSAttendanceType.NO_ATTENDANCE) or (attendanceType == YDSAttendanceType.NO_YAPP)) 0f else 1f
+            )
         )
         Column(
             modifier = Modifier

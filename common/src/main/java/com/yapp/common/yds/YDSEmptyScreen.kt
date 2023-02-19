@@ -19,15 +19,16 @@ import com.yapp.common.R
 import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
 
-
 @Composable
 fun YDSEmptyScreen() {
     Surface(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .background(AttendanceTheme.colors.backgroundColors.background),
     ) {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .background(AttendanceTheme.colors.backgroundColors.background),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
