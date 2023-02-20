@@ -30,6 +30,4 @@ fun YDSOption(types: List<String>, selectedType: String?, onTypeClicked: (String
 interface YDSOptionState<T> {
     val items: List<T>
     val selectedOption: T?
-
-    fun select(type: YDSOptionState<T>.() -> (YDSOptionState<T>)) : YDSOptionState<T> = type(this)
 }

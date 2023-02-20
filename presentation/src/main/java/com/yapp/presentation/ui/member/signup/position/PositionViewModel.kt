@@ -21,11 +21,7 @@ class PositionViewModel @Inject constructor(
                 }
 
                 setState {
-                    copy(ydsOption = ydsOption.select {
-                        PositionContract.PositionOptionState(
-                            selectedOption = event.position
-                        )
-                    })
+                    copy(ydsOption = PositionContract.PositionOptionState(selectedOption = event.position))
                 }
             }
             is PositionUiEvent.ConfirmPosition -> {

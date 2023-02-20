@@ -44,18 +44,14 @@ class TeamViewModel @Inject constructor(
 
                 setState {
                     copy(
-                        teamOptionState = teamOptionState.select {
-                            TeamContract.TeamOptionState(selectedOption = selectedTeamType)
-                        },
+                        teamOptionState = TeamContract.TeamOptionState(selectedOption = selectedTeamType),
                         numberOfSelectedTeamType = numberOfSelectedTeamType
                     )
                 }
             }
             is TeamUiEvent.ChooseTeamNumber -> {
                 setState {
-                    copy(teamNumberOptionState = teamNumberOptionState.select {
-                        TeamContract.TeamNumberOptionState(selectedOption = event.teamNum)
-                    })
+                    copy(teamNumberOptionState = TeamContract.TeamNumberOptionState(selectedOption = event.teamNum))
                 }
             }
             is TeamUiEvent.ConfirmTeam -> {
