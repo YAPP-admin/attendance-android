@@ -2,6 +2,7 @@ package com.yapp.presentation.ui.member.main
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -45,6 +46,7 @@ fun MemberMain(
             scaffoldState = scaffoldState,
             modifier = Modifier
                 .fillMaxSize()
+                .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
                 .systemBarsPadding(),
             bottomBar = {
                 BottomNavigationTab(
@@ -111,7 +113,7 @@ fun BottomNavigationTab(
     val currentRoute = navBackStackEntry?.destination?.route
 
     BottomNavigation(
-        backgroundColor = Color.White,
+        backgroundColor = AttendanceTheme.colors.backgroundColors.background,
         modifier = Modifier.height(80.dp),
         elevation = 2.dp
     ) {
@@ -130,15 +132,15 @@ fun BottomNavigationTab(
                     @Composable {
                         Text(
                             text = stringResource(navigationTab.title),
-                            color = if (navigationTab.route == currentRoute) Gray_1000 else Gray_600,
+                            color = if (navigationTab.route == currentRoute) AttendanceTheme.colors.grayScale.Gray1000 else AttendanceTheme.colors.grayScale.Gray600,
                             style = AttendanceTypography.caption
                         )
                     }
                 } else null,
                 selected = navigationTab.route == currentRoute,
                 onClick = { navigateToScreen.invoke(navigationTab) },
-                selectedContentColor = Yapp_Orange,
-                unselectedContentColor = Gray_600,
+                selectedContentColor = AttendanceTheme.colors.mainColors.YappOrange,
+                unselectedContentColor = AttendanceTheme.colors.grayScale.Gray600,
             )
         }
     }

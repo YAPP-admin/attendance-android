@@ -12,9 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
-import com.yapp.common.theme.Yapp_Orange
-import com.yapp.common.theme.Yapp_OrangeAlpha
 
 @Composable
 fun YDSBox(
@@ -27,11 +26,11 @@ fun YDSBox(
             .height(48.dp)
             .padding(horizontal = 24.dp)
             .clip(shape = RoundedCornerShape(10.dp))
-            .background(color = Yapp_OrangeAlpha)
+            .background(color = AttendanceTheme.colors.mainColors.YappOrangeAlpha)
     ) {
         Text(
             text = text,
-            color = Yapp_Orange,
+            color = AttendanceTheme.colors.mainColors.YappOrange,
             style = AttendanceTypography.body1,
             modifier = Modifier.align(Alignment.Center)
         )
