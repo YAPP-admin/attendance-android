@@ -1,7 +1,5 @@
 package com.yapp.presentation.ui.splash
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
@@ -9,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.airbnb.lottie.compose.*
 import com.yapp.common.R
-import com.yapp.common.theme.Yapp_Orange
+import com.yapp.common.theme.AttendanceTheme
 import com.yapp.presentation.ui.splash.SplashContract.*
 
 @Composable
@@ -23,7 +21,7 @@ fun Splash(
     Surface(
         modifier = Modifier
             .fillMaxSize(),
-        color = Yapp_Orange
+        color = AttendanceTheme.colors.mainColors.YappOrange
     ) {
         SplashLoader(
             uiState.loginState,

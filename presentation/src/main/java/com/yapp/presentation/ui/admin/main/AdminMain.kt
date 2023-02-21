@@ -8,10 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -67,6 +64,7 @@ fun AdminMain(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
+            .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
             .systemBarsPadding()
     ) {
         when (uiState.loadState) {
@@ -104,6 +102,7 @@ fun AdminMainScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
+            .background(AttendanceTheme.colors.backgroundColors.background)
             .wrapContentHeight()
     ) {
         AdminTopBar(onLogoutClicked)
@@ -115,11 +114,7 @@ fun AdminMainScreen(
         uiState.upcomingSession?.let { UpcomingSession(it, onSessionClicked) }
             ?: FinishAllSessions()
         Spacing()
-        GraySpacing(
-            Modifier
-                .height(1.dp)
-                .padding(horizontal = 24.dp)
-        )
+        GrayDivider(modifier = Modifier.height(1.dp))
         ManagementSubTitle()
         Sessions(
             sessions = uiState.sessions,
@@ -134,6 +129,7 @@ fun LazyListScope.AdminTopBar(onLogoutClicked: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
+                .background(AttendanceTheme.colors.backgroundColors.background)
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.Center
@@ -142,7 +138,7 @@ fun LazyListScope.AdminTopBar(onLogoutClicked: () -> Unit) {
                 modifier = Modifier.clickable { onLogoutClicked() },
                 painter = painterResource(id = R.drawable.icon_logout),
                 contentDescription = null,
-                tint = Gray_600,
+                tint = AttendanceTheme.colors.grayScale.Gray600,
             )
         }
     }
@@ -150,7 +146,10 @@ fun LazyListScope.AdminTopBar(onLogoutClicked: () -> Unit) {
 
 fun LazyListScope.Spacing() {
     item {
-        Spacer(modifier = Modifier.padding(top = 28.dp))
+        Spacer(modifier = Modifier
+            .fillMaxWidth()
+            .background(AttendanceTheme.colors.backgroundColors.background)
+            .padding(top = 28.dp))
     }
 }
 
@@ -174,11 +173,12 @@ fun LazyListScope.YappuUserScoreCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
+                .background(AttendanceTheme.colors.backgroundColors.background)
                 .padding(top = 15.dp, bottom = 28.dp, start = 24.dp, end = 24.dp)
                 .clickable { setOnUserScoreCardClickedEvent() },
             shape = RoundedCornerShape(12.dp),
             elevation = 0.dp,
-            backgroundColor = Gray_200
+            backgroundColor = AttendanceTheme.colors.grayScale.Gray200
         ) {
             Image(
                 painter = painterResource(id = R.drawable.illust_manager_home),
@@ -195,13 +195,13 @@ fun LazyListScope.YappuUserScoreCard(
                 Text(
                     text = stringResource(id = string.admin_main_all_score_text),
                     style = AttendanceTypography.h3,
-                    color = Gray_1200
+                    color = AttendanceTheme.colors.grayScale.Gray1200
                 )
                 Text(
                     text = stringResource(id = string.admin_main_see_all_score_text),
                     modifier = Modifier.padding(top = 4.dp),
                     style = AttendanceTypography.body1,
-                    color = Yapp_Orange
+                    color = AttendanceTheme.colors.mainColors.YappOrange
                 )
             }
         }
@@ -212,8 +212,12 @@ fun LazyListScope.ManagementTitle() {
     item {
         Text(
             text = stringResource(id = string.admin_main_attend_management_text),
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 28.dp),
-            style = AttendanceTypography.h1
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(AttendanceTheme.colors.backgroundColors.background)
+                .padding(horizontal = 24.dp, vertical = 28.dp),
+            style = AttendanceTypography.h1,
+            color = AttendanceTheme.colors.grayScale.Gray1200
         )
     }
 }
@@ -223,7 +227,17 @@ fun LazyListScope.GraySpacing(modifier: Modifier) {
         Spacer(
             modifier = modifier
                 .fillMaxWidth()
-                .background(Gray_200)
+                .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
+        )
+    }
+}
+
+fun LazyListScope.GrayDivider(modifier: Modifier) {
+    item {
+        Divider(
+            modifier = modifier.fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .background(AttendanceTheme.colors.grayScale.Gray300)
         )
     }
 }
@@ -237,18 +251,21 @@ fun LazyListScope.UpcomingSession(
 
     item {
         Column(
-            modifier = Modifier.padding(horizontal = 24.dp)
+            modifier = Modifier
+                .background(AttendanceTheme.colors.backgroundColors.background)
+                .padding(horizontal = 24.dp)
         ) {
             Text(
                 text = upcomingSession.date.substring(MONTH_RANGE) +
                         "." + upcomingSession.date.substring(DAY_RANGE),
-                color = Gray_600,
-                style = AttendanceTypography.body2
+                color = AttendanceTheme.colors.grayScale.Gray600,
+                style = AttendanceTypography.body2,
             )
 
             ConstraintLayout(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .background(AttendanceTheme.colors.backgroundColors.background)
                     .padding(top = 6.dp)
             ) {
                 val (sessionTitle, managementButton) = createRefs()
@@ -264,6 +281,7 @@ fun LazyListScope.UpcomingSession(
                         },
                     text = upcomingSession.title,
                     style = AttendanceTypography.h3,
+                    color = AttendanceTheme.colors.grayScale.Gray1200,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -304,10 +322,13 @@ fun LazyListScope.FinishAllSessions() {
 fun LazyListScope.ManagementSubTitle() {
     item {
         Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(AttendanceTheme.colors.backgroundColors.background)
+                .padding(start = 24.dp, top = 28.dp, end = 24.dp, bottom = 4.dp),
             text = stringResource(id = string.admin_main_see_all_session_text),
-            color = Gray_600,
-            style = AttendanceTypography.body2,
-            modifier = Modifier.padding(start = 24.dp, top = 28.dp, end = 24.dp, bottom = 4.dp)
+            color = AttendanceTheme.colors.grayScale.Gray600,
+            style = AttendanceTypography.body2
         )
     }
 }
@@ -324,6 +345,7 @@ private fun SessionItem(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .background(AttendanceTheme.colors.backgroundColors.background)
             .clickable {
                 if (session.type == NeedToAttendType.NEED_ATTENDANCE)
                     onSessionItemClicked(session.sessionId, session.title)
@@ -333,7 +355,7 @@ private fun SessionItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         val textColor =
-            if (session.type == NeedToAttendType.NEED_ATTENDANCE) Gray_1200 else Gray_400
+            if (session.type == NeedToAttendType.NEED_ATTENDANCE) AttendanceTheme.colors.grayScale.Gray1200 else AttendanceTheme.colors.grayScale.Gray400
 
         Text(
             modifier = Modifier.width(64.dp),

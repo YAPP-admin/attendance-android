@@ -27,16 +27,21 @@ fun YDSButtonLarge(
             .height(60.dp),
         shape = RoundedCornerShape(10.dp),
         colors = when (state) {
-            YdsButtonState.DISABLED -> {
+            YdsButtonState.ENABLED -> {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = Gray_400
+                    backgroundColor = AttendanceTheme.colors.mainColors.YappOrange
                 )
             }
-            YdsButtonState.ENABLED,
-            YdsButtonState.PRESSED
-            -> {
+
+            YdsButtonState.PRESSED -> {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = Yapp_Orange
+                    backgroundColor = AttendanceTheme.colors.mainColors.YappOrangePressed
+                )
+            }
+
+            YdsButtonState.DISABLED -> {
+                ButtonDefaults.buttonColors(
+                    backgroundColor = AttendanceTheme.colors.grayScale.Gray400
                 )
             }
         },
@@ -66,14 +71,16 @@ fun YDSButtonMedium(
         colors = when (state) {
             YdsButtonState.ENABLED -> {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = Gray_1200
+                    backgroundColor = AttendanceTheme.colors.grayScale.Gray1200
                 )
             }
+
             YdsButtonState.PRESSED -> {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xff42454A)
+                    backgroundColor = AttendanceTheme.colors.mainColors.YappOrangePressed
                 )
             }
+
             YdsButtonState.DISABLED -> {
                 throw IllegalStateException()
             }
@@ -82,7 +89,7 @@ fun YDSButtonMedium(
     ) {
         Text(
             text = text,
-            color = Color.White,
+            color = AttendanceTheme.colors.backgroundColors.background,
             style = AttendanceTypography.body1
         )
     }
@@ -104,13 +111,18 @@ fun YDSButtonRegular(
         colors = when (state) {
             YdsButtonState.ENABLED -> {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = Yapp_Orange
+                    backgroundColor = AttendanceTheme.colors.mainColors.YappOrange
                 )
             }
-            else -> {
+
+            YdsButtonState.PRESSED -> {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xffFA6027)
+                    backgroundColor = AttendanceTheme.colors.mainColors.YappOrangePressed
                 )
+            }
+
+            YdsButtonState.DISABLED -> {
+                throw IllegalStateException()
             }
         },
         elevation = null
@@ -130,6 +142,7 @@ fun YDSButtonSmall(
     onClick: () -> Unit
 ) {
     Button(
+
         onClick = onClick,
         modifier = modifier
             .wrapContentHeight(),
@@ -137,17 +150,19 @@ fun YDSButtonSmall(
         colors = when (state) {
             YdsButtonState.ENABLED -> {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = Yapp_Orange
+                    backgroundColor = AttendanceTheme.colors.mainColors.YappOrange
                 )
             }
-            YdsButtonState.DISABLED -> {
-                ButtonDefaults.buttonColors(
-                    backgroundColor = Gray_400
-                )
-            }
+
             YdsButtonState.PRESSED -> {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xffFF7744)
+                    backgroundColor = AttendanceTheme.colors.mainColors.YappOrangePressed
+                )
+            }
+
+            YdsButtonState.DISABLED -> {
+                ButtonDefaults.buttonColors(
+                    backgroundColor = AttendanceTheme.colors.grayScale.Gray400
                 )
             }
         },
@@ -177,14 +192,17 @@ fun YDSChoiceButton(
         colors = when (state) {
             YdsButtonState.DISABLED -> {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = Gray_200
+                    backgroundColor = AttendanceTheme.colors.grayScale.Gray200
                 )
             }
-            YdsButtonState.ENABLED,
-            YdsButtonState.PRESSED
-            -> {
+
+            YdsButtonState.PRESSED -> {
+                throw IllegalStateException()
+            }
+
+            YdsButtonState.ENABLED -> {
                 ButtonDefaults.buttonColors(
-                    backgroundColor = Yapp_Orange
+                    backgroundColor = AttendanceTheme.colors.mainColors.YappOrange
                 )
             }
         },
@@ -199,13 +217,16 @@ fun YDSChoiceButton(
             letterSpacing = 0.01.sp,
             fontSize = 16.sp,
             color = when (state) {
-                YdsButtonState.DISABLED -> {
-                    Gray_800
-                }
-                YdsButtonState.ENABLED,
-                YdsButtonState.PRESSED
-                -> {
+                YdsButtonState.ENABLED -> {
                     Color.White
+                }
+
+                YdsButtonState.PRESSED -> {
+                    throw IllegalStateException()
+                }
+
+                YdsButtonState.DISABLED -> {
+                    AttendanceTheme.colors.grayScale.Gray800
                 }
             }
         )
@@ -213,5 +234,5 @@ fun YDSChoiceButton(
 }
 
 enum class YdsButtonState {
-    ENABLED, DISABLED, PRESSED
+    ENABLED, PRESSED, DISABLED
 }

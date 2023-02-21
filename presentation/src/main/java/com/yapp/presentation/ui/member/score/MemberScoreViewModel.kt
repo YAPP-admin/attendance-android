@@ -4,8 +4,11 @@ import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.usecases.GetMemberAttendanceListUseCase
 import com.yapp.domain.util.DateUtil
-import com.yapp.presentation.ui.member.score.MemberScoreContract.*
+import com.yapp.presentation.ui.member.score.MemberScoreContract.MemberScoreUiEvent
+import com.yapp.presentation.ui.member.score.MemberScoreContract.MemberScoreUiSideEffect
+import com.yapp.presentation.ui.member.score.MemberScoreContract.MemberScoreUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -14,10 +17,14 @@ class MemberScoreViewModel @Inject constructor(
     private val getMemberAttendanceListUseCase: GetMemberAttendanceListUseCase,
 ) : BaseViewModel<MemberScoreUiState, MemberScoreUiSideEffect, MemberScoreUiEvent>(initialState = MemberScoreUiState()) {
 
-    private suspend fun fetchMemberScore() = viewModelScope.launch {
+    init {
+        viewModelScope.launch { fetchMemberScore() }
+    }
+
+    private suspend fun fetchMemberScore() {
         setState { copy(loadState = MemberScoreUiState.LoadState.Loading) }
-        getMemberAttendanceListUseCase()
-            .onSuccess { (sessions, attendances) ->
+        getMemberAttendanceListUseCase().collect { result ->
+            result.onSuccess { (sessions, attendances) ->
                 if (attendances.isEmpty()) {
                     setState { copy(loadState = MemberScoreUiState.LoadState.Error) }
                     return@onSuccess
@@ -36,6 +43,7 @@ class MemberScoreViewModel @Inject constructor(
             }.onFailure {
                 setState { copy(loadState = MemberScoreUiState.LoadState.Error) }
             }
+        }
     }
 
     override suspend fun handleEvent(event: MemberScoreUiEvent) {

@@ -1,6 +1,7 @@
 package com.yapp.presentation.ui.member.signup.name
 
 import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,21 +11,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.insets.*
+import com.google.accompanist.insets.navigationBarsWithImePadding
+import com.google.accompanist.insets.statusBarsPadding
 import com.yapp.common.theme.*
-import com.yapp.common.theme.Gray_800
 import com.yapp.common.util.KeyboardVisibilityUtils
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSButtonLarge
 import com.yapp.common.yds.YDSPopupDialog
 import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R
-
+import com.yapp.presentation.ui.member.signup.name.NameContract.NameSideEffect
+import com.yapp.presentation.ui.member.signup.name.NameContract.NameUiEvent.*
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -34,35 +36,55 @@ fun Name(
     onClickNextBtn: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    var showDialog by remember { mutableStateOf(false) }
     var isKeyboardOpened by remember { mutableStateOf(false) }
     val keyboardVisibilityUtils = KeyboardVisibilityUtils(
         window = (LocalContext.current as Activity).window,
         onShowKeyboard = { isKeyboardOpened = true },
-        onHideKeyboard = { isKeyboardOpened = false })
+        onHideKeyboard = { isKeyboardOpened = false }
+    )
+
+    val onCancelButtonClick by remember { mutableStateOf({ viewModel.setEvent(OnCancelButtonClick) }) }
+    val onNextButtonClick: () -> Unit by remember {
+        mutableStateOf({ viewModel.setEvent(OnNextButtonClick) })
+    }
+    val onInputNameChange: (String) -> Unit by remember {
+        mutableStateOf({ viewModel.setEvent(InputName(it)) })
+    }
+    val onBackButtonClick: () -> Unit by remember {
+        mutableStateOf({ viewModel.setEvent(OnBackButtonClick) })
+    }
+    val onDismissDialogButtonClick: () -> Unit by remember {
+        mutableStateOf({ viewModel.setEvent(OnDismissDialogButtonClick) })
+    }
 
     Scaffold(
-        topBar = { YDSAppBar(onClickBackButton = { showDialog = !showDialog }) },
+        topBar = {
+            YDSAppBar(
+                modifier = Modifier.background(AttendanceTheme.colors.backgroundColors.background),
+                onClickBackButton = { onBackButtonClick() }
+            )
+        },
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding()
             .navigationBarsWithImePadding()
     ) {
-        if (showDialog) {
+        if (uiState.showDialog) {
             YDSPopupDialog(
                 title = stringResource(id = R.string.name_cancel_dialog_title),
                 content = stringResource(id = R.string.name_cancel_dialog_subtitle),
                 negativeButtonText = stringResource(id = R.string.name_cancel_dialog_no),
                 positiveButtonText = stringResource(id = R.string.name_cancel_dialog_cancel),
-                onClickPositiveButton = { onClickBackBtn() },
-                onClickNegativeButton = { showDialog = !showDialog },
-                onDismiss = { showDialog = !showDialog }
+                onClickPositiveButton = { onCancelButtonClick() },
+                onClickNegativeButton = { onDismissDialogButtonClick() },
+                onDismiss = { onDismissDialogButtonClick() }
             )
         }
 
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .background(AttendanceTheme.colors.backgroundColors.background)
         ) {
             Column(
                 modifier = Modifier
@@ -72,36 +94,52 @@ fun Name(
                 Title()
                 InputName(
                     name = uiState.name,
-                    onInputName = { viewModel.setEvent(NameContract.NameUiEvent.InputName(it)) }
+                    onInputName = { onInputNameChange(it) }
                 )
             }
-            NextButton(
-                name = uiState.name,
-                isKeyboardOpened = isKeyboardOpened,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter),
-                onClickNextBtn = onClickNextBtn,
-                keyboardVisibilityUtils= keyboardVisibilityUtils
 
+            NextButton(
+                enabled = uiState.name.isNotBlank(),
+                isKeyboardOpened = isKeyboardOpened,
+                modifier = Modifier.align(Alignment.BottomCenter),
+                onClickNextBtn = { onNextButtonClick() },
+                keyboardVisibilityUtils = keyboardVisibilityUtils
             )
+        }
+    }
+
+    BackHandler {
+        onBackButtonClick()
+    }
+
+    LaunchedEffect(key1 = viewModel.effect) {
+        viewModel.effect.collectLatest { effect ->
+            when (effect) {
+                is NameSideEffect.NavigateToPreviousScreen -> {
+                    onClickBackBtn()
+                }
+
+                is NameSideEffect.NavigateToNextScreen -> {
+                    onClickNextBtn(effect.name)
+                }
+            }
         }
     }
 }
 
 @Composable
 fun Title() {
-    Column() {
-
+    Column {
         Spacer(modifier = Modifier.height(32.dp))
         Text(
             text = stringResource(id = R.string.name_title),
-            color = Color.Black,
+            color = AttendanceTheme.colors.grayScale.Gray1200,
             style = AttendanceTypography.h1
         )
         Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = stringResource(id = R.string.name_subtitle),
-            color = Gray_800,
+            color = AttendanceTheme.colors.grayScale.Gray800,
             style = AttendanceTypography.body1
         )
         Spacer(modifier = Modifier.height(28.dp))
@@ -116,15 +154,15 @@ fun InputName(name: String, onInputName: (String) -> Unit) {
         singleLine = true,
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = Gray_200, shape = RoundedCornerShape(50.dp)),
+            .background(color = AttendanceTheme.colors.grayScale.Gray200, shape = RoundedCornerShape(50.dp)),
         placeholder = {
             Text(
                 text = stringResource(id = R.string.name_example_hint),
-                color = Gray_400,
+                color = AttendanceTheme.colors.grayScale.Gray400,
                 style = AttendanceTypography.body1
             )
         },
-        textStyle = AttendanceTypography.body2.copy(color = Gray_800),
+        textStyle = AttendanceTypography.body2.copy(color = AttendanceTheme.colors.grayScale.Gray800),
         colors = TextFieldDefaults.textFieldColors(
             textColor = Color.Gray,
             disabledTextColor = Color.Transparent,
@@ -138,10 +176,10 @@ fun InputName(name: String, onInputName: (String) -> Unit) {
 
 @Composable
 fun NextButton(
-    name: String,
+    enabled: Boolean,
     isKeyboardOpened: Boolean,
     modifier: Modifier,
-    onClickNextBtn: (String) -> Unit,
+    onClickNextBtn: () -> Unit,
     keyboardVisibilityUtils: KeyboardVisibilityUtils
 ) {
     Box(
@@ -149,18 +187,17 @@ fun NextButton(
     ) {
         if (isKeyboardOpened) {
             OnKeyboardNextButton(
-                name = name,
-                state = if (name.isBlank()) YdsButtonState.DISABLED else YdsButtonState.ENABLED,
+                enabled = enabled,
                 onClickNextBtn = onClickNextBtn,
                 keyboardVisibilityUtils = keyboardVisibilityUtils
             )
         } else {
             YDSButtonLarge(
                 text = stringResource(id = R.string.name_next_button),
-                state = if (name.isBlank()) YdsButtonState.DISABLED else YdsButtonState.ENABLED,
+                state = if (enabled) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
                 onClick = {
-                    if (name.isNotBlank()) {
-                        onClickNextBtn(name)
+                    if (enabled) {
+                        onClickNextBtn()
                         keyboardVisibilityUtils.detachKeyboardListener()
                     }
                 },
@@ -173,43 +210,31 @@ fun NextButton(
 
 @Composable
 fun OnKeyboardNextButton(
-    name: String,
-    state: YdsButtonState,
-    onClickNextBtn: (String) -> Unit,
+    enabled: Boolean,
+    onClickNextBtn: () -> Unit,
     keyboardVisibilityUtils: KeyboardVisibilityUtils
 ) {
     Button(
+        enabled = enabled,
         contentPadding = PaddingValues(0.dp),
         onClick = {
-            if (name.isNotBlank()) {
-                onClickNextBtn(name)
-                keyboardVisibilityUtils.detachKeyboardListener()
-            }
+            onClickNextBtn()
+            keyboardVisibilityUtils.detachKeyboardListener()
         },
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp),
         shape = RoundedCornerShape(0.dp),
-        colors = when (state) {
-            YdsButtonState.DISABLED -> {
-                ButtonDefaults.buttonColors(
-                    backgroundColor = Gray_400
-                )
-            }
-            YdsButtonState.ENABLED,
-            YdsButtonState.PRESSED
-            -> {
-                ButtonDefaults.buttonColors(
-                    backgroundColor = Yapp_Orange
-                )
-            }
-        },
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = AttendanceTheme.colors.mainColors.YappOrange,
+            disabledBackgroundColor = AttendanceTheme.colors.grayScale.Gray400
+        ),
         elevation = null
     ) {
         Text(
+            style = AttendanceTypography.h3,
             text = stringResource(id = R.string.name_next_button),
             color = Color.White
         )
     }
-
 }

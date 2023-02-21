@@ -45,7 +45,7 @@ fun TodaySession(
     Scaffold(
         topBar = {
             YDSAppBar(
-                modifier = Modifier.background(color = Gray_200),
+                modifier = Modifier.background(color = AttendanceTheme.colors.backgroundColors.backgroundBase),
                 onClickSettings = {
                     navigateToSetting(AttendanceScreenRoute.MEMBER_SETTING.route)
                 }
@@ -58,7 +58,7 @@ fun TodaySession(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .background(color = Gray_200)
+                .background(color = AttendanceTheme.colors.backgroundColors.backgroundBase)
         ) {
             TodaysAttendance(uiState.attendanceType)
             SessionDescriptionModal(uiState.todaySession, Modifier.weight(1f))
@@ -87,12 +87,12 @@ private fun TodaysAttendance(attendanceType: AttendanceType) {
         imageRsc = R.drawable.illust_member_home_disabled
         iconRsc = R.drawable.icon_check_disabled
         textRsc = string.today_session_attendance_before_text
-        textColor = Gray_600
+        textColor = AttendanceTheme.colors.grayScale.Gray600
     } else {
         imageRsc = R.drawable.illust_member_home_enabled
         iconRsc = R.drawable.icon_check_enabled
         textRsc = string.today_session_attendance_after_text
-        textColor = Yapp_Orange
+        textColor = AttendanceTheme.colors.mainColors.YappOrange
     }
 
     Image(
@@ -109,7 +109,7 @@ private fun TodaysAttendance(attendanceType: AttendanceType) {
             .wrapContentHeight()
             .padding(24.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(Color.White)
+            .background(AttendanceTheme.colors.backgroundColors.background)
             .padding(20.dp)
             .layoutId("attendanceCard", "attendanceCard"),
         verticalAlignment = Alignment.CenterVertically
@@ -135,28 +135,28 @@ private fun SessionDescriptionModal(session: Session?, modifier: Modifier) {
             .fillMaxWidth()
             .fillMaxHeight()
             .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
-            .background(Color.White)
+            .background(AttendanceTheme.colors.backgroundColors.background)
             .padding(24.dp),
     ) {
         val sessionDate = session?.date?.substring(5, 10)?.replace("-", ".")
         Text(
             text = sessionDate ?: "",
             style = AttendanceTypography.body1,
-            color = Gray_600
+            color = AttendanceTheme.colors.grayScale.Gray600
         )
 
         Text(
             text = session?.title
                 ?: stringResource(id = string.admin_main_finish_all_sessions_text),
             style = AttendanceTypography.h1,
-            color = Gray_1000,
+            color = AttendanceTheme.colors.grayScale.Gray1000,
             modifier = Modifier.padding(top = 28.dp)
         )
 
         Text(
             text = session?.description ?: "",
             style = AttendanceTypography.body1,
-            color = Gray_800,
+            color = AttendanceTheme.colors.grayScale.Gray800,
             modifier = Modifier.padding(top = 12.dp)
         )
     }

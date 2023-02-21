@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,15 +30,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.insets.systemBarsPadding
+import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
-import com.yapp.common.theme.Gray_1200
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSButtonLarge
 import com.yapp.common.yds.YDSChoiceButton
 import com.yapp.common.yds.YDSEmptyScreen
+import com.yapp.common.yds.YDSOption
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R
+import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamSideEffect
+import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamUiEvent
+import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamUiState
 import kotlinx.coroutines.flow.collect
 
 @Composable
@@ -52,29 +57,34 @@ fun Team(
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is TeamContract.TeamSideEffect.NavigateToMainScreen -> {
+                is TeamSideEffect.NavigateToMainScreen -> {
                     navigateToMainScreen()
                 }
-                is TeamContract.TeamSideEffect.ShowToast -> {
+                is TeamSideEffect.ShowToast -> {
                     Toast.makeText(context, effect.msg, Toast.LENGTH_LONG).show()
                 }
             }
         }
     }
     Scaffold(
-        topBar = { YDSAppBar(onClickBackButton = onClickBackButton) },
+        topBar = {
+            YDSAppBar(
+                modifier = Modifier.background(AttendanceTheme.colors.backgroundColors.background),
+                onClickBackButton = onClickBackButton
+            )
+        },
         modifier = Modifier
             .fillMaxSize()
             .systemBarsPadding()
     ) {
         when (uiState.loadState) {
-            TeamContract.TeamUiState.LoadState.Loading -> YDSProgressBar()
-            TeamContract.TeamUiState.LoadState.Error -> YDSEmptyScreen()
-            TeamContract.TeamUiState.LoadState.Idle -> {
+            TeamUiState.LoadState.Loading -> YDSProgressBar()
+            TeamUiState.LoadState.Error -> YDSEmptyScreen()
+            TeamUiState.LoadState.Idle -> {
                 val onTeamTypeClicked: (String) -> Unit by remember {
                     mutableStateOf({ teamType ->
                         viewModel.setEvent(
-                            TeamContract.TeamUiEvent.ChooseTeam(teamType)
+                            TeamUiEvent.ChooseTeam(teamType)
                         )
                     })
                 }
@@ -82,13 +92,13 @@ fun Team(
                 val onTeamNumberClicked: (Int) -> Unit by remember {
                     mutableStateOf({ teamNum ->
                         viewModel.setEvent(
-                            TeamContract.TeamUiEvent.ChooseTeamNumber(teamNum)
+                            TeamUiEvent.ChooseTeamNumber(teamNum)
                         )
                     })
                 }
 
                 val onConfirmClicked: () -> Unit by remember {
-                    mutableStateOf({ viewModel.setEvent(TeamContract.TeamUiEvent.ConfirmTeam) })
+                    mutableStateOf({ viewModel.setEvent(TeamUiEvent.ConfirmTeam) })
                 }
 
                 TeamScreen(
@@ -104,7 +114,7 @@ fun Team(
 
 @Composable
 fun TeamScreen(
-    uiState: TeamContract.TeamUiState,
+    uiState: TeamUiState,
     onTeamTypeClicked: (String) -> Unit,
     onTeamNumberClicked: (Int) -> Unit,
     onConfirmClicked: () -> Unit,
@@ -112,6 +122,7 @@ fun TeamScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(AttendanceTheme.colors.backgroundColors.background)
             .padding(horizontal = 24.dp)
     ) {
         Column(
@@ -123,12 +134,13 @@ fun TeamScreen(
             Text(
                 text = stringResource(R.string.member_signup_choose_team),
                 style = AttendanceTypography.h1,
-                color = Gray_1200,
+                color = AttendanceTheme.colors.grayScale.Gray1200,
             )
             Spacer(modifier = Modifier.height(28.dp))
-            TeamOption(
-                uiState = uiState,
-                onTeamTypeClicked = onTeamTypeClicked
+            YDSOption(
+                types = uiState.teams.map { it.type.value },
+                selectedType = uiState.teamOptionState.selectedOption?.value,
+                onTypeClicked = onTeamTypeClicked
             )
             Spacer(modifier = Modifier.height(52.dp))
             TeamNumberOption(
@@ -143,41 +155,21 @@ fun TeamScreen(
                 .padding(bottom = 40.dp)
                 .height(60.dp)
                 .align(Alignment.BottomCenter),
-            state = if ((uiState.selectedTeamType != null) and (uiState.selectedTeamNumber != null)) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+            state = if ((uiState.teamOptionState.selectedOption != null) and (uiState.teamNumberOptionState.selectedOption != null)) YdsButtonState.ENABLED
+            else YdsButtonState.DISABLED,
             onClick = {
-                if ((uiState.selectedTeamType != null) and (uiState.selectedTeamNumber != null)) onConfirmClicked()
+                if ((uiState.teamOptionState.selectedOption != null) and (uiState.teamNumberOptionState.selectedOption != null)) onConfirmClicked()
             },
         )
     }
 }
 
 @Composable
-fun TeamOption(uiState: TeamContract.TeamUiState, onTeamTypeClicked: (String) -> Unit) {
-    val rowNum = 2
-    Column {
-        repeat(uiState.teams.size / rowNum) { row ->
-            Row {
-                repeat(rowNum) { index ->
-                    val team = uiState.teams[rowNum * row + index]
-                    YDSChoiceButton(
-                        text = team.type.value,
-                        modifier = Modifier.padding(end = 12.dp, bottom = 12.dp),
-                        state = if (uiState.selectedTeamType == team.type) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                        onClick = { onTeamTypeClicked(team.type.name) }
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun TeamNumberOption(uiState: TeamContract.TeamUiState, onTeamNumberClicked: (Int) -> Unit) {
-    val selectedTeamType = uiState.teams.filter { it.type == uiState.selectedTeamType }
+fun TeamNumberOption(uiState: TeamUiState, onTeamNumberClicked: (Int) -> Unit) {
     val density = LocalDensity.current
 
     AnimatedVisibility(
-        visible = uiState.selectedTeamType != null,
+        visible = uiState.teamOptionState.selectedOption != null,
         enter = slideInVertically { with(density) { -40.dp.roundToPx() } }
                 + expandVertically(expandFrom = Alignment.CenterVertically)
                 + fadeIn(initialAlpha = 0.3f)
@@ -186,19 +178,17 @@ fun TeamNumberOption(uiState: TeamContract.TeamUiState, onTeamNumberClicked: (In
             Text(
                 text = stringResource(R.string.member_signup_choose_team_number),
                 style = AttendanceTypography.h3,
-                color = Gray_1200
+                color = AttendanceTheme.colors.grayScale.Gray1200
             )
             Spacer(modifier = Modifier.height(10.dp))
             Row {
-                if (selectedTeamType.isNotEmpty()) {
-                    repeat(selectedTeamType[0].number) { teamNum ->
-                        YDSChoiceButton(
-                            text = stringResource(R.string.member_signup_team_number, teamNum + 1),
-                            modifier = Modifier.padding(end = 12.dp, bottom = 12.dp),
-                            state = if (uiState.selectedTeamNumber == teamNum + 1) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                            onClick = { onTeamNumberClicked(teamNum + 1) }
-                        )
-                    }
+                repeat(uiState.numberOfSelectedTeamType ?: 0) { teamNum ->
+                    YDSChoiceButton(
+                        text = stringResource(R.string.member_signup_team_number, teamNum + 1),
+                        modifier = Modifier.padding(end = 12.dp, bottom = 12.dp),
+                        state = if (uiState.teamNumberOptionState.selectedOption == teamNum + 1) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+                        onClick = { onTeamNumberClicked(teamNum + 1) }
+                    )
                 }
             }
         }
