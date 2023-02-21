@@ -35,7 +35,7 @@ fun YDSPopupDialog(
     editTextChangedListener: (String) -> Unit = { },
     onDismiss: () -> Unit
 ) {
-    var isTextFieldFocused by remember{ mutableStateOf<Boolean>(false) }
+    var isTextFieldFocused by remember { mutableStateOf<Boolean>(false) }
 
     Dialog(
         onDismissRequest = { onDismiss() },
@@ -47,10 +47,9 @@ fun YDSPopupDialog(
             modifier = modifier
                 .fillMaxSize()
                 .wrapContentHeight()
-
                 .padding(horizontal = 32.dp),
             shape = RoundedCornerShape(10.dp),
-            color = Color.White
+            color = AttendanceTheme.colors.backgroundColors.backgroundElevated
         ) {
             Column(
                 modifier = Modifier
@@ -80,9 +79,12 @@ fun YDSPopupDialog(
                             .onFocusEvent { state ->
                                 isTextFieldFocused = state.isFocused
                             }
-                            .background(color = AttendanceTheme.colors.grayScale.Gray200, shape = RoundedCornerShape(10.dp)),
+                            .background(
+                                color = AttendanceTheme.colors.grayScale.Gray200,
+                                shape = RoundedCornerShape(10.dp)
+                            ),
                         placeholder = {
-                            if(!isTextFieldFocused) {
+                            if (!isTextFieldFocused) {
                                 Text(
                                     modifier = Modifier.fillMaxWidth(),
                                     text = editTextHint,
@@ -96,7 +98,7 @@ fun YDSPopupDialog(
                             textAlign = TextAlign.Center
                         ),
                         colors = TextFieldDefaults.textFieldColors(
-                            textColor = Color.Gray,
+                            textColor = AttendanceTheme.colors.grayScale.Gray800,
                             disabledTextColor = Color.Transparent,
                             backgroundColor = Color.Transparent,
                             focusedIndicatorColor = Color.Transparent,
@@ -118,7 +120,7 @@ fun YDSPopupDialog(
                             .height(46.dp)
                             .padding(end = 6.dp),
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = AttendanceTheme.colors.grayScale.Gray200,
+                            backgroundColor = AttendanceTheme.colors.grayScale.Gray200
                         ),
                         shape = RoundedCornerShape(10.dp),
                         elevation = null
@@ -137,7 +139,7 @@ fun YDSPopupDialog(
                             .height(46.dp)
                             .padding(start = 6.dp),
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = AttendanceTheme.colors.etcColors.EtcRed,
+                            backgroundColor = AttendanceTheme.colors.etcColors.EtcRed // EtcRed or YappOrange
                         ),
                         shape = RoundedCornerShape(10.dp),
                         elevation = null

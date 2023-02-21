@@ -15,7 +15,7 @@ import com.yapp.common.theme.AttendanceTheme
 fun YDSProgressBar() {
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = Color.Transparent
+        color = AttendanceTheme.colors.backgroundColors.background.copy(alpha = 0.6f)
     ) {
         val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.progress_bar_loop))
         val progress by animateLottieCompositionAsState(
