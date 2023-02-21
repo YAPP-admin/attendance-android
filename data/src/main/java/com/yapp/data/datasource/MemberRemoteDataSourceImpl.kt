@@ -3,7 +3,6 @@ package com.yapp.data.datasource
 import com.google.firebase.firestore.FirebaseFirestore
 import com.yapp.data.model.MemberEntity
 import com.yapp.data.util.memberRef
-import com.yapp.domain.model.Member
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -38,7 +37,7 @@ class MemberRemoteDataSourceImpl @Inject constructor(
                 .document(id.toString())
                 .get()
                 .addOnSuccessListener { document ->
-                    if (document.exists() == false) {
+                    if (!document.exists()) {
                         cancellableContinuation.resume(null)
                         return@addOnSuccessListener
                     }
@@ -50,6 +49,26 @@ class MemberRemoteDataSourceImpl @Inject constructor(
                 .addOnFailureListener { exception ->
                     cancellableContinuation.resumeWithException(exception)
                 }
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override suspend fun getMemberWithFlow(id: Long): Flow<MemberEntity?> {
+        return callbackFlow {
+            fireStore.memberRef()
+                .document(id.toString())
+                .addSnapshotListener { snapshot, error ->
+                    require(error == null)
+
+                    if (snapshot == null || !snapshot.exists()) {
+                        trySend(null)
+                        return@addSnapshotListener
+                    }
+
+                    val entity = snapshot.toObject(MemberEntity::class.java)
+                    trySend(entity)
+                }
+            awaitClose()
         }
     }
 
