@@ -1,5 +1,6 @@
 package com.yapp.presentation.ui.member.score.detail
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
@@ -16,14 +17,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.insets.systemBarsPadding
 import com.yapp.common.theme.*
-import com.yapp.common.yds.AttendanceType
+import com.yapp.common.yds.YDSAttendanceType
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSEmptyScreen
 import com.yapp.common.yds.YDSProgressBar
-import com.yapp.presentation.model.Attendance
-import com.yapp.presentation.model.Session
-import com.yapp.presentation.ui.member.score.MemberScoreContract
-import com.yapp.presentation.ui.member.score.MemberScoreScreen
+import com.yapp.domain.model.Session
 import com.yapp.presentation.util.attendance.checkSessionAttendance
 import java.text.SimpleDateFormat
 import java.util.*
@@ -41,12 +39,14 @@ fun SessionDetail(
     Scaffold(
         topBar = {
             YDSAppBar(
+                modifier = Modifier.background(AttendanceTheme.colors.backgroundColors.background),
                 title = session?.title ?: "",
                 onClickBackButton = onClickBackButton
             )
         },
         modifier = Modifier
             .fillMaxSize()
+            .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
             .systemBarsPadding()
     ) {
         when (uiState.loadState) {
@@ -61,11 +61,12 @@ fun SessionDetail(
 }
 
 @Composable
-fun SessionDetailScreen(session: Session?, attendance: AttendanceType?) {
+fun SessionDetailScreen(session: Session?, attendance: YDSAttendanceType?) {
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(AttendanceTheme.colors.backgroundColors.background)
             .padding(horizontal = 24.dp, vertical = 40.dp)
     ) {
         Row(
@@ -76,9 +77,9 @@ fun SessionDetailScreen(session: Session?, attendance: AttendanceType?) {
         ) {
             if (attendance != null) {
                 if (attendance in listOf(
-                        AttendanceType.ABSENT,
-                        AttendanceType.ATTEND,
-                        AttendanceType.TARDY
+                        YDSAttendanceType.ABSENT,
+                        YDSAttendanceType.ATTEND,
+                        YDSAttendanceType.TARDY
                     )
                 ) {
                     Icon(
@@ -94,10 +95,10 @@ fun SessionDetailScreen(session: Session?, attendance: AttendanceType?) {
                         .weight(1f)
                         .padding(horizontal = 4.dp),
                     color = when (attendance) {
-                        AttendanceType.ATTEND -> Etc_Green
-                        AttendanceType.ABSENT -> Etc_Red
-                        AttendanceType.TARDY -> Etc_Yellow_Font
-                        AttendanceType.TBD, AttendanceType.NO_ATTENDANCE, AttendanceType.NO_YAPP -> Gray_400
+                        YDSAttendanceType.ATTEND -> AttendanceTheme.colors.etcColors.EtcGreen
+                        YDSAttendanceType.ABSENT -> AttendanceTheme.colors.etcColors.EtcRed
+                        YDSAttendanceType.TARDY -> AttendanceTheme.colors.etcColors.EtcYellowFont
+                        YDSAttendanceType.TBD, YDSAttendanceType.NO_ATTENDANCE, YDSAttendanceType.NO_YAPP -> AttendanceTheme.colors.grayScale.Gray400
                     }
                 )
             }
@@ -107,7 +108,7 @@ fun SessionDetailScreen(session: Session?, attendance: AttendanceType?) {
                 Text(
                     text = SimpleDateFormat("MM.dd", Locale.KOREA).format(sessionDate),
                     style = AttendanceTypography.body1,
-                    color = Gray_600
+                    color = AttendanceTheme.colors.grayScale.Gray600
                 )
             }
 
@@ -117,14 +118,14 @@ fun SessionDetailScreen(session: Session?, attendance: AttendanceType?) {
             text = session?.title ?: "",
             modifier = Modifier.padding(top = 28.dp),
             style = AttendanceTypography.h1,
-            color = Gray_1000
+            color = AttendanceTheme.colors.grayScale.Gray1000
         )
 
         Text(
             text = session?.description ?: "",
             modifier = Modifier.padding(top = 12.dp),
             style = AttendanceTypography.body1,
-            color = Gray_800
+            color = AttendanceTheme.colors.grayScale.Gray800
         )
     }
 }

@@ -1,35 +1,41 @@
 package com.yapp.domain.usecases
 
-import com.yapp.domain.firebase.FirebaseRemoteConfig
-import com.yapp.domain.model.AttendanceEntity
-import com.yapp.domain.model.SessionEntity
+import com.yapp.domain.model.Attendance
+import com.yapp.domain.model.Session
 import com.yapp.domain.repository.LocalRepository
 import com.yapp.domain.repository.MemberRepository
-import com.yapp.domain.util.BaseUseCase
-import com.yapp.domain.util.DispatcherProvider
-import com.yapp.domain.util.TaskResult
+import com.yapp.domain.repository.RemoteConfigRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.zip
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class GetMemberAttendanceListUseCase @Inject constructor(
     private val localRepository: LocalRepository,
     private val memberRepository: MemberRepository,
-    private val firebaseRemoteConfig: FirebaseRemoteConfig,
-    private val coroutineDispatcher: DispatcherProvider
-) : BaseUseCase<@JvmSuppressWildcards Flow<TaskResult<Pair<List<SessionEntity>, List<AttendanceEntity>?>>>, Unit>(coroutineDispatcher) {
+    private val remoteConfigRepository: RemoteConfigRepository,
+) {
 
-    override suspend fun invoke(params: Unit?): Flow<TaskResult<Pair<List<SessionEntity>, List<AttendanceEntity>?>>> {
-        val sessions = firebaseRemoteConfig.getSessionList()
-        val memberId = localRepository.getMemberId().firstOrNull()
-        val member = memberId?.let { id ->
-            memberRepository.getMember(id)
-        } ?: emptyFlow()
-
-        return sessions.zip(member) { sessions, member ->
-            sessions to member?.attendances
-        }.toResult()
+    suspend operator fun invoke(): Flow<Result<Pair<List<Session>, List<Attendance>>>> {
+        return flow {
+            runCatching {
+                val sessionList = remoteConfigRepository.getSessionList().getOrThrow()
+                val currentMemberId = requireNotNull(localRepository.getMemberId().getOrThrow())
+                memberRepository.getMemberWithFlow(currentMemberId)
+                    .map { memberInfo ->
+                        val attendances = memberInfo.getOrThrow().attendances
+                        Result.success(sessionList to attendances)
+                    }
+                    .catch { exception ->
+                        emit(Result.failure(exception))
+                    }.collect { result ->
+                        emit(result)
+                    }
+            }.onFailure { exception ->
+                emit(Result.failure(exception))
+            }
+        }
     }
 }

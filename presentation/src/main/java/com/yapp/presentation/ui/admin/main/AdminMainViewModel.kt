@@ -2,11 +2,11 @@ package com.yapp.presentation.ui.admin.main
 
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
+import com.yapp.domain.model.Session
+import com.yapp.domain.model.collections.AttendanceList
 import com.yapp.domain.usecases.GetSessionListUseCase
+import com.yapp.domain.usecases.GetUpcomingSessionUseCase
 import com.yapp.domain.util.DateUtil
-import com.yapp.presentation.model.Session
-import com.yapp.presentation.model.Session.Companion.mapTo
-import com.yapp.presentation.model.collections.AttendanceList
 import com.yapp.presentation.ui.admin.main.AdminMainContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -14,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AdminMainViewModel @Inject constructor(
-    private val getSessionListUseCase: GetSessionListUseCase
+    private val getSessionListUseCase: GetSessionListUseCase,
+    private val getUpcomingSessionUseCase: GetUpcomingSessionUseCase,
 ) : BaseViewModel<AdminMainUiState, AdminMainUiSideEffect, AdminMainUiEvent>(
     AdminMainUiState()
 ) {
@@ -42,30 +43,27 @@ class AdminMainViewModel @Inject constructor(
 
     private suspend fun getSessions() {
         getSessionListUseCase()
-            .collectWithCallback(
-                onSuccess = { entities ->
-                    val sessions = entities.map { entity -> entity.mapTo() }
-                    val upcomingSession =
-                        sessions.firstOrNull { DateUtil.isUpcomingSession(it.date) }
+            .onSuccess { sessions ->
+                val upcomingSession =
+                    sessions.firstOrNull { DateUtil.isUpcomingSession(it.date) }
 
-                    upcomingSession?.let {
-                        var lastSessionId = if (isUpcomingSessionIsStarted(it)) it.sessionId else it.sessionId - 1
-                        if (lastSessionId < 0) lastSessionId = AttendanceList.DEFAULT_UPCOMING_SESSION_ID
-                        setState { copy(lastSessionId = lastSessionId) }
-                    }
-
-                    setState {
-                        copy(
-                            loadState = AdminMainUiState.LoadState.Idle,
-                            upcomingSession = upcomingSession,
-                            sessions = sessions
-                        )
-                    }
-                },
-                onFailed = {
-                    setState { copy(loadState = AdminMainUiState.LoadState.Error) }
+                upcomingSession?.let {
+                    var lastSessionId = if (isUpcomingSessionIsStarted(it)) it.sessionId else it.sessionId - 1
+                    if (lastSessionId < 0) lastSessionId = AttendanceList.DEFAULT_UPCOMING_SESSION_ID
+                    setState { copy(lastSessionId = lastSessionId) }
                 }
-            )
+
+                setState {
+                    copy(
+                        loadState = AdminMainUiState.LoadState.Idle,
+                        upcomingSession = upcomingSession,
+                        sessions = sessions
+                    )
+                }
+            }
+            .onFailure {
+                setState { copy(loadState = AdminMainUiState.LoadState.Error) }
+            }
     }
 
     private fun isUpcomingSessionIsStarted(upcomingSession: Session): Boolean {

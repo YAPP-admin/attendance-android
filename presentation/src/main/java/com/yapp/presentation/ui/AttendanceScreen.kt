@@ -3,6 +3,7 @@ package com.yapp.presentation.ui
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -21,8 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.yapp.common.theme.Gray_200
-import com.yapp.common.theme.Yapp_Orange
+import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.yds.YDSToast
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_ID
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_TITLE
@@ -331,22 +331,27 @@ enum class AttendanceScreenRoute(val route: String) {
 fun SetStatusBarColorByRoute(route: String?) {
     val systemUiController = rememberSystemUiController()
 
+    val shouldShowLightIcon = !isSystemInDarkTheme()
+    val yappOrange = AttendanceTheme.colors.mainColors.YappOrange
+    val backgroundBase = AttendanceTheme.colors.backgroundColors.backgroundBase
+
     SideEffect {
         when (route) {
             AttendanceScreenRoute.SPLASH.route -> {
                 systemUiController.setStatusBarColor(
-                    color = Yapp_Orange
+                    color = yappOrange,
                 )
             }
             BottomNavigationItem.SESSION.route -> {
                 systemUiController.setStatusBarColor(
-                    color = Gray_200
+                    color = backgroundBase,
+                    darkIcons = shouldShowLightIcon
                 )
             }
             else -> {
                 systemUiController.setStatusBarColor(
                     color = Color.Transparent,
-                    darkIcons = true
+                    darkIcons = shouldShowLightIcon
                 )
             }
         }

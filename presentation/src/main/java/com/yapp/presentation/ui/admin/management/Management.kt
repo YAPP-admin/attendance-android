@@ -29,9 +29,12 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.systemBarsPadding
 import com.yapp.common.theme.*
-import com.yapp.common.yds.*
+import com.yapp.common.yds.YDSAppBar
+import com.yapp.common.yds.YDSDropDownButton
+import com.yapp.common.yds.YDSEmptyScreen
+import com.yapp.common.yds.YDSProgressBar
+import com.yapp.domain.model.types.AttendanceType
 import com.yapp.presentation.R
-import com.yapp.presentation.model.AttendanceType
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementEvent
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState.LoadState.*
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState.MemberState
@@ -96,10 +99,9 @@ fun ManagementScreen(
     onDropDownClicked: ((MemberState) -> Unit)
 ) {
     ModalBottomSheetLayout(
-        modifier = Modifier,
         sheetContent = {
             BottomSheetDialog(
-                attendanceTypes = AttendanceType.getAllTypes(),
+                attendanceTypes = listOf(AttendanceType.Absent,AttendanceType.Normal, AttendanceType.Late, AttendanceType.Admit),
                 onClickItem = { attendanceType -> onBottomSheetDialogItemClicked.invoke(attendanceType) }
             )
         },
@@ -109,10 +111,13 @@ fun ManagementScreen(
         Scaffold(
             modifier = Modifier
                 .fillMaxSize()
+                .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
                 .systemBarsPadding(),
             topBar = {
                 YDSAppBar(
-                    modifier = Modifier.padding(horizontal = 4.dp),
+                    modifier = Modifier
+                        .background(AttendanceTheme.colors.backgroundColors.background)
+                        .padding(horizontal = 4.dp),
                     title = uiState.sessionTitle,
                     onClickBackButton = { onBackButtonClicked.invoke() }
                 )
@@ -121,6 +126,7 @@ fun ManagementScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(AttendanceTheme.colors.backgroundColors.background)
                     .padding(start = 24.dp, end = 24.dp, bottom = 24.dp)
             ) {
 
@@ -157,7 +163,7 @@ fun AttendCountText(
             .clip(RoundedCornerShape(10F))
             .fillMaxWidth()
             .height(48.dp)
-            .background(color = Yapp_OrangeAlpha)
+            .background(color = AttendanceTheme.colors.mainColors.YappOrangeAlpha)
     ) {
         Crossfade(targetState = memberCount) { count ->
             Text(
@@ -167,7 +173,7 @@ fun AttendCountText(
                 text = "${count}명이 출석했어요",
                 textAlign = TextAlign.Center,
                 style = AttendanceTypography.body1,
-                color = Yapp_Orange
+                color = AttendanceTheme.colors.mainColors.YappOrange
             )
         }
     }
@@ -186,6 +192,7 @@ fun ExpandableTeam(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .background(AttendanceTheme.colors.backgroundColors.background)
             .animateContentSize(
                 animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow)
             ),
@@ -210,7 +217,7 @@ fun ExpandableTeam(
                     )
         ) {
             Column {
-                Divider(modifier = Modifier.height(1.dp), color = Gray_300)
+                Divider(modifier = Modifier.height(1.dp), color = AttendanceTheme.colors.grayScale.Gray300)
                 for (member in state.members) {
                     MemberContent(
                         state = member,
@@ -219,7 +226,7 @@ fun ExpandableTeam(
                         }
                     )
                 }
-                Divider(modifier = Modifier.height(1.dp), color = Gray_300)
+                Divider(modifier = Modifier.height(1.dp), color = AttendanceTheme.colors.grayScale.Gray300)
             }
         }
     }
@@ -235,9 +242,9 @@ fun TeamHeader(
 ) {
     Row(
         modifier = modifier
-            .background(Color.White)
             .height(62.dp)
             .fillMaxWidth()
+            .background(AttendanceTheme.colors.backgroundColors.background)
             .clickable { onExpandClicked(!expanded) }
     ) {
         Text(
@@ -249,7 +256,7 @@ fun TeamHeader(
             text = state.teamName,
             textAlign = TextAlign.Start,
             style = AttendanceTypography.h3,
-            color = Gray_1200
+            color = AttendanceTheme.colors.grayScale.Gray1200
         )
 
         IconButton(
@@ -261,7 +268,7 @@ fun TeamHeader(
         ) {
             Icon(
                 painter = if (expanded) painterResource(id = R.drawable.icon_chevron_up) else painterResource(id = R.drawable.icon_chevron_down),
-                tint = Color.Unspecified,
+                tint = AttendanceTheme.colors.grayScale.Gray600,
                 contentDescription = null
             )
         }
@@ -293,7 +300,7 @@ fun MemberContent(
             text = state.name,
             textAlign = TextAlign.Start,
             style = AttendanceTypography.body1,
-            color = Gray_800
+            color = AttendanceTheme.colors.grayScale.Gray800
         )
 
         YDSDropDownButton(
@@ -305,7 +312,7 @@ fun MemberContent(
                     top.linkTo(parent.top, margin = 13.dp)
                     bottom.linkTo(parent.bottom, margin = 13.dp)
                 },
-            text = state.attendance.attendanceType.text,
+            text = state.attendance.type.text,
             onClick = { onDropDownClicked.invoke(state) }
         )
     }
@@ -329,7 +336,7 @@ fun BottomSheetDialog(
                 .fillMaxWidth()
                 .height(24.dp)
                 .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
-                .background(color = Color.White)
+                .background(color = AttendanceTheme.colors.backgroundColors.backgroundElevated)
         )
 
         for (type in attendanceTypes) {
@@ -343,7 +350,7 @@ fun BottomSheetDialog(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(42.dp)
-                .background(color = Color.White)
+                .background(color = AttendanceTheme.colors.backgroundColors.backgroundElevated)
         )
     }
 }
@@ -359,7 +366,7 @@ fun BottomSheetDialogItem(
         modifier = modifier
             .fillMaxWidth()
             .height(52.dp)
-            .background(color = Color.White)
+            .background(color = AttendanceTheme.colors.backgroundColors.backgroundElevated)
             .clickable { onClickItem.invoke(attendanceType) },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -371,7 +378,7 @@ fun BottomSheetDialogItem(
                 .padding(vertical = 14.dp),
             text = attendanceType.text,
             style = AttendanceTypography.subtitle1,
-            color = Gray_1200,
+            color = AttendanceTheme.colors.grayScale.Gray1200,
             textAlign = TextAlign.Center,
         )
     }

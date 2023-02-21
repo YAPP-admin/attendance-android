@@ -1,21 +1,14 @@
 package com.yapp.presentation.ui.login
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.ktx.app
 import com.yapp.common.base.BaseViewModel
-import com.yapp.common.util.KakaoSdkProvider
 import com.yapp.domain.common.KakaoSdkProviderInterface
 import com.yapp.domain.usecases.CheckAdminPasswordUseCase
-import com.yapp.domain.usecases.GetFirestoreMemberUseCase
+import com.yapp.domain.usecases.GetCurrentMemberInfoUseCase
 import com.yapp.domain.usecases.SetMemberIdUseCase
 import com.yapp.domain.usecases.ShouldShowGuestButtonUseCase
 import com.yapp.presentation.ui.login.LoginContract.*
-import com.yapp.presentation.ui.splash.SplashContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -32,8 +25,8 @@ import kotlin.random.Random
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val setMemberIdUseCase: SetMemberIdUseCase,
-    private val getFirestoreMemberUseCase: GetFirestoreMemberUseCase,
-    private val adminPasswordUseCase: CheckAdminPasswordUseCase,
+    private val getCurrentMemberInfoUseCase: GetCurrentMemberInfoUseCase,
+    private val checkAdminPasswordUseCase: CheckAdminPasswordUseCase,
     private val shouldShowGuestButtonUseCase: ShouldShowGuestButtonUseCase,
     private val kakaoSdkProvider: KakaoSdkProviderInterface
 ) :
@@ -42,14 +35,9 @@ class LoginViewModel @Inject constructor(
     ) {
     init {
         viewModelScope.launch {
-            shouldShowGuestButtonUseCase().collectWithCallback(
-                onSuccess = {
-                    setState { copy(isGuestButtonVisible = it) }
-                },
-                onFailed = {
-                    FirebaseCrashlytics.getInstance().recordException(it)
-                }
-            )
+            shouldShowGuestButtonUseCase()
+                .onSuccess { setState { copy(isGuestButtonVisible = it) } }
+                .onFailure { FirebaseCrashlytics.getInstance().recordException(it) }
         }
     }
 
@@ -82,26 +70,21 @@ class LoginViewModel @Inject constructor(
     }
 
     private suspend fun validateRegisteredUser() {
-        getFirestoreMemberUseCase().collectWithCallback(
-            onSuccess = { entity ->
-                // 이미 firebase 에 존재하는 유저인 경우,
-                entity?.let {
-                    // 바로 메인화면으로 이동한다.
-                    setEffect(
-                        LoginUiSideEffect.NavigateToQRMainScreen,
-                    )
-                } ?: run {
+        getCurrentMemberInfoUseCase()
+            .onSuccess { currentMemberInfo ->
+                if(currentMemberInfo == null) {
                     // 존재하지 않는다면, signup 화면으로 이동한다.
-                    setEffect(
-                        LoginUiSideEffect.NavigateToSignUpScreen,
-                    )
+                    setEffect(LoginUiSideEffect.NavigateToSignUpScreen)
+                    return@onSuccess
                 }
-            },
-            onFailed = {
+
+                // 이미 firebase 에 존재하는 유저인 경우 바로 메인화면으로 이동한다. (일반적)
+                setEffect(LoginUiSideEffect.NavigateToQRMainScreen)
+            }
+            .onFailure {
                 setEffect(LoginUiSideEffect.ShowToast("로그인 실패"))
                 setState { copy(isLoading = false) }
             }
-        )
     }
 
     private suspend fun setMemberId(id: Long) {
@@ -115,20 +98,19 @@ class LoginViewModel @Inject constructor(
     fun adminLogin(password: String) {
         viewModelScope.launch {
             setState { copy(isLoading = true) }
-            adminPasswordUseCase(CheckAdminPasswordUseCase.Params(password)).collectWithCallback(
-                onSuccess = { isSuccess ->
-                    if (isSuccess) {
+            checkAdminPasswordUseCase(CheckAdminPasswordUseCase.Params(password))
+                .onSuccess { isCorrect ->
+                    if (isCorrect) {
                         setEffect(LoginUiSideEffect.NavigateToAdminScreen)
                     } else {
                         setEffect(LoginUiSideEffect.ShowToast("로그인 실패"))
                     }
                     setState { copy(isLoading = false) }
-                },
-                onFailed = {
-                    setEffect(LoginUiSideEffect.ShowToast("로그인 실패"))
+                }
+                .onFailure { exception ->
+                    setEffect(LoginUiSideEffect.ShowToast("${exception.message}"))
                     setState { copy(isLoading = false) }
                 }
-            )
         }
     }
 

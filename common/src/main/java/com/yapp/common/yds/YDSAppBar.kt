@@ -1,5 +1,6 @@
 package com.yapp.common.yds
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -63,14 +64,14 @@ fun YDSAppBar(
                 .padding(start = 20.dp, end = 20.dp),
             textAlign = TextAlign.Center,
             style = AttendanceTypography.h3,
-            color = Gray_1200,
+            color = AttendanceTheme.colors.grayScale.Gray1200,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
 
         Icon(
             imageVector = Icons.Filled.Settings,
-            tint = Gray_600,
+            tint = AttendanceTheme.colors.grayScale.Gray600,
             contentDescription = null,
             modifier = Modifier
                 .alpha(if (onClickSettings == null) 0f else 1f)

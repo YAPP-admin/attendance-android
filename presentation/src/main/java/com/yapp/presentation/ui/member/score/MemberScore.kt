@@ -1,7 +1,6 @@
 package com.yapp.presentation.ui.member.score
 
 import android.graphics.Paint
-import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
@@ -9,19 +8,41 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -29,15 +50,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.res.ResourcesCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.yapp.common.theme.*
-import com.yapp.common.yds.*
+import com.yapp.common.theme.AttendanceTheme
+import com.yapp.common.theme.AttendanceTypography
+import com.yapp.common.yds.YDSAppBar
+import com.yapp.common.yds.YDSAttendanceList
+import com.yapp.common.yds.YDSEmptyScreen
+import com.yapp.common.yds.YDSProgressBar
+import com.yapp.domain.model.Attendance
+import com.yapp.domain.model.Session
+import com.yapp.domain.model.types.AttendanceType
 import com.yapp.domain.model.types.NeedToAttendType
-import com.yapp.domain.util.DateUtil
 import com.yapp.presentation.R
-import com.yapp.presentation.model.Attendance
-import com.yapp.presentation.model.AttendanceType
-import com.yapp.presentation.model.Session
-import com.yapp.presentation.ui.member.todaysession.TodaySessionContract
 import com.yapp.presentation.util.attendance.checkSessionAttendance
 import java.text.SimpleDateFormat
 import java.util.*
@@ -54,11 +77,13 @@ fun MemberScore(
     Scaffold(
         topBar = {
             YDSAppBar(
+                modifier = Modifier.background(AttendanceTheme.colors.backgroundColors.background),
                 title = stringResource(R.string.member_score_title),
             )
         },
         modifier = modifier
             .fillMaxSize()
+            .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
     ) {
         when (uiState.loadState) {
             MemberScoreContract.MemberScoreUiState.LoadState.Loading -> YDSProgressBar()
@@ -71,13 +96,7 @@ fun MemberScore(
         }
 
     }
-
-    LaunchedEffect(key1 = true) {
-        viewModel.setEvent(MemberScoreContract.MemberScoreUiEvent.GetMemberScore())
-    }
 }
-
-
 
 @Composable
 fun MemberScoreScreen(
@@ -85,9 +104,11 @@ fun MemberScoreScreen(
     navigateToHelpScreen: () -> Unit,
     navigateToSessionDetail: (Int) -> Unit
 ) {
-    val currentScore = uiState.lastAttendanceList.fold(100) { total, pair -> total + pair.second.attendanceType.point }
+    val currentScore = uiState.lastAttendanceList.fold(100) { total, pair -> total + pair.second.type.point }
 
-    LazyColumn {
+    LazyColumn(
+        modifier = Modifier.background(AttendanceTheme.colors.backgroundColors.background)
+    ) {
         item {
             HelpIcon(navigateToHelpScreen)
             SemiCircleProgressBar(if (currentScore > 0) currentScore else 0)
@@ -95,18 +116,19 @@ fun MemberScoreScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(4.dp)
+                    .background(AttendanceTheme.colors.backgroundColors.background)
             )
             UserAttendanceTable(uiState.lastAttendanceList)
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(12.dp)
-                    .background(color = Gray_200)
+                    .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
             )
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(28.dp)
+                    .background(AttendanceTheme.colors.backgroundColors.background)
             )
         }
         items(uiState.attendanceList) { attendanceInfo ->
@@ -122,6 +144,7 @@ private fun HelpIcon(navigateToHelpScreen: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .background(AttendanceTheme.colors.backgroundColors.background)
     ) {
         Icon(
             painter = painterResource(R.drawable.icon_help),
@@ -156,7 +179,7 @@ fun SemiCircleProgressBar(score: Int) {
     val scoreTextPaint = Paint().apply {
         textAlign = Paint.Align.CENTER
         textSize = 150f
-        color = Gray_1000.toArgb()
+        color = AttendanceTheme.colors.grayScale.Gray1000.toArgb()
         typeface = ResourcesCompat.getFont(LocalContext.current, R.font.pretendard_bold)
     }
 
@@ -164,7 +187,7 @@ fun SemiCircleProgressBar(score: Int) {
     val myScoreDescriptionPaint = Paint().apply {
         textAlign = Paint.Align.CENTER
         textSize = 50f
-        color = Gray_600.toArgb()
+        color = AttendanceTheme.colors.grayScale.Gray600.toArgb()
         typeface = ResourcesCompat.getFont(LocalContext.current, R.font.pretendard_medium)
     }
 
@@ -175,12 +198,27 @@ fun SemiCircleProgressBar(score: Int) {
             modifier = Modifier
                 .padding(start = 64.dp, end = 64.dp),
         ) {
+
+            val gray200 = AttendanceTheme.colors.grayScale.Gray200
+            val etcGreen = AttendanceTheme.colors.etcColors.EtcGreen
+            val etcYellow = AttendanceTheme.colors.etcColors.EtcYellow
+            val etcRed = AttendanceTheme.colors.etcColors.EtcRed
+
             androidx.compose.foundation.Canvas(
                 modifier = Modifier
                     .size(maxWidth, (maxWidth.value / 2).dp)
             ) {
+
+                val arcColor = fillColorByUserScore(score).let { score ->
+                    when(score) {
+                        Score.GOOD -> etcGreen
+                        Score.NORMAL -> etcYellow
+                        Score.DANGEROUS -> etcRed
+                    }
+                }
+
                 drawArc(
-                    color = Gray_200,
+                    color = gray200,
                     startAngle = 180f,
                     sweepAngle = 180f,
                     useCenter = false,
@@ -188,8 +226,9 @@ fun SemiCircleProgressBar(score: Int) {
                     style = Stroke(width = 25f, cap = StrokeCap.Round)
                 )
 
+
                 drawArc(
-                    color = fillColorByUserScore(score),
+                    color = arcColor,
                     startAngle = 180f,
                     sweepAngle = (score * 9 / 5) * animatedValue.value,
                     useCenter = false,
@@ -222,29 +261,32 @@ fun UserAttendanceTable(lastAttendanceList: List<Pair<Session, Attendance>>) {
             .fillMaxWidth()
             .padding(24.dp)
             .clip(RoundedCornerShape(10.dp))
-            .border(BorderStroke(1.dp, Gray_200)),
+            .border(BorderStroke(1.dp, AttendanceTheme.colors.grayScale.Gray200)),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
         AttendanceCell(
             topText = stringResource(R.string.member_score_attend_text),
             topIconResId = R.drawable.icon_attend,
-            bottomText = lastAttendanceList.filter {
-                ((it.first.type == NeedToAttendType.NEED_ATTENDANCE) and (it.second.attendanceType == AttendanceType.Normal)) or
-                        ((it.first.type == NeedToAttendType.DONT_NEED_ATTENDANCE) and (it.second.attendanceType == AttendanceType.Admit))
-            }.size.toString()
+            bottomText = lastAttendanceList
+                .filter { it.first.type == NeedToAttendType.NEED_ATTENDANCE }
+                .count { (it.second.type == AttendanceType.Normal) or (it.second.type == AttendanceType.Admit) }.toString()
         )
 
         AttendanceCell(
             topText = stringResource(R.string.member_score_tardy_text),
             topIconResId = R.drawable.icon_tardy,
-            bottomText = lastAttendanceList.filter { it.second.attendanceType == AttendanceType.Late }.size.toString()
+            bottomText = lastAttendanceList
+                .filter { it.first.type == NeedToAttendType.NEED_ATTENDANCE }
+                .count { it.second.type == AttendanceType.Late }.toString()
         )
 
         AttendanceCell(
             topText = stringResource(R.string.member_score_absent_text),
             topIconResId = R.drawable.icon_absent,
-            bottomText = lastAttendanceList.filter { it.second.attendanceType == AttendanceType.Absent }.size.toString()
+            bottomText = lastAttendanceList
+                .filter { it.first.type == NeedToAttendType.NEED_ATTENDANCE }
+                .count { it.second.type == AttendanceType.Absent }.toString()
         )
     }
 }
@@ -263,7 +305,7 @@ fun RowScope.AttendanceCell(
             Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .background(Gray_200)
+                .background(AttendanceTheme.colors.grayScale.Gray200)
                 .padding(10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
@@ -275,13 +317,13 @@ fun RowScope.AttendanceCell(
             )
             Text(
                 text = topText,
-                color = Gray_600,
+                color = AttendanceTheme.colors.grayScale.Gray600,
                 modifier = Modifier.padding(start = 4.dp)
             )
         }
         Text(
             text = bottomText,
-            color = Gray_800,
+            color = AttendanceTheme.colors.grayScale.Gray800,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(20.dp),
@@ -316,18 +358,19 @@ private fun AttendUserSession(
             .fillMaxWidth()
             .height(1.dp)
             .padding(horizontal = 24.dp)
-            .background(Gray_200)
+            .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
     )
 }
 
-private fun fillColorByUserScore(score: Int): Color {
+//TODO Type으로 빼고
+private fun fillColorByUserScore(score: Int): Score {
     return when (score) {
         in 80..100 -> Score.GOOD
         in 70..79 -> Score.NORMAL
         else -> Score.DANGEROUS
-    }.color
+    }
 }
 
-enum class Score(val color: Color) {
-    GOOD(Etc_Green), NORMAL(Etc_Yellow), DANGEROUS(Etc_Red)
+enum class Score {
+    GOOD, NORMAL, DANGEROUS
 }

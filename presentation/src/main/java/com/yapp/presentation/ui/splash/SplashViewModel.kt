@@ -3,17 +3,15 @@ package com.yapp.presentation.ui.splash
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.common.KakaoSdkProviderInterface
-import com.yapp.domain.usecases.GetFirestoreMemberUseCase
-import com.yapp.domain.usecases.SetMemberIdUseCase
+import com.yapp.domain.usecases.GetCurrentMemberInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
     private val kakaoSdkProvider: KakaoSdkProviderInterface,
-    private val getFirestoreMemberUseCase: GetFirestoreMemberUseCase
+    private val getCurrentMemberInfoUseCase: GetCurrentMemberInfoUseCase
 ) : BaseViewModel<SplashContract.SplashUiState, SplashContract.SplashUiSideEffect, SplashContract.SplashUiEvent>(
     SplashContract.SplashUiState()
 ) {
@@ -31,25 +29,19 @@ class SplashViewModel @Inject constructor(
     }
 
     private suspend fun validateRegisteredUser() {
-        getFirestoreMemberUseCase().collectWithCallback(
-            onSuccess = { entity ->
-                entity?.let {
+        getCurrentMemberInfoUseCase()
+            .onSuccess { currentMember ->
+                currentMember?.let {
                     setState { copy(loginState = SplashContract.LoginState.SUCCESS) }
                 } ?: run {
                     setState { copy(loginState = SplashContract.LoginState.REQUIRED) }
                 }
-            },
-            onFailed = {
+            }
+            .onFailure {
                 setState { copy(loginState = SplashContract.LoginState.REQUIRED) }
             }
-        )
     }
 
-    override fun setEvent(event: SplashContract.SplashUiEvent) {
-        super.setEvent(event)
-    }
+    override suspend fun handleEvent(event: SplashContract.SplashUiEvent) = Unit
 
-    override suspend fun handleEvent(event: SplashContract.SplashUiEvent) {
-        TODO("Not yet implemented")
-    }
 }

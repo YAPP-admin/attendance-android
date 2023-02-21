@@ -2,6 +2,7 @@ package com.yapp.common.yds
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
@@ -19,7 +20,7 @@ import com.yapp.common.theme.*
 
 @Composable
 fun YDSAttendanceList(
-    attendanceType: AttendanceType,
+    attendanceType: YDSAttendanceType,
     date: String,
     title: String,
     description: String,
@@ -29,6 +30,7 @@ fun YDSAttendanceList(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .background(AttendanceTheme.colors.backgroundColors.background)
             .clickable {
                 onClick?.invoke()
             }
@@ -39,7 +41,8 @@ fun YDSAttendanceList(
             contentDescription = null,
             tint = Color.Unspecified,
             modifier = Modifier.alpha(
-                if ((attendanceType == AttendanceType.TBD) or (attendanceType == AttendanceType.NO_ATTENDANCE) or (attendanceType == AttendanceType.NO_YAPP)) 0f else 1f)
+                if ((attendanceType == YDSAttendanceType.TBD) or (attendanceType == YDSAttendanceType.NO_ATTENDANCE) or (attendanceType == YDSAttendanceType.NO_YAPP)) 0f else 1f
+            )
         )
         Column(
             modifier = Modifier
@@ -54,31 +57,31 @@ fun YDSAttendanceList(
                     text = stringResource(attendanceType.title),
                     style = AttendanceTypography.body2,
                     color = when (attendanceType) {
-                        AttendanceType.ATTEND -> Etc_Green
-                        AttendanceType.ABSENT -> Etc_Red
-                        AttendanceType.TARDY -> Etc_Yellow_Font
-                        AttendanceType.TBD, AttendanceType.NO_ATTENDANCE, AttendanceType.NO_YAPP -> Gray_400
+                        YDSAttendanceType.ATTEND -> AttendanceTheme.colors.etcColors.EtcGreen
+                        YDSAttendanceType.ABSENT -> AttendanceTheme.colors.etcColors.EtcRed
+                        YDSAttendanceType.TARDY -> AttendanceTheme.colors.etcColors.EtcYellowFont
+                        YDSAttendanceType.TBD, YDSAttendanceType.NO_ATTENDANCE, YDSAttendanceType.NO_YAPP -> AttendanceTheme.colors.grayScale.Gray400
                     }
                 )
 
                 Text(
                     text = date,
                     style = AttendanceTypography.body2,
-                    color = Gray_400
+                    color = AttendanceTheme.colors.grayScale.Gray400
                 )
             }
 
             Text(
                 text = title,
                 style = AttendanceTypography.h3,
-                color = if ((attendanceType == AttendanceType.TBD) or (attendanceType == AttendanceType.NO_YAPP)) Gray_600 else Gray_1200,
+                color = if ((attendanceType == YDSAttendanceType.TBD) or (attendanceType == YDSAttendanceType.NO_YAPP)) AttendanceTheme.colors.grayScale.Gray600 else AttendanceTheme.colors.grayScale.Gray1200,
                 modifier = Modifier.padding(top = 4.dp)
             )
 
             Text(
                 text = description,
                 style = AttendanceTypography.body1,
-                color = if ((attendanceType == AttendanceType.TBD) or (attendanceType == AttendanceType.NO_YAPP)) Gray_600 else Gray_800,
+                color = if ((attendanceType == YDSAttendanceType.TBD) or (attendanceType == YDSAttendanceType.NO_YAPP)) AttendanceTheme.colors.grayScale.Gray600 else AttendanceTheme.colors.grayScale.Gray800,
                 modifier = Modifier.padding(top = 4.dp),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
@@ -87,7 +90,7 @@ fun YDSAttendanceList(
     }
 }
 
-enum class AttendanceType(@DrawableRes val icon: Int, @StringRes val title: Int) {
+enum class YDSAttendanceType(@DrawableRes val icon: Int, @StringRes val title: Int) {
     ATTEND(R.drawable.icon_attend, R.string.attend),
     TARDY(R.drawable.icon_tardy, R.string.tardy),
     ABSENT(R.drawable.icon_absent, R.string.absent),
