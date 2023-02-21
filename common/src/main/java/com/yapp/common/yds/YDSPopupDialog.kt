@@ -2,7 +2,7 @@ package com.yapp.common.yds
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.fhttps://github.com/YAPP-admin/attendance-android/pull/204/conflict?name=common%252Fsrc%252Fmain%252Fjava%252Fcom%252Fyapp%252Fcommon%252Fyds%252FYDSPopupDialog.kt&ancestor_oid=9d9c1623dacf17ffd6d12f7c738b73e476e13508&base_oid=e7870e12045feea130b9f6fc32b40a59691f6f03&head_oid=a5c4522b31e138305319b29f7cd1afef597b83beoundation.layout.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
