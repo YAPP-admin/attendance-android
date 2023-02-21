@@ -39,7 +39,8 @@ class AdminTotalScoreViewModel @Inject constructor(
             result.onSuccess { members ->
                 val memberByTeam = members.groupBy { it.team }
 
-                val lastSessionId = savedStateHandle.get<Int>(KEY_LAST_SESSION_ID) ?: AttendanceList.DEFAULT_UPCOMING_SESSION_ID
+                val lastSessionId = savedStateHandle.get<Int>(KEY_LAST_SESSION_ID)
+                    ?: AttendanceList.DEFAULT_UPCOMING_SESSION_ID
                 val teamItemStates = getTeamItemStates(memberByTeam, lastSessionId)
                 setState {
                     copy(
@@ -59,8 +60,11 @@ class AdminTotalScoreViewModel @Inject constructor(
     ): List<AdminTotalScoreUiState.TeamItemState> {
         return teamMembersMap.map { team ->
             AdminTotalScoreUiState.TeamItemState(
-                teamName = "${team.key.type} ${team.key.number}팀",
-                teamMembers = team.value.map { member ->
+                teamName = "${team.key.type.value} ${team.key.number}팀",
+                teamMembers = team.value.sortedWith(
+                    compareBy<Member> { it.attendances.getTotalAttendanceScore(lastSessionId) }
+                        .thenBy { it.name }
+                ).map { member ->
                     AdminTotalScoreUiState.MemberWithTotalScore(
                         member.name,
                         member.attendances.getTotalAttendanceScore(lastSessionId)
