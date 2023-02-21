@@ -18,8 +18,8 @@ object Configs {
     const val APPLICATION_ID            = "com.yapp.attendance"
     const val MIN_SDK                   = 24
     const val TARGET_SDK                = 31
-    const val VERSION_CODE              = 100002
-    const val VERSION_NAME              = "1.0.2"
+    const val VERSION_CODE              = 100100
+    const val VERSION_NAME              = "1.1.0"
 
     const val COMPOSE_VERSION           = "1.1.0"
 }
