@@ -40,6 +40,13 @@ class MemberRepositoryImpl @Inject constructor(
         )
     }
 
+    override suspend fun getMemberWithFlow(id: Long): Flow<Result<Member>> {
+        return memberRemoteDataSource.getMemberWithFlow(id).map { entity ->
+            entity?.let { Result.success(it.toDomain()) }
+                ?: Result.failure(Exception("해당 유저의 정보를 찾을 수 없습니다."))
+        }
+    }
+
     override suspend fun deleteMember(id: Long): Result<Unit> {
         return runCatching {
             memberRemoteDataSource.deleteMember(id)

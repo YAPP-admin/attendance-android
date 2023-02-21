@@ -5,6 +5,11 @@ import com.yapp.domain.model.Session
 import com.yapp.domain.repository.LocalRepository
 import com.yapp.domain.repository.MemberRepository
 import com.yapp.domain.repository.RemoteConfigRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class GetMemberAttendanceListUseCase @Inject constructor(
@@ -13,24 +18,24 @@ class GetMemberAttendanceListUseCase @Inject constructor(
     private val remoteConfigRepository: RemoteConfigRepository,
 ) {
 
-    suspend operator fun invoke(): Result<Pair<List<Session>, List<Attendance>>> {
-        runCatching {
-            val sessionList = remoteConfigRepository.getSessionList().getOrThrow()
-            val currentMemberId = localRepository.getMemberId().getOrNull()
-
-            require(currentMemberId != null)
-
-            val currentMemberInfo = memberRepository.getMember(currentMemberId).getOrThrow()
-
-            sessionList to currentMemberInfo!!.attendances
-        }.fold(
-            onSuccess = { memberAttendances ->
-                return Result.success(memberAttendances)
-            },
-            onFailure = { exception ->
-                return Result.failure(exception)
+    suspend operator fun invoke(): Flow<Result<Pair<List<Session>, List<Attendance>>>> {
+        return flow {
+            runCatching {
+                val sessionList = remoteConfigRepository.getSessionList().getOrThrow()
+                val currentMemberId = requireNotNull(localRepository.getMemberId().getOrThrow())
+                memberRepository.getMemberWithFlow(currentMemberId)
+                    .map { memberInfo ->
+                        val attendances = memberInfo.getOrThrow().attendances
+                        Result.success(sessionList to attendances)
+                    }
+                    .catch { exception ->
+                        emit(Result.failure(exception))
+                    }.collect { result ->
+                        emit(result)
+                    }
+            }.onFailure { exception ->
+                emit(Result.failure(exception))
             }
-        )
+        }
     }
-
 }

@@ -21,6 +21,6 @@ class MemberScoreContract {
     }
 
     sealed class MemberScoreUiEvent : UiEvent {
-        class GetMemberScore() : MemberScoreUiEvent()
+        object GetMemberScore : MemberScoreUiEvent()
     }
 }
