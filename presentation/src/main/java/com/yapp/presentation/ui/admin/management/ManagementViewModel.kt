@@ -51,7 +51,11 @@ class ManagementViewModel @Inject constructor(
 
             is ManagementEvent.OnAttendanceTypeChanged -> {
                 uiState.value.selectedMember?.let { selectedMember ->
-                    changeMemberAttendance(selectedMember = selectedMember, changedAttendanceType = event.attendanceType, sessionId = uiState.value.sessionId)
+                    changeMemberAttendance(
+                        selectedMember = selectedMember,
+                        changedAttendanceType = event.attendanceType,
+                        sessionId = uiState.value.sessionId
+                    )
                 }
             }
         }
@@ -67,7 +71,13 @@ class ManagementViewModel @Inject constructor(
                 val attendCount = membersByTeam.flatMap { it.members }
                     .count { it.attendance.type == AttendanceType.Normal }
 
-                setState { this.copy(loadState = LoadState.Idle, memberCount = attendCount, teams = membersByTeam) }
+                setState {
+                    this.copy(
+                        loadState = LoadState.Idle,
+                        memberCount = attendCount,
+                        teams = membersByTeam
+                    )
+                }
             }.onFailure {
                 setState { this.copy(loadState = LoadState.Error) }
             }
@@ -77,7 +87,10 @@ class ManagementViewModel @Inject constructor(
     private fun mapToTeamState(team: Team, members: List<Member>, sessionId: Int): TeamState {
         return TeamState(
             teamName = String.format("${team.type.value} ${team.number}팀"),
-            members = members.map { member ->
+            members = members.sortedWith(
+                compareBy<Member> { it.attendances.getAttendanceBySessionId(sessionId).type.order }
+                    .thenBy { it.name }
+            ).map { member ->
                 MemberState(
                     id = member.id,
                     name = member.name,
