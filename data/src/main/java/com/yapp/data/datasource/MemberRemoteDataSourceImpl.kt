@@ -55,20 +55,20 @@ class MemberRemoteDataSourceImpl @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun getMemberWithFlow(id: Long): Flow<MemberEntity?> {
         return callbackFlow {
-            fireStore.memberRef()
-                .document(id.toString())
-                .addSnapshotListener { snapshot, error ->
-                    require(error == null)
+            val fsRef = fireStore.memberRef().document(id.toString())
+            val listener = fsRef.addSnapshotListener { snapshot, error ->
+                require(error == null)
 
-                    if (snapshot == null || !snapshot.exists()) {
-                        trySend(null)
-                        return@addSnapshotListener
-                    }
-
-                    val entity = snapshot.toObject(MemberEntity::class.java)
-                    trySend(entity)
+                if (snapshot == null || !snapshot.exists()) {
+                    trySend(null)
+                    return@addSnapshotListener
                 }
-            awaitClose()
+
+                val entity = snapshot.toObject(MemberEntity::class.java)
+                trySend(entity)
+            }
+
+            awaitClose { listener.remove() }
         }
     }
 
@@ -88,23 +88,24 @@ class MemberRemoteDataSourceImpl @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun getAllMember(): Flow<List<MemberEntity>> {
-        return callbackFlow<List<MemberEntity>> {
-            fireStore.memberRef()
-                .addSnapshotListener { snapshot, error ->
-                    require(error == null)
+        return callbackFlow {
+            val fsRef = fireStore.memberRef()
+            val listener = fsRef.addSnapshotListener { snapshot, error ->
+                require(error == null)
 
-                    if (snapshot == null || snapshot.documents.isEmpty()) {
-                        trySend(emptyList())
-                        return@addSnapshotListener
-                    }
-
-                    val entities = snapshot.documents.map { document ->
-                        document.toObject(MemberEntity::class.java)!!
-                    }
-
-                    trySend(entities)
+                if (snapshot == null || snapshot.documents.isEmpty()) {
+                    trySend(emptyList())
+                    return@addSnapshotListener
                 }
-            awaitClose()
+
+                val entities = snapshot.documents.map { document ->
+                    document.toObject(MemberEntity::class.java)!!
+                }
+
+                trySend(entities)
+            }
+
+            awaitClose { listener.remove() }
         }
     }
 }
