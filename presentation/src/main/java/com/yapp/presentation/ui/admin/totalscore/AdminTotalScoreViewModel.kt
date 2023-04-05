@@ -4,13 +4,13 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.model.Member
-import com.yapp.domain.model.Team
 import com.yapp.domain.model.collections.AttendanceList
 import com.yapp.domain.usecases.GetAllMemberUseCase
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_LAST_SESSION_ID
 import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,29 +23,64 @@ class AdminTotalScoreViewModel @Inject constructor(
 ) {
     init {
         viewModelScope.launch {
-            setState { copy(loadState = AdminTotalScoreUiState.LoadState.Loading) }
-            getAllScores()
+            updateLoadState(AdminTotalScoreUiState.LoadState.Loading)
+            setState {
+                copy(
+                    lastSessionId = savedStateHandle.get<Int>(KEY_LAST_SESSION_ID)
+                        ?: AttendanceList.DEFAULT_UPCOMING_SESSION_ID
+                )
+            }
+            getAllScoresGroupByTeam()
         }
     }
 
     override suspend fun handleEvent(event: AdminTotalScoreUiEvent) {
         when (event) {
             is AdminTotalScoreUiEvent.OnBackArrowClick -> setEffect(AdminTotalScoreUiSideEffect.NavigateToPreviousScreen)
+            is AdminTotalScoreUiEvent.OnSectionTypeChange -> {
+                getScoreBySessionType(event.sectionType)
+            }
         }
     }
 
-    private suspend fun getAllScores() {
-        getAllMemberUseCase().collect { result ->
-            result.onSuccess { members ->
-                val memberByTeam = members.groupBy { it.team }
+    private suspend fun getScoreBySessionType(sectionType: AdminTotalScoreUiState.SectionType) {
+        setState { copy(sectionType = sectionType) }
+        when (sectionType) {
+            AdminTotalScoreUiState.SectionType.Team -> getAllScoresGroupByTeam()
+            AdminTotalScoreUiState.SectionType.Position -> getAllScoresGroupByPosition()
+        }
+    }
 
-                val lastSessionId = savedStateHandle.get<Int>(KEY_LAST_SESSION_ID)
-                    ?: AttendanceList.DEFAULT_UPCOMING_SESSION_ID
-                val teamItemStates = getTeamItemStates(memberByTeam, lastSessionId)
+    private suspend fun getAllScoresGroupByTeam() {
+        getAllScore(
+            groupKey = { it.team },
+            sectionNameFunction = { "${it.type.value} ${it.number}팀" }
+        )
+    }
+
+    private suspend fun getAllScoresGroupByPosition() {
+        getAllScore(
+            groupKey = { it.position },
+            sectionNameFunction = { it.value }
+        )
+    }
+
+    private suspend fun <T> getAllScore(
+        groupKey: (Member) -> T,
+        sectionNameFunction: (T) -> String,
+    ) {
+        updateLoadState(AdminTotalScoreUiState.LoadState.Loading)
+        getAllMemberUseCase().collectLatest { result ->
+            result.onSuccess { members ->
+                val memberByGroup = members.groupBy(groupKey)
+                val sectionItemStates = getSectionItemStates(
+                    memberBySection = memberByGroup,
+                    getSectionName = sectionNameFunction
+                )
                 setState {
                     copy(
                         loadState = AdminTotalScoreUiState.LoadState.Idle,
-                        teamItemStates = teamItemStates
+                        sectionItemStates = sectionItemStates.toImmutableList()
                     )
                 }
             }.onFailure {
@@ -54,23 +89,28 @@ class AdminTotalScoreViewModel @Inject constructor(
         }
     }
 
-    private fun getTeamItemStates(
-        teamMembersMap: Map<Team, List<Member>>,
-        lastSessionId: Int,
-    ): List<AdminTotalScoreUiState.TeamItemState> {
-        return teamMembersMap.map { team ->
-            AdminTotalScoreUiState.TeamItemState(
-                teamName = "${team.key.type.value} ${team.key.number}팀",
-                teamMembers = team.value.sortedWith(
+    private fun <T> getSectionItemStates(
+        memberBySection: Map<T, List<Member>>,
+        getSectionName: (T) -> String,
+    ): List<AdminTotalScoreUiState.SectionItemState> {
+        val lastSessionId = currentState.lastSessionId
+        return memberBySection.map { section ->
+            AdminTotalScoreUiState.SectionItemState(
+                sectionName = getSectionName(section.key),
+                members = section.value.sortedWith(
                     compareBy<Member> { it.attendances.getTotalAttendanceScore(lastSessionId) }
                         .thenBy { it.name }
                 ).map { member ->
-                    AdminTotalScoreUiState.MemberWithTotalScore(
+                    AdminTotalScoreUiState.MemberState(
                         member.name,
                         member.attendances.getTotalAttendanceScore(lastSessionId)
                     )
-                }
+                }.toImmutableList(),
             )
-        }.sortedBy { it.teamName }
+        }.sortedBy { it.sectionName }
+    }
+
+    private fun updateLoadState(state: AdminTotalScoreUiState.LoadState) {
+        setState { copy(loadState = state) }
     }
 }

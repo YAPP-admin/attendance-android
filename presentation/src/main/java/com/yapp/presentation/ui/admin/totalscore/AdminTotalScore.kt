@@ -23,14 +23,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.insets.systemBarsPadding
-import com.yapp.common.theme.*
-import com.yapp.common.yds.YDSAppBar
-import com.yapp.common.yds.YDSBox
-import com.yapp.common.yds.YDSEmptyScreen
-import com.yapp.common.yds.YDSProgressBar
+import com.yapp.common.flow.collectAsStateWithLifecycle
+import com.yapp.common.theme.AttendanceTheme
+import com.yapp.common.theme.AttendanceTypography
+import com.yapp.common.yds.*
 import com.yapp.presentation.R
 import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.*
-import kotlinx.coroutines.flow.collect
 
 const val WARNING_ICON_PADDING = 5
 const val SCORE_LIMIT = 70
@@ -38,7 +36,7 @@ const val SCORE_LIMIT = 70
 @Composable
 fun AdminTotalScore(
     viewModel: AdminTotalScoreViewModel = hiltViewModel(),
-    navigateToPreviousScreen: () -> Unit
+    navigateToPreviousScreen: () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -53,7 +51,7 @@ fun AdminTotalScore(
             .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
             .systemBarsPadding(),
     ) {
-        val uiState = viewModel.uiState.collectAsState()
+        val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
         LaunchedEffect(key1 = viewModel.effect) {
             viewModel.effect.collect { effect ->
@@ -63,23 +61,39 @@ fun AdminTotalScore(
             }
         }
 
-        when (uiState.value.loadState) {
-            AdminTotalScoreUiState.LoadState.Loading -> YDSProgressBar()
-            AdminTotalScoreUiState.LoadState.Idle -> AdminTotalScoreScreen(uiState = uiState.value)
-            AdminTotalScoreUiState.LoadState.Error -> YDSEmptyScreen()
+        Crossfade(targetState = uiState.value.loadState) {
+            when (it) {
+                AdminTotalScoreUiState.LoadState.Loading -> YDSProgressBar()
+                AdminTotalScoreUiState.LoadState.Idle -> AdminTotalScoreScreen(
+                    uiState = uiState.value,
+                    onClickTeamToggle = {
+                        viewModel.setEvent(AdminTotalScoreUiEvent.OnSectionTypeChange(it))
+                    },
+                )
+                AdminTotalScoreUiState.LoadState.Error -> YDSEmptyScreen()
+            }
         }
     }
 }
 
 @Composable
 fun AdminTotalScoreScreen(
-    uiState: AdminTotalScoreUiState
+    uiState: AdminTotalScoreUiState,
+    onClickTeamToggle: (AdminTotalScoreUiState.SectionType) -> Unit,
 ) {
+    var toggle by remember { mutableStateOf(false) }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(AttendanceTheme.colors.backgroundColors.background)
     ) {
+        // TODO (EvergreenTree97) : 정렬 UI 나올시 제거
+        item {
+            YDSButtonLarge(text = uiState.sectionType.name, state = YdsButtonState.ENABLED) {
+                toggle = !toggle
+                onClickTeamToggle(if (toggle) AdminTotalScoreUiState.SectionType.Team else AdminTotalScoreUiState.SectionType.Position)
+            }
+        }
         item {
             YDSBox(
                 modifier = Modifier.padding(vertical = 28.dp),
@@ -88,8 +102,8 @@ fun AdminTotalScoreScreen(
         }
 
         itemsIndexed(
-            items = uiState.teamItemStates,
-            key = { _, key -> key.teamName }
+            items = uiState.sectionItemStates,
+            key = { _, key -> key.sectionName }
         ) { _, teamItemState ->
             TeamItem(
                 teamItemState = teamItemState
@@ -99,7 +113,7 @@ fun AdminTotalScoreScreen(
 }
 
 @Composable
-fun TeamItem(teamItemState: AdminTotalScoreUiState.TeamItemState) {
+fun TeamItem(teamItemState: AdminTotalScoreUiState.SectionItemState) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
     val iconResourceId =
         if (isExpanded) R.drawable.icon_chevron_up else R.drawable.icon_chevron_down
@@ -126,7 +140,7 @@ fun TeamItem(teamItemState: AdminTotalScoreUiState.TeamItemState) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = teamItemState.teamName,
+                text = teamItemState.sectionName,
                 color = AttendanceTheme.colors.grayScale.Gray1200,
                 style = AttendanceTypography.h3
             )
@@ -161,11 +175,17 @@ fun TeamItem(teamItemState: AdminTotalScoreUiState.TeamItemState) {
                     .wrapContentHeight()
                     .background(AttendanceTheme.colors.backgroundColors.background)
             ) {
-                Divider(modifier = Modifier.padding(horizontal = 24.dp), color = AttendanceTheme.colors.grayScale.Gray300)
-                teamItemState.teamMembers.forEach { teamMember ->
+                Divider(
+                    modifier = Modifier.padding(horizontal = 24.dp),
+                    color = AttendanceTheme.colors.grayScale.Gray300
+                )
+                teamItemState.members.forEach { teamMember ->
                     MemberItem(memberWithTotal = teamMember)
                 }
-                Divider(modifier = Modifier.padding(horizontal = 24.dp), color = AttendanceTheme.colors.grayScale.Gray300)
+                Divider(
+                    modifier = Modifier.padding(horizontal = 24.dp),
+                    color = AttendanceTheme.colors.grayScale.Gray300
+                )
             }
         }
     }
@@ -173,7 +193,7 @@ fun TeamItem(teamItemState: AdminTotalScoreUiState.TeamItemState) {
 
 @Composable
 fun MemberItem(
-    memberWithTotal: AdminTotalScoreUiState.MemberWithTotalScore
+    memberWithTotal: AdminTotalScoreUiState.MemberState,
 ) {
     val startPadding =
         if (memberWithTotal.totalScore < SCORE_LIMIT) (32 - WARNING_ICON_PADDING) else 32

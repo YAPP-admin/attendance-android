@@ -3,25 +3,35 @@ package com.yapp.presentation.ui.admin.totalscore
 import com.yapp.common.base.UiEvent
 import com.yapp.common.base.UiSideEffect
 import com.yapp.common.base.UiState
+import com.yapp.domain.model.collections.AttendanceList
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 class AdminTotalScoreContract {
+
     data class AdminTotalScoreUiState(
         val loadState: LoadState = LoadState.Idle,
-        val teamItemStates: List<TeamItemState> = emptyList()
+        val sectionItemStates: ImmutableList<SectionItemState> = persistentListOf(),
+        val sectionType: SectionType = SectionType.Team,
+        val lastSessionId: Int = AttendanceList.DEFAULT_UPCOMING_SESSION_ID,
     ) : UiState {
         enum class LoadState {
             Loading, Idle, Error
         }
 
-        data class TeamItemState(
-            val teamName: String,
-            val teamMembers: List<MemberWithTotalScore>
+        data class SectionItemState(
+            val sectionName: String,
+            val members: ImmutableList<MemberState>,
         )
 
-        data class MemberWithTotalScore(
+        data class MemberState(
             val name: String,
-            val totalScore: Int = 100
+            val totalScore: Int = 100,
         )
+
+        enum class SectionType {
+            Team, Position
+        }
     }
 
     sealed class AdminTotalScoreUiSideEffect : UiSideEffect {
@@ -30,5 +40,7 @@ class AdminTotalScoreContract {
 
     sealed class AdminTotalScoreUiEvent : UiEvent {
         object OnBackArrowClick : AdminTotalScoreUiEvent()
+        class OnSectionTypeChange(val sectionType: AdminTotalScoreUiState.SectionType) :
+            AdminTotalScoreUiEvent()
     }
 }
