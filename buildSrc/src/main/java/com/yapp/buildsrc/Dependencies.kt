@@ -8,6 +8,7 @@ object Dependencies {
     object Kotlin {
         private const val version = "1.6.10"
         private const val coroutineVersion = "1.5.1"
+        private const val ImmutableCollections = "0.3.5"
 
         const val GRADLE_PLUGIN = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val SERIALIZATION = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0"
@@ -16,11 +17,15 @@ object Dependencies {
         const val COROUTINE_CORE = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion"
         const val COROUTINE_ANDROID = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
         const val COROUTINE_PLAY_SERVICE = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.2.1"
+
+        const val IMMUTABLE_COLLECTIONS = "org.jetbrains.kotlinx:kotlinx-collections-immutable:${ImmutableCollections}"
     }
 
     object Compose {
         private const val compose_version = "1.1.0"
+        private const val lifecycle_viewmodel = "2.5.0"
         const val UI = "androidx.compose.ui:ui:$compose_version"
+        const val LIFECYCLE_VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_viewmodel"
         const val MATERIAL = "androidx.compose.material:material:$compose_version"
         const val TOOL_PREVIEW = "androidx.compose.ui:ui-tooling:$compose_version"
         const val JUNIT = "androidx.compose.ui:ui-test-junit4:$compose_version"
@@ -53,7 +58,8 @@ object Dependencies {
     object Google {
         const val MATERIAL = "com.google.android.material:material:1.5.0"
         const val GSON = "com.google.code.gson:gson:2.8.5"
-        const val SYSTEM_UI_CONTROLLER = "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
+        const val SYSTEM_UI_CONTROLLER =
+            "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
         const val SYSTEM_WINDOW_INSET = "com.google.accompanist:accompanist-insets:0.14.0"
     }
 

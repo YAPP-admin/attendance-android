@@ -54,7 +54,7 @@ dependencies {
     implementation(Dependencies.APP_COMPAT)
     implementation(Dependencies.Ktx.LIFECYCLE)
     implementation(Dependencies.Google.MATERIAL)
-
+    implementation(Dependencies.Kotlin.COROUTINE_CORE)
     implementation(Dependencies.Lottie.LOTTIE)
 
     //hilt
@@ -65,6 +65,7 @@ dependencies {
 
     //compose
     implementation(Dependencies.Compose.UI)
+    implementation(Dependencies.Compose.LIFECYCLE_VIEWMODEL)
     implementation(Dependencies.Compose.MATERIAL)
     implementation(Dependencies.Compose.TOOL_PREVIEW)
     implementation(Dependencies.Compose.ACTIVITY)
