@@ -22,7 +22,7 @@ abstract class BaseViewModel<S : UiState, A : UiSideEffect, E : UiEvent>(
     val effect = _effect.receiveAsFlow()
 
     // Get current state
-    private val currentState: S
+    protected val currentState: S
         get() = _uiState.value
 
     open fun setEvent(event: E) {
