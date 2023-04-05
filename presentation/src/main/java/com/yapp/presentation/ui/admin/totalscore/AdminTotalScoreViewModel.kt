@@ -7,7 +7,9 @@ import com.yapp.domain.model.Member
 import com.yapp.domain.model.collections.AttendanceList
 import com.yapp.domain.usecases.GetAllMemberUseCase
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_LAST_SESSION_ID
-import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.*
+import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.AdminTotalScoreUiEvent
+import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.AdminTotalScoreUiSideEffect
+import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.AdminTotalScoreUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.collectLatest
