@@ -11,7 +11,6 @@ import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.AdminTo
 import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.AdminTotalScoreUiSideEffect
 import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.AdminTotalScoreUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -82,7 +81,7 @@ class AdminTotalScoreViewModel @Inject constructor(
                 setState {
                     copy(
                         loadState = AdminTotalScoreUiState.LoadState.Idle,
-                        sectionItemStates = sectionItemStates.toImmutableList()
+                        sectionItemStates = sectionItemStates
                     )
                 }
             }.onFailure {
@@ -107,7 +106,7 @@ class AdminTotalScoreViewModel @Inject constructor(
                         member.name,
                         member.attendances.getTotalAttendanceScore(lastSessionId)
                     )
-                }.toImmutableList(),
+                },
             )
         }.sortedBy { it.sectionName }
     }

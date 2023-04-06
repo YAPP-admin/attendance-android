@@ -98,7 +98,6 @@ dependencies {
     implementation(Dependencies.Kotlin.COROUTINE_CORE)
     implementation(Dependencies.Kotlin.COROUTINE_ANDROID)
     implementation(Dependencies.Kotlin.SERIALIZATION)
-    implementation(Dependencies.Kotlin.IMMUTABLE_COLLECTIONS)
 
     //coil
     implementation(Dependencies.Coil.COIL)
