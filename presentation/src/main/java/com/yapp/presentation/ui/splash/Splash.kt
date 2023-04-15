@@ -57,6 +57,6 @@ fun SplashLoader(loginState: LoginState, navigateToLogin: () -> Unit, navigateTo
 
     LottieAnimation(
         composition?.value,
-        progress,
+        { progress },
     )
 }

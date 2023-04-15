@@ -22,6 +22,6 @@ fun YDSProgressBar() {
             composition = composition,
             iterations = LottieConstants.IterateForever
         )
-        LottieAnimation(composition, progress)
+        LottieAnimation(composition, { progress })
     }
 }

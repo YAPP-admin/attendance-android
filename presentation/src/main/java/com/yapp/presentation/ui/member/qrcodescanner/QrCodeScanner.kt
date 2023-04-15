@@ -344,7 +344,7 @@ fun SuccessLottie(
     }
     LottieAnimation(
         composition,
-        progress,
+        { progress },
         modifier = modifier
     )
 }
