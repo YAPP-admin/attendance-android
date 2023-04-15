@@ -50,6 +50,7 @@ fun SplashLoader(loginState: LoginState, navigateToLogin: () -> Unit, navigateTo
             when (loginState) {
                 LoginState.SUCCESS -> navigateToMain()
                 LoginState.REQUIRED -> navigateToLogin()
+                LoginState.NONE -> Unit
             }
         }
     }

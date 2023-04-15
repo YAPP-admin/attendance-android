@@ -20,9 +20,6 @@ dependencies {
     implementation(Dependencies.Kotlin.SERIALIZATION)
 
     implementation(Dependencies.DATA_STORE)
-    api(Dependencies.Room.ROOM)
-    implementation(Dependencies.Room.KTX)
-    kapt(Dependencies.Room.COMPILER)
 
     //firebase
     implementation(Dependencies.Firebase.COMMON)

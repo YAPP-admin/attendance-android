@@ -12,14 +12,14 @@ object Configs {
     const val CRASHLYTICS               = "com.google.firebase.crashlytics"
 
     //Android Config
-    const val COMPILE_SDK               = 31
+    const val COMPILE_SDK               = 33
 
     //Android Default Config
     const val APPLICATION_ID            = "com.yapp.attendance"
     const val MIN_SDK                   = 24
-    const val TARGET_SDK                = 31
+    const val TARGET_SDK                = 33
     const val VERSION_CODE              = 100100
     const val VERSION_NAME              = "1.1.0"
 
-    const val COMPOSE_VERSION           = "1.1.0"
+    const val KOTLIN_COMPILER_EXTENSION = "1.4.3"
 }
