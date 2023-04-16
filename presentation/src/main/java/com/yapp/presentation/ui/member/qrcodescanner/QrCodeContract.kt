@@ -3,6 +3,7 @@ package com.yapp.presentation.ui.member.qrcodescanner
 import com.yapp.common.base.UiEvent
 import com.yapp.common.base.UiSideEffect
 import com.yapp.common.base.UiState
+import java.lang.Exception
 
 class QrCodeContract {
     data class QrCodeUiState(

@@ -1,5 +1,6 @@
 package com.yapp.domain.usecases
 
+import com.yapp.domain.firebase.FirebaseRemoteConfig
 import com.yapp.domain.repository.RemoteConfigRepository
 import javax.inject.Inject
 

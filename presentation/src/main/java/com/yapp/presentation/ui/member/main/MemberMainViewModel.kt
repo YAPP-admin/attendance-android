@@ -1,9 +1,8 @@
 package com.yapp.presentation.ui.member.main
 
+import androidx.compose.material.BottomNavigation
 import com.yapp.common.base.BaseViewModel
-import com.yapp.presentation.ui.member.main.MemberMainContract.MemberMainUiEvent
-import com.yapp.presentation.ui.member.main.MemberMainContract.MemberMainUiSideEffect
-import com.yapp.presentation.ui.member.main.MemberMainContract.MemberMainUiState
+import com.yapp.presentation.ui.member.main.MemberMainContract.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
