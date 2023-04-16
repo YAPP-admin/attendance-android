@@ -85,7 +85,7 @@ object Dependencies {
         const val CONFIG_KTX = "com.google.firebase:firebase-config-ktx"
         const val CRASHLYTICS = "com.google.firebase:firebase-crashlytics"
         const val ANALYTICS_KTX = "com.google.firebase:firebase-analytics-ktx"
-        const val FIRESTORE = "com.google.firebase:firebase-firestore:24.0.1"
+        const val FIRESTORE = "com.google.firebase:firebase-firestore:24.5.0"
         const val FIRESTORE_KTX = "com.google.firebase:firebase-firestore-ktx"
     }
 
