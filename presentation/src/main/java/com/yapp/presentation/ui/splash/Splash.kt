@@ -2,20 +2,13 @@ package com.yapp.presentation.ui.splash
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionResult
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
-import com.airbnb.lottie.compose.rememberLottieComposition
+import com.airbnb.lottie.compose.*
 import com.yapp.common.R
 import com.yapp.common.theme.AttendanceTheme
-import com.yapp.presentation.ui.splash.SplashContract.LoginState
+import com.yapp.presentation.ui.splash.SplashContract.*
 
 @Composable
 fun Splash(
@@ -57,13 +50,12 @@ fun SplashLoader(loginState: LoginState, navigateToLogin: () -> Unit, navigateTo
             when (loginState) {
                 LoginState.SUCCESS -> navigateToMain()
                 LoginState.REQUIRED -> navigateToLogin()
-                LoginState.NONE -> Unit
             }
         }
     }
 
     LottieAnimation(
         composition?.value,
-        { progress },
+        progress,
     )
 }

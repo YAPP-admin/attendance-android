@@ -1,6 +1,7 @@
 package com.yapp.common.util
 
 import android.graphics.Rect
+import android.util.Log
 import android.view.ViewTreeObserver
 import android.view.Window
 

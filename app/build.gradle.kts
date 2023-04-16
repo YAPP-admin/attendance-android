@@ -52,7 +52,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Configs.KOTLIN_COMPILER_EXTENSION
+        kotlinCompilerExtensionVersion = Configs.COMPOSE_VERSION
     }
     packagingOptions {
         resources {
@@ -76,6 +76,7 @@ dependencies {
 
     implementation(Dependencies.Google.MATERIAL)
     implementation(Dependencies.Dagger.HILT_ANDROID)
+    implementation(Dependencies.Dagger.HILT_LIFECYCLE_VIEWMODEL)
     implementation(Dependencies.Dagger.HILT_NAVIGATION_COMPOSE)
     kapt(Dependencies.Dagger.HILT_COMPILER)
 

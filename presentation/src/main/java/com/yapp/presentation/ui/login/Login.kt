@@ -35,6 +35,7 @@ import com.yapp.common.yds.YDSProgressBar
 import com.yapp.presentation.R
 import com.yapp.presentation.ui.login.LoginContract.LoginUiEvent
 import com.yapp.presentation.ui.login.LoginContract.LoginUiSideEffect
+import kotlinx.coroutines.flow.collect
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

@@ -17,7 +17,7 @@ class DeleteMemberInfoUseCase @Inject constructor(
             onSuccess = {
                 Result.success(true)
             },
-            onFailure = {
+            onFailure = { exception ->
                 Result.success(false)
             }
         )

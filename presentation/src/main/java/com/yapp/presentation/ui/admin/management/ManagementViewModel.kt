@@ -14,6 +14,7 @@ import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_TITLE
 import com.yapp.presentation.ui.admin.management.ManagementContract.*
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
