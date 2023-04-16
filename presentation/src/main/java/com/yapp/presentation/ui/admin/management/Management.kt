@@ -33,7 +33,7 @@ import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSDropDownButton
 import com.yapp.common.yds.YDSEmptyScreen
 import com.yapp.common.yds.YDSProgressBar
-import com.yapp.domain.model.types.AttendanceType
+import com.yapp.domain.model.Attendance
 import com.yapp.presentation.R
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementEvent
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState.LoadState.*
@@ -95,13 +95,13 @@ fun ManagementScreen(
     uiState: ManagementContract.ManagementState,
     sheetState: ModalBottomSheetState,
     onBackButtonClicked: (() -> Unit),
-    onBottomSheetDialogItemClicked: (AttendanceType) -> Unit,
+    onBottomSheetDialogItemClicked: (Attendance.Status) -> Unit,
     onDropDownClicked: ((MemberState) -> Unit)
 ) {
     ModalBottomSheetLayout(
         sheetContent = {
             BottomSheetDialog(
-                attendanceTypes = listOf(AttendanceType.Absent,AttendanceType.Normal, AttendanceType.Late, AttendanceType.Admit),
+                attendanceTypes = listOf(Attendance.Status.ABSENT,Attendance.Status.NORMAL, Attendance.Status.LATE, Attendance.Status.ADMIT),
                 onClickItem = { attendanceType -> onBottomSheetDialogItemClicked.invoke(attendanceType) }
             )
         },
@@ -312,7 +312,7 @@ fun MemberContent(
                     top.linkTo(parent.top, margin = 13.dp)
                     bottom.linkTo(parent.bottom, margin = 13.dp)
                 },
-            text = state.attendance.type.text,
+            text = state.attendance.status.text,
             onClick = { onDropDownClicked.invoke(state) }
         )
     }
@@ -322,8 +322,8 @@ fun MemberContent(
 @Composable
 fun BottomSheetDialog(
     modifier: Modifier = Modifier,
-    attendanceTypes: List<AttendanceType>,
-    onClickItem: (AttendanceType) -> Unit = {}
+    attendanceTypes: List<Attendance.Status>,
+    onClickItem: (Attendance.Status) -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -359,8 +359,8 @@ fun BottomSheetDialog(
 @Composable
 fun BottomSheetDialogItem(
     modifier: Modifier = Modifier,
-    attendanceType: AttendanceType = AttendanceType.Normal,
-    onClickItem: (AttendanceType) -> Unit = {}
+    attendanceType: Attendance.Status = Attendance.Status.NORMAL,
+    onClickItem: (Attendance.Status) -> Unit = {}
 ) {
     Column(
         modifier = modifier

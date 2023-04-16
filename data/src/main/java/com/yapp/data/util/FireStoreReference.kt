@@ -5,5 +5,5 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 
 fun FirebaseFirestore.memberRef(): CollectionReference {
-    return this.collection("member")
+    return this.collection("test")
 }

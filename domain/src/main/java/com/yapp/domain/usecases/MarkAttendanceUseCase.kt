@@ -2,7 +2,6 @@ package com.yapp.domain.usecases
 
 import com.yapp.domain.model.Attendance
 import com.yapp.domain.model.Session
-import com.yapp.domain.model.types.AttendanceType
 import com.yapp.domain.repository.LocalRepository
 import com.yapp.domain.repository.MemberRepository
 import com.yapp.domain.util.DateUtil
@@ -19,7 +18,7 @@ class MarkAttendanceUseCase @Inject constructor(
 
             val markedAttendanceState = Attendance(
                 sessionId = checkedSession.sessionId,
-                type = checkAttendanceState(checkedSession.date)
+                status = checkAttendanceState(checkedSession.date)
             )
 
             val currentMemberInfo = memberRepository.getMember(currentUserId).getOrThrow()
@@ -33,11 +32,11 @@ class MarkAttendanceUseCase @Inject constructor(
         }
     }
 
-    private fun checkAttendanceState(sessionDate: String): AttendanceType {
+    private fun checkAttendanceState(sessionDate: String): Attendance.Status {
         return when (DateUtil.getElapsedTime(sessionDate)) {
-            in -5..5 -> AttendanceType.Normal
-            in 6..30 -> AttendanceType.Late
-            else -> AttendanceType.Absent
+            in -5..5 -> Attendance.Status.NORMAL
+            in 6..30 -> Attendance.Status.LATE
+            else -> Attendance.Status.ABSENT
         }
     }
 
