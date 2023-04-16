@@ -1,7 +1,7 @@
 plugins {
+    kotlin("android")
+    kotlin("kapt")
     id(Configs.APPLICATION)
-    id(Configs.KOTLIN_ANDROID)
-    id(Configs.KOTLIN_KAPT)
     id(Configs.HILT_ANDROID_PLUGIN)
     id(Configs.GOOGLE_SERVICE)
     id(Configs.CRASHLYTICS)
