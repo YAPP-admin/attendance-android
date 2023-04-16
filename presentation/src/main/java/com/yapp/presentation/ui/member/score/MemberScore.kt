@@ -63,7 +63,7 @@ import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.presentation.R
 import com.yapp.presentation.util.attendance.checkSessionAttendance
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 @Composable
 fun MemberScore(

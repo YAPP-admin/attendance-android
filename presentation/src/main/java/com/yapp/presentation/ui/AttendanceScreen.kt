@@ -24,9 +24,9 @@ import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.yds.YDSToast
+import com.yapp.presentation.ui.admin.AdminConstants.KEY_LAST_SESSION_ID
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_ID
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_TITLE
-import com.yapp.presentation.ui.admin.AdminConstants.KEY_LAST_SESSION_ID
 import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.admin.management.AttendanceManagement
 import com.yapp.presentation.ui.admin.totalscore.AdminTotalScore
@@ -43,7 +43,6 @@ import com.yapp.presentation.ui.member.signup.position.Position
 import com.yapp.presentation.ui.member.signup.team.Team
 import com.yapp.presentation.ui.splash.Splash
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
