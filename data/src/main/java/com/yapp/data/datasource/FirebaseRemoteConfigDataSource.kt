@@ -3,7 +3,6 @@ package com.yapp.data.datasource
 import com.yapp.data.model.ConfigEntity
 import com.yapp.data.model.SessionEntity
 import com.yapp.data.model.TeamEntity
-import com.yapp.domain.model.Config
 
 
 interface FirebaseRemoteConfigDataSource {

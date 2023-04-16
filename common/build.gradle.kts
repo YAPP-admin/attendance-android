@@ -1,8 +1,8 @@
 plugins {
+    kotlin("android")
+    kotlin("kapt")
     id(Configs.LIBRARY)
-    id(Configs.KOTLIN_ANDROID)
     id(Configs.KOTLIN_PARCELIZE)
-    id(Configs.KOTLIN_KAPT)
 }
 
 android {
@@ -36,7 +36,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Configs.COMPOSE_VERSION
+        kotlinCompilerExtensionVersion = Configs.KOTLIN_COMPILER_EXTENSION
     }
     packagingOptions {
         resources {
@@ -59,7 +59,6 @@ dependencies {
 
     //hilt
     implementation(Dependencies.Dagger.HILT_ANDROID)
-    implementation(Dependencies.Dagger.HILT_LIFECYCLE_VIEWMODEL)
     implementation(Dependencies.Dagger.HILT_NAVIGATION_COMPOSE)
     kapt(Dependencies.Dagger.HILT_COMPILER)
 

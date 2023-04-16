@@ -1,5 +1,7 @@
 package com.yapp.presentation.ui.member.setting
 
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -23,8 +25,8 @@ import com.yapp.common.R
 import com.yapp.common.theme.*
 import com.yapp.common.yds.*
 import com.yapp.presentation.R.*
+import com.yapp.presentation.util.permission.PermissionBundle
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 
 @Composable
 fun MemberSetting(
@@ -174,7 +176,11 @@ private fun MenuList(viewModel: MemberSettingViewModel) {
         modifier = Modifier.padding(top = 28.dp, bottom = 28.dp)
     ) {
         val context = LocalContext.current
-        val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
+        val versionName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.packageManager.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(0)).versionName
+        } else {
+            @Suppress("DEPRECATION") context.packageManager.getPackageInfo(context.packageName, 0).versionName
+        }
 
         Row(
             modifier = Modifier

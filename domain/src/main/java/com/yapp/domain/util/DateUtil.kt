@@ -1,7 +1,7 @@
 package com.yapp.domain.util
 
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 object DateUtil {
 

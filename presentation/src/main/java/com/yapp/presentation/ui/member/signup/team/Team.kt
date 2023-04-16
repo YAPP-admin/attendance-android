@@ -43,7 +43,6 @@ import com.yapp.presentation.R
 import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamSideEffect
 import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamUiEvent
 import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamUiState
-import kotlinx.coroutines.flow.collect
 
 @Composable
 fun Team(
