@@ -54,11 +54,12 @@ fun SessionDetail(
             .fillMaxSize()
             .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
             .systemBarsPadding()
-    ) {
+    ) { contentPadding ->
         when (uiState.loadState) {
             SessionDetailContract.SessionDetailUiState.LoadState.Loading -> YDSProgressBar()
             SessionDetailContract.SessionDetailUiState.LoadState.Error -> YDSEmptyScreen()
             SessionDetailContract.SessionDetailUiState.LoadState.Idle -> SessionDetailScreen(
+                modifier = Modifier.padding(contentPadding),
                 session = session,
                 attendance = attendance
             )
@@ -67,10 +68,14 @@ fun SessionDetail(
 }
 
 @Composable
-fun SessionDetailScreen(session: Session?, attendance: YDSAttendanceType?) {
+fun SessionDetailScreen(
+    modifier: Modifier = Modifier,
+    session: Session?,
+    attendance: YDSAttendanceType?
+) {
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(AttendanceTheme.colors.backgroundColors.background)
             .padding(horizontal = 24.dp, vertical = 40.dp)

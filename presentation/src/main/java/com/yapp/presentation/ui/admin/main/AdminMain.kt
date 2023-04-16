@@ -82,10 +82,11 @@ fun AdminMain(
             .fillMaxSize()
             .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
             .systemBarsPadding()
-    ) {
+    ) { contentPadding ->
         when (uiState.loadState) {
             AdminMainUiState.LoadState.Loading -> YDSProgressBar()
             AdminMainUiState.LoadState.Idle -> AdminMainScreen(
+                modifier = Modifier.padding(contentPadding),
                 uiState = uiState,
                 onUserScoreCardClicked = {
                     viewModel.setEvent(
@@ -110,6 +111,7 @@ fun AdminMain(
 
 @Composable
 fun AdminMainScreen(
+    modifier: Modifier,
     uiState: AdminMainUiState,
     onUserScoreCardClicked: () -> Unit,
     onSessionClicked: (Int, String) -> Unit,

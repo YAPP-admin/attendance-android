@@ -49,10 +49,11 @@ fun Help( onClickBackButton: () -> Unit) {
             .fillMaxSize()
             .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
             .systemBarsPadding(),
-    ) {
+    ) { contentPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(contentPadding)
 
         ) {
             BasicInfo()

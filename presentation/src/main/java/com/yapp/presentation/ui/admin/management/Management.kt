@@ -147,6 +147,7 @@ fun ManagementScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
+                .padding(start = 24.dp, end = 24.dp, bottom = 24.dp)
                 .systemBarsPadding(),
             topBar = {
                 YDSAppBar(
@@ -157,12 +158,12 @@ fun ManagementScreen(
                     onClickBackButton = { onBackButtonClicked.invoke() }
                 )
             }
-        ) {
+        ) { contentPadding ->
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(AttendanceTheme.colors.backgroundColors.background)
-                    .padding(start = 24.dp, end = 24.dp, bottom = 24.dp)
+                    .padding(contentPadding)
             ) {
 
                 item {

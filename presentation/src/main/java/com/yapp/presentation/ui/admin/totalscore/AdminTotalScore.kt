@@ -74,7 +74,7 @@ fun AdminTotalScore(
             .fillMaxSize()
             .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
             .systemBarsPadding(),
-    ) {
+    ) { contentPadding ->
         val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
         LaunchedEffect(key1 = viewModel.effect) {
@@ -89,6 +89,7 @@ fun AdminTotalScore(
             when (it) {
                 AdminTotalScoreUiState.LoadState.Loading -> YDSProgressBar()
                 AdminTotalScoreUiState.LoadState.Idle -> AdminTotalScoreScreen(
+                    modifier = Modifier.padding(contentPadding),
                     uiState = uiState.value,
                     onClickTeamToggle = {
                         viewModel.setEvent(AdminTotalScoreUiEvent.OnSectionTypeChange(it))
@@ -102,12 +103,13 @@ fun AdminTotalScore(
 
 @Composable
 fun AdminTotalScoreScreen(
+    modifier: Modifier = Modifier,
     uiState: AdminTotalScoreUiState,
     onClickTeamToggle: (AdminTotalScoreUiState.SectionType) -> Unit,
 ) {
     var toggle by remember { mutableStateOf(false) }
     LazyColumn(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(AttendanceTheme.colors.backgroundColors.background)
     ) {

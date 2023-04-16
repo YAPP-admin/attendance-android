@@ -60,12 +60,13 @@ fun TodaySession(
         },
         modifier = modifier
             .fillMaxSize(),
-    ) {
+    ) { contentPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .background(color = AttendanceTheme.colors.backgroundColors.backgroundBase)
+                .padding(contentPadding)
         ) {
             TodaysAttendance(uiState.attendanceType)
             SessionDescriptionModal(uiState.todaySession, Modifier.weight(1f))

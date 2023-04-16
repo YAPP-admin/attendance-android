@@ -84,11 +84,12 @@ fun MemberScore(
         modifier = modifier
             .fillMaxSize()
             .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
-    ) {
+    ) { contentPadding ->
         when (uiState.loadState) {
             MemberScoreContract.MemberScoreUiState.LoadState.Loading -> YDSProgressBar()
             MemberScoreContract.MemberScoreUiState.LoadState.Error -> YDSEmptyScreen()
             MemberScoreContract.MemberScoreUiState.LoadState.Idle -> MemberScoreScreen(
+                modifier = Modifier.padding(contentPadding),
                 uiState = uiState,
                 navigateToHelpScreen = navigateToHelpScreen,
                 navigateToSessionDetail = navigateToSessionDetail
@@ -100,6 +101,7 @@ fun MemberScore(
 
 @Composable
 fun MemberScoreScreen(
+    modifier: Modifier = Modifier,
     uiState: MemberScoreContract.MemberScoreUiState,
     navigateToHelpScreen: () -> Unit,
     navigateToSessionDetail: (Int) -> Unit
@@ -107,7 +109,7 @@ fun MemberScoreScreen(
     val currentScore = uiState.lastAttendanceList.fold(100) { total, pair -> total + pair.second.type.point }
 
     LazyColumn(
-        modifier = Modifier.background(AttendanceTheme.colors.backgroundColors.background)
+        modifier = modifier.background(AttendanceTheme.colors.backgroundColors.background)
     ) {
         item {
             HelpIcon(navigateToHelpScreen)

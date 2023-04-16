@@ -63,13 +63,14 @@ fun Position(
         modifier = Modifier
             .fillMaxSize()
             .background(AttendanceTheme.colors.backgroundColors.background)
+            .padding(horizontal = 24.dp)
             .systemBarsPadding()
-    ) {
+    ) { contentPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(AttendanceTheme.colors.backgroundColors.background)
-                .padding(horizontal = 24.dp)
+                .padding(contentPadding)
         ) {
             Column {
                 Spacer(modifier = Modifier.height(32.dp))

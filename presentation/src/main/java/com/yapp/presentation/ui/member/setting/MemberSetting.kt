@@ -68,11 +68,12 @@ fun MemberSetting(
             .fillMaxSize()
             .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
             .systemBarsPadding(),
-    ) {
+    ) { contentPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(AttendanceTheme.colors.backgroundColors.background)
+                .padding(contentPadding)
                 .verticalScroll(rememberScrollState())
         ) {
             GroupInfo(uiState.generation)
