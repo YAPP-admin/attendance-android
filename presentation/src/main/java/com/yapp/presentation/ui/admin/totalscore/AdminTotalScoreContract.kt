@@ -1,17 +1,19 @@
 package com.yapp.presentation.ui.admin.totalscore
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import com.yapp.common.base.UiEvent
 import com.yapp.common.base.UiSideEffect
 import com.yapp.common.base.UiState
 import com.yapp.domain.model.collections.AttendanceList
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 class AdminTotalScoreContract {
 
-    @Stable
     data class AdminTotalScoreUiState(
         val loadState: LoadState = LoadState.Idle,
-        val sectionItemStates: List<SectionItemState> = emptyList(),
+        val sectionItemStates: ImmutableList<SectionItemState> = persistentListOf(),
         val sectionType: SectionType = SectionType.Team,
         val lastSessionId: Int = AttendanceList.DEFAULT_UPCOMING_SESSION_ID,
     ) : UiState {
@@ -19,10 +21,10 @@ class AdminTotalScoreContract {
             Loading, Idle, Error
         }
 
-        @Stable
+        @Immutable
         data class SectionItemState(
             val sectionName: String,
-            val members: List<MemberState>,
+            val members: ImmutableList<MemberState>,
         )
 
         data class MemberState(

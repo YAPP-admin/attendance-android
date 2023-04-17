@@ -95,6 +95,7 @@ fun AdminTotalScore(
                         viewModel.setEvent(AdminTotalScoreUiEvent.OnSectionTypeChange(it))
                     },
                 )
+
                 AdminTotalScoreUiState.LoadState.Error -> YDSEmptyScreen()
             }
         }
