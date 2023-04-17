@@ -8,6 +8,7 @@ import android.webkit.WebViewClient
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -35,10 +36,11 @@ fun PrivacyPolicyScreen(
         modifier = Modifier
             .fillMaxSize()
             .systemBarsPadding()
-    ) {
+    ) { contentPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(contentPadding)
         ) {
             WebViewComposable(modifier = Modifier.fillMaxSize(), url = url)
         }

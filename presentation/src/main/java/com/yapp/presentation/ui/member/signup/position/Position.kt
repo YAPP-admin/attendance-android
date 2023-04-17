@@ -1,13 +1,13 @@
 package com.yapp.presentation.ui.member.signup.position
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.background
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +30,6 @@ import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R
 import com.yapp.presentation.ui.member.signup.position.PositionContract.PositionSideEffect
 import com.yapp.presentation.ui.member.signup.position.PositionContract.PositionUiEvent
-import kotlinx.coroutines.flow.collect
 
 @Composable
 fun Position(
@@ -64,13 +63,14 @@ fun Position(
         modifier = Modifier
             .fillMaxSize()
             .background(AttendanceTheme.colors.backgroundColors.background)
+            .padding(horizontal = 24.dp)
             .systemBarsPadding()
-    ) {
+    ) { contentPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(AttendanceTheme.colors.backgroundColors.background)
-                .padding(horizontal = 24.dp)
+                .padding(contentPadding)
         ) {
             Column {
                 Spacer(modifier = Modifier.height(32.dp))

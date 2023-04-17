@@ -43,7 +43,6 @@ import com.yapp.presentation.R
 import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamSideEffect
 import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamUiEvent
 import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamUiState
-import kotlinx.coroutines.flow.collect
 
 @Composable
 fun Team(
@@ -76,7 +75,7 @@ fun Team(
         modifier = Modifier
             .fillMaxSize()
             .systemBarsPadding()
-    ) {
+    ) { contentPadding ->
         when (uiState.loadState) {
             TeamUiState.LoadState.Loading -> YDSProgressBar()
             TeamUiState.LoadState.Error -> YDSEmptyScreen()
@@ -102,6 +101,7 @@ fun Team(
                 }
 
                 TeamScreen(
+                    modifier = Modifier.padding(contentPadding),
                     uiState = uiState,
                     onTeamTypeClicked = onTeamTypeClicked,
                     onTeamNumberClicked = onTeamNumberClicked,
@@ -114,13 +114,14 @@ fun Team(
 
 @Composable
 fun TeamScreen(
+    modifier: Modifier = Modifier,
     uiState: TeamUiState,
     onTeamTypeClicked: (String) -> Unit,
     onTeamNumberClicked: (Int) -> Unit,
     onConfirmClicked: () -> Unit,
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(AttendanceTheme.colors.backgroundColors.background)
             .padding(horizontal = 24.dp)

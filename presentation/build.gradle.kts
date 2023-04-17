@@ -35,12 +35,20 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs = freeCompilerArgs + listOf(
+            "-P",
+            "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=$rootDir/report/compose-metrics",
+        )
+        freeCompilerArgs = freeCompilerArgs + listOf(
+            "-P",
+            "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=$rootDir/report/compose-reports",
+        )
     }
     buildFeatures {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Configs.COMPOSE_VERSION
+        kotlinCompilerExtensionVersion = Configs.KOTLIN_COMPILER_EXTENSION
     }
     packagingOptions {
         resources {
@@ -82,7 +90,6 @@ dependencies {
 
     //hilt
     implementation(Dependencies.Dagger.HILT_ANDROID)
-    implementation(Dependencies.Dagger.HILT_LIFECYCLE_VIEWMODEL)
     implementation(Dependencies.Dagger.HILT_NAVIGATION_COMPOSE)
     kapt(Dependencies.Dagger.HILT_COMPILER)
 
@@ -104,6 +111,9 @@ dependencies {
 
     //ML Kit
     implementation(Dependencies.MlKit.ML_KIT)
+
+    //Kotlin
+    implementation(Dependencies.Kotlin.IMMUTABLE_COLLECTIONS)
 
     //test
     testImplementation(Dependencies.Test.JUNIT)

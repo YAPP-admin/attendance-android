@@ -4,7 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yapp.domain.util.Resources
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 //https://proandroiddev.com/mvi-architecture-with-kotlin-flows-and-channels-d36820b2028d
@@ -22,7 +25,7 @@ abstract class BaseViewModel<S : UiState, A : UiSideEffect, E : UiEvent>(
     val effect = _effect.receiveAsFlow()
 
     // Get current state
-    private val currentState: S
+    protected val currentState: S
         get() = _uiState.value
 
     open fun setEvent(event: E) {

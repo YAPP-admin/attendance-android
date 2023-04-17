@@ -1,6 +1,7 @@
 package com.yapp.presentation.util.permission
 
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.WindowManager
@@ -26,7 +27,11 @@ class PermissionActivity : AppCompatActivity() {
     }
 
     private val bundle: PermissionBundle? by lazy {
-        intent.getParcelableExtra("bundle")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra("bundle", PermissionBundle::class.java)
+        } else {
+            @Suppress("DEPRECATION") intent.getParcelableExtra("bundle")
+        }
     }
 
     private val requestPermissionLauncher = registerForActivityResult(

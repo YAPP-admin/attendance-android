@@ -2,12 +2,13 @@ object Dependencies {
     const val CORE = "androidx.core:core-ktx:1.7.0"
     const val APP_COMPAT = "androidx.appcompat:appcompat:1.4.1"
     const val INJECT = "javax.inject:javax.inject:1"
-    const val GOOGLE_SERVICES = "com.google.gms:google-services:4.3.10"
+    const val GOOGLE_SERVICES = "com.google.gms:google-services:4.3.15"
     const val DATA_STORE = "androidx.datastore:datastore-preferences:1.0.0"
 
     object Kotlin {
-        private const val version = "1.6.10"
+        private const val version = "1.8.10"
         private const val coroutineVersion = "1.5.1"
+        private const val ImmutableCollections = "0.3.5"
 
         const val GRADLE_PLUGIN = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val SERIALIZATION = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0"
@@ -16,11 +17,16 @@ object Dependencies {
         const val COROUTINE_CORE = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion"
         const val COROUTINE_ANDROID = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
         const val COROUTINE_PLAY_SERVICE = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.2.1"
+        const val IMMUTABLE_COLLECTIONS = "org.jetbrains.kotlinx:kotlinx-collections-immutable:${ImmutableCollections}"
     }
 
     object Compose {
-        private const val compose_version = "1.1.0"
+        private const val compose_version = "1.4.1"
+        private const val compose_compiler = "1.4.5"
+        private const val lifecycle_viewmodel = "2.5.0"
+        const val COMPILER = "androidx.compose.compiler:compiler:$compose_compiler"
         const val UI = "androidx.compose.ui:ui:$compose_version"
+        const val LIFECYCLE_VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_viewmodel"
         const val MATERIAL = "androidx.compose.material:material:$compose_version"
         const val TOOL_PREVIEW = "androidx.compose.ui:ui-tooling:$compose_version"
         const val JUNIT = "androidx.compose.ui:ui-test-junit4:$compose_version"
@@ -31,11 +37,10 @@ object Dependencies {
     }
 
     object Dagger {
-        private const val dagger_version = "2.40.1"
+        private const val dagger_version = "2.45"
         const val HILT_ANDROID = "com.google.dagger:hilt-android:$dagger_version"
         const val HILT_COMPILER = "com.google.dagger:hilt-compiler:$dagger_version"
         const val HILT_GRADLE_PLUGIN = "com.google.dagger:hilt-android-gradle-plugin:$dagger_version"
-        const val HILT_LIFECYCLE_VIEWMODEL = "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
         const val HILT_NAVIGATION_COMPOSE = "androidx.hilt:hilt-navigation-compose:1.0.0-alpha03"
     }
 
@@ -82,7 +87,7 @@ object Dependencies {
         const val CONFIG_KTX = "com.google.firebase:firebase-config-ktx"
         const val CRASHLYTICS = "com.google.firebase:firebase-crashlytics"
         const val ANALYTICS_KTX = "com.google.firebase:firebase-analytics-ktx"
-        const val FIRESTORE = "com.google.firebase:firebase-firestore:24.0.1"
+        const val FIRESTORE = "com.google.firebase:firebase-firestore:24.5.0"
         const val FIRESTORE_KTX = "com.google.firebase:firebase-firestore-ktx"
     }
 
@@ -91,7 +96,7 @@ object Dependencies {
     }
 
     object Lottie {
-        const val LOTTIE = "com.airbnb.android:lottie-compose:5.0.1"
+        const val LOTTIE = "com.airbnb.android:lottie-compose:6.0.0"
     }
 
     object CameraX {
