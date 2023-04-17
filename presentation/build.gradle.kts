@@ -112,6 +112,9 @@ dependencies {
     //ML Kit
     implementation(Dependencies.MlKit.ML_KIT)
 
+    //Kotlin
+    implementation(Dependencies.Kotlin.IMMUTABLE_COLLECTIONS)
+
     //test
     testImplementation(Dependencies.Test.JUNIT)
     androidTestImplementation(Dependencies.Test.ANDROID_JUNIT)

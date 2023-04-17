@@ -8,6 +8,7 @@ object Dependencies {
     object Kotlin {
         private const val version = "1.8.10"
         private const val coroutineVersion = "1.5.1"
+        private const val ImmutableCollections = "0.3.5"
 
         const val GRADLE_PLUGIN = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
         const val SERIALIZATION = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0"
@@ -16,6 +17,7 @@ object Dependencies {
         const val COROUTINE_CORE = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion"
         const val COROUTINE_ANDROID = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
         const val COROUTINE_PLAY_SERVICE = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.2.1"
+        const val IMMUTABLE_COLLECTIONS = "org.jetbrains.kotlinx:kotlinx-collections-immutable:${ImmutableCollections}"
     }
 
     object Compose {
