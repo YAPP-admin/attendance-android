@@ -5,7 +5,10 @@ import com.yapp.domain.model.Attendance
 import com.yapp.domain.usecases.GetMemberAttendancesUseCase
 import com.yapp.domain.usecases.GetUpcomingSessionUseCase
 import com.yapp.presentation.common.AttendanceBundle
-import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.*
+import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.LoadState
+import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.TodaySessionUiEvent
+import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.TodaySessionUiSideEffect
+import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.TodaySessionUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject

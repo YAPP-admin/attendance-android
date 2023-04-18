@@ -45,7 +45,7 @@ import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.presentation.R
 import com.yapp.presentation.util.attendance.checkSessionAttendance
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 @Composable
 fun MemberScore(
@@ -66,11 +66,12 @@ fun MemberScore(
         modifier = modifier
             .fillMaxSize()
             .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
-    ) {
+    ) { contentPadding ->
         when (uiState.loadState) {
             MemberScoreContract.MemberScoreUiState.LoadState.Loading -> YDSProgressBar()
             MemberScoreContract.MemberScoreUiState.LoadState.Error -> YDSEmptyScreen()
             MemberScoreContract.MemberScoreUiState.LoadState.Idle -> MemberScoreScreen(
+                modifier = Modifier.padding(contentPadding),
                 uiState = uiState,
                 navigateToHelpScreen = navigateToHelpScreen,
                 navigateToSessionDetail = navigateToSessionDetail
@@ -82,6 +83,7 @@ fun MemberScore(
 
 @Composable
 fun MemberScoreScreen(
+    modifier: Modifier = Modifier,
     uiState: MemberScoreContract.MemberScoreUiState,
     navigateToHelpScreen: () -> Unit,
     navigateToSessionDetail: (Int) -> Unit
@@ -89,7 +91,7 @@ fun MemberScoreScreen(
     val currentScore = uiState.lastAttendanceList.fold(100) { total, pair -> total + pair.second.status.point }
 
     LazyColumn(
-        modifier = Modifier.background(AttendanceTheme.colors.backgroundColors.background)
+        modifier = modifier.background(AttendanceTheme.colors.backgroundColors.background)
     ) {
         item {
             HelpIcon(navigateToHelpScreen)

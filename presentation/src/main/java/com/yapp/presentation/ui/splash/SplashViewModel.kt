@@ -17,7 +17,7 @@ class SplashViewModel @Inject constructor(
 ) {
     init {
         kakaoSdkProvider.validateAccessToken(
-            onSuccess = { userAccountId ->
+            onSuccess = {
                 viewModelScope.launch {
                     validateRegisteredUser()
                 }
