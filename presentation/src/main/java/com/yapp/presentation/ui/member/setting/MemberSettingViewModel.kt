@@ -83,22 +83,22 @@ class MemberSettingViewModel @Inject constructor(
                     require(memberId != null)
 
                     deleteMemberInfoUseCase(memberId).getOrDefault(defaultValue = false).also { isSuccess ->
-                        if (!isSuccess) {
-                            setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
-                            setEffect(MemberSettingContract.MemberSettingUiSideEffect.ShowToast)
-                        }
-
-                        kakaoSdkProvider.withdraw(
-                            onSuccess = {
-                                setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
-                                setEffect(MemberSettingContract.MemberSettingUiSideEffect.NavigateToLoginScreen)
-                            },
-                            onFailed = {
+                            if (!isSuccess) {
                                 setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
                                 setEffect(MemberSettingContract.MemberSettingUiSideEffect.ShowToast)
                             }
-                        )
-                    }
+
+                            kakaoSdkProvider.withdraw(
+                                onSuccess = {
+                                    setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
+                                    setEffect(MemberSettingContract.MemberSettingUiSideEffect.NavigateToLoginScreen)
+                                },
+                                onFailed = {
+                                    setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
+                                    setEffect(MemberSettingContract.MemberSettingUiSideEffect.ShowToast)
+                                }
+                            )
+                        }
                 }
                 .onFailure {
                     setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
@@ -121,6 +121,10 @@ class MemberSettingViewModel @Inject constructor(
 
             is MemberSettingContract.MemberSettingUiEvent.OnPrivacyPolicyButtonClicked -> {
                 setEffect(MemberSettingContract.MemberSettingUiSideEffect.NavigateToPrivacyPolicyScreen)
+            }
+
+            MemberSettingContract.MemberSettingUiEvent.OnSelectTeamButtonClicked -> {
+                setEffect(MemberSettingContract.MemberSettingUiSideEffect.NavigateToSelectTeamScreen)
             }
         }
     }

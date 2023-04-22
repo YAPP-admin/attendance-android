@@ -3,6 +3,7 @@ package com.yapp.presentation.ui.member.setting
 import com.yapp.common.base.UiEvent
 import com.yapp.common.base.UiSideEffect
 import com.yapp.common.base.UiState
+import com.yapp.domain.model.Team
 
 class MemberSettingContract {
     data class MemberSettingUiState(
@@ -22,6 +23,7 @@ class MemberSettingContract {
     sealed class MemberSettingUiSideEffect : UiSideEffect {
         object NavigateToLoginScreen : MemberSettingUiSideEffect()
         object NavigateToPrivacyPolicyScreen : MemberSettingUiSideEffect()
+        object NavigateToSelectTeamScreen : MemberSettingUiSideEffect()
         object ShowToast : MemberSettingUiSideEffect()
     }
 

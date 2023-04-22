@@ -22,11 +22,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.insets.systemBarsPadding
 import com.yapp.common.R
+import com.yapp.common.flow.collectAsStateWithLifecycle
 import com.yapp.common.theme.*
 import com.yapp.common.yds.*
+import com.yapp.domain.model.Team
+import com.yapp.domain.model.types.TeamType
 import com.yapp.presentation.R.*
-import com.yapp.presentation.util.permission.PermissionBundle
 import kotlinx.coroutines.delay
+
+private fun Team.hasTeam() = type != TeamType.NONE
 
 @Composable
 fun MemberSetting(
@@ -34,8 +38,9 @@ fun MemberSetting(
     navigateToPreviousScreen: () -> Unit,
     navigateToLogin: () -> Unit,
     navigateToPrivacyPolicy: () -> Unit,
+    navigateToSelectTeamScreen: () -> Unit,
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var toastVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = viewModel.effect) {
@@ -51,6 +56,10 @@ fun MemberSetting(
                     toastVisible = true
                     delay(1000L)
                     toastVisible = false
+                }
+
+                MemberSettingContract.MemberSettingUiSideEffect.NavigateToSelectTeamScreen -> {
+                    navigateToSelectTeamScreen()
                 }
             }
         }
