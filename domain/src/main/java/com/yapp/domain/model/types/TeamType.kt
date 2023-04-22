@@ -2,6 +2,7 @@ package com.yapp.domain.model.types
 
 
 enum class TeamType(val value: String) {
+    NONE("None"),
     ANDROID("Android"),
     IOS("iOS"),
     WEB("Web"),
@@ -11,6 +12,7 @@ enum class TeamType(val value: String) {
     companion object {
         fun from(rawValue: String): TeamType {
             return when(rawValue) {
+                "NONE" -> NONE
                 "ANDROID" -> ANDROID
                 "IOS" -> IOS
                 "WEB" -> WEB
