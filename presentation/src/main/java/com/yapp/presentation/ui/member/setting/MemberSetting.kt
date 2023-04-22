@@ -77,7 +77,15 @@ fun MemberSetting(
                 .verticalScroll(rememberScrollState())
         ) {
             GroupInfo(uiState.generation)
-            Profile(uiState.memberName)
+            Profile(
+                name = uiState.memberName,
+                position = uiState.memberPosition,
+                team = uiState.memberTeam,
+            )
+            SelectTeam(
+                hasTeam = uiState.memberTeam.hasTeam(),
+                onClick = { viewModel.setEvent(MemberSettingContract.MemberSettingUiEvent.OnSelectTeamButtonClicked) }
+            )
             Divide()
             MenuList(viewModel)
         }
@@ -120,7 +128,16 @@ private fun GroupInfo(generation: Int) {
 }
 
 @Composable
-private fun Profile(name: String) {
+private fun Profile(
+    name: String,
+    position: String,
+    team: Team,
+) {
+    val subInfo = if (team.hasTeam()) {
+        "$position · $team"
+    } else {
+        position
+    }
     Column(
         modifier = Modifier.padding(horizontal = 24.dp, vertical = 28.dp)
     ) {
@@ -138,6 +155,32 @@ private fun Profile(name: String) {
                 .fillMaxWidth()
                 .padding(top = 16.dp),
             textAlign = TextAlign.Center
+        )
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 2.dp),
+            color = AttendanceTheme.colors.grayScale.Gray600,
+            style = AttendanceTypography.body2,
+            text = subInfo,
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
+@Composable
+private fun ColumnScope.SelectTeam(
+    hasTeam: Boolean,
+    onClick: () -> Unit,
+) {
+    if (hasTeam.not()) {
+        YDSButtonSmall(
+            modifier = Modifier
+                .padding(bottom = 28.dp)
+                .align(Alignment.CenterHorizontally),
+            text = stringResource(id = string.member_setting_select_team),
+            state = YdsButtonState.ENABLED,
+            onClick = onClick,
         )
     }
 }

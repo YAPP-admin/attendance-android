@@ -10,6 +10,8 @@ class MemberSettingContract {
         val showDialog: Boolean = false,
         val generation: Int = 0,
         val memberName: String = "",
+        val memberPosition: String = "",
+        val memberTeam: Team = Team.empty(),
         val isGuest: Boolean = false,
     ) : UiState
 
@@ -27,5 +29,6 @@ class MemberSettingContract {
         object OnLogoutButtonClicked : MemberSettingUiEvent()
         object OnWithdrawButtonClicked : MemberSettingUiEvent()
         object OnPrivacyPolicyButtonClicked : MemberSettingUiEvent()
+        object OnSelectTeamButtonClicked : MemberSettingUiEvent()
     }
 }
