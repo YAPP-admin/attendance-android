@@ -16,7 +16,7 @@ data class TeamEntity(
 
 fun TeamEntity.toDomain(): Team {
     return Team(
-        type = TeamType.valueOf(type!!),
+        type = TeamType.from(type!!),
         number = number!!,
     )
 }
