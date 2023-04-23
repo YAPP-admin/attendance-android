@@ -62,7 +62,6 @@ fun Position(
         },
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 24.dp)
             .systemBarsPadding(),
         backgroundColor = AttendanceTheme.colors.backgroundColors.backgroundBase
     ) { contentPadding ->
@@ -72,7 +71,7 @@ fun Position(
                 .background(AttendanceTheme.colors.backgroundColors.background)
                 .padding(contentPadding)
         ) {
-            Column {
+            Column(Modifier.padding(horizontal = 24.dp)) {
                 Spacer(modifier = Modifier.height(32.dp))
                 Text(
                     text = stringResource(R.string.member_signup_choose_position),
@@ -94,7 +93,7 @@ fun Position(
             YDSButtonLarge(
                 text = stringResource(R.string.member_signup_position_next),
                 modifier = Modifier
-                    .padding(bottom = 40.dp)
+                    .padding(start = 24.dp, end = 24.dp, bottom = 40.dp)
                     .height(60.dp)
                     .align(Alignment.BottomCenter),
                 onClick = { viewModel.setEvent(PositionUiEvent.ConfirmPosition) },
