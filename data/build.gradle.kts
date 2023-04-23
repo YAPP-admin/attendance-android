@@ -13,6 +13,16 @@ android {
     defaultConfig {
         minSdk = Configs.MIN_SDK
     }
+
+    buildTypes {
+        debug {
+            buildConfigField("String", "COLLECTION_NAME", "\"debug-member\"")
+        }
+
+        release {
+            buildConfigField("String", "COLLECTION_NAME", "\"release-member\"")
+        }
+    }
 }
 
 dependencies {
