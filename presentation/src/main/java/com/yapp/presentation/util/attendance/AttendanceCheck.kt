@@ -3,7 +3,6 @@ package com.yapp.presentation.util.attendance
 import com.yapp.common.yds.YDSAttendanceType
 import com.yapp.domain.model.Attendance
 import com.yapp.domain.model.Session
-import com.yapp.domain.model.types.AttendanceType
 import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.domain.util.DateUtil
 
@@ -23,10 +22,10 @@ fun checkSessionAttendance(
     if (session.type == NeedToAttendType.DAY_OFF) {
         return YDSAttendanceType.NO_YAPP
     }
-    return when (attendance!!.type) {
-        AttendanceType.Absent -> YDSAttendanceType.ABSENT
-        AttendanceType.Admit -> YDSAttendanceType.ATTEND
-        AttendanceType.Late -> YDSAttendanceType.TARDY
-        AttendanceType.Normal -> YDSAttendanceType.ATTEND
+    return when (attendance!!.status) {
+        Attendance.Status.ABSENT -> YDSAttendanceType.ABSENT
+        Attendance.Status.ADMIT -> YDSAttendanceType.ATTEND
+        Attendance.Status.LATE -> YDSAttendanceType.TARDY
+        Attendance.Status.NORMAL -> YDSAttendanceType.ATTEND
     }
 }

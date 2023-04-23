@@ -6,22 +6,10 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -32,17 +20,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.insets.systemBarsPadding
 import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
-import com.yapp.common.yds.YDSAppBar
-import com.yapp.common.yds.YDSButtonLarge
-import com.yapp.common.yds.YDSChoiceButton
-import com.yapp.common.yds.YDSEmptyScreen
-import com.yapp.common.yds.YDSOption
-import com.yapp.common.yds.YDSProgressBar
-import com.yapp.common.yds.YdsButtonState
+import com.yapp.common.yds.*
 import com.yapp.presentation.R
-import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamSideEffect
-import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamUiEvent
-import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamUiState
+import com.yapp.presentation.ui.member.signup.team.TeamContract.*
+import kotlinx.coroutines.flow.collect
 
 @Composable
 fun Team(
@@ -53,18 +34,6 @@ fun Team(
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(key1 = viewModel.effect) {
-        viewModel.effect.collect { effect ->
-            when (effect) {
-                is TeamSideEffect.NavigateToMainScreen -> {
-                    navigateToMainScreen()
-                }
-                is TeamSideEffect.ShowToast -> {
-                    Toast.makeText(context, effect.msg, Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-    }
     Scaffold(
         topBar = {
             YDSAppBar(
@@ -107,6 +76,19 @@ fun Team(
                     onTeamNumberClicked = onTeamNumberClicked,
                     onConfirmClicked = onConfirmClicked,
                 )
+            }
+        }
+
+        LaunchedEffect(key1 = viewModel.effect) {
+            viewModel.effect.collect { effect ->
+                when (effect) {
+                    is TeamSideEffect.NavigateToMainScreen -> {
+                        navigateToMainScreen()
+                    }
+                    is TeamSideEffect.ShowToast -> {
+                        Toast.makeText(context, effect.msg, Toast.LENGTH_LONG).show()
+                    }
+                }
             }
         }
     }

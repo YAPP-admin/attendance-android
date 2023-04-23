@@ -1,7 +1,7 @@
 package com.yapp.presentation.ui.member.todaysession
 
 import com.yapp.common.base.BaseViewModel
-import com.yapp.domain.model.types.AttendanceType
+import com.yapp.domain.model.Attendance
 import com.yapp.domain.usecases.GetMemberAttendancesUseCase
 import com.yapp.domain.usecases.GetUpcomingSessionUseCase
 import com.yapp.presentation.common.AttendanceBundle
@@ -34,14 +34,14 @@ class TodaySessionViewModel @Inject constructor(
         getMemberAttendancesUseCase()
             .onSuccess { attendances ->
                 val attendance = attendances?.first { it.sessionId == uiState.value.sessionId }
-                val attendanceType = attendance?.type ?: AttendanceType.Absent
+                val attendanceStatus = attendance?.status ?: Attendance.Status.ABSENT
 
-                AttendanceBundle.isAbsent = attendanceType is AttendanceType.Absent
+                AttendanceBundle.isAbsent = attendanceStatus == Attendance.Status.ABSENT
 
                 setState {
                     copy(
                         loadState = LoadState.Idle,
-                        attendanceType = attendanceType
+                        attendanceType = attendanceStatus
                     )
                 }
             }

@@ -1,8 +1,10 @@
 package com.yapp.domain.usecases
 
-import com.yapp.domain.model.*
+import com.yapp.domain.model.Attendance
+import com.yapp.domain.model.Member
+import com.yapp.domain.model.Session
+import com.yapp.domain.model.Team
 import com.yapp.domain.model.collections.AttendanceList
-import com.yapp.domain.model.types.AttendanceType
 import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.domain.model.types.PositionType
 import com.yapp.domain.repository.LocalRepository
@@ -34,10 +36,10 @@ class SignUpMemberUseCase @Inject constructor(
         return sessionList.map { session ->
             Attendance(
                 sessionId = session.sessionId,
-                type = when (session.type) {
-                    NeedToAttendType.NEED_ATTENDANCE -> AttendanceType.Absent
-                    NeedToAttendType.DONT_NEED_ATTENDANCE -> AttendanceType.Normal
-                    NeedToAttendType.DAY_OFF -> AttendanceType.Normal
+                status = when (session.type) {
+                    NeedToAttendType.NEED_ATTENDANCE -> Attendance.Status.ABSENT
+                    NeedToAttendType.DONT_NEED_ATTENDANCE -> Attendance.Status.NORMAL
+                    NeedToAttendType.DAY_OFF -> Attendance.Status.NORMAL
                 }
             )
         }
@@ -60,7 +62,7 @@ class SignUpMemberUseCase @Inject constructor(
     /**
      * @param memberName 회원가입 이름입력 화면에서 입력된 Member 이름
      * @param memberPosition 회원가입 포지션/팀 화면의 선택된 Member 포지션
-     * @param teamEntit: 회원가입 포지션/팀 화면의 선택된 Member Team
+     * @param team: 회원가입 포지션/팀 화면의 선택된 Member Team
      * */
     class Params(
         val memberName: String,

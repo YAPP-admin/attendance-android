@@ -36,8 +36,8 @@ import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSEmptyScreen
 import com.yapp.common.yds.YDSProgressBar
+import com.yapp.domain.model.Attendance
 import com.yapp.domain.model.Session
-import com.yapp.domain.model.types.AttendanceType
 import com.yapp.presentation.R.string
 import com.yapp.presentation.ui.AttendanceScreenRoute
 
@@ -85,13 +85,13 @@ fun TodaySession(
 }
 
 @Composable
-private fun TodaysAttendance(attendanceType: AttendanceType) {
+private fun TodaysAttendance(attendanceType: Attendance.Status) {
     val imageRsc: Int
     val iconRsc: Int
     val textRsc: Int
     val textColor: Color
 
-    if (attendanceType == AttendanceType.Absent) {
+    if (attendanceType == Attendance.Status.ABSENT) {
         imageRsc = R.drawable.illust_member_home_disabled
         iconRsc = R.drawable.icon_check_disabled
         textRsc = string.today_session_attendance_before_text
