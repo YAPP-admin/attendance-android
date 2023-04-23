@@ -62,9 +62,9 @@ fun Position(
         },
         modifier = Modifier
             .fillMaxSize()
-            .background(AttendanceTheme.colors.backgroundColors.background)
             .padding(horizontal = 24.dp)
-            .systemBarsPadding()
+            .systemBarsPadding(),
+        backgroundColor = AttendanceTheme.colors.backgroundColors.backgroundBase
     ) { contentPadding ->
         Box(
             modifier = Modifier

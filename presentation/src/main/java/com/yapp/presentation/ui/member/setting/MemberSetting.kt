@@ -25,7 +25,6 @@ import com.yapp.common.R
 import com.yapp.common.theme.*
 import com.yapp.common.yds.*
 import com.yapp.presentation.R.*
-import com.yapp.presentation.util.permission.PermissionBundle
 import kotlinx.coroutines.delay
 
 @Composable
@@ -66,8 +65,8 @@ fun MemberSetting(
         },
         modifier = Modifier
             .fillMaxSize()
-            .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
             .systemBarsPadding(),
+        backgroundColor = AttendanceTheme.colors.backgroundColors.backgroundBase
     ) { contentPadding ->
         Column(
             modifier = Modifier
