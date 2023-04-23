@@ -59,6 +59,7 @@ fun AttendanceScreen(
                 is MainContract.MainUiSideEffect.NavigateToQRScreen -> {
                     navController.navigate(BottomNavigationItem.QR_AUTH.route)
                 }
+
                 is MainContract.MainUiSideEffect.ShowToast -> {
                     qrToastVisible = !qrToastVisible
                     delay(1000L)
@@ -195,7 +196,12 @@ fun AttendanceScreen(
                 },
                 navigateToPrivacyPolicy = {
                     navController.navigate(AttendanceScreenRoute.PRIVACY_POLICY.route)
-                }
+                },
+                navigateToSelectTeamScreen = {
+                    navController.navigate(AttendanceScreenRoute.SIGNUP_TEAM.route) {
+                        popUpTo(AttendanceScreenRoute.MEMBER_SETTING.route) { inclusive = true }
+                    }
+                },
             )
         }
 
@@ -234,9 +240,11 @@ fun AttendanceScreen(
         ) {
             SetStatusBarColorByRoute(it.destination.route)
             Name(
-                onClickBackBtn = { navController.navigate(AttendanceScreenRoute.LOGIN.route) {
-                    popUpTo(AttendanceScreenRoute.SIGNUP_NAME.route) { inclusive = true }
-                } },
+                onClickBackBtn = {
+                    navController.navigate(AttendanceScreenRoute.LOGIN.route) {
+                        popUpTo(AttendanceScreenRoute.SIGNUP_NAME.route) { inclusive = true }
+                    }
+                },
                 onClickNextBtn = { userName -> navController.navigate(AttendanceScreenRoute.SIGNUP_POSITION.route + "/${userName}") })
         }
 
@@ -250,30 +258,24 @@ fun AttendanceScreen(
             SetStatusBarColorByRoute(it.destination.route)
             Position(
                 onClickBackButton = { navController.popBackStack() },
-                navigateToTeamScreen = { userName, userPosition ->
-                    navController.navigate(
-                        AttendanceScreenRoute.SIGNUP_TEAM.route.plus("/${userName}")
-                            .plus("/${userPosition}")
-                    )
+                navigateToMainScreen = {
+                    navController.navigate(AttendanceScreenRoute.MEMBER_MAIN.route) {
+                        popUpTo(AttendanceScreenRoute.SIGNUP_NAME.route) { inclusive = true }
+                    }
                 }
             )
         }
 
 
         composable(
-            route = AttendanceScreenRoute.SIGNUP_TEAM.route
-                .plus("/{name}")
-                .plus("/{position}"),
-            arguments = listOf(
-                navArgument("name") { type = NavType.StringType },
-                navArgument("position") { type = NavType.StringType })
+            route = AttendanceScreenRoute.SIGNUP_TEAM.route,
         ) {
             SetStatusBarColorByRoute(it.destination.route)
             Team(
                 onClickBackButton = { navController.popBackStack() },
-                navigateToMainScreen = {
-                    navController.navigate(AttendanceScreenRoute.MEMBER_MAIN.route) {
-                        popUpTo(AttendanceScreenRoute.SIGNUP_NAME.route) { inclusive = true }
+                navigateToSettingScreen = {
+                    navController.navigate(AttendanceScreenRoute.MEMBER_SETTING.route) {
+                        popUpTo(AttendanceScreenRoute.SIGNUP_TEAM.route) { inclusive = true }
                     }
                 })
         }
@@ -341,12 +343,14 @@ fun SetStatusBarColorByRoute(route: String?) {
                     color = yappOrange,
                 )
             }
+
             BottomNavigationItem.SESSION.route -> {
                 systemUiController.setStatusBarColor(
                     color = backgroundBase,
                     darkIcons = shouldShowLightIcon
                 )
             }
+
             else -> {
                 systemUiController.setStatusBarColor(
                     color = Color.Transparent,

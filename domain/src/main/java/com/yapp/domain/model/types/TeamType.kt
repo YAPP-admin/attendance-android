@@ -11,6 +11,7 @@ enum class TeamType(val value: String) {
     companion object {
         fun from(rawValue: String): TeamType {
             return when(rawValue) {
+                "NONE" -> NONE
                 "ANDROID" -> ANDROID
                 "IOS" -> IOS
                 "WEB" -> WEB

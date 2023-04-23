@@ -26,7 +26,11 @@ class SignUpMemberUseCase @Inject constructor(
             val sessionList = remoteConfigRepository.getSessionList().getOrThrow()
             val editedSessionList = createAttendanceEntities(sessionList)
 
-            val memberEntity = createMember(memberId = currentMemberId, params = params, attendanceEntities = editedSessionList)
+            val memberEntity = createMember(
+                memberId = currentMemberId,
+                params = params,
+                attendanceEntities = editedSessionList,
+            )
 
             memberRepository.setMember(memberEntity)
         }
@@ -54,7 +58,7 @@ class SignUpMemberUseCase @Inject constructor(
             id = memberId,
             name = params.memberName,
             position = params.memberPosition,
-            team = params.team,
+            team = Team.empty(),
             attendances = AttendanceList.from(attendanceEntities)
         )
     }
@@ -62,12 +66,9 @@ class SignUpMemberUseCase @Inject constructor(
     /**
      * @param memberName 회원가입 이름입력 화면에서 입력된 Member 이름
      * @param memberPosition 회원가입 포지션/팀 화면의 선택된 Member 포지션
-     * @param team: 회원가입 포지션/팀 화면의 선택된 Member Team
      * */
     class Params(
         val memberName: String,
         val memberPosition: PositionType,
-        val team: Team,
     )
-
 }
