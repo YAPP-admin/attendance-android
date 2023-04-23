@@ -2,7 +2,6 @@ package com.yapp.domain.model.types
 
 
 enum class TeamType(val value: String) {
-    NONE("None"),
     ANDROID("Android"),
     IOS("iOS"),
     WEB("Web"),

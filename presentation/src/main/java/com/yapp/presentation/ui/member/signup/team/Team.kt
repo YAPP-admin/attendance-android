@@ -40,7 +40,6 @@ import com.yapp.common.yds.YDSOption
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.common.yds.YdsButtonState
 import com.yapp.presentation.R
-import com.yapp.presentation.ui.member.setting.MemberSettingContract
 import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamSideEffect
 import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamUiEvent
 import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamUiState
