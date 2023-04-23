@@ -75,7 +75,7 @@ class TeamViewModel @Inject constructor(
             setState { copy(loadState = TeamUiState.LoadState.Error) }
             return
         }
-        val member = requireNotNull(currentState.currentMember) { "$FAIL_SELECT_TEAM because member is null" }
+        val member = requireNotNull(currentState.currentMember) { "$SIGN_UP_FAILED because member is null" }
         setMemberUseCase(
             params = member.copy(team = team)
         ).onSuccess {
@@ -87,6 +87,6 @@ class TeamViewModel @Inject constructor(
     }
 
     companion object {
-        private const val FAIL_SELECT_TEAM = "회원가입 실패"
+        private const val SIGN_UP_FAILED = "회원가입 실패"
     }
 }
