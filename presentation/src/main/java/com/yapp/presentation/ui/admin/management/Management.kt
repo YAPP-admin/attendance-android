@@ -147,7 +147,6 @@ fun ManagementScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
-                .padding(start = 24.dp, end = 24.dp, bottom = 24.dp)
                 .systemBarsPadding(),
             topBar = {
                 YDSAppBar(
@@ -158,16 +157,19 @@ fun ManagementScreen(
                     onClickBackButton = { onBackButtonClicked.invoke() }
                 )
             }
-        ) { contentPadding ->
+        ) { innerPadding ->
+
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(AttendanceTheme.colors.backgroundColors.background)
-                    .padding(contentPadding)
+                    .padding(innerPadding)
             ) {
 
                 item {
-                    Column {
+                    Column(
+                        modifier = Modifier.padding(start = 24.dp, end = 24.dp)
+                    ) {
                         Spacer(modifier = Modifier.height(28.dp))
                         AttendCountText(memberCount = uiState.memberCount)
                         Spacer(modifier = Modifier.height(28.dp))
@@ -183,6 +185,10 @@ fun ManagementScreen(
                         onDropDownClicked = { changedMember -> onDropDownClicked.invoke(changedMember) }
                     )
                 }
+
+                item {
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
             }
         }
     }
@@ -196,9 +202,9 @@ fun AttendCountText(
 ) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(10F))
             .fillMaxWidth()
             .height(48.dp)
+            .clip(RoundedCornerShape(10.dp))
             .background(color = AttendanceTheme.colors.mainColors.YappOrangeAlpha)
     ) {
         Crossfade(targetState = memberCount) { count ->
@@ -228,6 +234,7 @@ fun ExpandableTeam(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .padding(start = 24.dp, end = 24.dp)
             .background(AttendanceTheme.colors.backgroundColors.background)
             .animateContentSize(
                 animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow)
