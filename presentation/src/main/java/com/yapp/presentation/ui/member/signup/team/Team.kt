@@ -104,7 +104,7 @@ fun Team(
             onTeamNumberClicked = onTeamNumberClicked,
             onConfirmClicked = onConfirmClicked,
         )
-        if (uiState.loadState== TeamUiState.LoadState.Loading) {
+        if (uiState.loadState == TeamUiState.LoadState.Loading) {
             YDSProgressBar()
         } else if (uiState.loadState == TeamUiState.LoadState.Error) {
             YDSEmptyScreen()
