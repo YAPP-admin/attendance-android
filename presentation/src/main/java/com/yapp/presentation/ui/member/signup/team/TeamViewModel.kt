@@ -1,12 +1,12 @@
 package com.yapp.presentation.ui.member.signup.team
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.model.Team
-import com.yapp.domain.model.types.PositionType
+import com.yapp.domain.model.types.TeamType
+import com.yapp.domain.usecases.GetCurrentMemberInfoUseCase
 import com.yapp.domain.usecases.GetTeamListUseCase
-import com.yapp.domain.usecases.SignUpMemberUseCase
+import com.yapp.domain.usecases.SetMemberUseCase
 import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamSideEffect
 import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamUiEvent
 import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamUiState
@@ -17,8 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class TeamViewModel @Inject constructor(
     private val getTeamListUseCase: GetTeamListUseCase,
-    private val signUpMemberUseCase: SignUpMemberUseCase,
-    private val savedStateHandle: SavedStateHandle,
+    private val getCurrentMemberInfoUseCase: GetCurrentMemberInfoUseCase,
+    private val setMemberUseCase: SetMemberUseCase,
 ) : BaseViewModel<TeamUiState, TeamSideEffect, TeamUiEvent>(TeamUiState()) {
 
     init {
@@ -49,44 +49,44 @@ class TeamViewModel @Inject constructor(
                     )
                 }
             }
+
             is TeamUiEvent.ChooseTeamNumber -> {
                 setState {
                     copy(teamNumberOptionState = TeamContract.TeamNumberOptionState(selectedOption = event.teamNum))
                 }
             }
-            is TeamUiEvent.ConfirmTeam -> {
-                if (savedStateHandle.get<String>("name") == null || savedStateHandle.get<String>("position") == null) {
-                    setEffect(TeamSideEffect.ShowToast("회원가입 실패"))
-                    return
-                }
 
-                signUpMember(
-                    memberName = savedStateHandle.get<String>("name")!!,
-                    memberPosition = PositionType.of(savedStateHandle.get<String>("position")!!),
+            is TeamUiEvent.ConfirmTeam -> {
+                setMember(
                     team = Team(
-                        type = uiState.value.teamOptionState.selectedOption!!,
-                        number = uiState.value.teamNumberOptionState.selectedOption!!
+                        type = uiState.value.teamOptionState.selectedOption ?: TeamType.NONE,
+                        number = uiState.value.teamNumberOptionState.selectedOption ?: 0,
                     )
                 )
             }
         }
     }
 
-    private suspend fun signUpMember(
-        memberName: String,
-        memberPosition: PositionType,
-        team: Team,
-    ) {
-        signUpMemberUseCase(
-            params = SignUpMemberUseCase.Params(
-                memberName = memberName,
-                memberPosition = memberPosition,
-                team = team
-            )
-        ).onSuccess {
-            setEffect(TeamSideEffect.NavigateToMainScreen)
+    private suspend fun setMember(team: Team) {
+        setState { copy(loadState = TeamUiState.LoadState.Loading) }
+        getCurrentMemberInfoUseCase().onSuccess {
+            setState { copy(currentMember = it) }
         }.onFailure {
-            setEffect(TeamSideEffect.ShowToast("회원가입 실패"))
+            setState { copy(loadState = TeamUiState.LoadState.Error) }
+            return
         }
+        val member = requireNotNull(currentState.currentMember) { "$SIGN_UP_FAILED because member is null" }
+        setMemberUseCase(
+            params = member.copy(team = team)
+        ).onSuccess {
+            setState { copy(loadState = TeamUiState.LoadState.Idle) }
+            setEffect(TeamSideEffect.NavigateToSettingScreen)
+        }.onFailure {
+            setState { copy(loadState = TeamUiState.LoadState.Error) }
+        }
+    }
+
+    companion object {
+        private const val SIGN_UP_FAILED = "회원가입 실패"
     }
 }

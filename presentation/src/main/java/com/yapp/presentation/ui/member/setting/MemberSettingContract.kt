@@ -3,6 +3,7 @@ package com.yapp.presentation.ui.member.setting
 import com.yapp.common.base.UiEvent
 import com.yapp.common.base.UiSideEffect
 import com.yapp.common.base.UiState
+import com.yapp.domain.model.Team
 
 class MemberSettingContract {
     data class MemberSettingUiState(
@@ -10,6 +11,8 @@ class MemberSettingContract {
         val showDialog: Boolean = false,
         val generation: Int = 0,
         val memberName: String = "",
+        val memberPosition: String = "",
+        val memberTeam: Team = Team.empty(),
         val isGuest: Boolean = false,
     ) : UiState
 
@@ -20,6 +23,7 @@ class MemberSettingContract {
     sealed class MemberSettingUiSideEffect : UiSideEffect {
         object NavigateToLoginScreen : MemberSettingUiSideEffect()
         object NavigateToPrivacyPolicyScreen : MemberSettingUiSideEffect()
+        object NavigateToSelectTeamScreen : MemberSettingUiSideEffect()
         object ShowToast : MemberSettingUiSideEffect()
     }
 
@@ -27,5 +31,6 @@ class MemberSettingContract {
         object OnLogoutButtonClicked : MemberSettingUiEvent()
         object OnWithdrawButtonClicked : MemberSettingUiEvent()
         object OnPrivacyPolicyButtonClicked : MemberSettingUiEvent()
+        object OnSelectTeamButtonClicked : MemberSettingUiEvent()
     }
 }

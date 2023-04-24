@@ -35,7 +35,7 @@ import com.yapp.presentation.ui.member.signup.position.PositionContract.Position
 fun Position(
     viewModel: PositionViewModel = hiltViewModel(),
     onClickBackButton: () -> Unit,
-    navigateToTeamScreen: (String, String) -> Unit
+    navigateToMainScreen: () -> Unit,
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
@@ -43,9 +43,10 @@ fun Position(
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is PositionSideEffect.NavigateToTeamScreen -> {
-                    navigateToTeamScreen(effect.name, effect.position.name)
+                is PositionSideEffect.NavigateToMainScreen -> {
+                    navigateToMainScreen()
                 }
+
                 is PositionSideEffect.ShowToast -> {
                     Toast.makeText(context, effect.msg, Toast.LENGTH_LONG).show()
                 }
@@ -91,7 +92,7 @@ fun Position(
                 )
             }
             YDSButtonLarge(
-                text = stringResource(R.string.member_signup_position_next),
+                text = stringResource(R.string.member_signup_team_start_yapp),
                 modifier = Modifier
                     .padding(start = 24.dp, end = 24.dp, bottom = 40.dp)
                     .height(60.dp)
@@ -99,6 +100,7 @@ fun Position(
                 onClick = { viewModel.setEvent(PositionUiEvent.ConfirmPosition) },
                 state = if (uiState.ydsOption.selectedOption != null) YdsButtonState.ENABLED else YdsButtonState.DISABLED
             )
+
         }
     }
 }

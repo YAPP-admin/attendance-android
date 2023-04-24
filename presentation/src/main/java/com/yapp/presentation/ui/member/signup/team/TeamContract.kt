@@ -4,6 +4,7 @@ import com.yapp.common.base.UiEvent
 import com.yapp.common.base.UiSideEffect
 import com.yapp.common.base.UiState
 import com.yapp.common.yds.YDSOptionState
+import com.yapp.domain.model.Member
 import com.yapp.domain.model.Team
 import com.yapp.domain.model.types.TeamType
 
@@ -14,6 +15,7 @@ sealed class TeamContract {
         val teamOptionState: YDSOptionState<TeamType> = TeamOptionState(),
         val numberOfSelectedTeamType: Int? = null,
         val teamNumberOptionState: YDSOptionState<Int> = TeamNumberOptionState(),
+        val currentMember: Member? = null,
     ) : UiState {
         enum class LoadState {
             Loading, Idle, Error
@@ -21,7 +23,7 @@ sealed class TeamContract {
     }
 
     sealed class TeamSideEffect : UiSideEffect {
-        object NavigateToMainScreen : TeamSideEffect()
+        object NavigateToSettingScreen : TeamSideEffect()
         data class ShowToast(val msg: String) : TeamSideEffect()
     }
 
