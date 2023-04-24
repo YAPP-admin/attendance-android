@@ -80,8 +80,7 @@ fun MemberScore(
                 title = stringResource(R.string.member_score_title),
             )
         },
-        modifier = modifier
-            .fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         backgroundColor = AttendanceTheme.colors.backgroundColors.backgroundBase
     ) { contentPadding ->
         when (uiState.loadState) {
