@@ -80,8 +80,8 @@ fun AdminMain(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
-            .systemBarsPadding()
+            .systemBarsPadding(),
+        backgroundColor = AttendanceTheme.colors.backgroundColors.backgroundBase
     ) { contentPadding ->
         when (uiState.loadState) {
             AdminMainUiState.LoadState.Loading -> YDSProgressBar()

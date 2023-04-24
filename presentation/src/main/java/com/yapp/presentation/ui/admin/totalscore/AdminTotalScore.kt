@@ -72,8 +72,8 @@ fun AdminTotalScore(
         },
         modifier = Modifier
             .fillMaxSize()
-            .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
             .systemBarsPadding(),
+        backgroundColor = AttendanceTheme.colors.backgroundColors.backgroundBase
     ) { contentPadding ->
         val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 

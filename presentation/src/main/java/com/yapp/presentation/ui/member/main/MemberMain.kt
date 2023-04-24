@@ -2,7 +2,6 @@ package com.yapp.presentation.ui.member.main
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -53,14 +52,14 @@ fun MemberMain(
             scaffoldState = scaffoldState,
             modifier = Modifier
                 .fillMaxSize()
-                .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
                 .systemBarsPadding(),
             bottomBar = {
                 BottomNavigationTab(
                     navController = childNavController,
                     navigateToScreen = { tab -> viewModel.setEvent(MemberMainContract.MemberMainUiEvent.OnClickBottomNavigationTab(tab)) }
                 )
-            }
+            },
+            backgroundColor = AttendanceTheme.colors.backgroundColors.backgroundBase
         ) { innerPadding ->
 
             LaunchedEffect(key1 = viewModel.effect) {

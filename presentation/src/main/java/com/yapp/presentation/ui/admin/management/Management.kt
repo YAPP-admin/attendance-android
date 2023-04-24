@@ -146,7 +146,6 @@ fun ManagementScreen(
         Scaffold(
             modifier = Modifier
                 .fillMaxSize()
-                .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
                 .systemBarsPadding(),
             topBar = {
                 YDSAppBar(
@@ -156,7 +155,8 @@ fun ManagementScreen(
                     title = uiState.sessionTitle,
                     onClickBackButton = { onBackButtonClicked.invoke() }
                 )
-            }
+            },
+            backgroundColor = AttendanceTheme.colors.backgroundColors.backgroundBase
         ) { innerPadding ->
 
             LazyColumn(
