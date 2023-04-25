@@ -1,7 +1,6 @@
 package com.yapp.data.model
 
 import com.google.firebase.firestore.PropertyName
-import com.yapp.data.model.types.AttendanceTypeEntity
 import com.yapp.data.model.types.toData
 import com.yapp.domain.model.Attendance
 import kotlinx.serialization.Serializable
@@ -18,10 +17,10 @@ fun AttendanceEntity.toDomain(): Attendance {
     return Attendance(
         sessionId = this.sessionId!!,
         status = when (status) {
-            AttendanceTypeEntity.TEXT_ABSENT -> Attendance.Status.ABSENT
-            AttendanceTypeEntity.TEXT_LATE -> Attendance.Status.LATE
-            AttendanceTypeEntity.TEXT_ADMIT -> Attendance.Status.ADMIT
-            AttendanceTypeEntity.TEXT_NORMAL -> Attendance.Status.NORMAL
+            Attendance.Status.ABSENT.name -> Attendance.Status.ABSENT
+            Attendance.Status.LATE.name -> Attendance.Status.LATE
+            Attendance.Status.ADMIT.name -> Attendance.Status.ADMIT
+            Attendance.Status.NORMAL.name -> Attendance.Status.NORMAL
             else -> Attendance.Status.ABSENT
         }
     )
