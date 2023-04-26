@@ -8,11 +8,12 @@ import com.yapp.domain.usecases.CheckAdminPasswordUseCase
 import com.yapp.domain.usecases.GetCurrentMemberInfoUseCase
 import com.yapp.domain.usecases.SetMemberIdUseCase
 import com.yapp.domain.usecases.ShouldShowGuestButtonUseCase
-import com.yapp.presentation.ui.login.LoginContract.*
+import com.yapp.presentation.ui.login.LoginContract.LoginUiEvent
+import com.yapp.presentation.ui.login.LoginContract.LoginUiSideEffect
+import com.yapp.presentation.ui.login.LoginContract.LoginUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
 import javax.inject.Inject
 import kotlin.random.Random
 

@@ -1,7 +1,12 @@
 package com.yapp.presentation.ui.member.score.detail
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -16,15 +21,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.insets.systemBarsPadding
-import com.yapp.common.theme.*
-import com.yapp.common.yds.YDSAttendanceType
+import com.yapp.common.theme.AttendanceTheme
+import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.YDSAppBar
+import com.yapp.common.yds.YDSAttendanceType
 import com.yapp.common.yds.YDSEmptyScreen
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.domain.model.Session
 import com.yapp.presentation.util.attendance.checkSessionAttendance
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 @Composable
 fun SessionDetail(
@@ -46,13 +52,14 @@ fun SessionDetail(
         },
         modifier = Modifier
             .fillMaxSize()
-            .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
-            .systemBarsPadding()
-    ) {
+            .systemBarsPadding(),
+        backgroundColor = AttendanceTheme.colors.backgroundColors.backgroundBase
+    ) { contentPadding ->
         when (uiState.loadState) {
             SessionDetailContract.SessionDetailUiState.LoadState.Loading -> YDSProgressBar()
             SessionDetailContract.SessionDetailUiState.LoadState.Error -> YDSEmptyScreen()
             SessionDetailContract.SessionDetailUiState.LoadState.Idle -> SessionDetailScreen(
+                modifier = Modifier.padding(contentPadding),
                 session = session,
                 attendance = attendance
             )
@@ -61,10 +68,14 @@ fun SessionDetail(
 }
 
 @Composable
-fun SessionDetailScreen(session: Session?, attendance: YDSAttendanceType?) {
+fun SessionDetailScreen(
+    modifier: Modifier = Modifier,
+    session: Session?,
+    attendance: YDSAttendanceType?
+) {
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(AttendanceTheme.colors.backgroundColors.background)
             .padding(horizontal = 24.dp, vertical = 40.dp)

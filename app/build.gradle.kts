@@ -1,7 +1,7 @@
 plugins {
+    kotlin("android")
+    kotlin("kapt")
     id(Configs.APPLICATION)
-    id(Configs.KOTLIN_ANDROID)
-    id(Configs.KOTLIN_KAPT)
     id(Configs.HILT_ANDROID_PLUGIN)
     id(Configs.GOOGLE_SERVICE)
     id(Configs.CRASHLYTICS)
@@ -52,7 +52,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Configs.COMPOSE_VERSION
+        kotlinCompilerExtensionVersion = Configs.KOTLIN_COMPILER_EXTENSION
     }
     packagingOptions {
         resources {
@@ -76,7 +76,6 @@ dependencies {
 
     implementation(Dependencies.Google.MATERIAL)
     implementation(Dependencies.Dagger.HILT_ANDROID)
-    implementation(Dependencies.Dagger.HILT_LIFECYCLE_VIEWMODEL)
     implementation(Dependencies.Dagger.HILT_NAVIGATION_COMPOSE)
     kapt(Dependencies.Dagger.HILT_COMPILER)
 

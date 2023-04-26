@@ -10,7 +10,10 @@ import com.yapp.presentation.R
 import com.yapp.presentation.common.AttendanceBundle
 import com.yapp.presentation.common.AttendanceQrCodeParser
 import com.yapp.presentation.model.QrInformation
-import com.yapp.presentation.ui.member.qrcodescanner.QrCodeContract.*
+import com.yapp.presentation.ui.member.qrcodescanner.QrCodeContract.AttendanceState
+import com.yapp.presentation.ui.member.qrcodescanner.QrCodeContract.QrCodeUiEvent
+import com.yapp.presentation.ui.member.qrcodescanner.QrCodeContract.QrCodeUiSideEffect
+import com.yapp.presentation.ui.member.qrcodescanner.QrCodeContract.QrCodeUiState
 import com.yapp.presentation.util.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay

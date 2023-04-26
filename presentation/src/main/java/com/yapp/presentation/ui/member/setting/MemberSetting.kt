@@ -1,5 +1,7 @@
 package com.yapp.presentation.ui.member.setting
 
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -20,11 +22,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.insets.systemBarsPadding
 import com.yapp.common.R
+import com.yapp.common.flow.collectAsStateWithLifecycle
 import com.yapp.common.theme.*
 import com.yapp.common.yds.*
+import com.yapp.domain.model.Team
+import com.yapp.domain.model.types.TeamType
 import com.yapp.presentation.R.*
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
+
+private fun Team.hasTeam() = type != TeamType.NONE
 
 @Composable
 fun MemberSetting(
@@ -32,8 +38,9 @@ fun MemberSetting(
     navigateToPreviousScreen: () -> Unit,
     navigateToLogin: () -> Unit,
     navigateToPrivacyPolicy: () -> Unit,
+    navigateToSelectTeamScreen: () -> Unit,
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var toastVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = viewModel.effect) {
@@ -50,6 +57,10 @@ fun MemberSetting(
                     delay(1000L)
                     toastVisible = false
                 }
+
+                MemberSettingContract.MemberSettingUiSideEffect.NavigateToSelectTeamScreen -> {
+                    navigateToSelectTeamScreen()
+                }
             }
         }
     }
@@ -64,17 +75,26 @@ fun MemberSetting(
         },
         modifier = Modifier
             .fillMaxSize()
-            .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
             .systemBarsPadding(),
-    ) {
+        backgroundColor = AttendanceTheme.colors.backgroundColors.backgroundBase
+    ) { contentPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(AttendanceTheme.colors.backgroundColors.background)
+                .padding(contentPadding)
                 .verticalScroll(rememberScrollState())
         ) {
             GroupInfo(uiState.generation)
-            Profile(uiState.memberName)
+            Profile(
+                name = uiState.memberName,
+                position = uiState.memberPosition,
+                team = uiState.memberTeam,
+            )
+            SelectTeam(
+                hasTeam = uiState.memberTeam.hasTeam(),
+                onClick = { viewModel.setEvent(MemberSettingContract.MemberSettingUiEvent.OnSelectTeamButtonClicked) }
+            )
             Divide()
             MenuList(viewModel)
         }
@@ -117,7 +137,16 @@ private fun GroupInfo(generation: Int) {
 }
 
 @Composable
-private fun Profile(name: String) {
+private fun Profile(
+    name: String,
+    position: String,
+    team: Team,
+) {
+    val subInfo = if (team.hasTeam()) {
+        "$position · $team"
+    } else {
+        position
+    }
     Column(
         modifier = Modifier.padding(horizontal = 24.dp, vertical = 28.dp)
     ) {
@@ -135,6 +164,32 @@ private fun Profile(name: String) {
                 .fillMaxWidth()
                 .padding(top = 16.dp),
             textAlign = TextAlign.Center
+        )
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 2.dp),
+            color = AttendanceTheme.colors.grayScale.Gray600,
+            style = AttendanceTypography.body2,
+            text = subInfo,
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
+@Composable
+private fun ColumnScope.SelectTeam(
+    hasTeam: Boolean,
+    onClick: () -> Unit,
+) {
+    if (hasTeam.not()) {
+        YDSButtonSmall(
+            modifier = Modifier
+                .padding(bottom = 28.dp)
+                .align(Alignment.CenterHorizontally),
+            text = stringResource(id = string.member_setting_select_team),
+            state = YdsButtonState.ENABLED,
+            onClick = onClick,
         )
     }
 }
@@ -174,7 +229,11 @@ private fun MenuList(viewModel: MemberSettingViewModel) {
         modifier = Modifier.padding(top = 28.dp, bottom = 28.dp)
     ) {
         val context = LocalContext.current
-        val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
+        val versionName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.packageManager.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(0)).versionName
+        } else {
+            @Suppress("DEPRECATION") context.packageManager.getPackageInfo(context.packageName, 0).versionName
+        }
 
         Row(
             modifier = Modifier

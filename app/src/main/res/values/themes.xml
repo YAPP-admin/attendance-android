@@ -18,6 +18,7 @@
     <style name="Theme.Attendance.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/light_background_base</item>
     </style>
 
     <style name="Theme.Attendance.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

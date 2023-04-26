@@ -68,7 +68,7 @@ fun Name(
             .fillMaxSize()
             .statusBarsPadding()
             .navigationBarsWithImePadding()
-    ) {
+    ) { contentPadding ->
         if (uiState.showDialog) {
             YDSPopupDialog(
                 title = stringResource(id = R.string.name_cancel_dialog_title),
@@ -85,6 +85,7 @@ fun Name(
             modifier = Modifier
                 .fillMaxSize()
                 .background(AttendanceTheme.colors.backgroundColors.background)
+                .padding(contentPadding)
         ) {
             Column(
                 modifier = Modifier

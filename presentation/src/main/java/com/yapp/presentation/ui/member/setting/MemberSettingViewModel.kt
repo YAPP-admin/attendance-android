@@ -4,7 +4,13 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.common.KakaoSdkProviderInterface
-import com.yapp.domain.usecases.*
+import com.yapp.domain.model.Team
+import com.yapp.domain.model.types.TeamType
+import com.yapp.domain.usecases.DeleteMemberInfoUseCase
+import com.yapp.domain.usecases.GetConfigUseCase
+import com.yapp.domain.usecases.GetCurrentMemberInfoUseCase
+import com.yapp.domain.usecases.GetMemberIdUseCase
+import com.yapp.domain.usecases.ShouldShowGuestButtonUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,7 +36,9 @@ class MemberSettingViewModel @Inject constructor(
                     setState {
                         copy(
                             loadState = MemberSettingContract.LoadState.Idle,
-                            memberName = currentMember?.name ?: ""
+                            memberName = currentMember?.name ?: "",
+                            memberPosition = currentMember?.position?.value ?: "",
+                            memberTeam = currentMember?.team ?: Team.empty(),
                         )
                     }
                 }.onFailure {
@@ -75,22 +83,22 @@ class MemberSettingViewModel @Inject constructor(
                     require(memberId != null)
 
                     deleteMemberInfoUseCase(memberId).getOrDefault(defaultValue = false).also { isSuccess ->
-                        if (!isSuccess) {
-                            setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
-                            setEffect(MemberSettingContract.MemberSettingUiSideEffect.ShowToast)
-                        }
-
-                        kakaoSdkProvider.withdraw(
-                            onSuccess = {
-                                setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
-                                setEffect(MemberSettingContract.MemberSettingUiSideEffect.NavigateToLoginScreen)
-                            },
-                            onFailed = {
+                            if (!isSuccess) {
                                 setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
                                 setEffect(MemberSettingContract.MemberSettingUiSideEffect.ShowToast)
                             }
-                        )
-                    }
+
+                            kakaoSdkProvider.withdraw(
+                                onSuccess = {
+                                    setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
+                                    setEffect(MemberSettingContract.MemberSettingUiSideEffect.NavigateToLoginScreen)
+                                },
+                                onFailed = {
+                                    setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
+                                    setEffect(MemberSettingContract.MemberSettingUiSideEffect.ShowToast)
+                                }
+                            )
+                        }
                 }
                 .onFailure {
                     setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
@@ -113,6 +121,10 @@ class MemberSettingViewModel @Inject constructor(
 
             is MemberSettingContract.MemberSettingUiEvent.OnPrivacyPolicyButtonClicked -> {
                 setEffect(MemberSettingContract.MemberSettingUiSideEffect.NavigateToPrivacyPolicyScreen)
+            }
+
+            MemberSettingContract.MemberSettingUiEvent.OnSelectTeamButtonClicked -> {
+                setEffect(MemberSettingContract.MemberSettingUiSideEffect.NavigateToSelectTeamScreen)
             }
         }
     }

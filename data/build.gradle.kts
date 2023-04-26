@@ -1,14 +1,28 @@
 plugins {
+    kotlin("android")
+    kotlin("kapt")
     id(Configs.LIBRARY)
-    id(Configs.KOTLIN_ANDROID)
     id(Configs.KOTLIN_PARCELIZE)
-    id(Configs.KOTLIN_KAPT)
     id(Configs.KOTLINX_SERIALIZATION)
     id(Configs.HILT_ANDROID_PLUGIN)
 }
 
 android {
     compileSdk = Configs.COMPILE_SDK
+
+    defaultConfig {
+        minSdk = Configs.MIN_SDK
+    }
+
+    buildTypes {
+        debug {
+            buildConfigField("String", "COLLECTION_NAME", "\"debug-member\"")
+        }
+
+        release {
+            buildConfigField("String", "COLLECTION_NAME", "\"release-member\"")
+        }
+    }
 }
 
 dependencies {
@@ -20,9 +34,6 @@ dependencies {
     implementation(Dependencies.Kotlin.SERIALIZATION)
 
     implementation(Dependencies.DATA_STORE)
-    api(Dependencies.Room.ROOM)
-    implementation(Dependencies.Room.KTX)
-    kapt(Dependencies.Room.COMPILER)
 
     //firebase
     implementation(Dependencies.Firebase.COMMON)
