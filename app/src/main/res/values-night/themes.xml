@@ -14,4 +14,11 @@
         <item name="android:windowLightStatusBar">false</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="Theme.Attendance.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/dark_background_base</item>
+    </style>
+
 </resources>

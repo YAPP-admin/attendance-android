@@ -2,7 +2,13 @@ package com.yapp.presentation.ui.member.todaysession
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -25,12 +31,13 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.layoutId
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yapp.common.R
-import com.yapp.common.theme.*
+import com.yapp.common.theme.AttendanceTheme
+import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSEmptyScreen
 import com.yapp.common.yds.YDSProgressBar
+import com.yapp.domain.model.Attendance
 import com.yapp.domain.model.Session
-import com.yapp.domain.model.types.AttendanceType
 import com.yapp.presentation.R.string
 import com.yapp.presentation.ui.AttendanceScreenRoute
 
@@ -53,12 +60,13 @@ fun TodaySession(
         },
         modifier = modifier
             .fillMaxSize(),
-    ) {
+    ) { contentPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .background(color = AttendanceTheme.colors.backgroundColors.backgroundBase)
+                .padding(contentPadding)
         ) {
             TodaysAttendance(uiState.attendanceType)
             SessionDescriptionModal(uiState.todaySession, Modifier.weight(1f))
@@ -77,13 +85,13 @@ fun TodaySession(
 }
 
 @Composable
-private fun TodaysAttendance(attendanceType: AttendanceType) {
+private fun TodaysAttendance(attendanceType: Attendance.Status) {
     val imageRsc: Int
     val iconRsc: Int
     val textRsc: Int
     val textColor: Color
 
-    if (attendanceType == AttendanceType.Absent) {
+    if (attendanceType == Attendance.Status.ABSENT) {
         imageRsc = R.drawable.illust_member_home_disabled
         iconRsc = R.drawable.icon_check_disabled
         textRsc = string.today_session_attendance_before_text

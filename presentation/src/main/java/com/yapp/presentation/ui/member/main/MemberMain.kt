@@ -2,11 +2,17 @@ package com.yapp.presentation.ui.member.main
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Icon
+import androidx.compose.material.LocalContentColor
+import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.Text
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -24,13 +30,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.insets.systemBarsPadding
-import com.yapp.common.theme.*
+import com.yapp.common.theme.AttendanceTheme
+import com.yapp.common.theme.AttendanceTypography
 import com.yapp.presentation.R
 import com.yapp.presentation.ui.AttendanceScreenRoute
 import com.yapp.presentation.ui.SetStatusBarColorByRoute
 import com.yapp.presentation.ui.member.score.MemberScore
 import com.yapp.presentation.ui.member.todaysession.TodaySession
-import kotlinx.coroutines.flow.collect
 
 
 @Composable
@@ -46,14 +52,14 @@ fun MemberMain(
             scaffoldState = scaffoldState,
             modifier = Modifier
                 .fillMaxSize()
-                .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
                 .systemBarsPadding(),
             bottomBar = {
                 BottomNavigationTab(
                     navController = childNavController,
                     navigateToScreen = { tab -> viewModel.setEvent(MemberMainContract.MemberMainUiEvent.OnClickBottomNavigationTab(tab)) }
                 )
-            }
+            },
+            backgroundColor = AttendanceTheme.colors.backgroundColors.backgroundBase
         ) { innerPadding ->
 
             LaunchedEffect(key1 = viewModel.effect) {

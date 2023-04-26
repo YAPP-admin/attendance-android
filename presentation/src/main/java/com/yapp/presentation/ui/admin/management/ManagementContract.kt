@@ -4,7 +4,6 @@ import com.yapp.common.base.UiEvent
 import com.yapp.common.base.UiSideEffect
 import com.yapp.common.base.UiState
 import com.yapp.domain.model.Attendance
-import com.yapp.domain.model.types.AttendanceType
 
 
 class ManagementContract {
@@ -29,13 +28,13 @@ class ManagementContract {
         data class MemberState(
             val id: Long = 0L,
             val name: String = "",
-            val attendance: Attendance = Attendance(sessionId = 0, type = AttendanceType.Normal),
+            val attendance: Attendance = Attendance(sessionId = 0, status = Attendance.Status.NORMAL),
         )
     }
 
     sealed class ManagementEvent : UiEvent {
         data class OnDropDownButtonClicked(val member: ManagementState.MemberState) : ManagementEvent()
-        data class OnAttendanceTypeChanged(val attendanceType: AttendanceType) : ManagementEvent()
+        data class OnAttendanceTypeChanged(val attendanceType: Attendance.Status) : ManagementEvent()
     }
 
     sealed class ManagementSideEffect : UiSideEffect {

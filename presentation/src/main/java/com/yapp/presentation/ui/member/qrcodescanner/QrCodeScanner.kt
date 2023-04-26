@@ -49,7 +49,6 @@ import com.yapp.presentation.util.permission.PermissionManager
 import com.yapp.presentation.util.permission.PermissionState
 import com.yapp.presentation.util.permission.PermissionType
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import java.util.concurrent.Executors
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -344,7 +343,7 @@ fun SuccessLottie(
     }
     LottieAnimation(
         composition,
-        progress,
+        { progress },
         modifier = modifier
     )
 }

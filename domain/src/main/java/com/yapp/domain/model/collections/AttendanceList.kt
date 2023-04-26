@@ -24,7 +24,7 @@ class AttendanceList private constructor(
         if (lastSessionId == DEFAULT_UPCOMING_SESSION_ID) return getTotalAttendanceScore()
         var totalScore = MAX_SCORE
         value.forEach { attendance ->
-            totalScore += attendance.type.point
+            totalScore += attendance.status.point
 
             if (attendance.sessionId == lastSessionId) {
                 return if (totalScore > 0) totalScore else 0
@@ -34,7 +34,7 @@ class AttendanceList private constructor(
     }
 
     private fun getTotalAttendanceScore(): Int {
-        val score = MAX_SCORE + value.sumOf { it.type.point }
+        val score = MAX_SCORE + value.sumOf { it.status.point }
         return if (score > 0) score else 0
     }
 

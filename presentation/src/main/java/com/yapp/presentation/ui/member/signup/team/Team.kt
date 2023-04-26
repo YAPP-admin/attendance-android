@@ -43,13 +43,12 @@ import com.yapp.presentation.R
 import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamSideEffect
 import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamUiEvent
 import com.yapp.presentation.ui.member.signup.team.TeamContract.TeamUiState
-import kotlinx.coroutines.flow.collect
 
 @Composable
 fun Team(
     viewModel: TeamViewModel = hiltViewModel(),
     onClickBackButton: () -> Unit,
-    navigateToMainScreen: () -> Unit
+    navigateToSettingScreen: () -> Unit
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
@@ -57,8 +56,8 @@ fun Team(
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is TeamSideEffect.NavigateToMainScreen -> {
-                    navigateToMainScreen()
+                is TeamSideEffect.NavigateToSettingScreen -> {
+                    navigateToSettingScreen()
                 }
                 is TeamSideEffect.ShowToast -> {
                     Toast.makeText(context, effect.msg, Toast.LENGTH_LONG).show()
@@ -76,51 +75,52 @@ fun Team(
         modifier = Modifier
             .fillMaxSize()
             .systemBarsPadding()
-    ) {
-        when (uiState.loadState) {
-            TeamUiState.LoadState.Loading -> YDSProgressBar()
-            TeamUiState.LoadState.Error -> YDSEmptyScreen()
-            TeamUiState.LoadState.Idle -> {
-                val onTeamTypeClicked: (String) -> Unit by remember {
-                    mutableStateOf({ teamType ->
-                        viewModel.setEvent(
-                            TeamUiEvent.ChooseTeam(teamType)
-                        )
-                    })
-                }
-
-                val onTeamNumberClicked: (Int) -> Unit by remember {
-                    mutableStateOf({ teamNum ->
-                        viewModel.setEvent(
-                            TeamUiEvent.ChooseTeamNumber(teamNum)
-                        )
-                    })
-                }
-
-                val onConfirmClicked: () -> Unit by remember {
-                    mutableStateOf({ viewModel.setEvent(TeamUiEvent.ConfirmTeam) })
-                }
-
-                TeamScreen(
-                    uiState = uiState,
-                    onTeamTypeClicked = onTeamTypeClicked,
-                    onTeamNumberClicked = onTeamNumberClicked,
-                    onConfirmClicked = onConfirmClicked,
+    ) { contentPadding ->
+        val onTeamTypeClicked: (String) -> Unit by remember {
+            mutableStateOf({ teamType ->
+                viewModel.setEvent(
+                    TeamUiEvent.ChooseTeam(teamType)
                 )
-            }
+            })
+        }
+
+        val onTeamNumberClicked: (Int) -> Unit by remember {
+            mutableStateOf({ teamNum ->
+                viewModel.setEvent(
+                    TeamUiEvent.ChooseTeamNumber(teamNum)
+                )
+            })
+        }
+
+        val onConfirmClicked: () -> Unit by remember {
+            mutableStateOf({ viewModel.setEvent(TeamUiEvent.ConfirmTeam) })
+        }
+
+        TeamScreen(
+            modifier = Modifier.padding(contentPadding),
+            uiState = uiState,
+            onTeamTypeClicked = onTeamTypeClicked,
+            onTeamNumberClicked = onTeamNumberClicked,
+            onConfirmClicked = onConfirmClicked,
+        )
+        if (uiState.loadState == TeamUiState.LoadState.Loading) {
+            YDSProgressBar()
+        } else if (uiState.loadState == TeamUiState.LoadState.Error) {
+            YDSEmptyScreen()
         }
     }
 }
 
 @Composable
 fun TeamScreen(
+    modifier: Modifier = Modifier,
     uiState: TeamUiState,
     onTeamTypeClicked: (String) -> Unit,
     onTeamNumberClicked: (Int) -> Unit,
     onConfirmClicked: () -> Unit,
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(AttendanceTheme.colors.backgroundColors.background)
             .padding(horizontal = 24.dp)

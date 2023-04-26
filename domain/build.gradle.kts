@@ -1,7 +1,6 @@
 plugins {
-    `java-library`
-    id(Configs.KOTLIN)
-    id(Configs.KOTLIN_KAPT)
+    kotlin("jvm")
+    kotlin("kapt")
 }
 
 

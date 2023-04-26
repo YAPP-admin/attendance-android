@@ -28,18 +28,18 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.systemBarsPadding
-import com.yapp.common.theme.*
+import com.yapp.common.theme.AttendanceTheme
+import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSDropDownButton
 import com.yapp.common.yds.YDSEmptyScreen
 import com.yapp.common.yds.YDSProgressBar
-import com.yapp.domain.model.types.AttendanceType
+import com.yapp.domain.model.Attendance
 import com.yapp.presentation.R
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementEvent
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState.LoadState.*
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState.MemberState
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState.TeamState
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
@@ -56,7 +56,7 @@ fun AttendanceManagement(
 
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
-    when(uiState.loadState) {
+    when (uiState.loadState) {
         Loading -> YDSProgressBar()
 
         Idle -> {
@@ -95,14 +95,27 @@ fun ManagementScreen(
     uiState: ManagementContract.ManagementState,
     sheetState: ModalBottomSheetState,
     onBackButtonClicked: (() -> Unit),
-    onBottomSheetDialogItemClicked: (AttendanceType) -> Unit,
+    onBottomSheetDialogItemClicked: (Attendance.Status) -> Unit,
     onDropDownClicked: ((MemberState) -> Unit)
 ) {
+    val attendanceTypes = remember {
+        listOf(
+            Attendance.Status.ABSENT,
+            Attendance.Status.NORMAL,
+            Attendance.Status.LATE,
+            Attendance.Status.ADMIT
+        )
+    }
+
     ModalBottomSheetLayout(
         sheetContent = {
             BottomSheetDialog(
-                attendanceTypes = listOf(AttendanceType.Absent,AttendanceType.Normal, AttendanceType.Late, AttendanceType.Admit),
-                onClickItem = { attendanceType -> onBottomSheetDialogItemClicked.invoke(attendanceType) }
+                attendanceTypes = attendanceTypes,
+                onClickItem = { attendanceType ->
+                    onBottomSheetDialogItemClicked.invoke(
+                        attendanceType
+                    )
+                }
             )
         },
         sheetState = sheetState,
@@ -111,7 +124,6 @@ fun ManagementScreen(
         Scaffold(
             modifier = Modifier
                 .fillMaxSize()
-                .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
                 .systemBarsPadding(),
             topBar = {
                 YDSAppBar(
@@ -121,17 +133,21 @@ fun ManagementScreen(
                     title = uiState.sessionTitle,
                     onClickBackButton = { onBackButtonClicked.invoke() }
                 )
-            }
-        ) {
+            },
+            backgroundColor = AttendanceTheme.colors.backgroundColors.backgroundBase
+        ) { innerPadding ->
+
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(AttendanceTheme.colors.backgroundColors.background)
-                    .padding(start = 24.dp, end = 24.dp, bottom = 24.dp)
+                    .padding(innerPadding)
             ) {
 
                 item {
-                    Column {
+                    Column(
+                        modifier = Modifier.padding(start = 24.dp, end = 24.dp)
+                    ) {
                         Spacer(modifier = Modifier.height(28.dp))
                         AttendCountText(memberCount = uiState.memberCount)
                         Spacer(modifier = Modifier.height(28.dp))
@@ -144,8 +160,16 @@ fun ManagementScreen(
                 ) { _, team ->
                     ExpandableTeam(
                         state = team,
-                        onDropDownClicked = { changedMember -> onDropDownClicked.invoke(changedMember) }
+                        onDropDownClicked = { changedMember ->
+                            onDropDownClicked.invoke(
+                                changedMember
+                            )
+                        }
                     )
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(24.dp))
                 }
             }
         }
@@ -160,9 +184,9 @@ fun AttendCountText(
 ) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(10F))
             .fillMaxWidth()
             .height(48.dp)
+            .clip(RoundedCornerShape(10.dp))
             .background(color = AttendanceTheme.colors.mainColors.YappOrangeAlpha)
     ) {
         Crossfade(targetState = memberCount) { count ->
@@ -192,9 +216,13 @@ fun ExpandableTeam(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .padding(start = 24.dp, end = 24.dp)
             .background(AttendanceTheme.colors.backgroundColors.background)
             .animateContentSize(
-                animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow)
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioLowBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -209,15 +237,24 @@ fun ExpandableTeam(
             visible = expanded,
             enter = fadeIn(animationSpec = tween(50)) +
                     expandVertically(
-                        animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow)
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessLow
+                        )
                     ),
             exit = fadeOut(animationSpec = tween(50)) +
                     shrinkVertically(
-                        animationSpec = spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow)
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessLow
+                        )
                     )
         ) {
             Column {
-                Divider(modifier = Modifier.height(1.dp), color = AttendanceTheme.colors.grayScale.Gray300)
+                Divider(
+                    modifier = Modifier.height(1.dp),
+                    color = AttendanceTheme.colors.grayScale.Gray300
+                )
                 for (member in state.members) {
                     MemberContent(
                         state = member,
@@ -226,7 +263,10 @@ fun ExpandableTeam(
                         }
                     )
                 }
-                Divider(modifier = Modifier.height(1.dp), color = AttendanceTheme.colors.grayScale.Gray300)
+                Divider(
+                    modifier = Modifier.height(1.dp),
+                    color = AttendanceTheme.colors.grayScale.Gray300
+                )
             }
         }
     }
@@ -267,7 +307,9 @@ fun TeamHeader(
             onClick = { onExpandClicked(!expanded) }
         ) {
             Icon(
-                painter = if (expanded) painterResource(id = R.drawable.icon_chevron_up) else painterResource(id = R.drawable.icon_chevron_down),
+                painter = if (expanded) painterResource(id = R.drawable.icon_chevron_up) else painterResource(
+                    id = R.drawable.icon_chevron_down
+                ),
                 tint = AttendanceTheme.colors.grayScale.Gray600,
                 contentDescription = null
             )
@@ -312,7 +354,7 @@ fun MemberContent(
                     top.linkTo(parent.top, margin = 13.dp)
                     bottom.linkTo(parent.bottom, margin = 13.dp)
                 },
-            text = state.attendance.type.text,
+            text = state.attendance.status.text,
             onClick = { onDropDownClicked.invoke(state) }
         )
     }
@@ -322,8 +364,8 @@ fun MemberContent(
 @Composable
 fun BottomSheetDialog(
     modifier: Modifier = Modifier,
-    attendanceTypes: List<AttendanceType>,
-    onClickItem: (AttendanceType) -> Unit = {}
+    attendanceTypes: List<Attendance.Status>,
+    onClickItem: (Attendance.Status) -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -359,8 +401,8 @@ fun BottomSheetDialog(
 @Composable
 fun BottomSheetDialogItem(
     modifier: Modifier = Modifier,
-    attendanceType: AttendanceType = AttendanceType.Normal,
-    onClickItem: (AttendanceType) -> Unit = {}
+    attendanceType: Attendance.Status = Attendance.Status.NORMAL,
+    onClickItem: (Attendance.Status) -> Unit = {}
 ) {
     Column(
         modifier = modifier

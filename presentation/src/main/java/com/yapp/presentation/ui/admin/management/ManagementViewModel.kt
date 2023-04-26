@@ -6,7 +6,6 @@ import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.model.Attendance
 import com.yapp.domain.model.Member
 import com.yapp.domain.model.Team
-import com.yapp.domain.model.types.AttendanceType
 import com.yapp.domain.usecases.GetAllMemberUseCase
 import com.yapp.domain.usecases.SetMemberAttendanceUseCase
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_ID
@@ -14,7 +13,6 @@ import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_TITLE
 import com.yapp.presentation.ui.admin.management.ManagementContract.*
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -53,7 +51,7 @@ class ManagementViewModel @Inject constructor(
                 uiState.value.selectedMember?.let { selectedMember ->
                     changeMemberAttendance(
                         selectedMember = selectedMember,
-                        changedAttendanceType = event.attendanceType,
+                        changedAttendanceStatus = event.attendanceType,
                         sessionId = uiState.value.sessionId
                     )
                 }
@@ -61,7 +59,11 @@ class ManagementViewModel @Inject constructor(
         }
     }
 
+
+
     private suspend fun getAllMemberState(sessionId: Int) {
+        //getAllMemberUseCase().collect {  }
+
         getAllMemberUseCase().collect { result ->
             result.onSuccess { members ->
                 val membersByTeam = members.groupBy { member -> member.team }
@@ -69,7 +71,7 @@ class ManagementViewModel @Inject constructor(
                     .sortedBy { teamState -> teamState.teamName }
 
                 val attendCount = membersByTeam.flatMap { it.members }
-                    .count { it.attendance.type == AttendanceType.Normal }
+                    .count { it.attendance.status == Attendance.Status.NORMAL }
 
                 setState {
                     this.copy(
@@ -82,13 +84,14 @@ class ManagementViewModel @Inject constructor(
                 setState { this.copy(loadState = LoadState.Error) }
             }
         }
+
     }
 
     private fun mapToTeamState(team: Team, members: List<Member>, sessionId: Int): TeamState {
         return TeamState(
             teamName = String.format("${team.type.value} ${team.number}팀"),
             members = members.sortedWith(
-                compareBy<Member> { it.attendances.getAttendanceBySessionId(sessionId).type.order }
+                compareBy<Member> { it.attendances.getAttendanceBySessionId(sessionId).status.ordinal }
                     .thenBy { it.name }
             ).map { member ->
                 MemberState(
@@ -102,17 +105,20 @@ class ManagementViewModel @Inject constructor(
 
     private suspend fun changeMemberAttendance(
         selectedMember: MemberState,
-        changedAttendanceType: AttendanceType,
+        changedAttendanceStatus: Attendance.Status,
         sessionId: Int,
     ) {
-        if (selectedMember.attendance.type == changedAttendanceType) {
+        if (selectedMember.attendance.status == changedAttendanceStatus) {
             return
         }
         setMemberAttendanceUseCase(
             params = SetMemberAttendanceUseCase.Params(
                 memberId = selectedMember.id,
                 sessionId = sessionId,
-                changedAttendance = Attendance(sessionId = sessionId, type = changedAttendanceType)
+                changedAttendance = Attendance(
+                    sessionId = sessionId,
+                    status = changedAttendanceStatus
+                )
             )
         ).onSuccess {
             setState { this.copy(selectedMember = null) }

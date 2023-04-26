@@ -8,12 +8,11 @@ import com.yapp.domain.model.types.PositionType
 
 class PositionContract {
     data class PositionUiState(
-        val ydsOption: YDSOptionState<PositionType> = PositionOptionState()
+        val ydsOption: YDSOptionState<PositionType> = PositionOptionState(),
     ) : UiState
 
     sealed class PositionSideEffect : UiSideEffect {
-        data class NavigateToTeamScreen(val name: String, val position: PositionType) :
-            PositionSideEffect()
+        object NavigateToMainScreen : PositionSideEffect()
 
         data class ShowToast(val msg: String) : PositionSideEffect()
     }
@@ -25,6 +24,6 @@ class PositionContract {
 
     data class PositionOptionState(
         override val items: List<PositionType> = PositionType.values().toList(),
-        override val selectedOption: PositionType? = null
+        override val selectedOption: PositionType? = null,
     ) : YDSOptionState<PositionType>
 }

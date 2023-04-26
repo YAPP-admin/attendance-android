@@ -3,12 +3,26 @@ package com.yapp.presentation.ui.admin.main
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -26,7 +40,8 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.insets.systemBarsPadding
 import com.yapp.common.R
-import com.yapp.common.theme.*
+import com.yapp.common.theme.AttendanceTheme
+import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.YDSButtonSmall
 import com.yapp.common.yds.YDSEmptyScreen
 import com.yapp.common.yds.YDSProgressBar
@@ -34,8 +49,9 @@ import com.yapp.common.yds.YdsButtonState
 import com.yapp.domain.model.Session
 import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.presentation.R.string
-import com.yapp.presentation.ui.admin.main.AdminMainContract.*
-import kotlinx.coroutines.flow.collect
+import com.yapp.presentation.ui.admin.main.AdminMainContract.AdminMainUiEvent
+import com.yapp.presentation.ui.admin.main.AdminMainContract.AdminMainUiSideEffect
+import com.yapp.presentation.ui.admin.main.AdminMainContract.AdminMainUiState
 
 @Composable
 fun AdminMain(
@@ -64,12 +80,13 @@ fun AdminMain(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .background(AttendanceTheme.colors.backgroundColors.backgroundBase)
-            .systemBarsPadding()
-    ) {
+            .systemBarsPadding(),
+        backgroundColor = AttendanceTheme.colors.backgroundColors.backgroundBase
+    ) { contentPadding ->
         when (uiState.loadState) {
             AdminMainUiState.LoadState.Loading -> YDSProgressBar()
             AdminMainUiState.LoadState.Idle -> AdminMainScreen(
+                modifier = Modifier.padding(contentPadding),
                 uiState = uiState,
                 onUserScoreCardClicked = {
                     viewModel.setEvent(
@@ -94,6 +111,7 @@ fun AdminMain(
 
 @Composable
 fun AdminMainScreen(
+    modifier: Modifier,
     uiState: AdminMainUiState,
     onUserScoreCardClicked: () -> Unit,
     onSessionClicked: (Int, String) -> Unit,
