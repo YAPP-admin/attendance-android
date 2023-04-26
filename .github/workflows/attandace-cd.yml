@@ -1,0 +1,67 @@
+name: Android CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  if_merged:
+    build:
+
+      runs-on: ubuntu-latest
+    
+      env:
+        KAKAO_NATIVE_API_KEY: ${{ secrets.KAKAO_NATIVE_API_KEY }}
+
+  check_pr_labels:
+    needs: if_merged
+    uses: ./.github/workflows/check_pr_labels_action.yml
+
+  checkout:
+    needs: check_pr_labels
+    steps:
+    - uses: actions/checkout@v2
+    - name: set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+        
+    - name: Access KAKAO_NATIVE_API_KEY
+      run: echo KAKAO_NATIVE_API_KEY=\"$KAKAO_NATIVE_API_KEY\" >> ./local.properties
+      working-directory: ${{ env.working-directory }}
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle
+      run: ./gradlew build
+
+  commit-message:
+    needs: checkout
+    runs-on: ubuntu-latest
+    outputs:
+      message: ${{steps.get_pull_request_last_comment.output.COMMENT}}
+    steps:
+      - id: get_pull_request_last_comment
+        name: GET PR Last Comment
+        run: |
+          # PR 마지막 코멘트를 가져와서 디스트리뷰션 title 로 사용
+          pull_request_comment=$(curl \
+          --fail \
+          -H "Accept: application/vnd.github.groot-preview+json" \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          "${{ github.event.pull_request._links.comments.href }}" \
+          | jq -r ".[-1] | .body")
+          # comments 출력
+          echo "::set-output name=COMMENT::$pull_request_comment"
+
+  build_debug:
+    if: ${{ needs.check_pr_labels.outputs.debug }}
+    needs: commit-message
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fastlane debug
+        run: fastlane distribute_debug "message:${{ needs.commit_message.outputs.message }}" --env common
