@@ -18,7 +18,7 @@ object Configs {
     const val APPLICATION_ID            = "com.yapp.attendance"
     const val MIN_SDK                   = 26
     const val TARGET_SDK                = 33
-    const val VERSION_CODE              = 100100
+    const val VERSION_CODE              = 100200
     const val VERSION_NAME              = "1.2.0"
 
     const val KOTLIN_COMPILER_EXTENSION = "1.4.3"
