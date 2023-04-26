@@ -14,6 +14,8 @@ jobs:
     
       env:
         KAKAO_NATIVE_API_KEY: ${{ secrets.KAKAO_NATIVE_API_KEY }}
+        PLAY_STORE_API_KEY: ${{ secrets.GOOGLE_CLOUD_JSON }}
+        FASTLANE_ENV: ${{ secrets.FASTLANE_ENV }}
 
   check_pr_labels:
     needs: if_merged
@@ -31,7 +33,16 @@ jobs:
         cache: gradle
         
     - name: Access KAKAO_NATIVE_API_KEY
-      run: echo KAKAO_NATIVE_API_KEY=\"$KAKAO_NATIVE_API_KEY\" >> ./local.properties
+      run: |
+        # 카카오 키값 local.properties에 파일 만듦
+        echo KAKAO_NATIVE_API_KEY=\"$KAKAO_NATIVE_API_KEY\" >> ./local.properties
+        
+        # 구글 스토어 json 키값 파일 만듦
+        echo PLAY_STORE_API_KEY=\"$PLAY_STORE_API_KEY\" >> ./.github/api-play-store-key.json
+        
+        # fastlane evn 파일 만듦
+        echo FASTLANE_ENV=\"$FASTLANE_ENV\" >> ./fastlane/.env
+        
       working-directory: ${{ env.working-directory }}
 
     - name: Grant execute permission for gradlew
