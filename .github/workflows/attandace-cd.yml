@@ -1,4 +1,4 @@
-name: Android CI
+name: Android CD
 
 on:
   workflow_dispatch:
@@ -8,8 +8,9 @@ on:
 
 jobs:
   if_merged:
-    build:
 
+    if: github.event.pull_request.merged == true
+    build:
       runs-on: ubuntu-latest
     
       env:
