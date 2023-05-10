@@ -33,6 +33,42 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:866308898868:android:b191a53d0f502e8aa18a61",
+        "android_client_info": {
+          "package_name": "com.yapp.attendance.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "866308898868-dbm0rfrbe3gc9pd4fdrqlpfk4h31vsbm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCpbJZFVdjXFMIBuzini9guN4CWD89Uys"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "866308898868-dbm0rfrbe3gc9pd4fdrqlpfk4h31vsbm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "866308898868-rdhfenb7jk3df1kjn8p8uib0cuudaamv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "attendance-ios"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"
