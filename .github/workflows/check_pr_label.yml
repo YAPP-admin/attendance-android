@@ -22,8 +22,8 @@ jobs:
           REPO_NAME: ${{ github.event.repository.name }}
           PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
         shell: bash
-          run: |
-            # 해당 PR의 라벨을 가져온다
+        run: |
+          # 해당 PR의 라벨을 가져온다
           pull_request_labels="$(gh api repos/$OWNER/$REPO_NAME/pulls/$PULL_REQUEST_NUMBER --jq '.labels.[].name')"
           echo "$pull_request_labels"
           
