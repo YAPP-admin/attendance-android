@@ -5,8 +5,8 @@ import com.yapp.common.base.UiSideEffect
 import com.yapp.common.base.UiState
 import com.yapp.domain.model.Attendance
 import com.yapp.presentation.ui.admin.management.components.attendanceBottomSheet.AttendanceBottomSheetItemLayoutState
-import com.yapp.presentation.ui.admin.management.components.statisticalTable.StatisticalTableLayoutState
 import com.yapp.presentation.ui.admin.management.components.foldableItem.FoldableItemLayoutState
+import com.yapp.presentation.ui.admin.management.components.statisticalTable.StatisticalTableLayoutState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -23,12 +23,12 @@ class ManagementContract {
         val topBarState: TopBarLayoutState = TopBarLayoutState(),
         val attendanceStatisticalTableState: StatisticalTableLayoutState = StatisticalTableLayoutState(),
         val foldableItemStates: ImmutableList<FoldableItemLayoutState> = persistentListOf(),
-        val bottomSheetDialogState: ImmutableList<AttendanceBottomSheetItemLayoutState> = persistentListOf()
+        val bottomSheetDialogState: ImmutableList<AttendanceBottomSheetItemLayoutState> = persistentListOf(),
     ) : UiState {
 
         data class Shared(
             val sessionId: Int = 0,
-            val selectedMemberId: Long = NOT_SELECTED
+            val selectedMemberId: Long = NOT_SELECTED,
         )
 
         data class TopBarLayoutState(val sessionTitle: String = "")

@@ -29,7 +29,7 @@ import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
 
 
-@Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
+@Preview(backgroundColor = 0x00000000, showBackground = true)
 @Composable
 private fun AttendanceTypeButtonPreview() {
     var state by remember {

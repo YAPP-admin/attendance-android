@@ -28,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yapp.common.theme.AttendanceTheme
-import com.yapp.domain.model.Attendance
 import com.yapp.presentation.ui.admin.management.components.attendanceTypeButton.AttendanceTypeButtonState
 import com.yapp.presentation.ui.admin.management.components.foldableContentItem.FoldableItemContentLayout
 import com.yapp.presentation.ui.admin.management.components.foldableContentItem.FoldableItemContentLayoutState
