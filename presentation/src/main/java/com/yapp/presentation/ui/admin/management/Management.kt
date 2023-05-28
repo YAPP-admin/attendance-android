@@ -1,28 +1,20 @@
 package com.yapp.presentation.ui.admin.management
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
@@ -31,15 +23,15 @@ import com.google.accompanist.insets.systemBarsPadding
 import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.YDSAppBar
-import com.yapp.common.yds.YDSDropDownButton
 import com.yapp.common.yds.YDSEmptyScreen
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.domain.model.Attendance
-import com.yapp.presentation.R
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementEvent
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState.LoadState.*
-import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState.MemberState
-import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState.TeamState
+import com.yapp.presentation.ui.admin.management.components.attendanceBottomSheet.AttendanceBottomSheetItemLayout
+import com.yapp.presentation.ui.admin.management.components.attendanceBottomSheet.AttendanceBottomSheetItemLayoutState
+import com.yapp.presentation.ui.admin.management.components.statisticalTable.StatisticalTableLayout
+import com.yapp.presentation.ui.admin.management.components.foldableItem.FoldableItemLayout
 import kotlinx.coroutines.launch
 
 
@@ -48,7 +40,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun AttendanceManagement(
     viewModel: ManagementViewModel = hiltViewModel(),
-    onBackButtonClicked: (() -> Unit)? = null
+    onBackButtonClicked: (() -> Unit)? = null,
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -91,26 +83,17 @@ fun AttendanceManagement(
 
 @ExperimentalMaterialApi
 @Composable
-fun ManagementScreen(
+internal fun ManagementScreen(
     uiState: ManagementContract.ManagementState,
     sheetState: ModalBottomSheetState,
     onBackButtonClicked: (() -> Unit),
     onBottomSheetDialogItemClicked: (Attendance.Status) -> Unit,
-    onDropDownClicked: ((MemberState) -> Unit)
+    onDropDownClicked: ((memberId: Long) -> Unit),
 ) {
-    val attendanceTypes = remember {
-        listOf(
-            Attendance.Status.ABSENT,
-            Attendance.Status.NORMAL,
-            Attendance.Status.LATE,
-            Attendance.Status.ADMIT
-        )
-    }
-
     ModalBottomSheetLayout(
         sheetContent = {
             BottomSheetDialog(
-                attendanceTypes = attendanceTypes,
+                itemStates = uiState.bottomSheetDialogState,
                 onClickItem = { attendanceType ->
                     onBottomSheetDialogItemClicked.invoke(
                         attendanceType
@@ -130,7 +113,7 @@ fun ManagementScreen(
                     modifier = Modifier
                         .background(AttendanceTheme.colors.backgroundColors.background)
                         .padding(horizontal = 4.dp),
-                    title = uiState.sessionTitle,
+                    title = uiState.topBarState.sessionTitle,
                     onClickBackButton = { onBackButtonClicked.invoke() }
                 )
             },
@@ -143,22 +126,19 @@ fun ManagementScreen(
                     .background(AttendanceTheme.colors.backgroundColors.background)
                     .padding(innerPadding)
             ) {
-
                 item {
                     Column(
-                        modifier = Modifier.padding(start = 24.dp, end = 24.dp)
+                        modifier = Modifier.padding(24.dp)
                     ) {
-                        Spacer(modifier = Modifier.height(28.dp))
-                        AttendCountText(memberCount = uiState.memberCount)
-                        Spacer(modifier = Modifier.height(28.dp))
+                        StatisticalTableLayout(state = uiState.attendanceStatisticalTableState)
                     }
                 }
 
                 itemsIndexed(
-                    items = uiState.teams,
-                    key = { _, team -> team.teamName }
+                    items = uiState.foldableItemStates,
+                    key = { _, team -> team.headerState.label }
                 ) { _, team ->
-                    ExpandableTeam(
+                    FoldableItemLayout(
                         state = team,
                         onDropDownClicked = { changedMember ->
                             onDropDownClicked.invoke(
@@ -176,196 +156,11 @@ fun ManagementScreen(
     }
 }
 
-@Preview
 @Composable
-fun AttendCountText(
+private fun BottomSheetDialog(
     modifier: Modifier = Modifier,
-    memberCount: Int = 0
-) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(48.dp)
-            .clip(RoundedCornerShape(10.dp))
-            .background(color = AttendanceTheme.colors.mainColors.YappOrangeAlpha)
-    ) {
-        Crossfade(targetState = memberCount) { count ->
-            Text(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 24.dp, vertical = 12.dp),
-                text = "${count}명이 출석했어요",
-                textAlign = TextAlign.Center,
-                style = AttendanceTypography.body1,
-                color = AttendanceTheme.colors.mainColors.YappOrange
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-fun ExpandableTeam(
-    modifier: Modifier = Modifier,
-    state: TeamState = TeamState(),
-    onDropDownClicked: ((MemberState) -> Unit)? = null
-) {
-    var expanded by rememberSaveable { mutableStateOf(false) }
-
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(start = 24.dp, end = 24.dp)
-            .background(AttendanceTheme.colors.backgroundColors.background)
-            .animateContentSize(
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioLowBouncy,
-                    stiffness = Spring.StiffnessLow
-                )
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        TeamHeader(
-            state = state,
-            expanded = expanded,
-            onExpandClicked = { changedState -> expanded = changedState }
-        )
-
-        AnimatedVisibility(
-            visible = expanded,
-            enter = fadeIn(animationSpec = tween(50)) +
-                    expandVertically(
-                        animationSpec = spring(
-                            dampingRatio = Spring.DampingRatioLowBouncy,
-                            stiffness = Spring.StiffnessLow
-                        )
-                    ),
-            exit = fadeOut(animationSpec = tween(50)) +
-                    shrinkVertically(
-                        animationSpec = spring(
-                            dampingRatio = Spring.DampingRatioLowBouncy,
-                            stiffness = Spring.StiffnessLow
-                        )
-                    )
-        ) {
-            Column {
-                Divider(
-                    modifier = Modifier.height(1.dp),
-                    color = AttendanceTheme.colors.grayScale.Gray300
-                )
-                for (member in state.members) {
-                    MemberContent(
-                        state = member,
-                        onDropDownClicked = { clickedMember ->
-                            onDropDownClicked?.invoke(clickedMember)
-                        }
-                    )
-                }
-                Divider(
-                    modifier = Modifier.height(1.dp),
-                    color = AttendanceTheme.colors.grayScale.Gray300
-                )
-            }
-        }
-    }
-}
-
-@Preview
-@Composable
-fun TeamHeader(
-    modifier: Modifier = Modifier,
-    state: TeamState = TeamState(),
-    expanded: Boolean = false,
-    onExpandClicked: (Boolean) -> Unit = {}
-) {
-    Row(
-        modifier = modifier
-            .height(62.dp)
-            .fillMaxWidth()
-            .background(AttendanceTheme.colors.backgroundColors.background)
-            .clickable { onExpandClicked(!expanded) }
-    ) {
-        Text(
-            modifier = Modifier
-                .width(0.dp)
-                .weight(0.9F)
-                .fillMaxHeight()
-                .padding(vertical = 18.dp),
-            text = state.teamName,
-            textAlign = TextAlign.Start,
-            style = AttendanceTypography.h3,
-            color = AttendanceTheme.colors.grayScale.Gray1200
-        )
-
-        IconButton(
-            modifier = Modifier
-                .weight(0.1F)
-                .fillMaxHeight()
-                .width(0.dp),
-            onClick = { onExpandClicked(!expanded) }
-        ) {
-            Icon(
-                painter = if (expanded) painterResource(id = R.drawable.icon_chevron_up) else painterResource(
-                    id = R.drawable.icon_chevron_down
-                ),
-                tint = AttendanceTheme.colors.grayScale.Gray600,
-                contentDescription = null
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-fun MemberContent(
-    modifier: Modifier = Modifier,
-    state: MemberState = MemberState(),
-    onDropDownClicked: (MemberState) -> Unit = {}
-) {
-    ConstraintLayout(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(59.dp)
-    ) {
-        val (ydsDropdownButton, nameText) = createRefs()
-
-        Text(
-            modifier = Modifier
-                .wrapContentWidth()
-                .constrainAs(nameText) {
-                    start.linkTo(parent.start, margin = 8.dp)
-                    top.linkTo(parent.top, margin = 17.5.dp)
-                    bottom.linkTo(parent.bottom, margin = 17.5.dp)
-                },
-            text = state.name,
-            textAlign = TextAlign.Start,
-            style = AttendanceTypography.body1,
-            color = AttendanceTheme.colors.grayScale.Gray800
-        )
-
-        YDSDropDownButton(
-            modifier = Modifier
-                .wrapContentHeight()
-                .animateContentSize()
-                .constrainAs(ydsDropdownButton) {
-                    end.linkTo(parent.end, margin = 8.dp)
-                    top.linkTo(parent.top, margin = 13.dp)
-                    bottom.linkTo(parent.bottom, margin = 13.dp)
-                },
-            text = state.attendance.status.text,
-            onClick = { onDropDownClicked.invoke(state) }
-        )
-    }
-
-}
-
-@Composable
-fun BottomSheetDialog(
-    modifier: Modifier = Modifier,
-    attendanceTypes: List<Attendance.Status>,
-    onClickItem: (Attendance.Status) -> Unit = {}
+    itemStates: List<AttendanceBottomSheetItemLayoutState>,
+    onClickItem: (Attendance.Status) -> Unit = {},
 ) {
     Column(
         modifier = modifier
@@ -381,10 +176,10 @@ fun BottomSheetDialog(
                 .background(color = AttendanceTheme.colors.backgroundColors.backgroundElevated)
         )
 
-        for (type in attendanceTypes) {
-            BottomSheetDialogItem(
-                attendanceType = type,
-                onClickItem = { onClickItem.invoke(type) }
+        for (itemState in itemStates) {
+            AttendanceBottomSheetItemLayout(
+                state = itemState,
+                onClickItem = { onClickItem.invoke(itemState.onClickIcon) }
             )
         }
 
@@ -397,31 +192,4 @@ fun BottomSheetDialog(
     }
 }
 
-@Preview
-@Composable
-fun BottomSheetDialogItem(
-    modifier: Modifier = Modifier,
-    attendanceType: Attendance.Status = Attendance.Status.NORMAL,
-    onClickItem: (Attendance.Status) -> Unit = {}
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(52.dp)
-            .background(color = AttendanceTheme.colors.backgroundColors.backgroundElevated)
-            .clickable { onClickItem.invoke(attendanceType) },
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            modifier = modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .padding(vertical = 14.dp),
-            text = attendanceType.text,
-            style = AttendanceTypography.subtitle1,
-            color = AttendanceTheme.colors.grayScale.Gray1200,
-            textAlign = TextAlign.Center,
-        )
-    }
-}
+
