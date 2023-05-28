@@ -1,6 +1,8 @@
 <resources>
     <!-- convention -->
     <!-- screen name_description_component name -->
+    <string name="com.google.firebase.crashlytics.mapping_file_id">none</string>
+
     <string name="login_attendance_introduce_text">3초만에 끝나는\n간편한 출석체크</string>
     <string name="login_kakao_login_text">카카오 로그인</string>
     <string name="Cancel">취소</string>
