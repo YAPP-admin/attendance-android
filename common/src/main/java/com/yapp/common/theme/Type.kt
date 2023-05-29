@@ -43,7 +43,7 @@ val AttendanceTypography = Typography(
     ),
     body1 = TextStyle(
         fontFamily = Pretendard,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
         lineHeight = 24.sp
     ),
