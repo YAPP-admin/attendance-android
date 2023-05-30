@@ -50,7 +50,7 @@ jobs:
 
   check_pr_labels:
     needs: checkout
-    uses: ./.github/workflows/check_pr_labels_action.yml
+    uses: ./.github/workflows/check_pr_label.yml
 
   commit-message:
     needs: check_pr_labels
