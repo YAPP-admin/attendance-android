@@ -55,6 +55,7 @@ jobs:
 
   commit-message:
     needs: check_pr_labels
+    runs-on: ubuntu-latest
     outputs:
       message: ${{steps.get_pull_request_last_comment.output.COMMENT}}
     steps:
