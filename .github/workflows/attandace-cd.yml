@@ -21,30 +21,29 @@ jobs:
     env:
       KAKAO_NATIVE_API_KEY: ${{ secrets.KAKAO_NATIVE_API_KEY }}
       PLAY_STORE_API_KEY: ${{ secrets.GOOGLE_CLOUD_JSON }}
-      FASTLANE_ENV: ${{ secrets.FASTLANE_ENV }}
     steps:
-    - uses: actions/checkout@v2
-    - name: set up JDK 11
-      uses: actions/setup-java@v2
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-        cache: gradle
-        
-    - name: Access KAKAO_NATIVE_API_KEY
-      run: |
-        # 카카오 키값 local.properties에 파일 만듦
-        echo KAKAO_NATIVE_API_KEY=\"$KAKAO_NATIVE_API_KEY\" >> ./local.properties
-        
-        # 구글 스토어 json 키값 파일 만듦
-        echo PLAY_STORE_API_KEY=\"$PLAY_STORE_API_KEY\" >> ./.github/api-play-store-key.json
+      - uses: actions/checkout@v2
+      - name: set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: gradle
 
-      working-directory: ${{ env.working-directory }}
+      - name: Access KAKAO_NATIVE_API_KEY
+        run: |
+          # 카카오 키값 local.properties에 파일 만듦
+          echo KAKAO_NATIVE_API_KEY=\"$KAKAO_NATIVE_API_KEY\" >> ./local.properties
+          
+          # 구글 스토어 json 키값 파일 만듦
+          echo PLAY_STORE_API_KEY=\"$PLAY_STORE_API_KEY\" >> ./.github/api-play-store-key.json
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew build
+        working-directory: ${{ env.working-directory }}
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Build with Gradle
+        run: ./gradlew build
 
   check_pr_labels:
     needs: checkout
@@ -74,41 +73,24 @@ jobs:
     needs: commit-message
     runs-on: ubuntu-latest
     steps:
-      - name: Make env file
-        run: |
-          # fastlane 디렉토리 추가
-          mkdir ./fastlane
-
-          # fastlane fastfile
-          echo FASTLANE_FASTFILE=\"$FASTLANE_FASTFILE\" >> ./fastlane/Fastfile
-
-          # fastlane pluginfile
-          echo FASTLANE_PLUGIN_FILE=\"$FASTLANE_PLUGIN_FILE\" >> ./fastlane/Pluginfile
-
-          # fastlane FASTLANE_APP_FILE
-          echo FASTLANE_APP_FILE=\"$FASTLANE_APP_FILE\" >> ./fastlane/Appfile
-
-          # Gemfile
-          echo GEMFILE=\"$GEMFILE\" >> ./Gemfile
-
-          # fastlane evn 파일 만듦
-          echo FASTLANE_ENV=\"$FASTLANE_ENV\" >> ./fastlane/.env
-
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.2"
+          ruby-version: "2.6"
 
-      - name: Run bundle install
+      - name: Install bundle
         run: |
-          gem install bundler
           bundle config path vendor/bundle
-          bundle install
-#        working-directory: ./fastlane
+          bundle install --jobs 4 --retry 3
 
+      - name: Make env file
+        run: |
+          # fastlane fastfile
+          echo FASTLANE_FASTFILE=\"$FASTLANE_FASTFILE\" >> firebase_credentials.json
+        env:
+          FASTLANE_FASTFILE: ${{ secrets.FASTLANE_FASTFILE }}
 
       - name: Fastlane debug
         run: bundle exec fastlane distribute_debug "message:${{ needs.commit_message.outputs.message }}"
         env:
           FIREBASE_APP_ID_DEBUG: ${{ secrets.FIREBASE_APP_ID }}
-#        working-directory: ./fastlane
