@@ -77,5 +77,8 @@ jobs:
     needs: commit-message
     runs-on: ubuntu-latest
     steps:
+      - name: Install fastlane
+        run: gem install fastlane
+        
       - name: Fastlane debug
         run: fastlane distribute_debug "message:${{ needs.commit_message.outputs.message }}" --env common
