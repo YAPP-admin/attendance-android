@@ -17,6 +17,7 @@ jobs:
 
   checkout:
     needs: if_merged
+    runs-on: ubuntu-latest
     env:
       KAKAO_NATIVE_API_KEY: ${{ secrets.KAKAO_NATIVE_API_KEY }}
       PLAY_STORE_API_KEY: ${{ secrets.GOOGLE_CLOUD_JSON }}
