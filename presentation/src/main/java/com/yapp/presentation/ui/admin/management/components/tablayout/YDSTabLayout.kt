@@ -1,32 +1,25 @@
 package com.yapp.presentation.ui.admin.management.components.tablayout
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.yapp.common.theme.AttendanceTheme
-import com.yapp.common.theme.AttendanceTypography
 import kotlinx.collections.immutable.persistentListOf
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -90,7 +83,7 @@ internal fun YDSTabLayout(
         modifier = modifier,
         content = {
             tabItems.forEachIndexed { index, item ->
-                YDSTabLayoutItem(
+                YDSTabItemLayout(
                     modifier = Modifier
                         .layoutId(
                             if (item.isSelected) {
@@ -175,72 +168,7 @@ internal fun YDSTabLayout(
     )
 }
 
-@Composable
-private fun YDSTabLayoutItem(
-    modifier: Modifier,
-    isSelected: Boolean,
-    label: String,
-) {
-    val textColor by animateColorAsState(
-        targetValue = if (isSelected) {
-            AttendanceTheme.colors.grayScale.Gray1200
-        } else {
-            AttendanceTheme.colors.grayScale.Gray400
-        }
-    )
 
-    Column(modifier = modifier) {
-        Text(
-            text = label,
-            style = AttendanceTypography.h3,
-            color = textColor
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-    }
-}
 
-data class YDSTabLayoutState(
-    val tabItems: List<YDSTabLayoutItemState>,
-) {
 
-    init {
-        require(tabItems.count { it.isSelected } == 1)
-    }
 
-    val selectedIndex: Int
-        get() = tabItems.indexOfFirst { it.isSelected }
-
-    fun select(targetIndex: Int): YDSTabLayoutState {
-        return this.copy(
-            tabItems = tabItems.mapIndexed { index, itemState ->
-                if (itemState.isSelected) {
-                    return@mapIndexed itemState.unSelect()
-                }
-
-                itemState
-            }.mapIndexed { index, itemState ->
-                if (index == targetIndex) {
-                    return@mapIndexed itemState.select()
-                }
-
-                itemState
-            }
-        )
-    }
-
-}
-
-data class YDSTabLayoutItemState(
-    val isSelected: Boolean,
-    val label: String,
-) {
-
-    fun select(): YDSTabLayoutItemState {
-        return this.copy(isSelected = true)
-    }
-
-    fun unSelect(): YDSTabLayoutItemState {
-        return this.copy(isSelected = false)
-    }
-
-}
