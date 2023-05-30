@@ -18,10 +18,6 @@ jobs:
         PLAY_STORE_API_KEY: ${{ secrets.GOOGLE_CLOUD_JSON }}
         FASTLANE_ENV: ${{ secrets.FASTLANE_ENV }}
 
-  check_pr_labels:
-    needs: if_merged
-    uses: ./.github/workflows/check_pr_labels_action.yml
-
   checkout:
     needs: check_pr_labels
     steps:
@@ -51,8 +47,12 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
 
-  commit-message:
+  check_pr_labels:
     needs: checkout
+    uses: ./.github/workflows/check_pr_labels_action.yml
+
+  commit-message:
+    needs: check_pr_labels
     runs-on: ubuntu-latest
     outputs:
       message: ${{steps.get_pull_request_last_comment.output.COMMENT}}
