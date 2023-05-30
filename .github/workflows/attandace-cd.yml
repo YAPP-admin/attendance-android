@@ -12,13 +12,15 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-      env:
-        KAKAO_NATIVE_API_KEY: ${{ secrets.KAKAO_NATIVE_API_KEY }}
-        PLAY_STORE_API_KEY: ${{ secrets.GOOGLE_CLOUD_JSON }}
-        FASTLANE_ENV: ${{ secrets.FASTLANE_ENV }}
+      run: |
+        echo PR merged 
 
   checkout:
-    needs: check_pr_labels
+    needs: if_merged
+    env:
+      KAKAO_NATIVE_API_KEY: ${{ secrets.KAKAO_NATIVE_API_KEY }}
+      PLAY_STORE_API_KEY: ${{ secrets.GOOGLE_CLOUD_JSON }}
+      FASTLANE_ENV: ${{ secrets.FASTLANE_ENV }}
     steps:
     - uses: actions/checkout@v2
     - name: set up JDK 11
@@ -52,7 +54,6 @@ jobs:
 
   commit-message:
     needs: check_pr_labels
-    runs-on: ubuntu-latest
     outputs:
       message: ${{steps.get_pull_request_last_comment.output.COMMENT}}
     steps:
