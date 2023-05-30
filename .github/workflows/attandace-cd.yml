@@ -12,8 +12,8 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-      run: |
-        echo PR merged 
+      - name: PR merged
+        run: echo "PR merged"
 
   checkout:
     needs: if_merged
