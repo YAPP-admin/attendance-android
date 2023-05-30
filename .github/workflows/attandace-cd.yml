@@ -10,9 +10,8 @@ jobs:
   if_merged:
 
     if: github.event.pull_request.merged == true
-    build:
-      runs-on: ubuntu-latest
-    
+    runs-on: ubuntu-latest
+    steps:
       env:
         KAKAO_NATIVE_API_KEY: ${{ secrets.KAKAO_NATIVE_API_KEY }}
         PLAY_STORE_API_KEY: ${{ secrets.GOOGLE_CLOUD_JSON }}
