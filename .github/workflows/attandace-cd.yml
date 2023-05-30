@@ -10,20 +10,18 @@ jobs:
   if_merged:
 
     if: github.event.pull_request.merged == true
-    build:
-      runs-on: ubuntu-latest
-    
-      env:
-        KAKAO_NATIVE_API_KEY: ${{ secrets.KAKAO_NATIVE_API_KEY }}
-        PLAY_STORE_API_KEY: ${{ secrets.GOOGLE_CLOUD_JSON }}
-        FASTLANE_ENV: ${{ secrets.FASTLANE_ENV }}
-
-  check_pr_labels:
-    needs: if_merged
-    uses: ./.github/workflows/check_pr_labels_action.yml
+    runs-on: ubuntu-latest
+    steps:
+      - name: PR merged
+        run: echo "PR merged"
 
   checkout:
-    needs: check_pr_labels
+    needs: if_merged
+    runs-on: ubuntu-latest
+    env:
+      KAKAO_NATIVE_API_KEY: ${{ secrets.KAKAO_NATIVE_API_KEY }}
+      PLAY_STORE_API_KEY: ${{ secrets.GOOGLE_CLOUD_JSON }}
+      FASTLANE_ENV: ${{ secrets.FASTLANE_ENV }}
     steps:
     - uses: actions/checkout@v2
     - name: set up JDK 11
@@ -51,8 +49,12 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
 
-  commit-message:
+  check_pr_labels:
     needs: checkout
+    uses: ./.github/workflows/check_pr_label.yml
+
+  commit-message:
+    needs: check_pr_labels
     runs-on: ubuntu-latest
     outputs:
       message: ${{steps.get_pull_request_last_comment.output.COMMENT}}

@@ -12,7 +12,7 @@ jobs:
   check_pr_label:
     runs-on: ubuntu-latest
     outputs:
-      debug: ${{steps.check_pr_label.outputs.DEBUG}}
+      debug: ${{steps.check_pr_label.outputs.APP-DESTRIBUTION-DEBUG}}
     steps:
       - id: check_pr_label
         name: check_pr_label
