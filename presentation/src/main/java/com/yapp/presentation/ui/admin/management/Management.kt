@@ -1,6 +1,8 @@
 package com.yapp.presentation.ui.admin.management
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,7 +15,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberModalBottomSheetState
@@ -21,7 +22,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -46,6 +50,7 @@ import com.yapp.presentation.ui.admin.management.components.attendanceBottomShee
 import com.yapp.presentation.ui.admin.management.components.attendanceBottomSheet.AttendanceBottomSheetItemLayoutState
 import com.yapp.presentation.ui.admin.management.components.foldableItem.FoldableItemLayout
 import com.yapp.presentation.ui.admin.management.components.statisticalTable.StatisticalTableLayout
+import com.yapp.presentation.ui.admin.management.components.tablayout.YDSTabLayout
 import kotlinx.coroutines.launch
 
 
@@ -58,25 +63,14 @@ fun AttendanceManagement(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    val coroutineScope = rememberCoroutineScope()
-
-    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-
     when (uiState.loadState) {
         Loading -> YDSProgressBar()
 
         Idle -> {
             ManagementScreen(
                 uiState = uiState,
-                sheetState = sheetState,
-                onBackButtonClicked = { onBackButtonClicked?.invoke() },
-                onBottomSheetDialogItemClicked = { attendanceType ->
-                    viewModel.setEvent(ManagementEvent.OnAttendanceTypeChanged(attendanceType))
-                    coroutineScope.launch { sheetState.hide() }
-                },
-                onDropDownClicked = { changedMember ->
-                    viewModel.setEvent(ManagementEvent.OnDropDownButtonClicked(changedMember))
-                }
+                onEvent = { viewModel.setEvent(it) },
+                onBackButtonClicked = { onBackButtonClicked?.invoke() }
             )
         }
 
@@ -87,31 +81,37 @@ fun AttendanceManagement(
     LaunchedEffect(key1 = viewModel.effect, key2 = lifeCycleOwner) {
         lifeCycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.effect.collect { effect ->
-                when (effect) {
-                    is ManagementContract.ManagementSideEffect.OpenBottomSheetDialog -> sheetState.show()
-                }
             }
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @ExperimentalMaterialApi
 @Composable
 internal fun ManagementScreen(
     uiState: ManagementContract.ManagementState,
-    sheetState: ModalBottomSheetState,
-    onBackButtonClicked: (() -> Unit),
-    onBottomSheetDialogItemClicked: (Attendance.Status) -> Unit,
-    onDropDownClicked: ((memberId: Long) -> Unit),
+    onEvent: (ManagementEvent) -> Unit,
+    onBackButtonClicked: () -> Unit,
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
+    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+
+    var selectedMemberId by remember { mutableStateOf<Long?>(null) }
+
+    LaunchedEffect(key1 = sheetState) {
+        if (sheetState.isVisible.not()) {
+            selectedMemberId = null
+        }
+    }
+
     ModalBottomSheetLayout(
         sheetContent = {
             BottomSheetDialog(
                 itemStates = uiState.bottomSheetDialogState,
                 onClickItem = { attendanceType ->
-                    onBottomSheetDialogItemClicked.invoke(
-                        attendanceType
-                    )
+                    onEvent(ManagementEvent.OnAttendanceTypeChanged(selectedMemberId!!, attendanceType))
                 }
             )
         },
@@ -140,10 +140,26 @@ internal fun ManagementScreen(
                     .background(AttendanceTheme.colors.backgroundColors.background)
                     .padding(innerPadding)
             ) {
+
+                stickyHeader {
+                    Column(modifier = Modifier.fillMaxWidth()
+                        .background(color = AttendanceTheme.colors.backgroundColors.background)) {
+                        Spacer(
+                            modifier = Modifier.fillMaxWidth().height(20.dp)
+                        )
+                        YDSTabLayout(
+                            modifier = Modifier.padding(horizontal = 24.dp),
+                            tabItems = uiState.tabLayoutState.items,
+                            selectedIndex = uiState.tabLayoutState.selectedIndex,
+                            onTabSelected = { selectedTabIndex ->
+                                onEvent(ManagementEvent.OnTabItemSelected(selectedTabIndex))
+                            }
+                        )
+                    }
+                }
+
                 item {
-                    Column(
-                        modifier = Modifier.padding(24.dp)
-                    ) {
+                    Column(modifier = Modifier.padding(top = 24.dp, start = 24.dp, end = 24.dp, bottom = 28.dp)) {
                         StatisticalTableLayout(state = uiState.attendanceStatisticalTableState)
                     }
                 }
@@ -155,9 +171,8 @@ internal fun ManagementScreen(
                     FoldableItemLayout(
                         state = team,
                         onDropDownClicked = { changedMember ->
-                            onDropDownClicked.invoke(
-                                changedMember
-                            )
+                            selectedMemberId = changedMember
+                            coroutineScope.launch { sheetState.show() }
                         }
                     )
                 }
@@ -167,6 +182,7 @@ internal fun ManagementScreen(
                 }
             }
         }
+
     }
 }
 
@@ -205,5 +221,3 @@ private fun BottomSheetDialog(
         )
     }
 }
-
-

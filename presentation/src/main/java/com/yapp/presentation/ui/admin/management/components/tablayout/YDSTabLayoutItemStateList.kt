@@ -1,20 +1,20 @@
 package com.yapp.presentation.ui.admin.management.components.tablayout
 
 
-data class YDSTabLayoutState(
-    val tabItems: List<YDSTabLayoutItemState>,
+data class YDSTabLayoutItemStateList(
+    val value: List<YDSTabLayoutItemState> = emptyList(),
 ) {
 
     init {
-        require(tabItems.count { it.isSelected } == 1)
+        require(value.count { it.isSelected } == 1)
     }
 
     val selectedIndex: Int
-        get() = tabItems.indexOfFirst { it.isSelected }
+        get() = value.indexOfFirst { it.isSelected }
 
-    fun select(targetIndex: Int): YDSTabLayoutState {
+    fun select(targetIndex: Int): YDSTabLayoutItemStateList {
         return this.copy(
-            tabItems = tabItems.mapIndexed { index, itemState ->
+            value = value.mapIndexed { index, itemState ->
                 if (itemState.isSelected) {
                     return@mapIndexed itemState.unSelect()
                 }

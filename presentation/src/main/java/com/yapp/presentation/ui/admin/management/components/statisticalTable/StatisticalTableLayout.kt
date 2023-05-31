@@ -86,7 +86,7 @@ internal fun StatisticalTableLayout(
             verticalAlignment = Alignment.CenterVertically
         ) {
             AnimatedCounterText(
-                count = state.attendanceCount,
+                count = state.attendCount,
                 style = AttendanceTypography.subtitle2.copy(color = AttendanceTheme.colors.etcColors.EtcGreen),
                 prefix = {
                     Text(

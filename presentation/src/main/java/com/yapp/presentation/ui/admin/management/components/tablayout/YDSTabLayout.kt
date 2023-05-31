@@ -36,8 +36,8 @@ private const val SPACE_TAB_ITEM = 20
 private fun YDSTabLayoutPreview() {
     var state by remember {
         mutableStateOf(
-            YDSTabLayoutState(
-                tabItems = persistentListOf(
+            YDSTabLayoutItemStateList(
+                value = persistentListOf(
                     YDSTabLayoutItemState(
                         isSelected = true,
                         label = "팀별"
@@ -55,7 +55,7 @@ private fun YDSTabLayoutPreview() {
         Box(modifier = Modifier.fillMaxSize()) {
             YDSTabLayout(
                 modifier = Modifier.align(Alignment.Center),
-                tabItems = state.tabItems,
+                tabItems = state.value,
                 selectedIndex = state.selectedIndex,
                 onTabSelected = {
                     state = state.select(it)

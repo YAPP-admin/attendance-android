@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -76,13 +77,13 @@ fun AttendanceBottomSheetItemLayout(
         horizontalArrangement = Arrangement.Center
     ) {
         Icon(
-            modifier = Modifier.size(20.dp),
             painter = when (state.iconType) {
                 AttendanceBottomSheetItemLayoutState.IconType.ATTEND -> painterResource(id = R.drawable.icon_attend)
                 AttendanceBottomSheetItemLayoutState.IconType.ADMIT -> painterResource(id = R.drawable.icon_attend)
                 AttendanceBottomSheetItemLayoutState.IconType.TARDY -> painterResource(id = R.drawable.icon_tardy)
                 AttendanceBottomSheetItemLayoutState.IconType.ABSENT -> painterResource(id = R.drawable.icon_absent)
             },
+            tint= Color.Unspecified,
             contentDescription = "attendance_type_icon"
         )
 
