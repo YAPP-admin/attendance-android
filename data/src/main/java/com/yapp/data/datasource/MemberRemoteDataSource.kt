@@ -9,5 +9,5 @@ interface MemberRemoteDataSource {
     suspend fun getMember(id: Long): MemberEntity?
     suspend fun getMemberWithFlow(id: Long): Flow<MemberEntity?>
     suspend fun deleteMember(id: Long)
-    suspend fun getAllMember(): Flow<List<MemberEntity>>
+    fun getAllMember(): Flow<List<MemberEntity>>
 }

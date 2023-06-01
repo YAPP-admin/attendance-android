@@ -12,6 +12,7 @@ import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.AdminTo
 import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.AdminTotalScoreUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -72,8 +73,9 @@ class AdminTotalScoreViewModel @Inject constructor(
         sectionNameFunction: (T) -> String,
     ) {
         updateLoadState(AdminTotalScoreUiState.LoadState.Loading)
-        getAllMemberUseCase().collectLatest { result ->
-            result.onSuccess { members ->
+        getAllMemberUseCase()
+            .catch { setState { copy(loadState = AdminTotalScoreUiState.LoadState.Error) } }
+            .collectLatest { members ->
                 val memberByGroup = members.groupBy(groupKey)
                 val sectionItemStates = getSectionItemStates(
                     memberBySection = memberByGroup,
@@ -85,9 +87,6 @@ class AdminTotalScoreViewModel @Inject constructor(
                         sectionItemStates = sectionItemStates.toImmutableList()
                     )
                 }
-            }.onFailure {
-                setState { copy(loadState = AdminTotalScoreUiState.LoadState.Error) }
-            }
         }
     }
 
