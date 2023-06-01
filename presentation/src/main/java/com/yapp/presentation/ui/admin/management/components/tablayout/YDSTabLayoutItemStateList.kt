@@ -1,8 +1,12 @@
 package com.yapp.presentation.ui.admin.management.components.tablayout
 
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
+
 
 data class YDSTabLayoutItemStateList(
-    val value: List<YDSTabLayoutItemState> = emptyList(),
+    val value: ImmutableList<YDSTabLayoutItemState> = persistentListOf(),
 ) {
 
     init {
@@ -26,7 +30,7 @@ data class YDSTabLayoutItemStateList(
                 }
 
                 itemState
-            }
+            }.toImmutableList()
         )
     }
 

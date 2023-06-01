@@ -11,6 +11,7 @@ import com.yapp.presentation.ui.admin.management.components.tablayout.YDSTabLayo
 import com.yapp.presentation.ui.admin.management.components.tablayout.YDSTabLayoutItemStateList
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 
 
 class ManagementContract {
@@ -68,7 +69,7 @@ class ManagementContract {
                                         label = LABEL_POSITION
                                     )
                                 )
-                            }
+                            }.toImmutableList()
                         )
                     )
                 }

@@ -126,15 +126,14 @@ class ManagementViewModel @Inject constructor(
         return when (tabIndex) {
             ManagementState.ManagementTabLayoutState.INDEX_TEAM -> {
                 this.groupBy { it.team }
-                    .entries.sortedWith(comparator = compareBy({it.key.type}, {it.key.number}))
+                    .entries.sortedWith(comparator = compareBy({ it.key.type }, { it.key.number }))
                     .map { (team, members) ->
                         FoldableItemLayoutState(
                             headerState = team.toFoldableItemHeaderState(sessionId, members),
                             contentStates = members
                                 .sortedBy { it.attendances[sessionId].status }
-                                .map { member ->
-                                    member.toFoldableItemContentState(sessionId = sessionId)
-                                }
+                                .map { member -> member.toFoldableItemContentState(sessionId = sessionId) }
+                                .toImmutableList()
                         )
                     }
             }
@@ -147,9 +146,8 @@ class ManagementViewModel @Inject constructor(
                             headerState = position.toFoldableItemHeaderState(sessionId, members),
                             contentStates = members
                                 .sortedBy { it.attendances[sessionId].status }
-                                .map { member ->
-                                    member.toFoldableItemContentState(sessionId = sessionId)
-                                }
+                                .map { member -> member.toFoldableItemContentState(sessionId = sessionId) }
+                                .toImmutableList()
                         )
                     }
             }

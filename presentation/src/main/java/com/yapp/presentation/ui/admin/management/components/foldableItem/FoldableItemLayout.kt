@@ -33,6 +33,7 @@ import com.yapp.presentation.ui.admin.management.components.foldableContentItem.
 import com.yapp.presentation.ui.admin.management.components.foldableContentItem.FoldableItemContentLayoutState
 import com.yapp.presentation.ui.admin.management.components.foldableHeaderItem.FoldableItemHeaderLayout
 import com.yapp.presentation.ui.admin.management.components.foldableHeaderItem.FoldableItemHeaderLayoutState
+import kotlinx.collections.immutable.persistentListOf
 
 
 @Preview
@@ -46,7 +47,7 @@ private fun FoldableItemLayoutPreview() {
                     attendMemberCount = 4,
                     allTeamMemberCount = 6
                 ),
-                contentStates = listOf(
+                contentStates = persistentListOf(
                     FoldableItemContentLayoutState(
                         id = 0L,
                         label = "김철수",
