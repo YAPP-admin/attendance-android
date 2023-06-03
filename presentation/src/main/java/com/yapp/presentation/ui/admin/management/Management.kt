@@ -2,7 +2,6 @@ package com.yapp.presentation.ui.admin.management
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,17 +18,20 @@ import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -37,11 +39,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.systemBarsPadding
+import com.yapp.common.flow.collectAsStateWithLifecycle
 import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSEmptyScreen
+import com.yapp.common.yds.YDSPopupDialog
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.domain.model.Attendance
+import com.yapp.presentation.R
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementEvent
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState.LoadState.Error
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState.LoadState.Idle
@@ -59,9 +64,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun AttendanceManagement(
     viewModel: ManagementViewModel = hiltViewModel(),
-    onBackButtonClicked: (() -> Unit)? = null,
+    onBackButtonClicked: (() -> Unit)? = null
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     when (uiState.loadState) {
         Loading -> YDSProgressBar()
@@ -86,19 +91,54 @@ fun AttendanceManagement(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+internal typealias MemberItemLongPressCallback = (memberId: Long) -> Unit
+
+internal val LocalMemberItemLongPressCallback = compositionLocalOf<MemberItemLongPressCallback?>(defaultFactory = { null })
+
+@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @ExperimentalMaterialApi
 @Composable
 internal fun ManagementScreen(
     uiState: ManagementContract.ManagementState,
     onEvent: (ManagementEvent) -> Unit,
-    onBackButtonClicked: () -> Unit,
+    onBackButtonClicked: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
     var selectedMemberId by remember { mutableStateOf<Long?>(null) }
+
+    var showDialog by remember { mutableStateOf(false) }
+
+    val itemLongPressCallback by remember {
+        mutableStateOf<MemberItemLongPressCallback>({ memberId ->
+            selectedMemberId = memberId
+            showDialog = true
+        })
+    }
+
+    /**
+     * 임시로 추가한 회원삭제 다이얼로그로
+     * (기획 / 디자인)이 변경될 시 수정 예정
+     */
+    if (showDialog) {
+        YDSPopupDialog(
+            title = "해당 회원을 삭제하시겠습니까?",
+            content = "삭제하면 모든 세션에서 해당 회원이 사라져요",
+            negativeButtonText = stringResource(id = R.string.member_setting_withdraw_dialog_negative_button),
+            positiveButtonText = "삭제하기",
+            onClickPositiveButton = {
+                selectedMemberId?.let { onEvent(ManagementEvent.OnDeleteMemberClicked(it)) }
+                showDialog = !showDialog
+            },
+            onClickNegativeButton = {
+                selectedMemberId = null
+                showDialog = !showDialog
+            },
+            onDismiss = { showDialog = !showDialog }
+        )
+    }
 
     LaunchedEffect(key1 = sheetState) {
         if (sheetState.isVisible.not()) {
@@ -111,7 +151,13 @@ internal fun ManagementScreen(
             BottomSheetDialog(
                 itemStates = uiState.bottomSheetDialogState,
                 onClickItem = { attendanceType ->
-                    onEvent(ManagementEvent.OnAttendanceTypeChanged(selectedMemberId!!, attendanceType))
+                    coroutineScope.launch { sheetState.hide() }
+                    onEvent(
+                        ManagementEvent.OnAttendanceTypeChanged(
+                            selectedMemberId!!,
+                            attendanceType
+                        )
+                    )
                 }
             )
         },
@@ -142,10 +188,15 @@ internal fun ManagementScreen(
             ) {
 
                 stickyHeader {
-                    Column(modifier = Modifier.fillMaxWidth()
-                        .background(color = AttendanceTheme.colors.backgroundColors.background)) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = AttendanceTheme.colors.backgroundColors.background)
+                    ) {
                         Spacer(
-                            modifier = Modifier.fillMaxWidth().height(20.dp)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(20.dp)
                         )
                         YDSTabLayout(
                             modifier = Modifier.padding(horizontal = 24.dp),
@@ -159,7 +210,14 @@ internal fun ManagementScreen(
                 }
 
                 item {
-                    Column(modifier = Modifier.padding(top = 24.dp, start = 24.dp, end = 24.dp, bottom = 28.dp)) {
+                    Column(
+                        modifier = Modifier.padding(
+                            top = 24.dp,
+                            start = 24.dp,
+                            end = 24.dp,
+                            bottom = 28.dp
+                        )
+                    ) {
                         StatisticalTableLayout(state = uiState.attendanceStatisticalTableState)
                     }
                 }
@@ -168,13 +226,15 @@ internal fun ManagementScreen(
                     items = uiState.foldableItemStates,
                     key = { _, team -> team.headerState.label }
                 ) { _, team ->
-                    FoldableItemLayout(
-                        state = team,
-                        onDropDownClicked = { changedMember ->
-                            selectedMemberId = changedMember
-                            coroutineScope.launch { sheetState.show() }
-                        }
-                    )
+                    CompositionLocalProvider(LocalMemberItemLongPressCallback provides itemLongPressCallback) {
+                        FoldableItemLayout(
+                            state = team,
+                            onDropDownClicked = { changedMember ->
+                                selectedMemberId = changedMember
+                                coroutineScope.launch { sheetState.show() }
+                            }
+                        )
+                    }
                 }
 
                 item {
@@ -190,7 +250,7 @@ internal fun ManagementScreen(
 private fun BottomSheetDialog(
     modifier: Modifier = Modifier,
     itemStates: List<AttendanceBottomSheetItemLayoutState>,
-    onClickItem: (Attendance.Status) -> Unit = {},
+    onClickItem: (Attendance.Status) -> Unit = {}
 ) {
     Column(
         modifier = modifier

@@ -1,6 +1,7 @@
 package com.yapp.presentation.ui.admin.management.components.foldableContentItem
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,12 +18,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
+import com.yapp.presentation.ui.admin.management.LocalMemberItemLongPressCallback
 import com.yapp.presentation.ui.admin.management.components.attendanceTypeButton.AttendanceTypeButton
 import com.yapp.presentation.ui.admin.management.components.attendanceTypeButton.AttendanceTypeButtonState
 
@@ -57,10 +60,17 @@ internal fun FoldableItemContentLayout(
     state: FoldableItemContentLayoutState,
     onDropDownClicked: (memberId: Long) -> Unit = {},
 ) {
+    val longPressCallback = LocalMemberItemLongPressCallback.current
+
     ConstraintLayout(
         modifier = modifier
             .fillMaxWidth()
             .height(62.dp)
+            .pointerInput(Unit) {
+                detectTapGestures(onLongPress = {
+                    longPressCallback?.invoke(state.id)
+                })
+            }
     ) {
         val (ydsDropdownButton, textContents) = createRefs()
 

@@ -7,6 +7,7 @@ import com.yapp.domain.model.Attendance
 import com.yapp.domain.model.Member
 import com.yapp.domain.model.Team
 import com.yapp.domain.model.types.PositionType
+import com.yapp.domain.usecases.DeleteMemberInfoUseCase
 import com.yapp.domain.usecases.GetAllMemberUseCase
 import com.yapp.domain.usecases.SetMemberAttendanceUseCase
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_ID
@@ -20,8 +21,9 @@ import com.yapp.presentation.ui.admin.management.components.foldableContentItem.
 import com.yapp.presentation.ui.admin.management.components.foldableHeaderItem.FoldableItemHeaderLayoutState
 import com.yapp.presentation.ui.admin.management.components.foldableItem.FoldableItemLayoutState
 import com.yapp.presentation.ui.admin.management.components.statisticalTable.StatisticalTableLayoutState
-import com.yapp.presentation.ui.admin.management.components.tablayout.YDSTabLayoutItemState
-import com.yapp.presentation.ui.admin.management.components.tablayout.YDSTabLayoutItemStateList
+import com.yapp.presentation.ui.admin.management.dto.ManagementSharedData
+import com.yapp.presentation.ui.admin.management.dto.ManagementTabLayoutState
+import com.yapp.presentation.ui.admin.management.dto.ManagementTopBarLayoutState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -29,10 +31,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -40,12 +39,12 @@ import javax.inject.Inject
 @HiltViewModel
 class ManagementViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getAllMemberUseCase: GetAllMemberUseCase,
+    getAllMemberUseCase: GetAllMemberUseCase,
     private val setMemberAttendanceUseCase: SetMemberAttendanceUseCase,
+    private val deleteMemberInfoUseCase: DeleteMemberInfoUseCase
 ) : BaseViewModel<ManagementState, ManagementSideEffect, ManagementEvent>(ManagementState()) {
 
     companion object {
-        const val DEFAULT_SESSION_ID = 1
         const val TEXT_LOAD_SESSION_TITLE_FAILED = "LOAD FAILED"
     }
 
@@ -65,6 +64,9 @@ class ManagementViewModel @Inject constructor(
 
         initializeState(sessionId, sessionTitle)
 
+        /**
+         * members변경 이외에도 tabIndex가 변경 될 시 UiState를 Update해준다.
+         */
         viewModelScope.launch {
             members.combine(tabIndex, transform = { members, tabIndex ->
                 members to tabIndex
@@ -81,12 +83,25 @@ class ManagementViewModel @Inject constructor(
 
     override suspend fun handleEvent(event: ManagementEvent) {
         when (event) {
-            is ManagementEvent.OnAttendanceTypeChanged -> TODO()
+            is ManagementEvent.OnAttendanceTypeChanged -> {
+                setMemberAttendanceUseCase(
+                    params = SetMemberAttendanceUseCase.Params(
+                        memberId = event.memberId,
+                        sessionId = uiState.value.shared.sessionId,
+                        changedAttendance = event.attendanceType
+                    )
+                )
+            }
+
             is ManagementEvent.OnTabItemSelected -> {
                 setState {
                     tabIndex.value = event.tabIndex
                     this.copy(tabLayoutState = tabLayoutState.select(event.tabIndex))
                 }
+            }
+
+            is ManagementEvent.OnDeleteMemberClicked -> {
+                deleteMemberInfoUseCase(event.memberId)
             }
         }
     }
@@ -95,21 +110,12 @@ class ManagementViewModel @Inject constructor(
         setState {
             this.copy(
                 loadState = ManagementState.LoadState.Idle,
-                shared = ManagementState.Shared(sessionId = sessionId),
-                tabLayoutState = ManagementState.ManagementTabLayoutState.init(),
-                bottomSheetDialogState = initBottomSheetDialogState(),
-                topBarState = ManagementState.TopBarLayoutState(sessionTitle = sessionTitle)
+                shared = ManagementSharedData(sessionId = sessionId),
+                topBarState = ManagementTopBarLayoutState(sessionTitle = sessionTitle),
+                tabLayoutState = ManagementTabLayoutState.init(),
+                bottomSheetDialogState = AttendanceBottomSheetItemLayoutState.init()
             )
         }
-    }
-
-    private fun initBottomSheetDialogState(): ImmutableList<AttendanceBottomSheetItemLayoutState> {
-        return buildList {
-            add(AttendanceBottomSheetItemLayoutState(label = Attendance.Status.NORMAL.text, iconType = AttendanceBottomSheetItemLayoutState.IconType.ATTEND))
-            add(AttendanceBottomSheetItemLayoutState(label = Attendance.Status.LATE.text, iconType = AttendanceBottomSheetItemLayoutState.IconType.TARDY))
-            add(AttendanceBottomSheetItemLayoutState(label = Attendance.Status.ABSENT.text, iconType = AttendanceBottomSheetItemLayoutState.IconType.ABSENT))
-            add(AttendanceBottomSheetItemLayoutState(label = Attendance.Status.ADMIT.text, iconType = AttendanceBottomSheetItemLayoutState.IconType.ADMIT))
-        }.toImmutableList()
     }
 
     private fun List<Member>.toStatisticalTableState(sessionId: Int): StatisticalTableLayoutState {
@@ -124,7 +130,7 @@ class ManagementViewModel @Inject constructor(
 
     private fun List<Member>.toFoldableItemContentState(sessionId: Int, tabIndex: Int): ImmutableList<FoldableItemLayoutState> {
         return when (tabIndex) {
-            ManagementState.ManagementTabLayoutState.INDEX_TEAM -> {
+            ManagementTabLayoutState.INDEX_TEAM -> {
                 this.groupBy { it.team }
                     .entries.sortedWith(comparator = compareBy({ it.key.type }, { it.key.number }))
                     .map { (team, members) ->
@@ -138,7 +144,7 @@ class ManagementViewModel @Inject constructor(
                     }
             }
 
-            ManagementState.ManagementTabLayoutState.INDEX_POSITION -> {
+            ManagementTabLayoutState.INDEX_POSITION -> {
                 this.groupBy { it.position }
                     .entries.sortedBy { it.key.value }
                     .map { (position, members) ->

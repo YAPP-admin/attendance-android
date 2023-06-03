@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -79,11 +78,11 @@ fun AttendanceBottomSheetItemLayout(
         Icon(
             painter = when (state.iconType) {
                 AttendanceBottomSheetItemLayoutState.IconType.ATTEND -> painterResource(id = R.drawable.icon_attend)
-                AttendanceBottomSheetItemLayoutState.IconType.ADMIT -> painterResource(id = R.drawable.icon_attend)
+                AttendanceBottomSheetItemLayoutState.IconType.ADMIT -> painterResource(id = R.drawable.icon_admit)
                 AttendanceBottomSheetItemLayoutState.IconType.TARDY -> painterResource(id = R.drawable.icon_tardy)
                 AttendanceBottomSheetItemLayoutState.IconType.ABSENT -> painterResource(id = R.drawable.icon_absent)
             },
-            tint= Color.Unspecified,
+            tint = Color.Unspecified,
             contentDescription = "attendance_type_icon"
         )
 

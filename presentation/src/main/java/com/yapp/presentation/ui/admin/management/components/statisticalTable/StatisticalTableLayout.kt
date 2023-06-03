@@ -55,7 +55,7 @@ private fun StatisticalTableLayoutPreview() {
         ) {
             Button(
                 modifier = Modifier.align(Alignment.Center),
-                onClick = { state = state.copy(absentCount = state.absentCount + 1) }
+                onClick = { state = state.copy(totalCount = state.totalCount + 1, absentCount = state.absentCount + 1) }
             ) {
                 Text(text = "dd")
             }
@@ -68,7 +68,7 @@ private fun StatisticalTableLayoutPreview() {
 
 @Composable
 internal fun StatisticalTableLayout(
-    state: StatisticalTableLayoutState,
+    state: StatisticalTableLayoutState
 ) {
     Column(
         modifier = Modifier
@@ -86,15 +86,20 @@ internal fun StatisticalTableLayout(
             verticalAlignment = Alignment.CenterVertically
         ) {
             AnimatedCounterText(
-                count = state.attendCount,
-                style = AttendanceTypography.subtitle2.copy(color = AttendanceTheme.colors.etcColors.EtcGreen),
-                prefix = {
+                count = state.totalCount,
+                style = AttendanceTypography.body2.copy(color = AttendanceTheme.colors.grayScale.Gray1200),
+                suffix = {
                     Text(
                         style = AttendanceTypography.body2,
-                        text = "${state.totalCount}명 중 ",
+                        text = "명 중 ",
                         color = AttendanceTheme.colors.grayScale.Gray1200
                     )
-                },
+                }
+            )
+
+            AnimatedCounterText(
+                count = state.currentAttendCount,
+                style = AttendanceTypography.subtitle2.copy(color = AttendanceTheme.colors.etcColors.EtcGreen),
                 suffix = {
                     Text(
                         style = AttendanceTypography.subtitle2,

@@ -81,7 +81,7 @@ private fun FoldableItemLayoutPreview() {
 internal fun FoldableItemLayout(
     modifier: Modifier = Modifier,
     state: FoldableItemLayoutState,
-    onDropDownClicked: ((memberId: Long) -> Unit),
+    onDropDownClicked: ((memberId: Long) -> Unit)
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
 
@@ -109,19 +109,19 @@ internal fun FoldableItemLayout(
         AnimatedVisibility(
             visible = expanded,
             enter = fadeIn(animationSpec = tween(50)) +
-                    expandVertically(
-                        animationSpec = spring(
-                            dampingRatio = Spring.DampingRatioLowBouncy,
-                            stiffness = Spring.StiffnessLow
-                        )
-                    ),
-            exit = fadeOut(animationSpec = tween(50)) +
-                    shrinkVertically(
-                        animationSpec = spring(
-                            dampingRatio = Spring.DampingRatioLowBouncy,
-                            stiffness = Spring.StiffnessLow
-                        )
+                expandVertically(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioLowBouncy,
+                        stiffness = Spring.StiffnessLow
                     )
+                ),
+            exit = fadeOut(animationSpec = tween(50)) +
+                shrinkVertically(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioLowBouncy,
+                        stiffness = Spring.StiffnessLow
+                    )
+                )
         ) {
             Column {
                 Divider(

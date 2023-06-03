@@ -16,16 +16,11 @@ class MarkAttendanceUseCase @Inject constructor(
         return localRepository.getMemberId().mapCatching { currentUserId: Long? ->
             require(currentUserId != null)
 
-            val markedAttendanceState = Attendance(
-                sessionId = checkedSession.sessionId,
-                status = checkAttendanceState(checkedSession.date)
-            )
-
             val currentMemberInfo = memberRepository.getMember(currentUserId).getOrThrow()
 
             currentMemberInfo!!.attendances.changeAttendanceType(
                 sessionId = checkedSession.sessionId,
-                changingAttendance = markedAttendanceState
+                changingAttendance = checkAttendanceState(checkedSession.date)
             ).also { updatedAttendanceList ->
                 memberRepository.setMember(member = currentMemberInfo.copy(attendances = updatedAttendanceList))
             }
