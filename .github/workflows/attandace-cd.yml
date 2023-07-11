@@ -71,10 +71,22 @@ jobs:
           | jq -r ".[-1] | .body")
           # comments 출력
           echo "::set-output name=COMMENT::$pull_request_comment"
+          
+
+  ruby-install:
+    needs: commit-message
+    runs-on: ubuntu-latest
+    steps:
+      - id: ruby-setup
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0' # Not needed with a .ruby-version file
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
   build_debug:
     if: ${{ needs.check_pr_labels.outputs.debug }}
-    needs: commit-message
+    needs: ruby-install
     runs-on: ubuntu-latest
     steps:
       - name: Install fastlane
