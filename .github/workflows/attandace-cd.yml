@@ -84,8 +84,9 @@ jobs:
         run: echo "export PATH=\$HOME/.gem/ruby/3.0.0/bin:\$PATH" >> $GITHUB_ENV
 
       - name: Fastlane setup
-        run: cd ${{ github.workspace }} && fastlane init
+        run: fastlane init
+        working-directory: ./
 
       - name: Fastlane debug
         run: fastlane distribute_debug "message:${{ needs.commit_message.outputs.message }}" --env common
-        working-directory: ${{ github.workspace }}/fastlane
+        working-directory: ${{ env.working-directory }}/fastlane
