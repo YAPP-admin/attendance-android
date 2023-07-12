@@ -77,6 +77,9 @@ jobs:
       - name: Install fastlane
         run: gem install fastlane --user-install
 
+      - name: Install bundle
+        run: gem install bundler --user-install
+
       - name: Add gem binary directory to PATH
         run: echo "export PATH=\$HOME/.gem/ruby/3.0.0/bin:\$PATH" >> $GITHUB_ENV
 
@@ -94,8 +97,15 @@ jobs:
           # fastlane FASTLANE_APP_FILE
           echo FASTLANE_APP_FILE=\"$FASTLANE_APP_FILE\" >> ./fastlane/Appfile
           
+          # Gemfile
+          echo GEMFILE=\"$GEMFILE\" >> ./Gemfile
+          
           # fastlane evn 파일 만듦
           echo FASTLANE_ENV=\"$FASTLANE_ENV\" >> ./fastlane/.env
+          
+
+      - name: bundle setup
+        run: bundle install
 
       - name: Install Firebase app distribution plugin
         run: fastlane add_plugin firebase_app_distribution
