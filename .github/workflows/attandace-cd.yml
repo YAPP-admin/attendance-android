@@ -71,30 +71,17 @@ jobs:
           | jq -r ".[-1] | .body")
           # comments 출력
           echo "::set-output name=COMMENT::$pull_request_comment"
-          
-
-  ruby-install:
-    needs: commit-message
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '2.6'
-          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-      - name: Install dependencies
-        run: bundle install
-
 
   build_debug:
     if: ${{ needs.check_pr_labels.outputs.debug }}
-    needs: ruby-install
+    needs: commit-message
     runs-on: ubuntu-latest
     steps:
       - name: Install fastlane
-        run: gem install fastlane
+        run: gem install fastlane --user-install
 
-        
+      - name: Add gem binary directory to PATH
+        run: echo "::add-path::$HOME/.gem/ruby/3.0.0/bin"
+
       - name: Fastlane debug
         run: fastlane distribute_debug "message:${{ needs.commit_message.outputs.message }}" --env common
