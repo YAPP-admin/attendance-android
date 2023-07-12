@@ -80,8 +80,8 @@ jobs:
       - name: Install fastlane
         run: gem install fastlane --user-install
 
-      - name: Set gem binary directory in environment file
-        run: echo "PATH=\$HOME/.gem/ruby/3.0.0/bin:\$PATH" >> $GITHUB_ENV
+      - name: Add gem binary directory to PATH
+        run: echo "export PATH=\$HOME/.gem/ruby/3.0.0/bin:\$PATH" >> $GITHUB_ENV
 
       - name: Fastlane debug
         run: fastlane distribute_debug "message:${{ needs.commit_message.outputs.message }}" --env common
