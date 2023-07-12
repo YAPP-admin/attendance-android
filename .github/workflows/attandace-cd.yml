@@ -105,7 +105,12 @@ jobs:
           
 
       - name: bundle setup
-        run: bundle install
+        run: |
+          # gem 환경변수 세팅
+          export GEM_HOME="$HOME/.gem"
+          export PATH="$GEM_HOME/bin:$PATH"
+          
+          bundle install
 
       - name: Install Firebase app distribution plugin
         run: fastlane add_plugin firebase_app_distribution
