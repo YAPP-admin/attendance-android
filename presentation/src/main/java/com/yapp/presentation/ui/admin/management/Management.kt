@@ -1,10 +1,12 @@
 package com.yapp.presentation.ui.admin.management
 
 import FoldableHeaderItemState
+import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -100,6 +102,7 @@ internal typealias MemberItemLongPressCallback = (memberId: Long) -> Unit
 
 internal val LocalMemberItemLongPressCallback = compositionLocalOf<MemberItemLongPressCallback?>(defaultFactory = { null })
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @ExperimentalMaterialApi
 @Composable
@@ -173,8 +176,7 @@ internal fun ManagementScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .systemBarsPadding()
-                .background(AttendanceTheme.colors.backgroundColors.background)
-                .padding(horizontal = 24.dp),
+                .background(AttendanceTheme.colors.backgroundColors.background),
             topBar = {
                 YDSAppBar(
                     modifier = Modifier
@@ -185,15 +187,14 @@ internal fun ManagementScreen(
                 )
             },
             backgroundColor = AttendanceTheme.colors.backgroundColors.backgroundBase
-        ) { innerPadding ->
+        ) {  _ ->
 
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(AttendanceTheme.colors.backgroundColors.background)
-                    .padding(innerPadding)
+                    .padding(horizontal = 24.dp)
             ) {
-
                 stickyHeader {
                     Column(
                         modifier = Modifier
