@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
@@ -31,6 +32,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.Path
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -243,6 +245,9 @@ internal fun ManagementScreen(
                                         onEvent(ManagementEvent.OnTeamTypeHeaderItemClicked(teamName, teamNumber))
                                     }
                                 )
+                                if (itemState.isExpanded) {
+                                    Divider(color = AttendanceTheme.colors.grayScale.Gray300, thickness = 1.dp)
+                                }
                             }
 
                             is FoldableHeaderItemState.PositionType -> {
@@ -253,6 +258,9 @@ internal fun ManagementScreen(
                                         onEvent(ManagementEvent.OnPositionTypeHeaderItemClicked(positionName = position))
                                     }
                                 )
+                                if (itemState.isExpanded) {
+                                    Divider(color = AttendanceTheme.colors.grayScale.Gray300, thickness = 1.dp)
+                                }
                             }
 
                             is FoldableContentItemState -> {
