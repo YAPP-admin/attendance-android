@@ -1,9 +1,13 @@
-package com.yapp.presentation.ui.admin.management.components.foldableHeaderItem
+package com.yapp.presentation.ui.admin.management.components.foldableItem.foldableHeaderItem
 
+import FoldableHeaderItemState
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,12 +19,14 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,28 +40,87 @@ import com.yapp.presentation.ui.admin.management.components.AnimatedCounterText
 @Preview(backgroundColor = 0xFFFFFFFF, showBackground = true)
 @Composable
 private fun FoldableItemHeaderLayoutPreview() {
-    var state by remember {
+    val teamState by remember {
         mutableStateOf(
-            FoldableItemHeaderLayoutState(
-                label = "Android 1",
-                attendMemberCount = 4,
-                allTeamMemberCount = 6
+            FoldableHeaderItemState.TeamType(
+                attendMemberCount = 6,
+                allTeamMemberCount = 9,
+                isExpanded = false,
+                teamNumber = 1,
+                teamName = "Android"
+            )
+        )
+    }
+
+    val positionState by remember {
+        mutableStateOf(
+            FoldableHeaderItemState.PositionType(
+                attendMemberCount = 6,
+                allTeamMemberCount = 9,
+                isExpanded = false,
+                position = "Android"
             )
         )
     }
 
     AttendanceTheme {
-        Box(modifier = Modifier) {
-            FoldableItemHeaderLayout(state = state)
+        Column(modifier = Modifier) {
+            FoldableHeaderItem(
+                state = teamState,
+                onExpandClicked = { a, b, c ->
+
+                }
+            )
+
+            FoldableHeaderItem(
+                state = positionState,
+                onExpandClicked = { a, b ->
+
+                }
+            )
         }
     }
 }
 
 @Composable
-internal fun FoldableItemHeaderLayout(
+internal fun FoldableHeaderItem(
     modifier: Modifier = Modifier,
-    state: FoldableItemHeaderLayoutState,
-    expanded: Boolean = false,
+    state: FoldableHeaderItemState.PositionType,
+    onExpandClicked: (isExpanded: Boolean, position: String) -> Unit
+) {
+    FoldableHeaderItem(
+        modifier = modifier,
+        label = state.label,
+        attendMemberCount = state.attendMemberCount,
+        allTeamMemberCount = state.allTeamMemberCount,
+        expanded = state.isExpanded,
+        onExpandClicked = { onExpandClicked(it, state.position) }
+    )
+}
+
+@Composable
+internal fun FoldableHeaderItem(
+    modifier: Modifier = Modifier,
+    state: FoldableHeaderItemState.TeamType,
+    onExpandClicked: (isExpanded: Boolean, teamName: String, teamNumber: Int) -> Unit
+) {
+    FoldableHeaderItem(
+        modifier = modifier,
+        label = state.label,
+        attendMemberCount = state.attendMemberCount,
+        allTeamMemberCount = state.allTeamMemberCount,
+        expanded = state.isExpanded,
+        onExpandClicked = { onExpandClicked(it, state.teamName, state.teamNumber) }
+    )
+}
+
+@Composable
+internal fun FoldableHeaderItem(
+    modifier: Modifier = Modifier,
+    label: String,
+    attendMemberCount: Int,
+    allTeamMemberCount: Int,
+    expanded: Boolean,
     onExpandClicked: (Boolean) -> Unit = {},
 ) {
     Row(
@@ -74,8 +139,7 @@ internal fun FoldableItemHeaderLayout(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                modifier = Modifier,
-                text = state.label,
+                text = label,
                 textAlign = TextAlign.Start,
                 style = AttendanceTypography.h3,
                 color = AttendanceTheme.colors.grayScale.Gray1200
@@ -84,8 +148,9 @@ internal fun FoldableItemHeaderLayout(
             Spacer(modifier = Modifier.width(6.dp))
 
             AnimatedCounterText(
-                count = state.attendMemberCount,
-                style = AttendanceTypography.subtitle2.copy(color = AttendanceTheme.colors.mainColors.YappOrange)
+                count = attendMemberCount,
+                style = AttendanceTypography.subtitle2,
+                color = AttendanceTheme.colors.mainColors.YappOrange
             )
 
             Text(
@@ -96,11 +161,11 @@ internal fun FoldableItemHeaderLayout(
             )
 
             AnimatedCounterText(
-                count = state.allTeamMemberCount,
-                style = AttendanceTypography.subtitle2.copy(color = AttendanceTheme.colors.mainColors.YappOrange)
+                count = allTeamMemberCount,
+                style = AttendanceTypography.subtitle2,
+                color = AttendanceTheme.colors.mainColors.YappOrange
             )
         }
-
 
         IconButton(
             modifier = Modifier

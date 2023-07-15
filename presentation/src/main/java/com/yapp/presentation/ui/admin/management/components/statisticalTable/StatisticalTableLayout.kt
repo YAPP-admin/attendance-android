@@ -87,7 +87,8 @@ internal fun StatisticalTableLayout(
         ) {
             AnimatedCounterText(
                 count = state.totalCount,
-                style = AttendanceTypography.body2.copy(color = AttendanceTheme.colors.grayScale.Gray1200),
+                style = AttendanceTypography.body2,
+                color = AttendanceTheme.colors.grayScale.Gray1200,
                 suffix = {
                     Text(
                         style = AttendanceTypography.body2,
@@ -99,7 +100,8 @@ internal fun StatisticalTableLayout(
 
             AnimatedCounterText(
                 count = state.currentAttendCount,
-                style = AttendanceTypography.subtitle2.copy(color = AttendanceTheme.colors.etcColors.EtcGreen),
+                style = AttendanceTypography.subtitle2,
+                color = AttendanceTheme.colors.etcColors.EtcGreen,
                 suffix = {
                     Text(
                         style = AttendanceTypography.subtitle2,
@@ -180,7 +182,8 @@ private fun TableItemText(
 
         AnimatedCounterText(
             count = count,
-            style = AttendanceTypography.subtitle2.copy(color = AttendanceTheme.colors.grayScale.Gray1200),
+            style = AttendanceTypography.subtitle2,
+            color = AttendanceTheme.colors.grayScale.Gray1200,
             suffix = {
                 Text(
                     text = "명",

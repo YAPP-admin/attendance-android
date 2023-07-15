@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 
 
@@ -23,6 +24,7 @@ internal fun AnimatedCounterText(
     count: Int,
     modifier: Modifier = Modifier,
     style: TextStyle,
+    color: Color,
     prefix: @Composable () -> Unit = {},
     suffix: @Composable () -> Unit = {},
 ) {
@@ -55,6 +57,7 @@ internal fun AnimatedCounterText(
                 Text(
                     text = char.toString(),
                     style = style,
+                    color = color,
                     softWrap = false
                 )
 

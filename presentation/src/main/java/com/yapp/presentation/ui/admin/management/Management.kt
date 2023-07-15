@@ -1,5 +1,6 @@
 package com.yapp.presentation.ui.admin.management
 
+import FoldableHeaderItemState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -53,7 +54,9 @@ import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementSt
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState.LoadState.Loading
 import com.yapp.presentation.ui.admin.management.components.attendanceBottomSheet.AttendanceBottomSheetItemLayout
 import com.yapp.presentation.ui.admin.management.components.attendanceBottomSheet.AttendanceBottomSheetItemLayoutState
-import com.yapp.presentation.ui.admin.management.components.foldableItem.FoldableItemLayout
+import com.yapp.presentation.ui.admin.management.components.foldableItem.foldableContentItem.FoldableContentItemState
+import com.yapp.presentation.ui.admin.management.components.foldableItem.foldableContentItem.FoldableItemContentLayout
+import com.yapp.presentation.ui.admin.management.components.foldableItem.foldableHeaderItem.FoldableHeaderItem
 import com.yapp.presentation.ui.admin.management.components.statisticalTable.StatisticalTableLayout
 import com.yapp.presentation.ui.admin.management.components.tablayout.YDSTabLayout
 import kotlinx.coroutines.launch
@@ -167,7 +170,9 @@ internal fun ManagementScreen(
         Scaffold(
             modifier = Modifier
                 .fillMaxSize()
-                .systemBarsPadding(),
+                .systemBarsPadding()
+                .background(AttendanceTheme.colors.backgroundColors.background)
+                .padding(horizontal = 24.dp),
             topBar = {
                 YDSAppBar(
                     modifier = Modifier
@@ -193,13 +198,8 @@ internal fun ManagementScreen(
                             .fillMaxWidth()
                             .background(color = AttendanceTheme.colors.backgroundColors.background)
                     ) {
-                        Spacer(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(20.dp)
-                        )
+                        Spacer(modifier = Modifier.height(20.dp))
                         YDSTabLayout(
-                            modifier = Modifier.padding(horizontal = 24.dp),
                             tabItems = uiState.tabLayoutState.items,
                             selectedIndex = uiState.tabLayoutState.selectedIndex,
                             onTabSelected = { selectedTabIndex ->
@@ -210,30 +210,64 @@ internal fun ManagementScreen(
                 }
 
                 item {
-                    Column(
-                        modifier = Modifier.padding(
-                            top = 24.dp,
-                            start = 24.dp,
-                            end = 24.dp,
-                            bottom = 28.dp
-                        )
-                    ) {
+                    Column(modifier = Modifier.background(AttendanceTheme.colors.backgroundColors.background)) {
+                        Spacer(modifier = Modifier.height(24.dp))
                         StatisticalTableLayout(state = uiState.attendanceStatisticalTableState)
+                        Spacer(modifier = Modifier.height(28.dp))
                     }
                 }
 
                 itemsIndexed(
-                    items = uiState.foldableItemStates,
-                    key = { _, team -> team.headerState.label }
-                ) { _, team ->
-                    CompositionLocalProvider(LocalMemberItemLongPressCallback provides itemLongPressCallback) {
-                        FoldableItemLayout(
-                            state = team,
-                            onDropDownClicked = { changedMember ->
-                                selectedMemberId = changedMember
-                                coroutineScope.launch { sheetState.show() }
+                    items = uiState.foldableItemStates.flatMap { it.flatten },
+                    key = { _, itemState ->
+                        when (itemState) {
+                            is FoldableHeaderItemState -> {
+                                itemState.label
                             }
-                        )
+
+                            is FoldableContentItemState -> {
+                                itemState.memberId
+                            }
+
+                            else -> itemState.hashCode()
+                        }
+                    }
+                ) { _, itemState ->
+                    CompositionLocalProvider(LocalMemberItemLongPressCallback provides itemLongPressCallback) {
+                        when (itemState) {
+                            is FoldableHeaderItemState.TeamType -> {
+                                FoldableHeaderItem(
+                                    modifier = Modifier.animateItemPlacement(),
+                                    state = itemState,
+                                    onExpandClicked = { isExpanded, teamName, teamNumber ->
+                                        onEvent(ManagementEvent.OnTeamTypeHeaderItemClicked(teamName, teamNumber))
+                                    }
+                                )
+                            }
+
+                            is FoldableHeaderItemState.PositionType -> {
+                                FoldableHeaderItem(
+                                    modifier = Modifier.animateItemPlacement(),
+                                    state = itemState,
+                                    onExpandClicked = { isExpanded, position ->
+                                        onEvent(ManagementEvent.OnPositionTypeHeaderItemClicked(positionName = position))
+                                    }
+                                )
+                            }
+
+                            is FoldableContentItemState -> {
+                                FoldableItemContentLayout(
+                                    modifier = Modifier.animateItemPlacement(),
+                                    state = itemState,
+                                    onDropDownClicked = {
+                                        selectedMemberId = it
+                                        coroutineScope.launch {
+                                            sheetState.show()
+                                        }
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
 

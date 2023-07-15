@@ -1,5 +1,6 @@
 package com.yapp.presentation.ui.admin.management
 
+import FoldableHeaderItemState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
@@ -17,9 +18,10 @@ import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementSi
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState
 import com.yapp.presentation.ui.admin.management.components.attendanceBottomSheet.AttendanceBottomSheetItemLayoutState
 import com.yapp.presentation.ui.admin.management.components.attendanceTypeButton.AttendanceTypeButtonState
-import com.yapp.presentation.ui.admin.management.components.foldableContentItem.FoldableItemContentLayoutState
-import com.yapp.presentation.ui.admin.management.components.foldableHeaderItem.FoldableItemHeaderLayoutState
-import com.yapp.presentation.ui.admin.management.components.foldableItem.FoldableItemLayoutState
+import com.yapp.presentation.ui.admin.management.components.foldableItem.FoldableItemState
+import com.yapp.presentation.ui.admin.management.components.foldableItem.PositionItemState
+import com.yapp.presentation.ui.admin.management.components.foldableItem.TeamItemState
+import com.yapp.presentation.ui.admin.management.components.foldableItem.foldableContentItem.FoldableContentItemState
 import com.yapp.presentation.ui.admin.management.components.statisticalTable.StatisticalTableLayoutState
 import com.yapp.presentation.ui.admin.management.dto.ManagementSharedData
 import com.yapp.presentation.ui.admin.management.dto.ManagementTabLayoutState
@@ -74,7 +76,7 @@ class ManagementViewModel @Inject constructor(
                 setState {
                     this.copy(
                         attendanceStatisticalTableState = members.toStatisticalTableState(sessionId = sessionId),
-                        foldableItemStates = members.toFoldableItemContentState(sessionId, tabIndex)
+                        foldableItemStates = members.toFoldableItemGroup(sessionId, tabIndex)
                     )
                 }
             }
@@ -103,6 +105,48 @@ class ManagementViewModel @Inject constructor(
             is ManagementEvent.OnDeleteMemberClicked -> {
                 deleteMemberInfoUseCase(event.memberId)
             }
+
+            is ManagementEvent.OnPositionTypeHeaderItemClicked -> {
+                setState {
+                    this.copy(
+                        foldableItemStates = currentState.foldableItemStates
+                            .filterIsInstance<PositionItemState>()
+                            .map { itemGroup ->
+                                if (itemGroup.position == event.positionName) {
+                                    return@map if (itemGroup.headerItem.isExpanded) {
+                                        itemGroup.collapse()
+                                    } else {
+                                        itemGroup.expand()
+                                    }
+                                }
+
+                                itemGroup
+                            }.toImmutableList()
+                    )
+
+                }
+            }
+
+            is ManagementEvent.OnTeamTypeHeaderItemClicked -> {
+                setState {
+                    this.copy(
+                        foldableItemStates = currentState.foldableItemStates
+                            .filterIsInstance<TeamItemState>()
+                            .map { itemGroup ->
+                                if (itemGroup.teamName == event.teamName && itemGroup.teamNumber == event.teamNumber) {
+                                    return@map if (itemGroup.headerItem.isExpanded) {
+                                        itemGroup.collapse()
+                                    } else {
+                                        itemGroup.expand()
+                                    }
+                                }
+
+                                itemGroup
+                            }.toImmutableList()
+                    )
+
+                }
+            }
         }
     }
 
@@ -128,17 +172,22 @@ class ManagementViewModel @Inject constructor(
         )
     }
 
-    private fun List<Member>.toFoldableItemContentState(sessionId: Int, tabIndex: Int): ImmutableList<FoldableItemLayoutState> {
+    private fun List<Member>.toFoldableItemGroup(sessionId: Int, tabIndex: Int): ImmutableList<FoldableItemState> {
         return when (tabIndex) {
             ManagementTabLayoutState.INDEX_TEAM -> {
                 this.groupBy { it.team }
                     .entries.sortedWith(comparator = compareBy({ it.key.type }, { it.key.number }))
                     .map { (team, members) ->
-                        FoldableItemLayoutState(
-                            headerState = team.toFoldableItemHeaderState(sessionId, members),
-                            contentStates = members
+                        TeamItemState(
+                            headerItem = toTeamTypeHeaderItem(team = team, sessionId = sessionId, members = members),
+                            contentItems = members
                                 .sortedBy { it.attendances[sessionId].status }
-                                .map { member -> member.toFoldableItemContentState(sessionId = sessionId) }
+                                .map { member ->
+                                    toTeamTypeContentItem(
+                                        member = member,
+                                        buttonState = toButtonState(member, sessionId)
+                                    )
+                                }
                                 .toImmutableList()
                         )
                     }
@@ -148,11 +197,16 @@ class ManagementViewModel @Inject constructor(
                 this.groupBy { it.position }
                     .entries.sortedBy { it.key.value }
                     .map { (position, members) ->
-                        FoldableItemLayoutState(
-                            headerState = position.toFoldableItemHeaderState(sessionId, members),
-                            contentStates = members
+                        PositionItemState(
+                            headerItem = toPositionTypeHeaderItem(positionType = position, sessionId = sessionId, members = members),
+                            contentItems = members
                                 .sortedBy { it.attendances[sessionId].status }
-                                .map { member -> member.toFoldableItemContentState(sessionId = sessionId) }
+                                .map { member ->
+                                    toPositionTypeContentItem(
+                                        member = member,
+                                        buttonState = toButtonState(member = member, sessionId = sessionId)
+                                    )
+                                }
                                 .toImmutableList()
                         )
                     }
@@ -162,26 +216,52 @@ class ManagementViewModel @Inject constructor(
         }.toImmutableList()
     }
 
-    private fun PositionType.toFoldableItemHeaderState(sessionId: Int, members: List<Member>): FoldableItemHeaderLayoutState {
-        return FoldableItemHeaderLayoutState(
-            label = value,
-            attendMemberCount = members.count { it.attendances[sessionId].status == Attendance.Status.NORMAL },
+    private fun toPositionTypeHeaderItem(positionType: PositionType, sessionId: Int, members: List<Member>): FoldableHeaderItemState.PositionType {
+        return FoldableHeaderItemState.PositionType(
+            position = positionType.value,
+            isExpanded = currentState.foldableItemStates
+                .filterIsInstance<PositionItemState>()
+                .find { it.position == positionType.value }?.headerItem?.isExpanded ?: false,
+            attendMemberCount = members.count { it.attendances[sessionId].status != Attendance.Status.ABSENT },
             allTeamMemberCount = members.size
         )
     }
 
-    private fun Team.toFoldableItemHeaderState(sessionId: Int, members: List<Member>): FoldableItemHeaderLayoutState {
-        return FoldableItemHeaderLayoutState(
-            label = "${type.value} $number",
-            attendMemberCount = members.count { it.attendances[sessionId].status == Attendance.Status.NORMAL },
+    private fun toTeamTypeHeaderItem(team: Team, sessionId: Int, members: List<Member>): FoldableHeaderItemState.TeamType {
+        return FoldableHeaderItemState.TeamType(
+            teamName = team.type.value,
+            teamNumber = team.number,
+            isExpanded = currentState.foldableItemStates
+                .filterIsInstance<TeamItemState>()
+                .find { it.teamName == team.type.value && it.teamNumber == team.number }?.headerItem?.isExpanded ?: false,
+            attendMemberCount = members.count { (it.attendances[sessionId].status != Attendance.Status.ABSENT) },
             allTeamMemberCount = members.size
         )
     }
 
-    private fun Member.toFoldableItemContentState(sessionId: Int): FoldableItemContentLayoutState {
-        val attendance = attendances[sessionId].status
+    private fun toPositionTypeContentItem(member: Member, buttonState: AttendanceTypeButtonState): FoldableContentItemState.PositionType {
+        return FoldableContentItemState.PositionType(
+            memberId = member.id,
+            memberName = member.name,
+            teamType = member.team.type.value,
+            teamNumber = member.team.number,
+            attendanceTypeButtonState = buttonState
+        )
+    }
 
-        val buttonState = AttendanceTypeButtonState(
+    private fun toTeamTypeContentItem(member: Member, buttonState: AttendanceTypeButtonState): FoldableContentItemState.TeamType {
+        return FoldableContentItemState.TeamType(
+            memberId = member.id,
+            memberName = member.name,
+            position = member.position.value,
+            attendanceTypeButtonState = buttonState
+        )
+    }
+
+    private fun toButtonState(member: Member, sessionId: Int): AttendanceTypeButtonState {
+        val attendance = member.attendances[sessionId].status
+
+        return AttendanceTypeButtonState(
             label = attendance.text,
             iconType = when (attendance) {
                 Attendance.Status.ABSENT -> AttendanceTypeButtonState.IconType.ABSENT
@@ -189,13 +269,6 @@ class ManagementViewModel @Inject constructor(
                 Attendance.Status.ADMIT -> AttendanceTypeButtonState.IconType.ADMIT
                 Attendance.Status.NORMAL -> AttendanceTypeButtonState.IconType.ATTEND
             }
-        )
-
-        return FoldableItemContentLayoutState(
-            id = id,
-            label = name,
-            subLabel = position.value,
-            attendanceTypeButtonState = buttonState
         )
     }
 
