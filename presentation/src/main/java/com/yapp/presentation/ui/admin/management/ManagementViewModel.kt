@@ -111,19 +111,14 @@ class ManagementViewModel @Inject constructor(
                     this.copy(
                         foldableItemStates = currentState.foldableItemStates
                             .filterIsInstance<PositionItemState>()
-                            .map { itemGroup ->
-                                if (itemGroup.position == event.positionName) {
-                                    return@map if (itemGroup.headerItem.isExpanded) {
-                                        itemGroup.collapse()
-                                    } else {
-                                        itemGroup.expand()
-                                    }
+                            .map { itemState ->
+                                if (itemState.position == event.positionName) {
+                                    return@map itemState.setHeaderItemExpandable(isExpand = itemState.headerItem.isExpanded.not())
                                 }
 
-                                itemGroup
+                                itemState
                             }.toImmutableList()
                     )
-
                 }
             }
 
@@ -132,19 +127,14 @@ class ManagementViewModel @Inject constructor(
                     this.copy(
                         foldableItemStates = currentState.foldableItemStates
                             .filterIsInstance<TeamItemState>()
-                            .map { itemGroup ->
-                                if (itemGroup.teamName == event.teamName && itemGroup.teamNumber == event.teamNumber) {
-                                    return@map if (itemGroup.headerItem.isExpanded) {
-                                        itemGroup.collapse()
-                                    } else {
-                                        itemGroup.expand()
-                                    }
+                            .map { itemState ->
+                                if (itemState.teamName == event.teamName && itemState.teamNumber == event.teamNumber) {
+                                    return@map itemState.setHeaderItemExpandable(isExpand = itemState.headerItem.isExpanded.not())
                                 }
 
-                                itemGroup
+                                itemState
                             }.toImmutableList()
                     )
-
                 }
             }
         }

@@ -22,9 +22,8 @@ interface FoldableItemState {
             }.toImmutableList()
         }
 
-    fun expand(): FoldableItemState
+    fun setHeaderItemExpandable(isExpand: Boolean): FoldableItemState
 
-    fun collapse(): FoldableItemState
 }
 
 data class PositionItemState(
@@ -35,16 +34,9 @@ data class PositionItemState(
     val position: String
         get() = headerItem.position
 
-    override fun expand(): PositionItemState {
+    override fun setHeaderItemExpandable(isExpand: Boolean): FoldableItemState {
         return this.copy(
-            headerItem = headerItem.copy(isExpanded = true),
-            contentItems = contentItems
-        )
-    }
-
-    override fun collapse(): PositionItemState {
-        return this.copy(
-            headerItem = headerItem.copy(isExpanded = false)
+            headerItem = headerItem.copy(isExpanded = isExpand)
         )
     }
 
@@ -61,16 +53,9 @@ data class TeamItemState(
     val teamNumber: Int
         get() = headerItem.teamNumber
 
-    override fun expand(): TeamItemState {
+    override fun setHeaderItemExpandable(isExpand: Boolean): FoldableItemState {
         return this.copy(
-            headerItem = headerItem.copy(isExpanded = true),
-            contentItems = contentItems
-        )
-    }
-
-    override fun collapse(): TeamItemState {
-        return this.copy(
-            headerItem = headerItem.copy(isExpanded = false)
+            headerItem = headerItem.copy(isExpanded = isExpand)
         )
     }
 
