@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yapp.common.R
@@ -55,15 +57,13 @@ private fun AttendanceTypeButtonPreview() {
 internal fun AttendanceTypeButton(
     modifier: Modifier = Modifier,
     state: AttendanceTypeButtonState,
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
             .background(AttendanceTheme.colors.grayScale.Gray200)
-            .clickable {
-                onClick.invoke()
-            }
+            .clickable(onClick = onClick)
             .padding(start = 8.dp, end = 12.dp, top = 8.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -83,11 +83,8 @@ internal fun AttendanceTypeButton(
         Crossfade(targetState = state.label, label = "") {
             Text(
                 text = it,
-                modifier = Modifier
-                    .height(20.dp)
-                    .align(alignment = Alignment.CenterVertically),
                 style = AttendanceTypography.subtitle2,
-                color = AttendanceTheme.colors.grayScale.Gray800
+                color = AttendanceTheme.colors.grayScale.Gray800,
             )
         }
     }
