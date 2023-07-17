@@ -39,10 +39,10 @@ class AttendanceList private constructor(
     }
 
     // 데이터를 변경하는 행위는 오로지 Domain에서만 가능하게끔 interal을 붙여주었다.
-    internal fun changeAttendanceType(sessionId: Int, changingAttendance: Attendance): AttendanceList {
+    internal fun changeAttendanceType(sessionId: Int, changingAttendance: Attendance.Status): AttendanceList {
         return this.value.map {
             if (it.sessionId == sessionId) {
-                return@map changingAttendance
+                return@map it.copy(status = changingAttendance)
             }
 
             return@map it

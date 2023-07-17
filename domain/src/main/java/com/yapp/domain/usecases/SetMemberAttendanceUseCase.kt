@@ -13,12 +13,14 @@ class SetMemberAttendanceUseCase @Inject constructor(
         return memberRepository.getMember(params.memberId).mapCatching { targetMemeber ->
             require(targetMemeber != null)
 
+            if (targetMemeber.attendances[params.sessionId].status == params.changedAttendance) {
+                return@mapCatching
+            }
+
             val changedAttendances =  targetMemeber.attendances.changeAttendanceType(
                 sessionId = params.sessionId,
                 changingAttendance = params.changedAttendance
-            ).also {
-
-            }
+            )
 
             memberRepository.setMember(member = targetMemeber.copy(attendances = changedAttendances))
         }
@@ -32,7 +34,7 @@ class SetMemberAttendanceUseCase @Inject constructor(
     class Params(
         val memberId: Long,
         val sessionId: Int,
-        val changedAttendance: Attendance,
+        val changedAttendance: Attendance.Status,
     )
 
 }
