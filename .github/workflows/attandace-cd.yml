@@ -22,7 +22,6 @@ jobs:
       KAKAO_NATIVE_API_KEY: ${{ secrets.KAKAO_NATIVE_API_KEY }}
       PLAY_STORE_API_KEY: ${{ secrets.GOOGLE_CLOUD_JSON }}
       FASTLANE_ENV: ${{ secrets.FASTLANE_ENV }}
-      FASTLANE_OPT_OUT_USAGE: true
     steps:
     - uses: actions/checkout@v2
     - name: set up JDK 11
@@ -115,5 +114,7 @@ jobs:
 
 
       - name: Fastlane debug
-        run: fastlane distribute_debug "message:${{ needs.commit_message.outputs.message }}" --env common --non-interactive
+        run: fastlane distribute_debug "message:${{ needs.commit_message.outputs.message }}" --env common
+        env:
+          FASTLANE_OPT_OUT_USAGE: true
 #        working-directory: ./fastlane
