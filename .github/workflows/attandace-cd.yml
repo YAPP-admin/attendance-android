@@ -103,12 +103,12 @@ jobs:
         working-directory: ./fastlane
 
       - name: Add gem binary directory to PATH
-        run: echo "export PATH=\$HOME/.gem/ruby/3.0.0/bin:\$PATH" >> $GITHUB_ENV
+        run: echo "export PATH=$HOME/.gem/bin:$PATH" >> $GITHUB_ENV
 
       - name: Set Gem environment variables
         run: |
           export GEM_HOME="$HOME/.gem"
-          export PATH="$GEM_HOME/bin:$PATH"
+          export PATH="$HOME/.gem/bin:$PATH"
 
       - name: Run bundle install
         run: bundle install --user-install
