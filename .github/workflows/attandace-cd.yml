@@ -98,13 +98,10 @@ jobs:
       - uses: actions/setup-ruby@v1
         with:
           ruby-version: "2.6"
-          
-      - name: Install fastlane
-        run: gem install fastlane
-        working-directory: ./fastlane
 
-      - name: Install bundle
-        run: gem install bundler
+        run: |
+          gem install fastlane
+          gem install bundler
         working-directory: ./fastlane
 
       - name: Run bundle install
