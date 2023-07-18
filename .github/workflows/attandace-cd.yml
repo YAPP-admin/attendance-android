@@ -104,7 +104,7 @@ jobs:
         run: |
           gem install fastlane
           gem install bundler
-#        working-directory: ./fastlane
+        working-directory: .
 
       - name: Run bundle install
         run: bundle install
