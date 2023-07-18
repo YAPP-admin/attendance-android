@@ -115,5 +115,5 @@ jobs:
 
 
       - name: Fastlane debug
-        run: fastlane distribute_debug "message:${{ needs.commit_message.outputs.message }}" --env common
+        run: fastlane distribute_debug "message:${{ needs.commit_message.outputs.message }}" --env common --non-interactive
         working-directory: ./fastlane
