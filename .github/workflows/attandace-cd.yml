@@ -104,11 +104,11 @@ jobs:
         run: |
           gem install fastlane
           gem install bundler
-        working-directory: ./fastlane
+#        working-directory: ./fastlane
 
       - name: Run bundle install
         run: bundle install
-        working-directory: ./fastlane
+#        working-directory: ./fastlane
 
       - name: Install Firebase app distribution plugin
         run: fastlane add_plugin firebase_app_distribution
@@ -116,4 +116,4 @@ jobs:
 
       - name: Fastlane debug
         run: fastlane distribute_debug "message:${{ needs.commit_message.outputs.message }}" --env common --non-interactive
-        working-directory: ./fastlane
+#        working-directory: ./fastlane
