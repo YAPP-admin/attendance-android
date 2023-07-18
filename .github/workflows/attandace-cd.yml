@@ -24,6 +24,12 @@ jobs:
       FASTLANE_ENV: ${{ secrets.FASTLANE_ENV }}
     steps:
     - uses: actions/checkout@v2
+
+    - name: Set up Ruby and allow Gemfile modifications
+      run: |
+        bundle config --local path vendor/bundle
+        bundle config --local bin vendor/bundle/bin
+
     - name: set up JDK 11
       uses: actions/setup-java@v2
       with:
