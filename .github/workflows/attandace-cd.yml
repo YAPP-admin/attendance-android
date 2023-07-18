@@ -93,25 +93,22 @@ jobs:
           
           # fastlane evn 파일 만듦
           echo FASTLANE_ENV=\"$FASTLANE_ENV\" >> ./fastlane/.env
+
+      - name: set-up-ruby
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: "2.6"
           
       - name: Install fastlane
-        run: gem install fastlane --user-install
+        run: gem install fastlane
         working-directory: ./fastlane
 
       - name: Install bundle
-        run: gem install bundler --user-install
+        run: gem install bundler
         working-directory: ./fastlane
 
-      - name: Add gem binary directory to PATH
-        run: echo "export PATH=$HOME/.gem/bin:$PATH" >> $GITHUB_ENV
-
-      - name: Set Gem environment variables
-        run: |
-          export GEM_HOME="$HOME/.gem"
-          export PATH="$GEM_HOME/bin:$PATH"
-
       - name: Run bundle install
-        run: bundle install --user-install
+        run: bundle install
         working-directory: ./fastlane
 
       - name: Install Firebase app distribution plugin
