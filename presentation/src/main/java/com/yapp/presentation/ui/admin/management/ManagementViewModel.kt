@@ -19,9 +19,9 @@ import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementSt
 import com.yapp.presentation.ui.admin.management.components.attendanceBottomSheet.AttendanceBottomSheetItemLayoutState
 import com.yapp.presentation.ui.admin.management.components.attendanceTypeButton.AttendanceTypeButtonState
 import com.yapp.presentation.ui.admin.management.components.foldableItem.FoldableItemState
-import com.yapp.presentation.ui.admin.management.components.foldableItem.PositionItemState
-import com.yapp.presentation.ui.admin.management.components.foldableItem.TeamItemState
-import com.yapp.presentation.ui.admin.management.components.foldableItem.foldableContentItem.FoldableContentItemState
+import com.yapp.presentation.ui.admin.management.components.foldableItem.PositionItemWithButtonContentState
+import com.yapp.presentation.ui.admin.management.components.foldableItem.TeamItemButtonWithContentState
+import com.yapp.presentation.ui.admin.management.components.foldableItem.foldableContentItem.FoldableContentItemWithButtonState
 import com.yapp.presentation.ui.admin.management.components.statisticalTable.StatisticalTableLayoutState
 import com.yapp.presentation.ui.admin.management.dto.ManagementSharedData
 import com.yapp.presentation.ui.admin.management.dto.ManagementTabLayoutState
@@ -110,7 +110,7 @@ class ManagementViewModel @Inject constructor(
                 setState {
                     this.copy(
                         foldableItemStates = currentState.foldableItemStates
-                            .filterIsInstance<PositionItemState>()
+                            .filterIsInstance<PositionItemWithButtonContentState>()
                             .map { itemState ->
                                 if (itemState.position == event.positionName) {
                                     return@map itemState.setHeaderItemExpandable(isExpand = itemState.headerItem.isExpanded.not())
@@ -126,7 +126,7 @@ class ManagementViewModel @Inject constructor(
                 setState {
                     this.copy(
                         foldableItemStates = currentState.foldableItemStates
-                            .filterIsInstance<TeamItemState>()
+                            .filterIsInstance<TeamItemButtonWithContentState>()
                             .map { itemState ->
                                 if (itemState.teamName == event.teamName && itemState.teamNumber == event.teamNumber) {
                                     return@map itemState.setHeaderItemExpandable(isExpand = itemState.headerItem.isExpanded.not())
@@ -168,7 +168,7 @@ class ManagementViewModel @Inject constructor(
                 this.groupBy { it.team }
                     .entries.sortedWith(comparator = compareBy({ it.key.type }, { it.key.number }))
                     .map { (team, members) ->
-                        TeamItemState(
+                        TeamItemButtonWithContentState(
                             headerItem = toTeamTypeHeaderItem(team = team, sessionId = sessionId, members = members),
                             contentItems = members
                                 .sortedBy { it.attendances[sessionId].status }
@@ -187,7 +187,7 @@ class ManagementViewModel @Inject constructor(
                 this.groupBy { it.position }
                     .entries.sortedBy { it.key.value }
                     .map { (position, members) ->
-                        PositionItemState(
+                        PositionItemWithButtonContentState(
                             headerItem = toPositionTypeHeaderItem(positionType = position, sessionId = sessionId, members = members),
                             contentItems = members
                                 .sortedBy { it.attendances[sessionId].status }
@@ -210,7 +210,7 @@ class ManagementViewModel @Inject constructor(
         return FoldableHeaderItemState.PositionType(
             position = positionType.value,
             isExpanded = currentState.foldableItemStates
-                .filterIsInstance<PositionItemState>()
+                .filterIsInstance<PositionItemWithButtonContentState>()
                 .find { it.position == positionType.value }?.headerItem?.isExpanded ?: false,
             attendMemberCount = members.count { it.attendances[sessionId].status != Attendance.Status.ABSENT },
             allTeamMemberCount = members.size
@@ -222,15 +222,15 @@ class ManagementViewModel @Inject constructor(
             teamName = team.type.value,
             teamNumber = team.number,
             isExpanded = currentState.foldableItemStates
-                .filterIsInstance<TeamItemState>()
+                .filterIsInstance<TeamItemButtonWithContentState>()
                 .find { it.teamName == team.type.value && it.teamNumber == team.number }?.headerItem?.isExpanded ?: false,
             attendMemberCount = members.count { (it.attendances[sessionId].status != Attendance.Status.ABSENT) },
             allTeamMemberCount = members.size
         )
     }
 
-    private fun toPositionTypeContentItem(member: Member, buttonState: AttendanceTypeButtonState): FoldableContentItemState.PositionType {
-        return FoldableContentItemState.PositionType(
+    private fun toPositionTypeContentItem(member: Member, buttonState: AttendanceTypeButtonState): FoldableContentItemWithButtonState.PositionType {
+        return FoldableContentItemWithButtonState.PositionType(
             memberId = member.id,
             memberName = member.name,
             teamType = member.team.type.value,
@@ -239,8 +239,8 @@ class ManagementViewModel @Inject constructor(
         )
     }
 
-    private fun toTeamTypeContentItem(member: Member, buttonState: AttendanceTypeButtonState): FoldableContentItemState.TeamType {
-        return FoldableContentItemState.TeamType(
+    private fun toTeamTypeContentItem(member: Member, buttonState: AttendanceTypeButtonState): FoldableContentItemWithButtonState.TeamType {
+        return FoldableContentItemWithButtonState.TeamType(
             memberId = member.id,
             memberName = member.name,
             position = member.position.value,

@@ -10,14 +10,18 @@ interface FoldableContentItemState : FoldableItem {
     val memberId: Long
     val label: String
     val subLabel: String
+}
+
+@Stable
+interface FoldableContentItemWithButtonState : FoldableContentItemState {
     val attendanceTypeButtonState: AttendanceTypeButtonState
 
     data class TeamType(
-        override val attendanceTypeButtonState: AttendanceTypeButtonState,
         override val memberId: Long,
+        override val attendanceTypeButtonState: AttendanceTypeButtonState,
         val memberName: String,
         val position: String
-    ) : FoldableContentItemState {
+    ) : FoldableContentItemWithButtonState {
 
         override val label: String
             get() = memberName
@@ -28,12 +32,12 @@ interface FoldableContentItemState : FoldableItem {
     }
 
     data class PositionType(
-        override val attendanceTypeButtonState: AttendanceTypeButtonState,
         override val memberId: Long,
+        override val attendanceTypeButtonState: AttendanceTypeButtonState,
         val memberName: String,
         val teamType: String,
         val teamNumber: Int
-    ) : FoldableContentItemState {
+    ) : FoldableContentItemWithButtonState {
 
         override val label: String
             get() = memberName
@@ -42,6 +46,46 @@ interface FoldableContentItemState : FoldableItem {
             get() = "$teamType $teamNumber"
 
     }
+}
+
+@Stable
+interface FoldableContentItemWithScoreState : FoldableContentItemState {
+    val score: Int
+    val shouldShowWarning: Boolean
+
+    data class TeamType(
+        override val memberId: Long,
+        override val score: Int,
+        override val shouldShowWarning: Boolean,
+        val memberName: String,
+        val position: String
+    ) : FoldableContentItemWithScoreState {
+
+        override val label: String
+            get() = memberName
+
+        override val subLabel: String
+            get() = position
+
+    }
+
+    data class PositionType(
+        override val memberId: Long,
+        override val score: Int,
+        override val shouldShowWarning: Boolean,
+        val memberName: String,
+        val teamType: String,
+        val teamNumber: Int
+    ) : FoldableContentItemWithScoreState {
+
+        override val label: String
+            get() = memberName
+
+        override val subLabel: String
+            get() = "$teamType $teamNumber"
+
+    }
+
 }
 
 
