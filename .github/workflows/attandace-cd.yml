@@ -110,11 +110,11 @@ jobs:
 
       - name: Run bundle install
         run: bundle install --user-install
-        working-directory: /github/workspace/fastlane
+        working-directory: ./fastlane
 
       - name: Install Firebase app distribution plugin
         run: fastlane add_plugin firebase_app_distribution
 
       - name: Fastlane debug
         run: fastlane distribute_debug "message:${{ needs.commit_message.outputs.message }}" --env common
-        working-directory: /github/workspace/fastlane
+        working-directory: ./fastlane
