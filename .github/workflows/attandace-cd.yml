@@ -108,7 +108,7 @@ jobs:
       - name: Set Gem environment variables
         run: |
           export GEM_HOME="$HOME/.gem"
-          export PATH="$HOME/.gem/bin:$PATH"
+          export PATH="$GEM_HOME/bin:$PATH"
 
       - name: Run bundle install
         run: bundle install --user-install
