@@ -76,24 +76,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Make env file
-        run: echo GEMFILE=\"$GEMFILE\" >> ./Gemfile
-#          # fastlane 디렉토리 추가
-#          mkdir ./fastlane
-#
-#          # fastlane fastfile
-#          echo FASTLANE_FASTFILE=\"$FASTLANE_FASTFILE\" >> ./fastlane/Fastfile
-#
-#          # fastlane pluginfile
-#          echo FASTLANE_PLUGIN_FILE=\"$FASTLANE_PLUGIN_FILE\" >> ./fastlane/Pluginfile
-#
-#          # fastlane FASTLANE_APP_FILE
-#          echo FASTLANE_APP_FILE=\"$FASTLANE_APP_FILE\" >> ./fastlane/Appfile
-#
-#          # Gemfile
+        run: |
+          # fastlane 디렉토리 추가
+          mkdir ./fastlane
 
-#
-#          # fastlane evn 파일 만듦
-#          echo FASTLANE_ENV=\"$FASTLANE_ENV\" >> ./fastlane/.env
+          # fastlane fastfile
+          echo FASTLANE_FASTFILE=\"$FASTLANE_FASTFILE\" >> ./fastlane/Fastfile
+
+          # fastlane pluginfile
+          echo FASTLANE_PLUGIN_FILE=\"$FASTLANE_PLUGIN_FILE\" >> ./fastlane/Pluginfile
+
+          # fastlane FASTLANE_APP_FILE
+          echo FASTLANE_APP_FILE=\"$FASTLANE_APP_FILE\" >> ./fastlane/Appfile
+
+          # Gemfile
+          echo GEMFILE=\"$GEMFILE\" >> ./Gemfile
+
+          # fastlane evn 파일 만듦
+          echo FASTLANE_ENV=\"$FASTLANE_ENV\" >> ./fastlane/.env
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
