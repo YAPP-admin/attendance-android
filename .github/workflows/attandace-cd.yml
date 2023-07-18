@@ -103,12 +103,12 @@ jobs:
         run: |
           gem install bundler
           bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
+          bundle install
 #        working-directory: ./fastlane
 
 
       - name: Fastlane debug
-        run: bundle exec fastlane distribute_debug "message:${{ needs.commit_message.outputs.COMMENT }}"
+        run: bundle exec fastlane distribute_debug "message:${{ needs.commit_message.outputs.message }}"
         env:
           FIREBASE_APP_ID_DEBUG: ${{ secrets.FIREBASE_APP_ID }}
 #        working-directory: ./fastlane
