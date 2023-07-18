@@ -94,11 +94,12 @@ jobs:
           # fastlane evn 파일 만듦
           echo FASTLANE_ENV=\"$FASTLANE_ENV\" >> ./fastlane/.env
 
-      - name: set-up-ruby
-      - uses: actions/setup-ruby@v1
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: "2.6"
 
+      - name: Install fastlane and bundler
         run: |
           gem install fastlane
           gem install bundler
