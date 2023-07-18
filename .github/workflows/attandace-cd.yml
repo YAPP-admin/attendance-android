@@ -104,13 +104,17 @@ jobs:
           echo FASTLANE_ENV=\"$FASTLANE_ENV\" >> ./fastlane/.env
           
 
-      - name: bundle setup
+      - name: Install Bundler
+        run: gem install bundler
+
+      - name: Set Gem environment variables
         run: |
-          # gem 환경변수 세팅
           export GEM_HOME="$HOME/.gem"
           export PATH="$GEM_HOME/bin:$PATH"
-          
-          $GEM_HOME/bin/bundle install
+
+      - name: Run bundle install
+        run: bundle install
+        working-directory: ${{ env.working-directory }}/fastlane
 
       - name: Install Firebase app distribution plugin
         run: fastlane add_plugin firebase_app_distribution
