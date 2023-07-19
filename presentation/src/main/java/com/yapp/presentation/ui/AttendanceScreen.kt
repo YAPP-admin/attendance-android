@@ -153,6 +153,9 @@ fun AttendanceScreen(
                     } else {
                         navController.navigate(route)
                     }
+                },
+                navigateToTeam = {
+                    navController.navigate(AttendanceScreenRoute.SIGNUP_TEAM.route)
                 }
             )
         }
