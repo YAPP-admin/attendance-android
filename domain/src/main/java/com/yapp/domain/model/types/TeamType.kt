@@ -16,7 +16,6 @@ enum class TeamType(val value: String) {
                 "IOS" -> IOS
                 "WEB" -> WEB
                 "BASECAMP" -> BASECAMP
-                "NONE" -> NONE
                 else -> error("$rawValue 에 해당하는 TeamType이 없습니다.")
             }
         }
