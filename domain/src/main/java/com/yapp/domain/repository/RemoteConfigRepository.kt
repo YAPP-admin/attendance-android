@@ -12,4 +12,5 @@ interface RemoteConfigRepository {
     suspend fun getTeamList(): Result<List<Team>>
     suspend fun getQrPassword(): Result<String>
     suspend fun shouldShowGuestButton(): Result<Boolean>
+    suspend fun getSignUpPassword(): Result<String>
 }

@@ -34,6 +34,11 @@ sealed class RemoteConfigData<T> {
         override val defaultValue: String = "fail"
     }
 
+    object SignUpPassword : RemoteConfigData<String>() {
+        override val key: String = SIGN_UP_PASSWORD
+        override val defaultValue: String = ""
+    }
+
     companion object {
         private const val ATTENDANCE_MAGINOTLINE_TIME = "attendance_maginotline_time"
         private const val ATTENDANCE_SESSION_LIST = "attendance_session_list"
@@ -41,6 +46,7 @@ sealed class RemoteConfigData<T> {
         private const val ATTENDANCE_CONFIG = "config"
         private const val ATTENDANCE_QR_PASSWORD = "attendance_qr_password"
         private const val SHOULD_SHOW_GUEST_BUTTON = "should_show_guest_button"
+        private const val SIGN_UP_PASSWORD = "attendance_signup_password"
 
         val defaultMaps = mapOf(
             MaginotlineTime.defaultValue to MaginotlineTime.key,
