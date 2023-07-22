@@ -18,6 +18,8 @@ class RemoteConfigRepositoryImpl @Inject constructor(
     private val firebaseRemoteConfigDataSource: FirebaseRemoteConfigDataSource,
 ) : RemoteConfigRepository {
 
+    private var isAlreadyRequestUpdate = false
+
     override suspend fun getMaginotlineTime(): Result<String> {
         return runCatching {
             firebaseRemoteConfigDataSource.getMaginotlineTime()
@@ -101,7 +103,9 @@ class RemoteConfigRepositoryImpl @Inject constructor(
             firebaseRemoteConfigDataSource.getVersionInfo()
         }.fold(
             onSuccess = { entity: VersionEntity ->
-                Result.success(entity.toDomain())
+                Result.success(entity.toDomain(isAlreadyRequestUpdate)).also {
+                    isAlreadyRequestUpdate = true
+                }
             },
             onFailure = { exception ->
                 Result.failure(exception)

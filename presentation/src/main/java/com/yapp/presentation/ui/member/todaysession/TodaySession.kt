@@ -52,8 +52,6 @@ import com.yapp.presentation.util.intent.intentToPlayStore
 @Composable
 fun TodaySession(
     modifier: Modifier = Modifier,
-    shouldRequestVersionUpdate: Boolean,
-    onNecessaryRequestVersionUpdate: () -> Unit,
     viewModel: TodaySessionViewModel = hiltViewModel(),
     navigateToSetting: (String) -> Unit,
 ) {
@@ -98,7 +96,6 @@ fun TodaySession(
         }
 
         DialogState.NECESSARY_UPDATE -> {
-            onNecessaryRequestVersionUpdate()
             YDSPopupDialog(
                 title = stringResource(string.necessary_update_title),
                 content = stringResource(string.necessary_update_content),
@@ -118,7 +115,7 @@ fun TodaySession(
     }
 
     LaunchedEffect(key1 = true) {
-        viewModel.setEvent(TodaySessionUiEvent.OnInitializeComposable(shouldRequestVersionUpdate))
+        viewModel.setEvent(TodaySessionUiEvent.OnInitializeComposable)
     }
 
     LaunchedEffect(key1 = viewModel.effect) {

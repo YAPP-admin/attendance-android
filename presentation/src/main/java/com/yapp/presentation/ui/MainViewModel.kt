@@ -21,7 +21,6 @@ class MainViewModel @Inject constructor(
     override suspend fun handleEvent(event: MainUiEvent) {
         when (event) {
             MainUiEvent.OnClickQrAuthButton -> checkAttendanceValidate()
-            MainUiEvent.OnRequestNecessaryVersionUpdate -> setState { copy(isAlreadyRequestUpdateVersion = true) }
         }
     }
 

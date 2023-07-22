@@ -16,7 +16,10 @@ class CheckVersionUpdateUseCase @Inject constructor(
             return@mapCatching when {
                 currentVersionCode < minVersionCode -> VersionType.REQUIRED
                 currentVersionCode == maxVersionCode -> VersionType.NOT_REQUIRED
-                else -> VersionType.UPDATED_BUT_NOT_REQUIRED
+                else -> {
+                    if (version.isAlreadyRequestVersionUpdate) VersionType.NOT_REQUIRED
+                    else VersionType.UPDATED_BUT_NOT_REQUIRED
+                }
             }
         }
     }

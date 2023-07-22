@@ -14,8 +14,9 @@ data class VersionEntity(
     val currentVersion: String? = null,
 )
 
-fun VersionEntity.toDomain(): Version {
+fun VersionEntity.toDomain(isAlreadyRequestVersionUpdate: Boolean): Version {
     return Version(
+        isAlreadyRequestVersionUpdate = isAlreadyRequestVersionUpdate,
         minVersionCode = minVersionCode!!,
         maxVersionCode = maxVersionCode!!,
         currentVersion = currentVersion!!

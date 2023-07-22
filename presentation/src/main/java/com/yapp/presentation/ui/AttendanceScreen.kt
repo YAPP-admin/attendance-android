@@ -80,8 +80,6 @@ fun AttendanceScreen(
         ) {
             SetStatusBarColorByRoute(it.destination.route)
             Login(
-                shouldRequestVersionUpdate = !uiState.isAlreadyRequestUpdateVersion,
-                onNecessaryRequestVersionUpdate = { viewModel.setEvent(MainUiEvent.OnRequestNecessaryVersionUpdate) },
                 navigateToQRMainScreen = {
                     navController.navigate(AttendanceScreenRoute.MEMBER_MAIN.route) {
                         popUpTo(AttendanceScreenRoute.LOGIN.route) { inclusive = true }
@@ -151,8 +149,6 @@ fun AttendanceScreen(
         ) {
             SetStatusBarColorByRoute(it.destination.route)
             MemberMain(
-                shouldRequestVersionUpdate = !uiState.isAlreadyRequestUpdateVersion,
-                onNecessaryRequestVersionUpdate = { viewModel.setEvent(MainUiEvent.OnRequestNecessaryVersionUpdate) },
                 navigateToScreen = { route ->
                     if (route == AttendanceScreenRoute.QR_AUTH.route) {
                         viewModel.setEvent(MainUiEvent.OnClickQrAuthButton)

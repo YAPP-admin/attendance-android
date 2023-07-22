@@ -42,8 +42,6 @@ import com.yapp.presentation.util.intent.intentToPlayStore
 @Composable
 fun Login(
     viewModel: LoginViewModel = hiltViewModel(),
-    shouldRequestVersionUpdate: Boolean,
-    onNecessaryRequestVersionUpdate: () -> Unit,
     navigateToQRMainScreen: () -> Unit,
     navigateToSignUpScreen: () -> Unit,
     navigateToAdminScreen: () -> Unit,
@@ -52,10 +50,6 @@ fun Login(
     val uiState by viewModel.uiState.collectAsState()
 
     AttendanceTheme {
-        LaunchedEffect(key1 = true) {
-            viewModel.setEvent(LoginUiEvent.OnInitializeComposable(shouldRequestVersionUpdate))
-        }
-
         LaunchedEffect(key1 = viewModel.effect) {
             viewModel.effect.collect { effect ->
                 when (effect) {
@@ -125,7 +119,6 @@ fun Login(
         }
 
         DialogState.NECESSARY_UPDATE -> {
-            onNecessaryRequestVersionUpdate()
             YDSPopupDialog(
                 title = stringResource(R.string.necessary_update_title),
                 content = stringResource(R.string.necessary_update_content),

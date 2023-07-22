@@ -24,7 +24,7 @@ class TodaySessionContract {
     }
 
     sealed class TodaySessionUiEvent : UiEvent {
-        data class OnInitializeComposable(val shouldRequestVersionUpdate: Boolean) : TodaySessionUiEvent()
+        object OnInitializeComposable : TodaySessionUiEvent()
         object OnUpdateButtonClicked : TodaySessionUiEvent()
         object OnCancelButtonClicked : TodaySessionUiEvent()
     }
