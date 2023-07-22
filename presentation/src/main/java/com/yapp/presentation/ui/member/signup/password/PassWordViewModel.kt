@@ -48,7 +48,6 @@ internal class PassWordViewModel @Inject constructor(
                     }
 
                     false -> {
-                        setEffect(PasswordContract.PasswordSideEffect.KeyboardHide)
                         setState {
                             copy(
                                 isWrong = true,
