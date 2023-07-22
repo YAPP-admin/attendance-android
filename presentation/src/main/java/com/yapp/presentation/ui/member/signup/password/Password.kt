@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -36,6 +38,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.insets.navigationBarsWithImePadding
@@ -132,6 +135,9 @@ internal fun Password(
                     onValueChange = {
                         viewModel.setEvent(PasswordContract.PasswordUiEvent.InputPassword(it))
                     },
+                    keyboardOptions = KeyboardOptions().copy(
+                        keyboardType = KeyboardType.NumberPassword,
+                    ),
                 )
                 Spacer(modifier = Modifier.padding(top = 20.dp))
                 AnimatedVisibility(
@@ -163,15 +169,19 @@ internal fun Password(
 }
 
 @Composable
-private fun PasswordTextField(
+internal fun PasswordTextField(
     modifier: Modifier = Modifier,
     value: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
     BasicTextField(
         modifier = modifier,
         value = value,
         onValueChange = onValueChange,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
         decorationBox = {
             Row(
                 modifier = Modifier.fillMaxWidth(),
