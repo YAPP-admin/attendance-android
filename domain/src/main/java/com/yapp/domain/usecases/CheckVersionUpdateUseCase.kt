@@ -14,9 +14,9 @@ class CheckVersionUpdateUseCase @Inject constructor(
             val maxVersionCode = version.maxVersionCode
 
             return@mapCatching when {
-                currentVersionCode < minVersionCode -> VersionType.ABSOLUTELY_NECESSARY
+                currentVersionCode < minVersionCode -> VersionType.REQUIRED
                 currentVersionCode == maxVersionCode -> VersionType.NOT_REQUIRED
-                else -> VersionType.UPDATED_BUT_NOT_NECESSARY
+                else -> VersionType.UPDATED_BUT_NOT_REQUIRED
             }
         }
     }

@@ -97,7 +97,7 @@ class RemoteConfigRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getVersionInfo(): Result<Version> {
-        return kotlin.runCatching {
+        return runCatching {
             firebaseRemoteConfigDataSource.getVersionInfo()
         }.fold(
             onSuccess = { entity: VersionEntity ->
