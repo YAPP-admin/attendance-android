@@ -20,10 +20,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -35,18 +37,25 @@ import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSEmptyScreen
+import com.yapp.common.yds.YDSPopupDialog
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.domain.model.Attendance
 import com.yapp.domain.model.Session
 import com.yapp.presentation.R.string
 import com.yapp.presentation.ui.AttendanceScreenRoute
+import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.DialogState
+import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.TodaySessionUiEvent
+import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.TodaySessionUiSideEffect
+import com.yapp.presentation.util.intent.intentToPlayStore
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TodaySession(
     modifier: Modifier = Modifier,
     viewModel: TodaySessionViewModel = hiltViewModel(),
     navigateToSetting: (String) -> Unit,
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
@@ -73,6 +82,32 @@ fun TodaySession(
         }
     }
 
+    when (uiState.dialogState) {
+        DialogState.NONE -> Unit
+
+        DialogState.REQUIRE_UPDATE -> {
+            YDSPopupDialog(
+                title = stringResource(string.required_update_title),
+                content = stringResource(string.required_update_content),
+                positiveButtonText = stringResource(string.update_confirm),
+                onClickPositiveButton = { viewModel.setEvent(TodaySessionUiEvent.OnUpdateButtonClicked) },
+                onDismiss = { }
+            )
+        }
+
+        DialogState.NECESSARY_UPDATE -> {
+            YDSPopupDialog(
+                title = stringResource(string.necessary_update_title),
+                content = stringResource(string.necessary_update_content),
+                negativeButtonText = stringResource(string.update_cancel),
+                positiveButtonText = stringResource(string.update_confirm),
+                onClickPositiveButton = { viewModel.setEvent(TodaySessionUiEvent.OnUpdateButtonClicked) },
+                onClickNegativeButton = { viewModel.setEvent(TodaySessionUiEvent.OnCancelButtonClicked) },
+                onDismiss = { }
+            )
+        }
+    }
+
     if (uiState.loadState == TodaySessionContract.LoadState.Loading) {
         YDSProgressBar()
     } else if (uiState.loadState == TodaySessionContract.LoadState.Error) {
@@ -80,7 +115,17 @@ fun TodaySession(
     }
 
     LaunchedEffect(key1 = true) {
-        viewModel.setEvent(TodaySessionContract.TodaySessionUiEvent.OnInitializeComposable)
+        viewModel.setEvent(TodaySessionUiEvent.OnInitializeComposable)
+    }
+
+    LaunchedEffect(key1 = viewModel.effect) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is TodaySessionUiSideEffect.NavigateToPlayStore -> {
+                    intentToPlayStore(context)
+                }
+            }
+        }
     }
 }
 
