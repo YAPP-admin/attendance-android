@@ -248,10 +248,14 @@ fun AttendanceScreen(
         ) {
             SetStatusBarColorByRoute(it.destination.route)
             Password(
-                onClickBackButton = { navController.popBackStack() },
+                onClickBackButton = {
+                    navController.navigate(AttendanceScreenRoute.LOGIN.route) {
+                        popUpTo(AttendanceScreenRoute.SIGNUP_PASSWORD.route) { inclusive = true }
+                    }
+                },
                 onClickNextButton = {
                     navController.navigate(AttendanceScreenRoute.SIGNUP_NAME.route) {
-                        popUpTo(AttendanceScreenRoute.SIGNUP_NAME.route) { inclusive = true }
+                        popUpTo(AttendanceScreenRoute.SIGNUP_PASSWORD.route) { inclusive = true }
                     }
                 })
         }

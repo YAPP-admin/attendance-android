@@ -97,7 +97,9 @@ internal fun Password(
         topBar = {
             YDSAppBar(
                 modifier = Modifier.background(AttendanceTheme.colors.backgroundColors.background),
-                onClickBackButton = onClickBackButton,
+                onClickBackButton = {
+                    viewModel.setEvent(PasswordContract.PasswordUiEvent.OnBackButtonClick)
+                },
             )
         },
         modifier = Modifier
