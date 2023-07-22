@@ -1,14 +1,16 @@
 package com.yapp.data.model
 
-import com.google.firebase.firestore.PropertyName
 import com.yapp.domain.model.Version
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class VersionEntity(
-    @PropertyName("min_version_code")
+    @SerialName("min_version_code")
     val minVersionCode: Int? = null,
-    @PropertyName("max_version_code")
+    @SerialName("max_version_code")
     val maxVersionCode: Int? = null,
-    @PropertyName("current_version")
+    @SerialName("current_version")
     val currentVersion: String? = null,
 )
 
