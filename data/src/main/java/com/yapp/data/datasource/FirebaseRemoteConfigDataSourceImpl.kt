@@ -6,6 +6,7 @@ import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.yapp.data.model.ConfigEntity
 import com.yapp.data.model.SessionEntity
 import com.yapp.data.model.TeamEntity
+import com.yapp.data.model.VersionEntity
 import com.yapp.domain.firebase.RemoteConfigData
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -107,4 +108,18 @@ class FirebaseRemoteConfigDataSourceImpl @Inject constructor() : FirebaseRemoteC
         }
     }
 
+    override suspend fun getVersionInfo(): VersionEntity {
+        return suspendCancellableCoroutine { cancellableContinuation ->
+            firebaseRemoteConfig.fetchAndActivate().addOnSuccessListener {
+                val version = firebaseRemoteConfig.getString(RemoteConfigData.VersionInfo.key)
+                    .let { jsonString ->
+                        Json.decodeFromString<VersionEntity>(jsonString)
+                    }
+
+                cancellableContinuation.resume(version, null)
+            }.addOnFailureListener { exception ->
+                cancellableContinuation.resumeWithException(exception)
+            }
+        }
+    }
 }

@@ -4,10 +4,12 @@ import com.yapp.data.datasource.FirebaseRemoteConfigDataSource
 import com.yapp.data.model.ConfigEntity
 import com.yapp.data.model.SessionEntity
 import com.yapp.data.model.TeamEntity
+import com.yapp.data.model.VersionEntity
 import com.yapp.data.model.toDomain
 import com.yapp.domain.model.Config
 import com.yapp.domain.model.Session
 import com.yapp.domain.model.Team
+import com.yapp.domain.model.Version
 import com.yapp.domain.repository.RemoteConfigRepository
 import javax.inject.Inject
 
@@ -94,4 +96,16 @@ class RemoteConfigRepositoryImpl @Inject constructor(
         )
     }
 
+    override suspend fun getVersionInfo(): Result<Version> {
+        return kotlin.runCatching {
+            firebaseRemoteConfigDataSource.getVersionInfo()
+        }.fold(
+            onSuccess = { entity: VersionEntity ->
+                Result.success(entity.toDomain())
+            },
+            onFailure = { exception ->
+                Result.failure(exception)
+            }
+        )
+    }
 }
