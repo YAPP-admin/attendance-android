@@ -3,6 +3,7 @@ package com.yapp.data.datasource
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
+import com.yapp.data.BuildConfig
 import com.yapp.data.model.ConfigEntity
 import com.yapp.data.model.SessionEntity
 import com.yapp.data.model.TeamEntity
@@ -20,7 +21,9 @@ import kotlin.coroutines.resumeWithException
 class FirebaseRemoteConfigDataSourceImpl @Inject constructor() : FirebaseRemoteConfigDataSource {
 
     private val firebaseRemoteConfig = Firebase.remoteConfig
-    private val configSettings = remoteConfigSettings { minimumFetchIntervalInSeconds = 3600 }
+    private val configSettings = remoteConfigSettings {
+        minimumFetchIntervalInSeconds = if (BuildConfig.DEBUG) 60 else 3600
+    }
 
     init {
         firebaseRemoteConfig.setDefaultsAsync(RemoteConfigData.defaultMaps)
