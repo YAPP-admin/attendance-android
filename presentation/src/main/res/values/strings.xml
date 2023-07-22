@@ -8,6 +8,13 @@
     <string name="Cancel">취소</string>
     <string name="Ok">확인</string>
 
+    <string name="required_update_title">업데이트가 필요해요!</string>
+    <string name="required_update_content">더 멋진 기능을 사용하기 위해\n지금 바로 업데이트를 진행해 주세요</string>
+    <string name="necessary_update_title">새로운 버전이 업데이트 되었어요</string>
+    <string name="necessary_update_content">야뿌의 사용성이 개선되었어요!\n지금 바로 확인해보세요</string>
+    <string name="update_confirm">업데이트</string>
+    <string name="update_cancel">다음에요</string>
+
     <string name="login_admin_title">암호를 대라!</string>
     <string name="login_admin_content">코드 넘버를 입력해주세요</string>
     <string name="login_admin_password_placeholder">****</string>

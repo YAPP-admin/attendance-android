@@ -8,7 +8,7 @@ class LoginContract {
     data class LoginUiState(
         val isLoading: Boolean = false,
         val clickCount: Int = 0,
-        val isDialogVisible: Boolean = false,
+        val dialogState: DialogState = DialogState.NONE,
         val isGuestButtonVisible: Boolean = false,
     ) : UiState
 
@@ -16,6 +16,7 @@ class LoginContract {
         object NavigateToQRMainScreen : LoginUiSideEffect()
         object NavigateToSignUpScreen : LoginUiSideEffect()
         object NavigateToAdminScreen : LoginUiSideEffect()
+        object NavigateToPlayStore : LoginUiSideEffect()
         data class ShowToast(val msg: String) : LoginUiSideEffect()
     }
 
@@ -23,7 +24,12 @@ class LoginContract {
         object OnLoginButtonClicked : LoginUiEvent()
         object OnSkipButtonClicked : LoginUiEvent()
         object OnYappuImageClicked : LoginUiEvent()
+        object OnUpdateButtonClicked : LoginUiEvent()
         object OnCancelButtonClicked : LoginUiEvent()
         object OnGuestButtonClicked : LoginUiEvent()
+    }
+
+    enum class DialogState {
+        NONE, REQUIRE_UPDATE, NECESSARY_UPDATE, INSERT_CODE_NUMBER
     }
 }
