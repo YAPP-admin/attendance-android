@@ -171,7 +171,7 @@ class AdminTotalScoreViewModel @Inject constructor(
         return FoldableHeaderItemState.PositionType(
             position = positionType.value,
             isExpanded = currentState.foldableItemStates
-                .filterIsInstance<PositionItemWithButtonContentState>()
+                .filterIsInstance<PositionItemWithScoreContentState>()
                 .find { it.position == positionType.value }?.headerItem?.isExpanded ?: false,
             attendMemberCount = null,
             allTeamMemberCount = members.size
@@ -183,7 +183,7 @@ class AdminTotalScoreViewModel @Inject constructor(
             teamName = team.type.value,
             teamNumber = team.number,
             isExpanded = currentState.foldableItemStates
-                .filterIsInstance<TeamItemWithButtonContentState>()
+                .filterIsInstance<TeamItemWithScoreContentState>()
                 .find { it.teamName == team.type.value && it.teamNumber == team.number }?.headerItem?.isExpanded ?: false,
             attendMemberCount = null,
             allTeamMemberCount = members.size
