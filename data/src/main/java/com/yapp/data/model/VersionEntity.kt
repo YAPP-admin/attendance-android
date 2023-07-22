@@ -7,9 +7,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class VersionEntity(
     @SerialName("min_version_code")
-    val minVersionCode: Int? = null,
+    val minVersionCode: Long? = null,
     @SerialName("max_version_code")
-    val maxVersionCode: Int? = null,
+    val maxVersionCode: Long? = null,
     @SerialName("current_version")
     val currentVersion: String? = null,
 )

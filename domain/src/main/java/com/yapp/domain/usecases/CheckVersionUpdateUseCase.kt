@@ -8,7 +8,7 @@ class CheckVersionUpdateUseCase @Inject constructor(
     private val remoteConfigRepository: RemoteConfigRepository,
 ) {
 
-    suspend operator fun invoke(currentVersionCode: Int): Result<VersionType> {
+    suspend operator fun invoke(currentVersionCode: Long): Result<VersionType> {
         return remoteConfigRepository.getVersionInfo().mapCatching { version ->
             val minVersionCode = version.minVersionCode
             val maxVersionCode = version.maxVersionCode
