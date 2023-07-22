@@ -1,10 +1,19 @@
 package com.yapp.presentation.ui.admin.management.components.foldableItem.foldableContentItem
 
+import FoldableHeaderItemState
 import androidx.compose.runtime.Stable
 import com.yapp.presentation.ui.admin.management.components.attendanceTypeButton.AttendanceTypeButtonState
 import com.yapp.presentation.ui.admin.management.components.foldableItem.FoldableItem
 
-
+/**
+ * FoldableItem은 크게 2종류로 나위어 있는데, 그 중 Content를 나타내는 State
+ *
+ * (Header : [FoldableHeaderItemState] - **Content** [FoldableContentItemState] )
+ *
+ * @property memberId 멤버의 고유 Id
+ * @property label Content Item의 title
+ * @property subLabel Content Item의 오른쪽에 표시되는 subtitle
+ */
 @Stable
 interface FoldableContentItemState : FoldableItem {
     val memberId: Long
@@ -12,6 +21,10 @@ interface FoldableContentItemState : FoldableItem {
     val subLabel: String
 }
 
+/**
+ * [FoldableContentItemState] 의 타입중 하나로
+ * trailingContent 로 Button을 가지고 있는 FoldableContent
+ */
 @Stable
 interface FoldableContentItemWithButtonState : FoldableContentItemState {
     val attendanceTypeButtonState: AttendanceTypeButtonState
@@ -48,6 +61,10 @@ interface FoldableContentItemWithButtonState : FoldableContentItemState {
     }
 }
 
+/**
+ * [FoldableContentItemState] 의 타입중 하나로
+ * trailingContent 로 Score을 가지고 있는 FoldableContent
+ */
 @Stable
 interface FoldableContentItemWithScoreState : FoldableContentItemState {
     val score: Int

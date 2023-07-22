@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -101,26 +100,34 @@ private fun FoldableItemContentLayoutPreview() {
 
     AttendanceTheme {
         Column(modifier = Modifier) {
-            for(state in states) {
-                FoldableContentItem(
-                    state = state,
-                    onDropDownClicked = {}
-                )
+            for (state in states) {
+                when (state) {
+                    is FoldableContentItemWithScoreState -> {
+                        FoldableContentScoreTypeItem(state = state)
+                    }
+
+                    is FoldableContentItemWithButtonState -> {
+                        FoldableContentButtonTypeItem(
+                            state = state,
+                            onDropDownClicked = {}
+                        )
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-internal fun FoldableContentItem(
+internal fun FoldableContentButtonTypeItem(
     modifier: Modifier = Modifier,
-    state: FoldableContentItemState,
+    state: FoldableContentItemWithButtonState,
     onDropDownClicked: (memberId: Long) -> Unit
 ) {
     val longPressCallback = LocalMemberItemLongPressCallback.current
 
-    var visibilityProgress by remember { mutableStateOf(1F) }
-    val progressAnimatable = remember { Animatable(1F) }
+    var visibilityProgress by remember { mutableStateOf(0F) }
+    val progressAnimatable = remember { Animatable(0F) }
 
     LaunchedEffect(key1 = true) {
         progressAnimatable.animateTo(1F, animationSpec = tween()) {
@@ -135,42 +142,56 @@ internal fun FoldableContentItem(
         alphaVisibility = { visibilityProgress },
         scaleYVisibility = { visibilityProgress },
         onLongPressed = { longPressCallback?.invoke(state.memberId) },
-        leadingContent = {
-            when (state) {
-                is FoldableContentItemWithButtonState -> Unit
-
-                is FoldableContentItemWithScoreState -> {
-                    if (state.shouldShowWarning) {
-                        Icon(
-                            modifier = Modifier.sizeIn(14.dp).padding(start = 2.dp),
-                            painter = painterResource(id = R.drawable.icon_warning),
-                            contentDescription = null,
-                            tint = Color.Unspecified
-                        )
-                    }
-                }
-            }
-        },
         trailingContent = {
-            when (state) {
-                is FoldableContentItemWithButtonState -> {
-                    AttendanceTypeButton(
-                        state = state.attendanceTypeButtonState,
-                        onClick = { onDropDownClicked.invoke(state.memberId) }
-                    )
-                }
-
-                is FoldableContentItemWithScoreState -> {
-                    AnimatedCounterText(
-                        count = state.score,
-                        style = AttendanceTypography.subtitle1,
-                        color = AttendanceTheme.colors.mainColors.YappOrange
-                    )
-                }
-            }
+            AttendanceTypeButton(
+                state = state.attendanceTypeButtonState,
+                onClick = { onDropDownClicked.invoke(state.memberId) }
+            )
         }
     )
 }
+
+@Composable
+internal fun FoldableContentScoreTypeItem(
+    modifier: Modifier = Modifier,
+    state: FoldableContentItemWithScoreState
+) {
+    var visibilityProgress by remember { mutableStateOf(0F) }
+    val progressAnimatable = remember { Animatable(0F) }
+
+    LaunchedEffect(key1 = true) {
+        progressAnimatable.animateTo(1F, animationSpec = tween()) {
+            visibilityProgress = value
+        }
+    }
+
+    FoldableItemContentLayout(
+        modifier = modifier,
+        label = state.label,
+        subLabel = state.subLabel,
+        alphaVisibility = { visibilityProgress },
+        scaleYVisibility = { visibilityProgress },
+        leadingContent = {
+            if (state.shouldShowWarning) {
+                Icon(
+                    modifier = Modifier.sizeIn(14.dp),
+                    painter = painterResource(id = R.drawable.icon_warning),
+                    contentDescription = null,
+                    tint = Color.Unspecified
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+            }
+        },
+        trailingContent = {
+            AnimatedCounterText(
+                count = state.score,
+                style = AttendanceTypography.subtitle1,
+                color = AttendanceTheme.colors.mainColors.YappOrange
+            )
+        }
+    )
+}
+
 
 @Composable
 private fun FoldableItemContentLayout(
@@ -179,7 +200,7 @@ private fun FoldableItemContentLayout(
     subLabel: String,
     alphaVisibility: () -> Float = { 1F },
     scaleYVisibility: () -> Float = { 1F },
-    onLongPressed: () -> Unit = {},
+    onLongPressed: (() -> Unit)? = null,
     leadingContent: @Composable (() -> Unit)? = null,
     trailingContent: @Composable () -> Unit
 ) {
@@ -194,7 +215,7 @@ private fun FoldableItemContentLayout(
             }
             .pointerInput(Unit) {
                 detectTapGestures(onLongPress = {
-                    onLongPressed()
+                    onLongPressed?.invoke()
                 })
             }
     ) {
@@ -212,7 +233,6 @@ private fun FoldableItemContentLayout(
         ) {
             if (leadingContent != null) {
                 leadingContent()
-                Spacer(modifier = Modifier.width(2.dp))
             }
 
             Text(

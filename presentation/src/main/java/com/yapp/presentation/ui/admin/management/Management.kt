@@ -56,7 +56,7 @@ import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementSt
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState.LoadState.Loading
 import com.yapp.presentation.ui.admin.management.components.attendanceBottomSheet.AttendanceBottomSheetItemLayout
 import com.yapp.presentation.ui.admin.management.components.attendanceBottomSheet.AttendanceBottomSheetItemLayoutState
-import com.yapp.presentation.ui.admin.management.components.foldableItem.foldableContentItem.FoldableContentItem
+import com.yapp.presentation.ui.admin.management.components.foldableItem.foldableContentItem.FoldableContentButtonTypeItem
 import com.yapp.presentation.ui.admin.management.components.foldableItem.foldableContentItem.FoldableContentItemWithButtonState
 import com.yapp.presentation.ui.admin.management.components.foldableItem.foldableHeaderItem.FoldableHeaderItem
 import com.yapp.presentation.ui.admin.management.components.statisticalTable.StatisticalTableLayout
@@ -263,7 +263,7 @@ internal fun ManagementScreen(
                             }
 
                             is FoldableContentItemWithButtonState -> {
-                                FoldableContentItem(
+                                FoldableContentButtonTypeItem(
                                     modifier = Modifier.animateItemPlacement(),
                                     state = itemState,
                                     onDropDownClicked = {
@@ -283,7 +283,6 @@ internal fun ManagementScreen(
                 }
             }
         }
-
     }
 }
 

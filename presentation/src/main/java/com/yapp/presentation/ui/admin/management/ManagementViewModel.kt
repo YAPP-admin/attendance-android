@@ -20,7 +20,7 @@ import com.yapp.presentation.ui.admin.management.components.attendanceBottomShee
 import com.yapp.presentation.ui.admin.management.components.attendanceTypeButton.AttendanceTypeButtonState
 import com.yapp.presentation.ui.admin.management.components.foldableItem.FoldableItemState
 import com.yapp.presentation.ui.admin.management.components.foldableItem.PositionItemWithButtonContentState
-import com.yapp.presentation.ui.admin.management.components.foldableItem.TeamItemButtonWithContentState
+import com.yapp.presentation.ui.admin.management.components.foldableItem.TeamItemWithButtonContentState
 import com.yapp.presentation.ui.admin.management.components.foldableItem.foldableContentItem.FoldableContentItemWithButtonState
 import com.yapp.presentation.ui.admin.management.components.statisticalTable.StatisticalTableLayoutState
 import com.yapp.presentation.ui.admin.management.dto.ManagementSharedData
@@ -126,7 +126,7 @@ class ManagementViewModel @Inject constructor(
                 setState {
                     this.copy(
                         foldableItemStates = currentState.foldableItemStates
-                            .filterIsInstance<TeamItemButtonWithContentState>()
+                            .filterIsInstance<TeamItemWithButtonContentState>()
                             .map { itemState ->
                                 if (itemState.teamName == event.teamName && itemState.teamNumber == event.teamNumber) {
                                     return@map itemState.setHeaderItemExpandable(isExpand = itemState.headerItem.isExpanded.not())
@@ -168,7 +168,7 @@ class ManagementViewModel @Inject constructor(
                 this.groupBy { it.team }
                     .entries.sortedWith(comparator = compareBy({ it.key.type }, { it.key.number }))
                     .map { (team, members) ->
-                        TeamItemButtonWithContentState(
+                        TeamItemWithButtonContentState(
                             headerItem = toTeamTypeHeaderItem(team = team, sessionId = sessionId, members = members),
                             contentItems = members
                                 .sortedBy { it.attendances[sessionId].status }
@@ -222,7 +222,7 @@ class ManagementViewModel @Inject constructor(
             teamName = team.type.value,
             teamNumber = team.number,
             isExpanded = currentState.foldableItemStates
-                .filterIsInstance<TeamItemButtonWithContentState>()
+                .filterIsInstance<TeamItemWithButtonContentState>()
                 .find { it.teamName == team.type.value && it.teamNumber == team.number }?.headerItem?.isExpanded ?: false,
             attendMemberCount = members.count { (it.attendances[sessionId].status != Attendance.Status.ABSENT) },
             allTeamMemberCount = members.size

@@ -1,9 +1,6 @@
 package com.yapp.presentation.ui.admin.management.components.foldableItem.foldableHeaderItem
 
 import FoldableHeaderItemState
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,14 +16,11 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -118,7 +112,7 @@ internal fun FoldableHeaderItem(
 internal fun FoldableHeaderItem(
     modifier: Modifier = Modifier,
     label: String,
-    attendMemberCount: Int,
+    attendMemberCount: Int?,
     allTeamMemberCount: Int,
     expanded: Boolean,
     onExpandClicked: (Boolean) -> Unit = {},
@@ -147,18 +141,20 @@ internal fun FoldableHeaderItem(
 
             Spacer(modifier = Modifier.width(6.dp))
 
-            AnimatedCounterText(
-                count = attendMemberCount,
-                style = AttendanceTypography.subtitle2,
-                color = AttendanceTheme.colors.mainColors.YappOrange
-            )
+            attendMemberCount?.let {
+                AnimatedCounterText(
+                    count = attendMemberCount,
+                    style = AttendanceTypography.subtitle2,
+                    color = AttendanceTheme.colors.mainColors.YappOrange
+                )
 
-            Text(
-                text = "/",
-                textAlign = TextAlign.Start,
-                style = AttendanceTypography.subtitle2,
-                color = AttendanceTheme.colors.mainColors.YappOrange
-            )
+                Text(
+                    text = "/",
+                    textAlign = TextAlign.Start,
+                    style = AttendanceTypography.subtitle2,
+                    color = AttendanceTheme.colors.mainColors.YappOrange
+                )
+            }
 
             AnimatedCounterText(
                 count = allTeamMemberCount,
