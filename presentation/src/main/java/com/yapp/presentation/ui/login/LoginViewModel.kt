@@ -38,31 +38,30 @@ class LoginViewModel @Inject constructor(
     private val shouldShowGuestButtonUseCase: ShouldShowGuestButtonUseCase,
     private val kakaoSdkProvider: KakaoSdkProviderInterface,
     private val resourceProvider: ResourceProvider,
-) :
-    BaseViewModel<LoginUiState, LoginUiSideEffect, LoginUiEvent>(
-        LoginUiState()
-    ) {
+) : BaseViewModel<LoginUiState, LoginUiSideEffect, LoginUiEvent>(LoginUiState()) {
+
     init {
         viewModelScope.launch {
-            checkRequireVersionUpdate()
             shouldShowGuestButtonUseCase()
                 .onSuccess { setState { copy(isGuestButtonVisible = it) } }
                 .onFailure { FirebaseCrashlytics.getInstance().recordException(it) }
         }
     }
 
-    private suspend fun checkRequireVersionUpdate() {
-        checkVersionUpdateUseCase(resourceProvider.getVersionCode())
-            .onSuccess { versionType ->
-                when (versionType) {
-                    VersionType.NOT_REQUIRED -> Unit
-                    VersionType.REQUIRED -> setState { copy(dialogState = REQUIRE_UPDATE) }
-                    VersionType.UPDATED_BUT_NOT_REQUIRED -> setState { copy(dialogState = NECESSARY_UPDATE) }
+    private suspend fun checkRequireVersionUpdate(shouldRequestUpdate: Boolean) {
+        if (shouldRequestUpdate) {
+            checkVersionUpdateUseCase(resourceProvider.getVersionCode())
+                .onSuccess { versionType ->
+                    when (versionType) {
+                        VersionType.NOT_REQUIRED -> Unit
+                        VersionType.REQUIRED -> setState { copy(dialogState = REQUIRE_UPDATE) }
+                        VersionType.UPDATED_BUT_NOT_REQUIRED -> setState { copy(dialogState = NECESSARY_UPDATE) }
+                    }
                 }
-            }
-            .onFailure {
-                // TODO : 버전 로드 실패
-            }
+                .onFailure {
+                    // TODO : 버전 로드 실패
+                }
+        }
     }
 
     private fun kakaoLogin() {
@@ -140,6 +139,10 @@ class LoginViewModel @Inject constructor(
 
     override suspend fun handleEvent(event: LoginUiEvent) {
         when (event) {
+            is LoginUiEvent.OnInitializeComposable -> {
+                checkRequireVersionUpdate(event.shouldRequestVersionUpdate)
+            }
+
             is LoginUiEvent.OnLoginButtonClicked -> {
                 setState { copy(isLoading = true) }
                 kakaoLogin()

@@ -6,6 +6,7 @@ import com.yapp.common.base.UiState
 
 class MainContract {
     data class MainUiState(
+        val isAlreadyRequestUpdateVersion: Boolean = false,
         val toastMessage: String = ""
     ) : UiState
 
@@ -16,5 +17,6 @@ class MainContract {
 
     sealed class MainUiEvent : UiEvent {
         object OnClickQrAuthButton : MainUiEvent()
+        object OnRequestNecessaryVersionUpdate : MainUiEvent()
     }
 }

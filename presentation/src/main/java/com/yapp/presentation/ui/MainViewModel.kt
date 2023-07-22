@@ -4,6 +4,7 @@ import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.usecases.CheckQrAuthTimeUseCase
 import com.yapp.presentation.R
 import com.yapp.presentation.common.AttendanceBundle
+import com.yapp.presentation.ui.MainContract.MainUiEvent
 import com.yapp.presentation.util.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
@@ -13,13 +14,14 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val resourcesProvider: ResourceProvider,
     private val checkQrAuthTime: CheckQrAuthTimeUseCase
-) : BaseViewModel<MainContract.MainUiState, MainContract.MainUiSideEffect, MainContract.MainUiEvent>(
+) : BaseViewModel<MainContract.MainUiState, MainContract.MainUiSideEffect, MainUiEvent>(
     MainContract.MainUiState()
 ) {
 
-    override suspend fun handleEvent(event: MainContract.MainUiEvent) {
+    override suspend fun handleEvent(event: MainUiEvent) {
         when (event) {
-            MainContract.MainUiEvent.OnClickQrAuthButton -> checkAttendanceValidate()
+            MainUiEvent.OnClickQrAuthButton -> checkAttendanceValidate()
+            MainUiEvent.OnRequestNecessaryVersionUpdate -> setState { copy(isAlreadyRequestUpdateVersion = true) }
         }
     }
 

@@ -21,6 +21,7 @@ class LoginContract {
     }
 
     sealed class LoginUiEvent : UiEvent {
+        data class OnInitializeComposable(val shouldRequestVersionUpdate: Boolean) : LoginUiEvent()
         object OnLoginButtonClicked : LoginUiEvent()
         object OnSkipButtonClicked : LoginUiEvent()
         object OnYappuImageClicked : LoginUiEvent()

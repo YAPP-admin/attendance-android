@@ -43,6 +43,8 @@ import com.yapp.presentation.ui.member.todaysession.TodaySession
 fun MemberMain(
     scaffoldState: ScaffoldState = rememberScaffoldState(),
     viewModel: MemberMainViewModel = hiltViewModel(),
+    shouldRequestVersionUpdate: Boolean,
+    onNecessaryRequestVersionUpdate: () -> Unit,
     navigateToScreen: (String) -> Unit,
 ) {
     val childNavController = rememberNavController()
@@ -81,6 +83,8 @@ fun MemberMain(
             ChildNavigation(
                 childNavController,
                 modifier,
+                shouldRequestVersionUpdate,
+                onNecessaryRequestVersionUpdate,
                 navigateToScreen
             )
         }
@@ -175,6 +179,8 @@ enum class BottomNavigationItem(
 private fun ChildNavigation(
     navController: NavHostController,
     modifier: Modifier,
+    shouldRequestVersionUpdate: Boolean,
+    onNecessaryRequestVersionUpdate: () -> Unit,
     navigateToScreen: (String) -> Unit
 ) {
     NavHost(navController, startDestination = BottomNavigationItem.SESSION.route) {
@@ -184,6 +190,8 @@ private fun ChildNavigation(
             SetStatusBarColorByRoute(it.destination.route)
             TodaySession(
                 modifier = modifier,
+                shouldRequestVersionUpdate = shouldRequestVersionUpdate,
+                onNecessaryRequestVersionUpdate = onNecessaryRequestVersionUpdate,
                 navigateToSetting = navigateToScreen
             )
         }

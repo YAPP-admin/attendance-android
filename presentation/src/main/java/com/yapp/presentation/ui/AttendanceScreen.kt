@@ -24,6 +24,8 @@ import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.yds.YDSToast
+import com.yapp.presentation.ui.MainContract.MainUiEvent
+import com.yapp.presentation.ui.MainContract.MainUiSideEffect
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_LAST_SESSION_ID
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_ID
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_TITLE
@@ -56,11 +58,11 @@ fun AttendanceScreen(
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is MainContract.MainUiSideEffect.NavigateToQRScreen -> {
+                is MainUiSideEffect.NavigateToQRScreen -> {
                     navController.navigate(BottomNavigationItem.QR_AUTH.route)
                 }
 
-                is MainContract.MainUiSideEffect.ShowToast -> {
+                is MainUiSideEffect.ShowToast -> {
                     qrToastVisible = !qrToastVisible
                     delay(1000L)
                     qrToastVisible = !qrToastVisible
@@ -78,6 +80,8 @@ fun AttendanceScreen(
         ) {
             SetStatusBarColorByRoute(it.destination.route)
             Login(
+                shouldRequestVersionUpdate = !uiState.isAlreadyRequestUpdateVersion,
+                onNecessaryRequestVersionUpdate = { viewModel.setEvent(MainUiEvent.OnRequestNecessaryVersionUpdate) },
                 navigateToQRMainScreen = {
                     navController.navigate(AttendanceScreenRoute.MEMBER_MAIN.route) {
                         popUpTo(AttendanceScreenRoute.LOGIN.route) { inclusive = true }
@@ -147,9 +151,11 @@ fun AttendanceScreen(
         ) {
             SetStatusBarColorByRoute(it.destination.route)
             MemberMain(
+                shouldRequestVersionUpdate = !uiState.isAlreadyRequestUpdateVersion,
+                onNecessaryRequestVersionUpdate = { viewModel.setEvent(MainUiEvent.OnRequestNecessaryVersionUpdate) },
                 navigateToScreen = { route ->
                     if (route == AttendanceScreenRoute.QR_AUTH.route) {
-                        viewModel.setEvent(MainContract.MainUiEvent.OnClickQrAuthButton)
+                        viewModel.setEvent(MainUiEvent.OnClickQrAuthButton)
                     } else {
                         navController.navigate(route)
                     }

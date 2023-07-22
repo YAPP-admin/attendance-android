@@ -32,7 +32,7 @@ class TodaySessionViewModel @Inject constructor(
     override suspend fun handleEvent(event: TodaySessionUiEvent) {
         when (event) {
             is TodaySessionUiEvent.OnInitializeComposable -> {
-                checkRequireVersionUpdate()
+                checkRequireVersionUpdate(event.shouldRequestVersionUpdate)
             }
 
             is TodaySessionUiEvent.OnUpdateButtonClicked -> {
@@ -52,20 +52,25 @@ class TodaySessionViewModel @Inject constructor(
         }
     }
 
-    private suspend fun checkRequireVersionUpdate() {
-        checkVersionUpdateUseCase(resourceProvider.getVersionCode())
-            .onSuccess { versionType ->
-                when (versionType) {
-                    VersionType.NOT_REQUIRED -> Unit
-                    VersionType.REQUIRED -> setState { copy(dialogState = REQUIRE_UPDATE) }
-                    VersionType.UPDATED_BUT_NOT_REQUIRED -> setState { copy(dialogState = NECESSARY_UPDATE) }
-                }
+    private suspend fun checkRequireVersionUpdate(shouldRequestVersionUpdate: Boolean) {
+        if (shouldRequestVersionUpdate) {
+            checkVersionUpdateUseCase(resourceProvider.getVersionCode())
+                .onSuccess { versionType ->
+                    when (versionType) {
+                        VersionType.NOT_REQUIRED -> Unit
+                        VersionType.REQUIRED -> setState { copy(dialogState = REQUIRE_UPDATE) }
+                        VersionType.UPDATED_BUT_NOT_REQUIRED -> setState { copy(dialogState = NECESSARY_UPDATE) }
+                    }
 
-                getUpcomingSession()
-            }
-            .onFailure {
-                // TODO : 버전 로드 실패
-            }
+                    getUpcomingSession()
+                }
+                .onFailure {
+                    // TODO : 버전 로드 실패
+                }
+            return
+        }
+
+        getUpcomingSession()
     }
 
     private suspend fun getMemberAttendances() = coroutineScope {
