@@ -59,7 +59,7 @@ fun YDSPopupDialog(
     ) {
         Surface(
             modifier = modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .wrapContentHeight()
                 .padding(horizontal = 32.dp),
             shape = RoundedCornerShape(10.dp),
