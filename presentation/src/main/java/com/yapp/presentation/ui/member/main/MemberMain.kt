@@ -77,7 +77,7 @@ fun MemberMain(
                     positiveButtonText = stringResource(id = R.string.member_setting_select_team),
                     onClickNegativeButton = { viewModel.setEvent(MemberMainContract.MemberMainUiEvent.OnNextTime) },
                     onClickPositiveButton = { viewModel.setEvent(MemberMainContract.MemberMainUiEvent.OnSelectTeamScreen) },
-                    onDismiss = {}
+                    onDismiss = { viewModel.setEvent(MemberMainContract.MemberMainUiEvent.OnNextTime) }
                 )
             }
 
