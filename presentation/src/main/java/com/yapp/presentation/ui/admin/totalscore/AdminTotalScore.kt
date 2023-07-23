@@ -69,7 +69,7 @@ fun AdminTotalScore(
         Crossfade(targetState = uiState.value.loadState) {
             when (it) {
                 AdminTotalScoreUiState.LoadState.Loading -> YDSProgressBar()
-                AdminTotalScoreUiState.LoadState.Idle -> AdminTotalScoreScreen2(
+                AdminTotalScoreUiState.LoadState.Idle -> AdminTotalScoreScreen(
                     modifier = Modifier.padding(contentPadding),
                     uiState = uiState.value,
                     onEvent = { event -> viewModel.dispatchEvent(event) }
@@ -83,7 +83,7 @@ fun AdminTotalScore(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AdminTotalScoreScreen2(
+fun AdminTotalScoreScreen(
     modifier: Modifier = Modifier,
     uiState: AdminTotalScoreUiState,
     onEvent: (AdminTotalScoreUiEvent) -> Unit,

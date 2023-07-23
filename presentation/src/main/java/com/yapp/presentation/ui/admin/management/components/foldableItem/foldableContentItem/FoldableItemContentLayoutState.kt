@@ -6,7 +6,7 @@ import com.yapp.presentation.ui.admin.management.components.attendanceTypeButton
 import com.yapp.presentation.ui.admin.management.components.foldableItem.FoldableItem
 
 /**
- * FoldableItem은 크게 2종류로 나위어 있는데, 그 중 Content를 나타내는 State
+ * FoldableItem은 크게 2종류로 나뉘어 있는데, 그 중 Content를 나타내는 State
  *
  * (Header : [FoldableHeaderItemState] - **Content** [FoldableContentItemState] )
  *
