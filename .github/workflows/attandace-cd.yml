@@ -100,7 +100,6 @@ jobs:
 
       - name: Install bundle
         run: |
-          cd ${{ env.working-directory }}/fastlane
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
 
