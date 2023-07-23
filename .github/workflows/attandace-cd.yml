@@ -76,10 +76,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "2.6"
-
-      - name: Update RubyGems
-        run: gem update --system 3.2.3
+          ruby-version: "3.2.3"
 
       - name: Cache Ruby - Bundler
         uses: actions/cache@v2
@@ -110,7 +107,8 @@ jobs:
       - name: Make env file
         run: |
           # fastlane fastfile
-          echo FASTLANE_FASTFILE=\"$FASTLANE_FASTFILE\" >> firebase_credentials.json
+          echo "$FIREBASE_CREDENTIALS" > firebase_credentials.json.b64
+          base64 -d -i firebase_credentials.json.b64 > firebase_credentials.json
         env:
           FASTLANE_FASTFILE: ${{ secrets.FASTLANE_FASTFILE }}
 
