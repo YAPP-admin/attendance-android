@@ -80,6 +80,8 @@ jobs:
 
       - name: Install bundle
         run: |
+          gem update --system 3.2.3
+
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
 
