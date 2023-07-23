@@ -33,6 +33,9 @@ import com.yapp.presentation.ui.admin.management.components.foldableItem.foldabl
 import com.yapp.presentation.ui.admin.management.components.foldableItem.foldableContentItem.FoldableContentScoreTypeItem
 import com.yapp.presentation.ui.admin.management.components.foldableItem.foldableHeaderItem.FoldableHeaderItem
 import com.yapp.presentation.ui.admin.management.components.tablayout.YDSTabLayout
+import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.AdminTotalScoreUiEvent
+import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.AdminTotalScoreUiSideEffect
+import com.yapp.presentation.ui.admin.totalscore.AdminTotalScoreContract.AdminTotalScoreUiState
 
 
 @Composable
@@ -45,7 +48,7 @@ fun AdminTotalScore(
             YDSAppBar(
                 modifier = Modifier.background(AttendanceTheme.colors.backgroundColors.background),
                 title = stringResource(id = R.string.admin_total_score_title),
-                onClickBackButton = { viewModel.setEvent(AdminTotalScoreContract.AdminTotalScoreUiEvent.OnBackArrowClick) }
+                onClickBackButton = { viewModel.setEvent(AdminTotalScoreUiEvent.OnBackArrowClick) }
             )
         },
         modifier = Modifier
@@ -58,21 +61,21 @@ fun AdminTotalScore(
         LaunchedEffect(key1 = viewModel.effect) {
             viewModel.effect.collect { effect ->
                 when (effect) {
-                    is AdminTotalScoreContract.AdminTotalScoreUiSideEffect.NavigateToPreviousScreen -> navigateToPreviousScreen()
+                    is AdminTotalScoreUiSideEffect.NavigateToPreviousScreen -> navigateToPreviousScreen()
                 }
             }
         }
 
         Crossfade(targetState = uiState.value.loadState) {
             when (it) {
-                AdminTotalScoreContract.AdminTotalScoreUiState.LoadState.Loading -> YDSProgressBar()
-                AdminTotalScoreContract.AdminTotalScoreUiState.LoadState.Idle -> AdminTotalScoreScreen2(
+                AdminTotalScoreUiState.LoadState.Loading -> YDSProgressBar()
+                AdminTotalScoreUiState.LoadState.Idle -> AdminTotalScoreScreen2(
                     modifier = Modifier.padding(contentPadding),
                     uiState = uiState.value,
                     onEvent = { event -> viewModel.dispatchEvent(event) }
                 )
 
-                AdminTotalScoreContract.AdminTotalScoreUiState.LoadState.Error -> YDSEmptyScreen()
+                AdminTotalScoreUiState.LoadState.Error -> YDSEmptyScreen()
             }
         }
     }
@@ -82,8 +85,8 @@ fun AdminTotalScore(
 @Composable
 fun AdminTotalScoreScreen2(
     modifier: Modifier = Modifier,
-    uiState: AdminTotalScoreContract.AdminTotalScoreUiState,
-    onEvent: (AdminTotalScoreContract.AdminTotalScoreUiEvent) -> Unit,
+    uiState: AdminTotalScoreUiState,
+    onEvent: (AdminTotalScoreUiEvent) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier
@@ -102,7 +105,7 @@ fun AdminTotalScoreScreen2(
                     tabItems = uiState.tabLayoutState.items,
                     selectedIndex = uiState.tabLayoutState.selectedIndex,
                     onTabSelected = { selectedTabIndex ->
-                        onEvent(AdminTotalScoreContract.AdminTotalScoreUiEvent.OnTabItemSelected(selectedTabIndex))
+                        onEvent(AdminTotalScoreUiEvent.OnTabItemSelected(selectedTabIndex))
                     }
                 )
             }
@@ -141,7 +144,7 @@ fun AdminTotalScoreScreen2(
                         modifier = Modifier.animateItemPlacement(),
                         state = itemState,
                         onExpandClicked = { isExpanded, teamName, teamNumber ->
-                            onEvent(AdminTotalScoreContract.AdminTotalScoreUiEvent.OnTeamTypeHeaderItemClicked(teamName, teamNumber))
+                            onEvent(AdminTotalScoreUiEvent.OnTeamTypeHeaderItemClicked(teamName, teamNumber))
                         }
                     )
                     if (itemState.isExpanded) {
@@ -154,7 +157,7 @@ fun AdminTotalScoreScreen2(
                         modifier = Modifier.animateItemPlacement(),
                         state = itemState,
                         onExpandClicked = { isExpanded, position ->
-                            onEvent(AdminTotalScoreContract.AdminTotalScoreUiEvent.OnPositionTypeHeaderItemClicked(positionName = position))
+                            onEvent(AdminTotalScoreUiEvent.OnPositionTypeHeaderItemClicked(positionName = position))
                         }
                     )
                     if (itemState.isExpanded) {
