@@ -72,9 +72,9 @@ class FirebaseRemoteConfigDataSourceImpl @Inject constructor() : FirebaseRemoteC
         return suspendCancellableCoroutine { cancellableContinuation ->
             firebaseRemoteConfig.fetchAndActivate().addOnSuccessListener {
                 val entities = firebaseRemoteConfig.getString(RemoteConfigData.AttendanceSelectTeams.key)
-                        .let { jsonString ->
-                            Json.decodeFromString<List<TeamEntity>>(jsonString)
-                        }
+                    .let { jsonString ->
+                        Json.decodeFromString<List<TeamEntity>>(jsonString)
+                    }
 
                 cancellableContinuation.resume(value = entities, onCancellation = null)
             }.addOnFailureListener { exception ->
@@ -98,7 +98,7 @@ class FirebaseRemoteConfigDataSourceImpl @Inject constructor() : FirebaseRemoteC
         return suspendCancellableCoroutine { cancellableContinuation ->
             firebaseRemoteConfig.fetchAndActivate().addOnSuccessListener {
                 val shouldShowGuest = firebaseRemoteConfig.getString(RemoteConfigData.ShouldShowGuestButton.key)
-                        .toBooleanStrict()
+                    .toBooleanStrict()
 
                 cancellableContinuation.resume(shouldShowGuest)
             }.addOnFailureListener { exception ->
