@@ -92,7 +92,7 @@ fun MemberMain(
                             )
                         }
                         MemberMainContract.MemberMainUiSideEffect.NavigateToTeam -> {
-                            navigateToTeam.invoke()
+                            navigateToTeam()
                         }
                     }
                 }
