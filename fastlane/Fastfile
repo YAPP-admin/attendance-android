@@ -42,7 +42,7 @@ platform :android do
     gradle(task: "clean assembleDebug")
     firebase_app_distribution(
       app: ENV["FIREBASE_APP_ID_DEBUG"],
-      service_credentials_file: ENV["SERVICE_CREDENTIAL_FILE_PATH"],
+      service_credentials_file: "firebase_credentials.json",
       release_notes: options[:message],
       groups: "android",
       debug: "true"
