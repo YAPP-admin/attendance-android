@@ -98,7 +98,7 @@ class FirebaseRemoteConfigDataSourceImpl @Inject constructor() : FirebaseRemoteC
         return suspendCancellableCoroutine { cancellableContinuation ->
             firebaseRemoteConfig.fetchAndActivate().addOnSuccessListener {
                 val shouldShowGuest = firebaseRemoteConfig.getString(RemoteConfigData.ShouldShowGuestButton.key)
-                        .toBooleanStrict()
+                    .toBooleanStrict()
 
                 cancellableContinuation.resume(shouldShowGuest)
             }.addOnFailureListener { exception ->
