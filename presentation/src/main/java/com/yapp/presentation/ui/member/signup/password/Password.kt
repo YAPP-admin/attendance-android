@@ -51,9 +51,10 @@ import com.yapp.common.util.rememberKeyboardVisible
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.presentation.R
 import com.yapp.presentation.ui.member.signup.name.OnKeyboardNextButton
+import com.yapp.presentation.ui.member.signup.password.PasswordContract.PasswordSideEffect
+import com.yapp.presentation.ui.member.signup.password.PasswordContract.PasswordUiEvent
+import com.yapp.presentation.ui.member.signup.password.PasswordContract.PasswordUiState.Companion.PasswordDigit
 import kotlinx.coroutines.flow.collectLatest
-
-internal const val PasswordDigit = 4
 
 @Composable
 internal fun Password(
@@ -74,19 +75,19 @@ internal fun Password(
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collectLatest {
             when (it) {
-                is PasswordContract.PasswordSideEffect.ShowToast -> {
+                is PasswordSideEffect.ShowToast -> {
                     Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
                 }
 
-                PasswordContract.PasswordSideEffect.KeyboardHide -> {
+                PasswordSideEffect.KeyboardHide -> {
                     keyboardController?.hide()
                 }
 
-                PasswordContract.PasswordSideEffect.NavigateToNextScreen -> {
+                PasswordSideEffect.NavigateToNextScreen -> {
                     onClickNextButton()
                 }
 
-                PasswordContract.PasswordSideEffect.NavigateToPreviousScreen -> {
+                PasswordSideEffect.NavigateToPreviousScreen -> {
                     onClickBackButton()
                 }
             }
@@ -98,7 +99,7 @@ internal fun Password(
             YDSAppBar(
                 modifier = Modifier.background(AttendanceTheme.colors.backgroundColors.background),
                 onClickBackButton = {
-                    viewModel.setEvent(PasswordContract.PasswordUiEvent.OnBackButtonClick)
+                    viewModel.setEvent(PasswordUiEvent.OnBackButtonClick)
                 },
             )
         },
@@ -135,7 +136,7 @@ internal fun Password(
                         .focusRequester(focusRequester),
                     value = uiState.inputPassword,
                     onValueChange = {
-                        viewModel.setEvent(PasswordContract.PasswordUiEvent.InputPassword(it))
+                        viewModel.setEvent(PasswordUiEvent.InputPassword(it))
                     },
                     keyboardOptions = KeyboardOptions().copy(
                         keyboardType = KeyboardType.NumberPassword,
@@ -162,7 +163,7 @@ internal fun Password(
                     modifier = Modifier.align(Alignment.BottomCenter),
                     enabled = uiState.inputPassword.length == PasswordDigit,
                     onClickNextBtn = {
-                        viewModel.setEvent(PasswordContract.PasswordUiEvent.OnNextButtonClick)
+                        viewModel.setEvent(PasswordUiEvent.OnNextButtonClick)
                     },
                 )
             }

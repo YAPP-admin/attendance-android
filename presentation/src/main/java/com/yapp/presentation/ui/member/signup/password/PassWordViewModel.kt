@@ -4,6 +4,10 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.FirebaseNetworkException
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.usecases.CheckSignUpPasswordUseCase
+import com.yapp.presentation.ui.member.signup.password.PasswordContract.PasswordSideEffect
+import com.yapp.presentation.ui.member.signup.password.PasswordContract.PasswordUiEvent
+import com.yapp.presentation.ui.member.signup.password.PasswordContract.PasswordUiState
+import com.yapp.presentation.ui.member.signup.password.PasswordContract.PasswordUiState.Companion.PasswordDigit
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -11,22 +15,19 @@ import javax.inject.Inject
 @HiltViewModel
 internal class PassWordViewModel @Inject constructor(
     private val checkSignUpPasswordUseCase: CheckSignUpPasswordUseCase,
-) :
-    BaseViewModel<PasswordContract.PasswordUiState, PasswordContract.PasswordSideEffect, PasswordContract.PasswordUiEvent>(
-        PasswordContract.PasswordUiState()
-    ) {
+) : BaseViewModel<PasswordUiState, PasswordSideEffect, PasswordUiEvent>(PasswordUiState()) {
 
-    override suspend fun handleEvent(event: PasswordContract.PasswordUiEvent) {
+    override suspend fun handleEvent(event: PasswordUiEvent) {
         when (event) {
-            is PasswordContract.PasswordUiEvent.InputPassword -> {
+            is PasswordUiEvent.InputPassword -> {
                 updatePassword(password = event.password)
             }
 
-            PasswordContract.PasswordUiEvent.OnBackButtonClick -> {
-                setEffect(PasswordContract.PasswordSideEffect.NavigateToPreviousScreen)
+            PasswordUiEvent.OnBackButtonClick -> {
+                setEffect(PasswordSideEffect.NavigateToPreviousScreen)
             }
 
-            PasswordContract.PasswordUiEvent.OnNextButtonClick -> {
+            PasswordUiEvent.OnNextButtonClick -> {
                 checkPassword(password = currentState.inputPassword)
             }
         }
@@ -39,12 +40,12 @@ internal class PassWordViewModel @Inject constructor(
     }
 
     private fun checkPassword(password: String) = viewModelScope.launch {
-        setEffect(PasswordContract.PasswordSideEffect.KeyboardHide)
+        setEffect(PasswordSideEffect.KeyboardHide)
         checkSignUpPasswordUseCase(password)
             .onSuccess { isPasswordValid ->
                 when (isPasswordValid) {
                     true -> {
-                        setEffect(PasswordContract.PasswordSideEffect.NavigateToNextScreen)
+                        setEffect(PasswordSideEffect.NavigateToNextScreen)
                     }
 
                     false -> {
@@ -57,8 +58,9 @@ internal class PassWordViewModel @Inject constructor(
                 }
             }.onFailure { exception ->
                 if (exception is FirebaseNetworkException) {
-                    setEffect(PasswordContract.PasswordSideEffect.ShowToast("네트워크 연결을 확인해주세요"))
+                    setEffect(PasswordSideEffect.ShowToast("네트워크 연결을 확인해주세요"))
                 }
             }
     }
+    
 }

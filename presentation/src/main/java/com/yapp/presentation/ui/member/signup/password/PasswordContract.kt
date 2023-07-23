@@ -11,7 +11,11 @@ class PasswordContract {
         val inputPassword: String = "",
         val nextButtonEnabled: Boolean = false,
         val isWrong: Boolean = false,
-    ) : UiState
+    ) : UiState {
+        companion object {
+            const val PasswordDigit = 4
+        }
+    }
 
     sealed class PasswordSideEffect : UiSideEffect {
         object NavigateToPreviousScreen : PasswordSideEffect()
