@@ -6,7 +6,14 @@ import android.net.Uri
 import androidx.core.content.ContextCompat
 import com.yapp.presentation.BuildConfig
 
-fun intentToPlayStore(context: Context) {
+fun Context.intentToPlayStore() {
+    val packageName = packageName.takeIf { BuildConfig.DEBUG.not() } ?: packageName.replace(".debug", "")
+    Intent(Intent.ACTION_VIEW).apply {
+        data = Uri.parse("market://details?id=$packageName")
+    }.also { intent ->
+        ContextCompat.startActivity(this, intent, null)
+    }
+}
     val intent = Intent(Intent.ACTION_VIEW)
 
     var packageName = context.packageName
