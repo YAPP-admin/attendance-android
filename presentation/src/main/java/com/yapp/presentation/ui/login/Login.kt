@@ -69,7 +69,7 @@ fun Login(
                     }
 
                     is LoginUiSideEffect.NavigateToPlayStore -> {
-                        intentToPlayStore(context)
+                        context.intentToPlayStore()
                     }
                 }
             }

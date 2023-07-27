@@ -121,9 +121,7 @@ fun TodaySession(
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is TodaySessionUiSideEffect.NavigateToPlayStore -> {
-                    intentToPlayStore(context)
-                }
+                is TodaySessionUiSideEffect.NavigateToPlayStore -> context.intentToPlayStore()
             }
         }
     }
