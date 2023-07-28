@@ -7,6 +7,7 @@ import com.yapp.domain.usecases.CheckVersionUpdateUseCase
 import com.yapp.domain.usecases.GetMemberAttendancesUseCase
 import com.yapp.domain.usecases.GetUpcomingSessionUseCase
 import com.yapp.presentation.common.AttendanceBundle
+import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.DialogState.FAIL_INIT_LOAD
 import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.DialogState.NECESSARY_UPDATE
 import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.DialogState.NONE
 import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.DialogState.REQUIRE_UPDATE
@@ -49,6 +50,12 @@ class TodaySessionViewModel @Inject constructor(
             is TodaySessionUiEvent.OnCancelButtonClicked -> {
                 setState { copy(dialogState = NONE) }
             }
+
+            is TodaySessionUiEvent.OnExitButtonClicked -> {
+                setEffect(
+                    TodaySessionUiSideEffect.ExitProcess
+                )
+            }
         }
     }
 
@@ -64,12 +71,17 @@ class TodaySessionViewModel @Inject constructor(
                 getUpcomingSession()
             }
             .onFailure {
-                // TODO : 버전 로드 실패
+                setState {
+                    copy(
+                        loadState = LoadState.Error,
+                        dialogState = FAIL_INIT_LOAD
+                    )
+                }
             }
     }
 
     private suspend fun getMemberAttendances() = coroutineScope {
-        setState { this.copy(loadState = LoadState.Loading) }
+        setState { copy(loadState = LoadState.Loading) }
         getMemberAttendancesUseCase()
             .onSuccess { attendances ->
                 val attendance = attendances?.first { it.sessionId == uiState.value.sessionId }
@@ -85,7 +97,7 @@ class TodaySessionViewModel @Inject constructor(
                 }
             }
             .onFailure {
-                setState { this.copy(loadState = LoadState.Error) }
+                setState { copy(loadState = LoadState.Error) }
             }
     }
 
@@ -106,7 +118,7 @@ class TodaySessionViewModel @Inject constructor(
                 getMemberAttendances()
             }
             .onFailure {
-                setState { this.copy(loadState = LoadState.Error) }
+                setState { copy(loadState = LoadState.Error) }
             }
     }
 }

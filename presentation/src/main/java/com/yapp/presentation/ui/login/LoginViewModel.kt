@@ -10,6 +10,7 @@ import com.yapp.domain.usecases.CheckVersionUpdateUseCase
 import com.yapp.domain.usecases.GetCurrentMemberInfoUseCase
 import com.yapp.domain.usecases.SetMemberIdUseCase
 import com.yapp.domain.usecases.ShouldShowGuestButtonUseCase
+import com.yapp.presentation.ui.login.LoginContract.DialogState.FAIL_INIT_LOAD
 import com.yapp.presentation.ui.login.LoginContract.DialogState.NECESSARY_UPDATE
 import com.yapp.presentation.ui.login.LoginContract.DialogState.NONE
 import com.yapp.presentation.ui.login.LoginContract.DialogState.REQUIRE_UPDATE
@@ -59,7 +60,7 @@ class LoginViewModel @Inject constructor(
                 }
             }
             .onFailure {
-                // TODO : 버전 로드 실패
+                setState { copy(dialogState = FAIL_INIT_LOAD) }
             }
     }
 
@@ -179,6 +180,12 @@ class LoginViewModel @Inject constructor(
                 setMemberId(Random.nextLong())
                 setEffect(
                     LoginUiSideEffect.NavigateToSignUpScreen
+                )
+            }
+
+            is LoginUiEvent.OnExitButtonClicked -> {
+                setEffect(
+                    LoginUiSideEffect.ExitProcess
                 )
             }
         }

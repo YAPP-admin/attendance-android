@@ -21,15 +21,18 @@ class TodaySessionContract {
 
     sealed class TodaySessionUiSideEffect : UiSideEffect {
         object NavigateToPlayStore : TodaySessionUiSideEffect()
+        object ExitProcess : TodaySessionUiSideEffect()
     }
 
     sealed class TodaySessionUiEvent : UiEvent {
         object OnInitializeComposable : TodaySessionUiEvent()
         object OnUpdateButtonClicked : TodaySessionUiEvent()
         object OnCancelButtonClicked : TodaySessionUiEvent()
+        object OnExitButtonClicked : TodaySessionUiEvent()
     }
 
+    // NONE = 다이얼로그 미출력
     enum class DialogState {
-        NONE, REQUIRE_UPDATE, NECESSARY_UPDATE
+        NONE, REQUIRE_UPDATE, NECESSARY_UPDATE, FAIL_INIT_LOAD
     }
 }

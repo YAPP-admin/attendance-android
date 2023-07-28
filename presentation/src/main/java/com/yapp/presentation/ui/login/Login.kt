@@ -37,6 +37,7 @@ import com.yapp.presentation.ui.login.LoginContract.DialogState
 import com.yapp.presentation.ui.login.LoginContract.LoginUiEvent
 import com.yapp.presentation.ui.login.LoginContract.LoginUiSideEffect
 import com.yapp.presentation.util.intent.intentToPlayStore
+import kotlin.system.exitProcess
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -70,6 +71,10 @@ fun Login(
 
                     is LoginUiSideEffect.NavigateToPlayStore -> {
                         context.intentToPlayStore()
+                    }
+
+                    is LoginUiSideEffect.ExitProcess -> {
+                        exitProcess(0)
                     }
                 }
             }
@@ -126,6 +131,16 @@ fun Login(
                 positiveButtonText = stringResource(R.string.update_confirm),
                 onClickPositiveButton = { viewModel.setEvent(LoginUiEvent.OnUpdateButtonClicked) },
                 onClickNegativeButton = { viewModel.setEvent(LoginUiEvent.OnCancelButtonClicked) },
+                onDismiss = { }
+            )
+        }
+
+        DialogState.FAIL_INIT_LOAD -> {
+            YDSPopupDialog(
+                title = stringResource(R.string.fail_load_version_title),
+                content = stringResource(R.string.fail_load_version_content),
+                positiveButtonText = stringResource(R.string.Exit),
+                onClickPositiveButton = { viewModel.setEvent(LoginUiEvent.OnExitButtonClicked) },
                 onDismiss = { }
             )
         }

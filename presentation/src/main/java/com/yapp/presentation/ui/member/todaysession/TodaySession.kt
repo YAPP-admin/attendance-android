@@ -32,7 +32,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.layoutId
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.yapp.common.R
 import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.YDSAppBar
@@ -41,12 +40,13 @@ import com.yapp.common.yds.YDSPopupDialog
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.domain.model.Attendance
 import com.yapp.domain.model.Session
-import com.yapp.presentation.R.string
+import com.yapp.presentation.R
 import com.yapp.presentation.ui.AttendanceScreenRoute
 import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.DialogState
 import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.TodaySessionUiEvent
 import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.TodaySessionUiSideEffect
 import com.yapp.presentation.util.intent.intentToPlayStore
+import kotlin.system.exitProcess
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -87,9 +87,9 @@ fun TodaySession(
 
         DialogState.REQUIRE_UPDATE -> {
             YDSPopupDialog(
-                title = stringResource(string.required_update_title),
-                content = stringResource(string.required_update_content),
-                positiveButtonText = stringResource(string.update_confirm),
+                title = stringResource(R.string.required_update_title),
+                content = stringResource(R.string.required_update_content),
+                positiveButtonText = stringResource(R.string.update_confirm),
                 onClickPositiveButton = { viewModel.setEvent(TodaySessionUiEvent.OnUpdateButtonClicked) },
                 onDismiss = { }
             )
@@ -97,12 +97,22 @@ fun TodaySession(
 
         DialogState.NECESSARY_UPDATE -> {
             YDSPopupDialog(
-                title = stringResource(string.necessary_update_title),
-                content = stringResource(string.necessary_update_content),
-                negativeButtonText = stringResource(string.update_cancel),
-                positiveButtonText = stringResource(string.update_confirm),
+                title = stringResource(R.string.necessary_update_title),
+                content = stringResource(R.string.necessary_update_content),
+                negativeButtonText = stringResource(R.string.update_cancel),
+                positiveButtonText = stringResource(R.string.update_confirm),
                 onClickPositiveButton = { viewModel.setEvent(TodaySessionUiEvent.OnUpdateButtonClicked) },
                 onClickNegativeButton = { viewModel.setEvent(TodaySessionUiEvent.OnCancelButtonClicked) },
+                onDismiss = { }
+            )
+        }
+
+        DialogState.FAIL_INIT_LOAD -> {
+            YDSPopupDialog(
+                title = stringResource(R.string.fail_load_version_title),
+                content = stringResource(R.string.fail_load_version_content),
+                positiveButtonText = stringResource(R.string.Exit),
+                onClickPositiveButton = { viewModel.setEvent(TodaySessionUiEvent.OnExitButtonClicked) },
                 onDismiss = { }
             )
         }
@@ -122,6 +132,7 @@ fun TodaySession(
         viewModel.effect.collect { effect ->
             when (effect) {
                 is TodaySessionUiSideEffect.NavigateToPlayStore -> context.intentToPlayStore()
+                is TodaySessionUiSideEffect.ExitProcess -> exitProcess(0)
             }
         }
     }
@@ -137,12 +148,12 @@ private fun TodaysAttendance(attendanceType: Attendance.Status) {
     if (attendanceType == Attendance.Status.ABSENT) {
         imageRsc = R.drawable.illust_member_home_disabled
         iconRsc = R.drawable.icon_check_disabled
-        textRsc = string.today_session_attendance_before_text
+        textRsc = R.string.today_session_attendance_before_text
         textColor = AttendanceTheme.colors.grayScale.Gray600
     } else {
         imageRsc = R.drawable.illust_member_home_enabled
         iconRsc = R.drawable.icon_check_enabled
-        textRsc = string.today_session_attendance_after_text
+        textRsc = R.string.today_session_attendance_after_text
         textColor = AttendanceTheme.colors.mainColors.YappOrange
     }
 
@@ -198,7 +209,7 @@ private fun SessionDescriptionModal(session: Session?, modifier: Modifier) {
 
         Text(
             text = session?.title
-                ?: stringResource(id = string.admin_main_finish_all_sessions_text),
+                ?: stringResource(id = R.string.admin_main_finish_all_sessions_text),
             style = AttendanceTypography.h1,
             color = AttendanceTheme.colors.grayScale.Gray1000,
             modifier = Modifier.padding(top = 28.dp)

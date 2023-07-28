@@ -7,11 +7,14 @@
     <string name="login_kakao_login_text">카카오 로그인</string>
     <string name="Cancel">취소</string>
     <string name="Ok">확인</string>
+    <string name="Exit">종료</string>
 
     <string name="required_update_title">업데이트가 필요해요!</string>
     <string name="required_update_content">더 멋진 기능을 사용하기 위해\n지금 바로 업데이트를 진행해 주세요</string>
     <string name="necessary_update_title">새로운 버전이 업데이트 되었어요</string>
     <string name="necessary_update_content">야뿌의 사용성이 개선되었어요!\n지금 바로 확인해보세요</string>
+    <string name="fail_load_version_title">버전 정보를 불러오는 데 실패했어요</string>
+    <string name="fail_load_version_content">네트워크 환경 확인 후\n애플리케이션을 재실행해주세요</string>
     <string name="update_confirm">업데이트</string>
     <string name="update_cancel">다음에요</string>
 
