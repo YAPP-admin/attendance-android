@@ -3,9 +3,11 @@ package com.yapp.data.datasource
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
+import com.yapp.data.BuildConfig
 import com.yapp.data.model.ConfigEntity
 import com.yapp.data.model.SessionEntity
 import com.yapp.data.model.TeamEntity
+import com.yapp.data.model.VersionEntity
 import com.yapp.domain.firebase.RemoteConfigData
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -19,7 +21,9 @@ import kotlin.coroutines.resumeWithException
 class FirebaseRemoteConfigDataSourceImpl @Inject constructor() : FirebaseRemoteConfigDataSource {
 
     private val firebaseRemoteConfig = Firebase.remoteConfig
-    private val configSettings = remoteConfigSettings { minimumFetchIntervalInSeconds = 3600 }
+    private val configSettings = remoteConfigSettings {
+        minimumFetchIntervalInSeconds = if (BuildConfig.DEBUG) 60 else 3600
+    }
 
     init {
         firebaseRemoteConfig.setDefaultsAsync(RemoteConfigData.defaultMaps)
@@ -107,6 +111,18 @@ class FirebaseRemoteConfigDataSourceImpl @Inject constructor() : FirebaseRemoteC
         }
     }
 
+    override suspend fun getVersionInfo(): VersionEntity {
+        return suspendCancellableCoroutine { cancellableContinuation ->
+            firebaseRemoteConfig.fetchAndActivate().addOnSuccessListener {
+                val version = firebaseRemoteConfig.getString(RemoteConfigData.VersionInfo.key)
+                    .let { jsonString ->
+                        Json.decodeFromString<VersionEntity>(jsonString)
+                    }
+
+                cancellableContinuation.resume(version, null)
+            }
+        }
+    }
     override suspend fun getSignUpPassword(): String {
         return suspendCancellableCoroutine { cancellableContinuation ->
             firebaseRemoteConfig.fetchAndActivate().addOnSuccessListener {
@@ -117,5 +133,4 @@ class FirebaseRemoteConfigDataSourceImpl @Inject constructor() : FirebaseRemoteC
             }
         }
     }
-
 }

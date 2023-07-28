@@ -2,21 +2,30 @@ package com.yapp.presentation.ui.member.todaysession
 
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.model.Attendance
+import com.yapp.domain.model.types.VersionType
+import com.yapp.domain.usecases.CheckVersionUpdateUseCase
 import com.yapp.domain.usecases.GetMemberAttendancesUseCase
 import com.yapp.domain.usecases.GetUpcomingSessionUseCase
 import com.yapp.presentation.common.AttendanceBundle
+import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.DialogState.FAIL_INIT_LOAD
+import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.DialogState.NECESSARY_UPDATE
+import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.DialogState.NONE
+import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.DialogState.REQUIRE_UPDATE
 import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.LoadState
 import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.TodaySessionUiEvent
 import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.TodaySessionUiSideEffect
 import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.TodaySessionUiState
+import com.yapp.presentation.util.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 @HiltViewModel
 class TodaySessionViewModel @Inject constructor(
+    private val checkVersionUpdateUseCase: CheckVersionUpdateUseCase,
     private val getUpcomingSessionUseCase: GetUpcomingSessionUseCase,
     private val getMemberAttendancesUseCase: GetMemberAttendancesUseCase,
+    private val resourceProvider: ResourceProvider,
 ) : BaseViewModel<TodaySessionUiState, TodaySessionUiSideEffect, TodaySessionUiEvent>(
     TodaySessionUiState()
 ) {
@@ -24,13 +33,55 @@ class TodaySessionViewModel @Inject constructor(
     override suspend fun handleEvent(event: TodaySessionUiEvent) {
         when (event) {
             is TodaySessionUiEvent.OnInitializeComposable -> {
-                getUpcomingSession()
+                checkRequireVersionUpdate()
+            }
+
+            is TodaySessionUiEvent.OnUpdateButtonClicked -> {
+                setEffect(
+                    TodaySessionUiSideEffect.NavigateToPlayStore
+                )
+
+                // 강제 업데이트가 필요하지 않은 경우 '업데이트' 버튼 클릭 시 다이얼로그를 닫는다.
+                if (currentState.dialogState == NECESSARY_UPDATE) {
+                    setState { copy(dialogState = NONE) }
+                }
+            }
+
+            is TodaySessionUiEvent.OnCancelButtonClicked -> {
+                setState { copy(dialogState = NONE) }
+            }
+
+            is TodaySessionUiEvent.OnExitButtonClicked -> {
+                setEffect(
+                    TodaySessionUiSideEffect.ExitProcess
+                )
             }
         }
     }
 
+    private suspend fun checkRequireVersionUpdate() {
+        checkVersionUpdateUseCase(resourceProvider.getVersionCode())
+            .onSuccess { versionType ->
+                when (versionType) {
+                    VersionType.NOT_REQUIRED -> Unit
+                    VersionType.REQUIRED -> setState { copy(dialogState = REQUIRE_UPDATE) }
+                    VersionType.UPDATED_BUT_NOT_REQUIRED -> setState { copy(dialogState = NECESSARY_UPDATE) }
+                }
+
+                getUpcomingSession()
+            }
+            .onFailure {
+                setState {
+                    copy(
+                        loadState = LoadState.Error,
+                        dialogState = FAIL_INIT_LOAD
+                    )
+                }
+            }
+    }
+
     private suspend fun getMemberAttendances() = coroutineScope {
-        setState { this.copy(loadState = LoadState.Loading) }
+        setState { copy(loadState = LoadState.Loading) }
         getMemberAttendancesUseCase()
             .onSuccess { attendances ->
                 val attendance = attendances?.first { it.sessionId == uiState.value.sessionId }
@@ -46,7 +97,7 @@ class TodaySessionViewModel @Inject constructor(
                 }
             }
             .onFailure {
-                setState { this.copy(loadState = LoadState.Error) }
+                setState { copy(loadState = LoadState.Error) }
             }
     }
 
@@ -67,7 +118,7 @@ class TodaySessionViewModel @Inject constructor(
                 getMemberAttendances()
             }
             .onFailure {
-                setState { this.copy(loadState = LoadState.Error) }
+                setState { copy(loadState = LoadState.Error) }
             }
     }
 }

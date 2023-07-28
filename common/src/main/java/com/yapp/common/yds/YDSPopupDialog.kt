@@ -40,9 +40,9 @@ fun YDSPopupDialog(
     title: String,
     content: String,
     modifier: Modifier = Modifier,
-    negativeButtonText: String,
+    negativeButtonText: String? = null,
     positiveButtonText: String,
-    onClickNegativeButton: () -> Unit,
+    onClickNegativeButton: (() -> Unit)? = null,
     onClickPositiveButton: () -> Unit,
     editTextInitValue: String = "",
     editTextHint: String? = null,
@@ -127,31 +127,38 @@ fun YDSPopupDialog(
                 Row(
                     modifier = Modifier.padding(top = 18.dp)
                 ) {
-                    Button(
-                        onClick = onClickNegativeButton,
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(46.dp)
-                            .padding(end = 6.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = AttendanceTheme.colors.grayScale.Gray200
-                        ),
-                        shape = RoundedCornerShape(10.dp),
-                        elevation = null
-                    ) {
-                        Text(
-                            text = negativeButtonText,
-                            style = AttendanceTypography.body1,
-                            color = AttendanceTheme.colors.grayScale.Gray800
-                        )
+                    if (onClickNegativeButton != null && negativeButtonText != null) {
+                        Button(
+                            onClick = onClickNegativeButton,
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(46.dp)
+                                .padding(end = 6.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = AttendanceTheme.colors.grayScale.Gray200
+                            ),
+                            shape = RoundedCornerShape(10.dp),
+                            elevation = null
+                        ) {
+                            Text(
+                                text = negativeButtonText,
+                                style = AttendanceTypography.body1,
+                                color = AttendanceTheme.colors.grayScale.Gray800
+                            )
+                        }
                     }
+
+                    val positiveButtonPadding =
+                        if (onClickNegativeButton != null && negativeButtonText != null)
+                            Modifier.padding(horizontal = 12.dp)
+                        else Modifier.padding(start = 6.dp)
 
                     Button(
                         onClick = onClickPositiveButton,
                         modifier = Modifier
                             .weight(1f)
                             .height(46.dp)
-                            .padding(start = 6.dp),
+                            .then(positiveButtonPadding),
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = AttendanceTheme.colors.etcColors.EtcRed // EtcRed or YappOrange
                         ),
