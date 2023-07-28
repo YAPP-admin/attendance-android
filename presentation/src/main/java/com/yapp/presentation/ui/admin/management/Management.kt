@@ -6,7 +6,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -34,7 +33,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.Path
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,8 +56,8 @@ import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementSt
 import com.yapp.presentation.ui.admin.management.ManagementContract.ManagementState.LoadState.Loading
 import com.yapp.presentation.ui.admin.management.components.attendanceBottomSheet.AttendanceBottomSheetItemLayout
 import com.yapp.presentation.ui.admin.management.components.attendanceBottomSheet.AttendanceBottomSheetItemLayoutState
-import com.yapp.presentation.ui.admin.management.components.foldableItem.foldableContentItem.FoldableContentItemState
-import com.yapp.presentation.ui.admin.management.components.foldableItem.foldableContentItem.FoldableItemContentLayout
+import com.yapp.presentation.ui.admin.management.components.foldableItem.foldableContentItem.FoldableContentButtonTypeItem
+import com.yapp.presentation.ui.admin.management.components.foldableItem.foldableContentItem.FoldableContentItemWithButtonState
 import com.yapp.presentation.ui.admin.management.components.foldableItem.foldableHeaderItem.FoldableHeaderItem
 import com.yapp.presentation.ui.admin.management.components.statisticalTable.StatisticalTableLayout
 import com.yapp.presentation.ui.admin.management.components.tablayout.YDSTabLayout
@@ -228,7 +226,7 @@ internal fun ManagementScreen(
                                 itemState.label
                             }
 
-                            is FoldableContentItemState -> {
+                            is FoldableContentItemWithButtonState -> {
                                 itemState.memberId
                             }
 
@@ -264,8 +262,8 @@ internal fun ManagementScreen(
                                 }
                             }
 
-                            is FoldableContentItemState -> {
-                                FoldableItemContentLayout(
+                            is FoldableContentItemWithButtonState -> {
+                                FoldableContentButtonTypeItem(
                                     modifier = Modifier.animateItemPlacement(),
                                     state = itemState,
                                     onDropDownClicked = {
@@ -285,7 +283,6 @@ internal fun ManagementScreen(
                 }
             }
         }
-
     }
 }
 

@@ -1,40 +1,27 @@
 package com.yapp.presentation.ui.admin.totalscore
 
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
 import com.yapp.common.base.UiEvent
 import com.yapp.common.base.UiSideEffect
 import com.yapp.common.base.UiState
-import com.yapp.domain.model.collections.AttendanceList
+import com.yapp.presentation.ui.admin.management.components.foldableItem.FoldableItemState
+import com.yapp.presentation.ui.admin.management.dto.ManagementTabLayoutState
+import com.yapp.presentation.ui.admin.totalscore.dto.AdminTotalScoreSharedData
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 class AdminTotalScoreContract {
 
     data class AdminTotalScoreUiState(
-        val loadState: LoadState = LoadState.Idle,
-        val sectionItemStates: ImmutableList<SectionItemState> = persistentListOf(),
-        val sectionType: SectionType = SectionType.Team,
-        val lastSessionId: Int = AttendanceList.DEFAULT_UPCOMING_SESSION_ID,
+        val shared: AdminTotalScoreSharedData = AdminTotalScoreSharedData(),
+        val loadState: LoadState = LoadState.Loading,
+        val tabLayoutState: ManagementTabLayoutState = ManagementTabLayoutState.init(),
+        val foldableItemStates: ImmutableList<FoldableItemState> = persistentListOf()
     ) : UiState {
+
         enum class LoadState {
             Loading, Idle, Error
         }
 
-        @Immutable
-        data class SectionItemState(
-            val sectionName: String,
-            val members: ImmutableList<MemberState>,
-        )
-
-        data class MemberState(
-            val name: String,
-            val totalScore: Int = 100,
-        )
-
-        enum class SectionType {
-            Team, Position
-        }
     }
 
     sealed class AdminTotalScoreUiSideEffect : UiSideEffect {
@@ -43,7 +30,8 @@ class AdminTotalScoreContract {
 
     sealed class AdminTotalScoreUiEvent : UiEvent {
         object OnBackArrowClick : AdminTotalScoreUiEvent()
-        class OnSectionTypeChange(val sectionType: AdminTotalScoreUiState.SectionType) :
-            AdminTotalScoreUiEvent()
+        class OnTabItemSelected(val tabIndex: Int) : AdminTotalScoreUiEvent()
+        class OnPositionTypeHeaderItemClicked(val positionName: String) : AdminTotalScoreUiEvent()
+        class OnTeamTypeHeaderItemClicked(val teamName: String, val teamNumber: Int) : AdminTotalScoreUiEvent()
     }
 }
