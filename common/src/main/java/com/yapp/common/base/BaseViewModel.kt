@@ -32,7 +32,7 @@ abstract class BaseViewModel<S : UiState, A : UiSideEffect, E : UiEvent>(
         dispatchEvent(event)
     }
 
-    fun dispatchEvent(event: E) = viewModelScope.launch {
+    private fun dispatchEvent(event: E) = viewModelScope.launch {
         handleEvent(event)
     }
 
