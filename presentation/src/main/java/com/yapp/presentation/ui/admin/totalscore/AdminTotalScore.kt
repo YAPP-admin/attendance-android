@@ -66,13 +66,13 @@ fun AdminTotalScore(
             }
         }
 
-        Crossfade(targetState = uiState.value.loadState) {
+        Crossfade(targetState = uiState.value.loadState, label = "") {
             when (it) {
                 AdminTotalScoreUiState.LoadState.Loading -> YDSProgressBar()
                 AdminTotalScoreUiState.LoadState.Idle -> AdminTotalScoreScreen(
                     modifier = Modifier.padding(contentPadding),
                     uiState = uiState.value,
-                    onEvent = { event -> viewModel.dispatchEvent(event) }
+                    onEvent = { event -> viewModel.setEvent(event) }
                 )
 
                 AdminTotalScoreUiState.LoadState.Error -> YDSEmptyScreen()
