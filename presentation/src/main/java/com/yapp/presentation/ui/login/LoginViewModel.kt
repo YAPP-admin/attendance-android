@@ -4,13 +4,22 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.common.KakaoSdkProviderInterface
+import com.yapp.domain.model.types.VersionType
 import com.yapp.domain.usecases.CheckAdminPasswordUseCase
+import com.yapp.domain.usecases.CheckVersionUpdateUseCase
 import com.yapp.domain.usecases.GetCurrentMemberInfoUseCase
 import com.yapp.domain.usecases.SetMemberIdUseCase
 import com.yapp.domain.usecases.ShouldShowGuestButtonUseCase
+import com.yapp.presentation.ui.login.LoginContract.DialogState
+import com.yapp.presentation.ui.login.LoginContract.DialogState.FAIL_INIT_LOAD
+import com.yapp.presentation.ui.login.LoginContract.DialogState.INSERT_CODE_NUMBER
+import com.yapp.presentation.ui.login.LoginContract.DialogState.NECESSARY_UPDATE
+import com.yapp.presentation.ui.login.LoginContract.DialogState.NONE
+import com.yapp.presentation.ui.login.LoginContract.DialogState.REQUIRE_UPDATE
 import com.yapp.presentation.ui.login.LoginContract.LoginUiEvent
 import com.yapp.presentation.ui.login.LoginContract.LoginUiSideEffect
 import com.yapp.presentation.ui.login.LoginContract.LoginUiState
+import com.yapp.presentation.util.ResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -25,21 +34,36 @@ import kotlin.random.Random
  */
 @HiltViewModel
 class LoginViewModel @Inject constructor(
+    private val checkVersionUpdateUseCase: CheckVersionUpdateUseCase,
     private val setMemberIdUseCase: SetMemberIdUseCase,
     private val getCurrentMemberInfoUseCase: GetCurrentMemberInfoUseCase,
     private val checkAdminPasswordUseCase: CheckAdminPasswordUseCase,
     private val shouldShowGuestButtonUseCase: ShouldShowGuestButtonUseCase,
-    private val kakaoSdkProvider: KakaoSdkProviderInterface
-) :
-    BaseViewModel<LoginUiState, LoginUiSideEffect, LoginUiEvent>(
-        LoginUiState()
-    ) {
+    private val kakaoSdkProvider: KakaoSdkProviderInterface,
+    private val resourceProvider: ResourceProvider,
+) : BaseViewModel<LoginUiState, LoginUiSideEffect, LoginUiEvent>(LoginUiState()) {
+
     init {
         viewModelScope.launch {
+            checkRequireVersionUpdate()
             shouldShowGuestButtonUseCase()
                 .onSuccess { setState { copy(isGuestButtonVisible = it) } }
                 .onFailure { FirebaseCrashlytics.getInstance().recordException(it) }
         }
+    }
+
+    private suspend fun checkRequireVersionUpdate() {
+        checkVersionUpdateUseCase(resourceProvider.getVersionCode())
+            .onSuccess { versionType ->
+                when (versionType) {
+                    VersionType.NOT_REQUIRED -> Unit
+                    VersionType.REQUIRED -> setState { copy(dialogState = REQUIRE_UPDATE) }
+                    VersionType.UPDATED_BUT_NOT_REQUIRED -> setState { copy(dialogState = NECESSARY_UPDATE) }
+                }
+            }
+            .onFailure {
+                setState { copy(dialogState = FAIL_INIT_LOAD) }
+            }
     }
 
     private fun kakaoLogin() {
@@ -73,7 +97,7 @@ class LoginViewModel @Inject constructor(
     private suspend fun validateRegisteredUser() {
         getCurrentMemberInfoUseCase()
             .onSuccess { currentMemberInfo ->
-                if(currentMemberInfo == null) {
+                if (currentMemberInfo == null) {
                     // 존재하지 않는다면, signup 화면으로 이동한다.
                     setEffect(LoginUiSideEffect.NavigateToSignUpScreen)
                     return@onSuccess
@@ -131,15 +155,26 @@ class LoginViewModel @Inject constructor(
             is LoginUiEvent.OnYappuImageClicked -> {
                 setState {
                     if (this.clickCount == HIDDEN_CONDITION) {
-                        this.copy(clickCount = 0, isDialogVisible = true)
+                        this.copy(clickCount = 0, dialogState = INSERT_CODE_NUMBER)
                     } else {
                         this.copy(clickCount = this.clickCount + 1)
                     }
                 }
             }
 
+            is LoginUiEvent.OnUpdateButtonClicked -> {
+                setEffect(
+                    LoginUiSideEffect.NavigateToPlayStore
+                )
+
+                // 강제 업데이트가 필요하지 않은 경우 '업데이트' 버튼 클릭 시 다이얼로그를 닫는다.
+                if (currentState.dialogState == NECESSARY_UPDATE) {
+                    setState { copy(dialogState = NONE) }
+                }
+            }
+
             is LoginUiEvent.OnCancelButtonClicked -> {
-                setState { copy(isDialogVisible = false) }
+                setState { copy(dialogState = NONE) }
             }
 
             is LoginUiEvent.OnGuestButtonClicked -> {
@@ -147,6 +182,12 @@ class LoginViewModel @Inject constructor(
                 setMemberId(Random.nextLong())
                 setEffect(
                     LoginUiSideEffect.NavigateToSignUpScreen
+                )
+            }
+
+            is LoginUiEvent.OnExitButtonClicked -> {
+                setEffect(
+                    LoginUiSideEffect.ExitProcess
                 )
             }
         }

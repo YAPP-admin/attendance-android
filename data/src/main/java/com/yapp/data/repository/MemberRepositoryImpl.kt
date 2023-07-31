@@ -60,10 +60,10 @@ class MemberRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun getAllMember(): Flow<Result<List<Member>>> {
+    override fun getAllMember(): Flow<List<Member>> {
         return memberRemoteDataSource.getAllMember()
             .map { entities ->
-                Result.success(entities.map { it.toDomain() })
+                entities.map { it.toDomain() }
             }
     }
 

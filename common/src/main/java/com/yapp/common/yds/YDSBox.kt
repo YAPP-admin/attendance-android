@@ -24,7 +24,6 @@ fun YDSBox(
         modifier = modifier
             .fillMaxWidth()
             .height(48.dp)
-            .padding(horizontal = 24.dp)
             .clip(shape = RoundedCornerShape(10.dp))
             .background(color = AttendanceTheme.colors.mainColors.YappOrangeAlpha)
     ) {

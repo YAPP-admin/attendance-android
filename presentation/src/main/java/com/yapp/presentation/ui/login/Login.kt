@@ -33,8 +33,11 @@ import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.YDSPopupDialog
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.presentation.R
+import com.yapp.presentation.ui.login.LoginContract.DialogState
 import com.yapp.presentation.ui.login.LoginContract.LoginUiEvent
 import com.yapp.presentation.ui.login.LoginContract.LoginUiSideEffect
+import com.yapp.presentation.util.intent.intentToPlayStore
+import kotlin.system.exitProcess
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -64,6 +67,14 @@ fun Login(
 
                     is LoginUiSideEffect.NavigateToAdminScreen -> {
                         navigateToAdminScreen()
+                    }
+
+                    is LoginUiSideEffect.NavigateToPlayStore -> {
+                        context.intentToPlayStore()
+                    }
+
+                    is LoginUiSideEffect.ExitProcess -> {
+                        exitProcess(0)
                     }
                 }
             }
@@ -99,21 +110,57 @@ fun Login(
         }
     }
 
-    if (uiState.isDialogVisible) {
-        var password by remember { mutableStateOf("") }
-        YDSPopupDialog(
-            title = stringResource(id = R.string.login_admin_title),
-            modifier = Modifier.imePadding(),
-            content = stringResource(id = R.string.login_admin_content),
-            negativeButtonText = stringResource(id = R.string.Cancel),
-            positiveButtonText = stringResource(id = R.string.Ok),
-            onClickPositiveButton = { viewModel.adminLogin(password) },
-            onClickNegativeButton = { viewModel.setEvent(LoginUiEvent.OnCancelButtonClicked) },
-            editTextInitValue = password,
-            editTextChangedListener = { password = it },
-            editTextHint = stringResource(id = R.string.login_admin_password_placeholder),
-            onDismiss = { }
-        )
+    when (uiState.dialogState) {
+        DialogState.NONE -> Unit
+
+        DialogState.REQUIRE_UPDATE -> {
+            YDSPopupDialog(
+                title = stringResource(R.string.required_update_title),
+                content = stringResource(R.string.required_update_content),
+                positiveButtonText = stringResource(R.string.update_confirm),
+                onClickPositiveButton = { viewModel.setEvent(LoginUiEvent.OnUpdateButtonClicked) },
+                onDismiss = { }
+            )
+        }
+
+        DialogState.NECESSARY_UPDATE -> {
+            YDSPopupDialog(
+                title = stringResource(R.string.necessary_update_title),
+                content = stringResource(R.string.necessary_update_content),
+                negativeButtonText = stringResource(R.string.update_cancel),
+                positiveButtonText = stringResource(R.string.update_confirm),
+                onClickPositiveButton = { viewModel.setEvent(LoginUiEvent.OnUpdateButtonClicked) },
+                onClickNegativeButton = { viewModel.setEvent(LoginUiEvent.OnCancelButtonClicked) },
+                onDismiss = { }
+            )
+        }
+
+        DialogState.FAIL_INIT_LOAD -> {
+            YDSPopupDialog(
+                title = stringResource(R.string.fail_load_version_title),
+                content = stringResource(R.string.fail_load_version_content),
+                positiveButtonText = stringResource(R.string.Exit),
+                onClickPositiveButton = { viewModel.setEvent(LoginUiEvent.OnExitButtonClicked) },
+                onDismiss = { }
+            )
+        }
+
+        DialogState.INSERT_CODE_NUMBER -> {
+            var password by remember { mutableStateOf("") }
+            YDSPopupDialog(
+                title = stringResource(id = R.string.login_admin_title),
+                modifier = Modifier.imePadding(),
+                content = stringResource(id = R.string.login_admin_content),
+                negativeButtonText = stringResource(id = R.string.Cancel),
+                positiveButtonText = stringResource(id = R.string.Ok),
+                onClickPositiveButton = { viewModel.adminLogin(password) },
+                onClickNegativeButton = { viewModel.setEvent(LoginUiEvent.OnCancelButtonClicked) },
+                editTextInitValue = password,
+                editTextChangedListener = { password = it },
+                editTextHint = stringResource(id = R.string.login_admin_password_placeholder),
+                onDismiss = { }
+            )
+        }
     }
 }
 

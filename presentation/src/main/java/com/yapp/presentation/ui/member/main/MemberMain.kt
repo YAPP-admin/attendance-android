@@ -16,6 +16,7 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -30,8 +31,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.insets.systemBarsPadding
+import com.yapp.common.flow.collectAsStateWithLifecycle
 import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
+import com.yapp.common.yds.YDSPopupDialog
 import com.yapp.presentation.R
 import com.yapp.presentation.ui.AttendanceScreenRoute
 import com.yapp.presentation.ui.SetStatusBarColorByRoute
@@ -39,13 +42,16 @@ import com.yapp.presentation.ui.member.score.MemberScore
 import com.yapp.presentation.ui.member.todaysession.TodaySession
 
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MemberMain(
     scaffoldState: ScaffoldState = rememberScaffoldState(),
     viewModel: MemberMainViewModel = hiltViewModel(),
     navigateToScreen: (String) -> Unit,
+    navigateToTeam: () -> Unit
 ) {
     val childNavController = rememberNavController()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     AttendanceTheme {
         Scaffold(
@@ -62,6 +68,19 @@ fun MemberMain(
             backgroundColor = AttendanceTheme.colors.backgroundColors.backgroundBase
         ) { innerPadding ->
 
+
+            if(uiState.isShowTeamDialog) {
+                YDSPopupDialog(
+                    title = stringResource(id = R.string.member_need_select_team),
+                    content = stringResource(id = R.string.member_need_select_team_description),
+                    negativeButtonText = stringResource(id = R.string.member_need_select_team_next_time),
+                    positiveButtonText = stringResource(id = R.string.member_setting_select_team),
+                    onClickNegativeButton = { viewModel.setEvent(MemberMainContract.MemberMainUiEvent.OnNextTime) },
+                    onClickPositiveButton = { viewModel.setEvent(MemberMainContract.MemberMainUiEvent.OnSelectTeamScreen) },
+                    onDismiss = { viewModel.setEvent(MemberMainContract.MemberMainUiEvent.OnNextTime) }
+                )
+            }
+
             LaunchedEffect(key1 = viewModel.effect) {
                 viewModel.effect.collect { uiEffect ->
                     when (uiEffect) {
@@ -71,6 +90,9 @@ fun MemberMain(
                                 navController = childNavController,
                                 tab = uiEffect.tab
                             )
+                        }
+                        MemberMainContract.MemberMainUiSideEffect.NavigateToTeam -> {
+                            navigateToTeam()
                         }
                     }
                 }

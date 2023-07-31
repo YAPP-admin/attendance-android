@@ -3,6 +3,7 @@ package com.yapp.domain.repository
 import com.yapp.domain.model.Config
 import com.yapp.domain.model.Session
 import com.yapp.domain.model.Team
+import com.yapp.domain.model.Version
 
 
 interface RemoteConfigRepository {
@@ -12,4 +13,6 @@ interface RemoteConfigRepository {
     suspend fun getTeamList(): Result<List<Team>>
     suspend fun getQrPassword(): Result<String>
     suspend fun shouldShowGuestButton(): Result<Boolean>
+    suspend fun getVersionInfo(): Result<Version>
+    suspend fun getSignUpPassword(): Result<String>
 }

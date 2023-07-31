@@ -87,7 +87,7 @@ class MemberRemoteDataSourceImpl @Inject constructor(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override suspend fun getAllMember(): Flow<List<MemberEntity>> {
+    override fun getAllMember(): Flow<List<MemberEntity>> {
         return callbackFlow {
             val fsRef = fireStore.memberRef()
             val listener = fsRef.addSnapshotListener { snapshot, error ->

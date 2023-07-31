@@ -1,0 +1,122 @@
+name: Android CD
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  if_merged:
+
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: PR merged
+        run: echo "PR merged"
+
+  checkout:
+    needs: if_merged
+    runs-on: ubuntu-latest
+    env:
+      KAKAO_NATIVE_API_KEY: ${{ secrets.KAKAO_NATIVE_API_KEY }}
+      PLAY_STORE_API_KEY: ${{ secrets.GOOGLE_CLOUD_JSON }}
+      FASTLANE_ENV: ${{ secrets.FASTLANE_ENV }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+        
+    - name: Access KAKAO_NATIVE_API_KEY
+      run: |
+        # 카카오 키값 local.properties에 파일 만듦
+        echo KAKAO_NATIVE_API_KEY=\"$KAKAO_NATIVE_API_KEY\" >> ./local.properties
+        
+        # 구글 스토어 json 키값 파일 만듦
+        echo PLAY_STORE_API_KEY=\"$PLAY_STORE_API_KEY\" >> ./.github/api-play-store-key.json
+
+      working-directory: ${{ env.working-directory }}
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle
+      run: ./gradlew build
+
+  check_pr_labels:
+    needs: checkout
+    uses: ./.github/workflows/check_pr_label.yml
+
+  commit-message:
+    needs: check_pr_labels
+    runs-on: ubuntu-latest
+    outputs:
+      message: ${{steps.get_pull_request_last_comment.output.COMMENT}}
+    steps:
+      - id: get_pull_request_last_comment
+        name: GET PR Last Comment
+        run: |
+          # PR 마지막 코멘트를 가져와서 디스트리뷰션 title 로 사용
+          pull_request_comment=$(curl \
+          --fail \
+          -H "Accept: application/vnd.github.groot-preview+json" \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          "${{ github.event.pull_request._links.comments.href }}" \
+          | jq -r ".[-1] | .body")
+          # comments 출력
+          echo "::set-output name=COMMENT::$pull_request_comment"
+
+  build_debug:
+    if: ${{ needs.check_pr_labels.outputs.debug }}
+    needs: commit-message
+    runs-on: ubuntu-latest
+    steps:
+      - name: Make env file
+        run: |
+          # fastlane 디렉토리 추가
+          mkdir ./fastlane
+          
+          # fastlane fastfile
+          echo FASTLANE_FASTFILE=\"$FASTLANE_FASTFILE\" >> ./fastlane/Fastfile
+          
+          # fastlane pluginfile
+          echo FASTLANE_PLUGIN_FILE=\"$FASTLANE_PLUGIN_FILE\" >> ./fastlane/Pluginfile
+          
+          # fastlane FASTLANE_APP_FILE
+          echo FASTLANE_APP_FILE=\"$FASTLANE_APP_FILE\" >> ./fastlane/Appfile
+          
+          # Gemfile
+          echo GEMFILE=\"$GEMFILE\" >> ./Gemfile
+          
+          # fastlane evn 파일 만듦
+          echo FASTLANE_ENV=\"$FASTLANE_ENV\" >> ./fastlane/.env
+          
+      - name: Install fastlane
+        run: gem install fastlane --user-install
+        working-directory: ./fastlane
+
+      - name: Install bundle
+        run: gem install bundler --user-install
+        working-directory: ./fastlane
+
+      - name: Add gem binary directory to PATH
+        run: echo "export PATH=$HOME/.gem/bin:$PATH" >> $GITHUB_ENV
+
+      - name: Set Gem environment variables
+        run: |
+          export GEM_HOME="$HOME/.gem"
+          export PATH="$HOME/.gem/bin:$PATH"
+
+      - name: Run bundle install
+        run: bundle install --user-install
+        working-directory: ./fastlane
+
+      - name: Install Firebase app distribution plugin
+        run: fastlane add_plugin firebase_app_distribution
+
+      - name: Fastlane debug
+        run: fastlane distribute_debug "message:${{ needs.commit_message.outputs.message }}" --env common
+        working-directory: ./fastlane

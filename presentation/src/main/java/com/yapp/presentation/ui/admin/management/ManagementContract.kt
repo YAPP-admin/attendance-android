@@ -4,40 +4,41 @@ import com.yapp.common.base.UiEvent
 import com.yapp.common.base.UiSideEffect
 import com.yapp.common.base.UiState
 import com.yapp.domain.model.Attendance
+import com.yapp.presentation.ui.admin.management.components.attendanceBottomSheet.AttendanceBottomSheetItemLayoutState
+import com.yapp.presentation.ui.admin.management.components.foldableItem.FoldableItemState
+import com.yapp.presentation.ui.admin.management.components.statisticalTable.StatisticalTableLayoutState
+import com.yapp.presentation.ui.admin.management.dto.ManagementSharedData
+import com.yapp.presentation.ui.admin.management.dto.ManagementTabLayoutState
+import com.yapp.presentation.ui.admin.management.dto.ManagementTopBarLayoutState
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 
 class ManagementContract {
+
     data class ManagementState(
-        val loadState: LoadState = LoadState.Idle,
-        val sessionId: Int = 0,
-        val sessionTitle: String = "",
-        val memberCount: Int = 0,
-        val selectedMember: MemberState? = null,
-        val teams: List<TeamState> = emptyList(),
+        val shared: ManagementSharedData = ManagementSharedData(),
+        val loadState: LoadState = LoadState.Loading,
+        val topBarState: ManagementTopBarLayoutState = ManagementTopBarLayoutState(),
+        val attendanceStatisticalTableState: StatisticalTableLayoutState = StatisticalTableLayoutState(),
+        val tabLayoutState: ManagementTabLayoutState = ManagementTabLayoutState.init(),
+        val foldableItemStates: ImmutableList<FoldableItemState> = persistentListOf(),
+        val bottomSheetDialogState: ImmutableList<AttendanceBottomSheetItemLayoutState> = persistentListOf()
     ) : UiState {
 
         enum class LoadState {
             Loading, Idle, Error
         }
 
-        data class TeamState(
-            val teamName: String = "",
-            val members: List<MemberState> = emptyList(),
-        )
-
-        data class MemberState(
-            val id: Long = 0L,
-            val name: String = "",
-            val attendance: Attendance = Attendance(sessionId = 0, status = Attendance.Status.NORMAL),
-        )
     }
 
     sealed class ManagementEvent : UiEvent {
-        data class OnDropDownButtonClicked(val member: ManagementState.MemberState) : ManagementEvent()
-        data class OnAttendanceTypeChanged(val attendanceType: Attendance.Status) : ManagementEvent()
+        class OnTabItemSelected(val tabIndex: Int) : ManagementEvent()
+        class OnAttendanceTypeChanged(val memberId: Long, val attendanceType: Attendance.Status) : ManagementEvent()
+        class OnDeleteMemberClicked(val memberId: Long) : ManagementEvent()
+        class OnPositionTypeHeaderItemClicked(val positionName: String) : ManagementEvent()
+        class OnTeamTypeHeaderItemClicked(val teamName: String, val teamNumber: Int) : ManagementEvent()
     }
 
-    sealed class ManagementSideEffect : UiSideEffect {
-        object OpenBottomSheetDialog : ManagementSideEffect()
-    }
+    sealed class ManagementSideEffect : UiSideEffect
 }

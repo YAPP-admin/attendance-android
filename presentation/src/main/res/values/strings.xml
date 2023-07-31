@@ -1,10 +1,22 @@
 <resources>
     <!-- convention -->
     <!-- screen name_description_component name -->
+    <string name="com.google.firebase.crashlytics.mapping_file_id">none</string>
+
     <string name="login_attendance_introduce_text">3초만에 끝나는\n간편한 출석체크</string>
     <string name="login_kakao_login_text">카카오 로그인</string>
     <string name="Cancel">취소</string>
     <string name="Ok">확인</string>
+    <string name="Exit">종료</string>
+
+    <string name="required_update_title">업데이트가 필요해요!</string>
+    <string name="required_update_content">더 멋진 기능을 사용하기 위해\n지금 바로 업데이트를 진행해 주세요</string>
+    <string name="necessary_update_title">새로운 버전이 업데이트 되었어요</string>
+    <string name="necessary_update_content">야뿌의 사용성이 개선되었어요!\n지금 바로 확인해보세요</string>
+    <string name="fail_load_version_title">버전 정보를 불러오는 데 실패했어요</string>
+    <string name="fail_load_version_content">네트워크 환경 확인 후\n애플리케이션을 재실행해주세요</string>
+    <string name="update_confirm">업데이트</string>
+    <string name="update_cancel">다음에요</string>
 
     <string name="login_admin_title">암호를 대라!</string>
     <string name="login_admin_content">코드 넘버를 입력해주세요</string>
@@ -31,7 +43,11 @@
     <string name="admin_main_admin_button">관리</string>
     <string name="admin_main_all_score_text">20기 누적 출결 점수</string>
     <string name="admin_main_see_all_score_text">누적 점수 확인하기</string>
-    
+
+    <string name="member_signup_password_title">너, 내 동료가 돼라!</string>
+    <string name="member_signup_password_subtitle">암호 코드 4자리를 입력해주세요</string>
+    <string name="member_signup_password_wrong_code">틀린 코드입니다</string>
+
     <string name="member_signup_choose_position">속한 직군을\n알려주세요</string>
     <string name="member_signup_team_start_yapp">YAPP 시작하기</string>
 
@@ -39,6 +55,10 @@
     <string name="member_signup_choose_team_number">하나만 더 알려주세요</string>
     <string name="member_signup_team_number">%d팀</string>
     <string name="member_signup_team_confirm">확인</string>
+
+    <string name="member_need_select_team">팀을 선택해 주세요</string>
+    <string name="member_need_select_team_description">원활한 출석체크를 위해\n팀과 직무 선택이 꼭 필요해요!</string>
+    <string name="member_need_select_team_next_time">다음에요</string>
 
     <string name="name_title">이름을 작성해주세요</string>
     <string name="name_subtitle">실명을 작성해야 출석을 확인할 수 있어요</string>

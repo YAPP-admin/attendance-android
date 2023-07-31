@@ -8,7 +8,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,6 +31,8 @@ import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.yds.YDSToast
+import com.yapp.presentation.ui.MainContract.MainUiEvent
+import com.yapp.presentation.ui.MainContract.MainUiSideEffect
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_LAST_SESSION_ID
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_ID
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_TITLE
@@ -39,6 +48,7 @@ import com.yapp.presentation.ui.member.qrcodescanner.QrCodeScanner
 import com.yapp.presentation.ui.member.score.detail.SessionDetail
 import com.yapp.presentation.ui.member.setting.MemberSetting
 import com.yapp.presentation.ui.member.signup.name.Name
+import com.yapp.presentation.ui.member.signup.password.Password
 import com.yapp.presentation.ui.member.signup.position.Position
 import com.yapp.presentation.ui.member.signup.team.Team
 import com.yapp.presentation.ui.splash.Splash
@@ -56,11 +66,11 @@ fun AttendanceScreen(
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is MainContract.MainUiSideEffect.NavigateToQRScreen -> {
+                is MainUiSideEffect.NavigateToQRScreen -> {
                     navController.navigate(BottomNavigationItem.QR_AUTH.route)
                 }
 
-                is MainContract.MainUiSideEffect.ShowToast -> {
+                is MainUiSideEffect.ShowToast -> {
                     qrToastVisible = !qrToastVisible
                     delay(1000L)
                     qrToastVisible = !qrToastVisible
@@ -84,7 +94,7 @@ fun AttendanceScreen(
                     }
                 },
                 navigateToSignUpScreen = {
-                    navController.navigate(AttendanceScreenRoute.SIGNUP_NAME.route) {
+                    navController.navigate(AttendanceScreenRoute.SIGNUP_PASSWORD.route) {
                         popUpTo(AttendanceScreenRoute.LOGIN.route) { inclusive = true }
                     }
                 },
@@ -149,10 +159,13 @@ fun AttendanceScreen(
             MemberMain(
                 navigateToScreen = { route ->
                     if (route == AttendanceScreenRoute.QR_AUTH.route) {
-                        viewModel.setEvent(MainContract.MainUiEvent.OnClickQrAuthButton)
+                        viewModel.setEvent(MainUiEvent.OnClickQrAuthButton)
                     } else {
                         navController.navigate(route)
                     }
+                },
+                navigateToTeam = {
+                    navController.navigate(AttendanceScreenRoute.SIGNUP_TEAM.route)
                 }
             )
         }
@@ -233,6 +246,23 @@ fun AttendanceScreen(
         ) {
             SetStatusBarColorByRoute(it.destination.route)
             SessionDetail { navController.popBackStack() }
+        }
+
+        composable(
+            route = AttendanceScreenRoute.SIGNUP_PASSWORD.route,
+        ) {
+            SetStatusBarColorByRoute(it.destination.route)
+            Password(
+                onClickBackButton = {
+                    navController.navigate(AttendanceScreenRoute.LOGIN.route) {
+                        popUpTo(AttendanceScreenRoute.SIGNUP_PASSWORD.route) { inclusive = true }
+                    }
+                },
+                onClickNextButton = {
+                    navController.navigate(AttendanceScreenRoute.SIGNUP_NAME.route) {
+                        popUpTo(AttendanceScreenRoute.SIGNUP_PASSWORD.route) { inclusive = true }
+                    }
+                })
         }
 
         composable(
@@ -321,6 +351,7 @@ enum class AttendanceScreenRoute(val route: String) {
     SIGNUP_NAME("signup-name"),
     SIGNUP_POSITION("signup-position"),
     SIGNUP_TEAM("signup-team"),
+    SIGNUP_PASSWORD("signup-password"),
     HELP("help"),
     ADMIN_TOTAL_SCORE("admin-total-score"),
     SESSION_DETAIL("session-detail"),
