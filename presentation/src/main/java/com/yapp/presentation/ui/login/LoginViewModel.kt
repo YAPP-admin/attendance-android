@@ -10,7 +10,9 @@ import com.yapp.domain.usecases.CheckVersionUpdateUseCase
 import com.yapp.domain.usecases.GetCurrentMemberInfoUseCase
 import com.yapp.domain.usecases.SetMemberIdUseCase
 import com.yapp.domain.usecases.ShouldShowGuestButtonUseCase
+import com.yapp.presentation.ui.login.LoginContract.DialogState
 import com.yapp.presentation.ui.login.LoginContract.DialogState.FAIL_INIT_LOAD
+import com.yapp.presentation.ui.login.LoginContract.DialogState.INSERT_CODE_NUMBER
 import com.yapp.presentation.ui.login.LoginContract.DialogState.NECESSARY_UPDATE
 import com.yapp.presentation.ui.login.LoginContract.DialogState.NONE
 import com.yapp.presentation.ui.login.LoginContract.DialogState.REQUIRE_UPDATE
@@ -153,7 +155,7 @@ class LoginViewModel @Inject constructor(
             is LoginUiEvent.OnYappuImageClicked -> {
                 setState {
                     if (this.clickCount == HIDDEN_CONDITION) {
-                        this.copy(clickCount = 0, dialogState = NONE)
+                        this.copy(clickCount = 0, dialogState = INSERT_CODE_NUMBER)
                     } else {
                         this.copy(clickCount = this.clickCount + 1)
                     }
