@@ -66,14 +66,17 @@ fun AttendanceScreen(
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is MainUiSideEffect.NavigateToQRScreen -> {
-                    navController.navigate(BottomNavigationItem.QR_AUTH.route)
+                is MainUiSideEffect.NavigateToPassword -> {
+                    navController.navigate(BottomNavigationItem.PASSWORD.route)
                 }
 
                 is MainUiSideEffect.ShowToast -> {
                     qrToastVisible = !qrToastVisible
                     delay(1000L)
                     qrToastVisible = !qrToastVisible
+                }
+                is MainUiSideEffect.NavigateToBack -> {
+                    navController.popBackStack()
                 }
             }
         }
@@ -158,7 +161,7 @@ fun AttendanceScreen(
             SetStatusBarColorByRoute(it.destination.route)
             MemberMain(
                 navigateToScreen = { route ->
-                    if (route == AttendanceScreenRoute.QR_AUTH.route) {
+                    if (route == AttendanceScreenRoute.PASSWORD.route) {
                         viewModel.setEvent(MainUiEvent.OnClickQrAuthButton)
                     } else {
                         navController.navigate(route)
@@ -171,12 +174,13 @@ fun AttendanceScreen(
         }
 
         composable(
-            route = AttendanceScreenRoute.QR_AUTH.route
+            route = AttendanceScreenRoute.PASSWORD.route
         ) {
             SetStatusBarColorByRoute(it.destination.route)
-            QrCodeScanner {
-                navController.popBackStack()
-            }
+            Password(
+                onClickBackButton = { navController.popBackStack() },
+                onClickNextButton = { viewModel.setEvent(MainUiEvent.OnValidatePassword) }
+            )
         }
 
         composable(
@@ -356,6 +360,7 @@ enum class AttendanceScreenRoute(val route: String) {
     ADMIN_TOTAL_SCORE("admin-total-score"),
     SESSION_DETAIL("session-detail"),
     PRIVACY_POLICY("privacy-policy"),
+    PASSWORD("password"),
     ADMIN_ATTENDANCE_MANAGEMENT("admin-attendance-management");
 }
 

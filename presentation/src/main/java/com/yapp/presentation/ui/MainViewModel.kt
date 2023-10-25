@@ -21,6 +21,7 @@ class MainViewModel @Inject constructor(
     override suspend fun handleEvent(event: MainUiEvent) {
         when (event) {
             MainUiEvent.OnClickQrAuthButton -> checkAttendanceValidate()
+            MainUiEvent.OnValidatePassword -> setEffect(MainContract.MainUiSideEffect.NavigateToBack)
         }
     }
 
@@ -29,7 +30,7 @@ class MainViewModel @Inject constructor(
             checkQrAuthTime()
                 .onSuccess { isQRCheckEnable ->
                     if (isQRCheckEnable) {
-                        setEffect(MainContract.MainUiSideEffect.NavigateToQRScreen)
+                        setEffect(MainContract.MainUiSideEffect.NavigateToPassword)
                     } else {
                         showToast(resourcesProvider.getString(R.string.member_main_qr_enter_failed_toast_message))
                     }
