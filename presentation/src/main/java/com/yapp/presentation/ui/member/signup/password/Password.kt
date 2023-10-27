@@ -49,7 +49,9 @@ import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.theme.Light_Gray_200
 import com.yapp.common.util.rememberKeyboardVisible
 import com.yapp.common.yds.YDSAppBar
+import com.yapp.domain.util.DateUtil
 import com.yapp.presentation.R
+import com.yapp.presentation.common.AttendanceBundle
 import com.yapp.presentation.ui.member.signup.name.OnKeyboardNextButton
 import com.yapp.presentation.ui.member.signup.password.PasswordContract.PasswordSideEffect
 import com.yapp.presentation.ui.member.signup.password.PasswordContract.PasswordUiEvent
@@ -119,7 +121,7 @@ internal fun Password(
             ) {
                 Spacer(modifier = Modifier.padding(top = 40.dp))
                 Text(
-                    text = stringResource(id = R.string.member_signup_password_title),
+                    text = stringResource(id = R.string.member_signup_password_title, DateUtil.parseDate(AttendanceBundle.upComingSession?.date.orEmpty(), "MM월 dd일")),
                     color = AttendanceTheme.colors.grayScale.Gray1200,
                     style = AttendanceTypography.h1
                 )

@@ -34,4 +34,10 @@ object DateUtil {
     fun isPastSession(sessionDateStr: String): Boolean {
         return getElapsedTime(sessionDateStr) >= 0
     }
+
+    fun parseDate(date: String, format: String): String {
+        val currentDate = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA).parse(date).time
+
+        return SimpleDateFormat(format, Locale.KOREA).format(currentDate)
+    }
 }
