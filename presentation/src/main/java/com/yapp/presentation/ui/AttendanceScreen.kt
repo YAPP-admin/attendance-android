@@ -97,7 +97,7 @@ fun AttendanceScreen(
                     }
                 },
                 navigateToSignUpScreen = {
-                    navController.navigate(AttendanceScreenRoute.SIGNUP_PASSWORD.route) {
+                    navController.navigate(AttendanceScreenRoute.SIGNUP_NAME.route) {
                         popUpTo(AttendanceScreenRoute.LOGIN.route) { inclusive = true }
                     }
                 },
