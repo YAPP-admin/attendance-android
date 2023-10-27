@@ -11,10 +11,14 @@ class MainContract {
 
     sealed class MainUiSideEffect : UiSideEffect {
         object ShowToast : MainUiSideEffect()
-        object NavigateToQRScreen : MainUiSideEffect()
+        object NavigateToPassword : MainUiSideEffect()
+
+        object NavigateToBack : MainUiSideEffect()
+
     }
 
     sealed class MainUiEvent : UiEvent {
         object OnClickQrAuthButton : MainUiEvent()
+        object OnValidatePassword : MainUiEvent()
     }
 }

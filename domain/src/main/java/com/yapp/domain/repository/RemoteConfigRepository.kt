@@ -15,4 +15,5 @@ interface RemoteConfigRepository {
     suspend fun shouldShowGuestButton(): Result<Boolean>
     suspend fun getVersionInfo(): Result<Version>
     suspend fun getSignUpPassword(): Result<String>
+    suspend fun getSessionPassword(): Result<String>
 }

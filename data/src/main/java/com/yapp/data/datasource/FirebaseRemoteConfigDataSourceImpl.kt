@@ -123,6 +123,7 @@ class FirebaseRemoteConfigDataSourceImpl @Inject constructor() : FirebaseRemoteC
             }
         }
     }
+
     override suspend fun getSignUpPassword(): String {
         return suspendCancellableCoroutine { cancellableContinuation ->
             firebaseRemoteConfig.fetchAndActivate().addOnSuccessListener {
@@ -133,4 +134,17 @@ class FirebaseRemoteConfigDataSourceImpl @Inject constructor() : FirebaseRemoteC
             }
         }
     }
+
+    override suspend fun getSessionPassword(): String {
+        return suspendCancellableCoroutine { cancellableContinuation ->
+            firebaseRemoteConfig.fetchAndActivate().addOnSuccessListener {
+                val sessionPassword = firebaseRemoteConfig.getString(RemoteConfigData.SessionPassword.key)
+                cancellableContinuation.resume(sessionPassword, null)
+            }.addOnFailureListener { exception ->
+                cancellableContinuation.resumeWithException(exception)
+            }
+        }
+    }
+
+
 }
