@@ -4,7 +4,7 @@ import com.yapp.common.base.UiEvent
 import com.yapp.common.base.UiSideEffect
 import com.yapp.common.base.UiState
 
-class PasswordContract {
+internal class PasswordContract {
     data class PasswordUiState(
         val isError: Boolean = false,
         val correctPassword: String = "",
@@ -26,7 +26,7 @@ class PasswordContract {
 
     sealed class PasswordUiEvent : UiEvent {
         data class InputPassword(val password: String) : PasswordUiEvent()
-        object OnNextButtonClick : PasswordUiEvent()
+        class OnNextButtonClick(val type: PasswordType) : PasswordUiEvent()
         object OnBackButtonClick : PasswordUiEvent()
     }
 }

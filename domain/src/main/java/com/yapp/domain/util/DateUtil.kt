@@ -1,6 +1,8 @@
 package com.yapp.domain.util
 
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 object DateUtil {
@@ -33,5 +35,17 @@ object DateUtil {
     // 세션 시작 시간이 지나면 true
     fun isPastSession(sessionDateStr: String): Boolean {
         return getElapsedTime(sessionDateStr) >= 0
+    }
+
+    fun parseDate(date: String, format: String): String {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+
+        if (date.isEmpty()) {
+            val now = LocalDateTime.now()
+            return formatter.format(now)
+        }
+
+        val currentDate = formatter.parse(date)
+        return DateTimeFormatter.ofPattern(format).format(currentDate)
     }
 }

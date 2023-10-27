@@ -49,6 +49,7 @@ import com.yapp.presentation.ui.member.score.detail.SessionDetail
 import com.yapp.presentation.ui.member.setting.MemberSetting
 import com.yapp.presentation.ui.member.signup.name.Name
 import com.yapp.presentation.ui.member.signup.password.Password
+import com.yapp.presentation.ui.member.signup.password.PasswordType
 import com.yapp.presentation.ui.member.signup.position.Position
 import com.yapp.presentation.ui.member.signup.team.Team
 import com.yapp.presentation.ui.splash.Splash
@@ -66,14 +67,17 @@ fun AttendanceScreen(
     LaunchedEffect(key1 = viewModel.effect) {
         viewModel.effect.collect { effect ->
             when (effect) {
-                is MainUiSideEffect.NavigateToQRScreen -> {
-                    navController.navigate(BottomNavigationItem.QR_AUTH.route)
+                is MainUiSideEffect.NavigateToPassword -> {
+                    navController.navigate(BottomNavigationItem.PASSWORD.route)
                 }
 
                 is MainUiSideEffect.ShowToast -> {
                     qrToastVisible = !qrToastVisible
                     delay(1000L)
                     qrToastVisible = !qrToastVisible
+                }
+                is MainUiSideEffect.NavigateToBack -> {
+                    navController.popBackStack()
                 }
             }
         }
@@ -158,7 +162,7 @@ fun AttendanceScreen(
             SetStatusBarColorByRoute(it.destination.route)
             MemberMain(
                 navigateToScreen = { route ->
-                    if (route == AttendanceScreenRoute.QR_AUTH.route) {
+                    if (route == AttendanceScreenRoute.PASSWORD.route) {
                         viewModel.setEvent(MainUiEvent.OnClickQrAuthButton)
                     } else {
                         navController.navigate(route)
@@ -171,12 +175,14 @@ fun AttendanceScreen(
         }
 
         composable(
-            route = AttendanceScreenRoute.QR_AUTH.route
+            route = AttendanceScreenRoute.PASSWORD.route
         ) {
             SetStatusBarColorByRoute(it.destination.route)
-            QrCodeScanner {
-                navController.popBackStack()
-            }
+            Password(
+                type = PasswordType.Session,
+                onClickBackButton = { navController.popBackStack() },
+                onClickNextButton = { viewModel.setEvent(MainUiEvent.OnValidatePassword) }
+            )
         }
 
         composable(
@@ -253,6 +259,7 @@ fun AttendanceScreen(
         ) {
             SetStatusBarColorByRoute(it.destination.route)
             Password(
+                type = PasswordType.SignUp,
                 onClickBackButton = {
                     navController.navigate(AttendanceScreenRoute.LOGIN.route) {
                         popUpTo(AttendanceScreenRoute.SIGNUP_PASSWORD.route) { inclusive = true }
@@ -262,7 +269,8 @@ fun AttendanceScreen(
                     navController.navigate(AttendanceScreenRoute.SIGNUP_NAME.route) {
                         popUpTo(AttendanceScreenRoute.SIGNUP_PASSWORD.route) { inclusive = true }
                     }
-                })
+                }
+            )
         }
 
         composable(
@@ -356,6 +364,7 @@ enum class AttendanceScreenRoute(val route: String) {
     ADMIN_TOTAL_SCORE("admin-total-score"),
     SESSION_DETAIL("session-detail"),
     PRIVACY_POLICY("privacy-policy"),
+    PASSWORD("password"),
     ADMIN_ATTENDANCE_MANAGEMENT("admin-attendance-management");
 }
 

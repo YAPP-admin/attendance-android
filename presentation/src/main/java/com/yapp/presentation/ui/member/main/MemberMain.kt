@@ -115,7 +115,7 @@ private fun navigateBottomNavigationScreen(
     tab: BottomNavigationItem
 ) {
     when (tab) {
-        BottomNavigationItem.QR_AUTH -> {
+        BottomNavigationItem.PASSWORD -> {
             qrScreenNavigate.invoke(tab.route)
         }
         else -> {
@@ -153,7 +153,7 @@ fun BottomNavigationTab(
                         imageVector = ImageVector.vectorResource(id = navigationTab.icon),
                         contentDescription = null,
                         modifier = Modifier.padding(4.dp),
-                        tint = if (navigationTab == BottomNavigationItem.QR_AUTH) Color.Unspecified else LocalContentColor.current,
+                        tint = if (navigationTab == BottomNavigationItem.PASSWORD) Color.Unspecified else LocalContentColor.current,
                     )
                 },
                 label = if (navigationTab.title != null) {
@@ -184,7 +184,7 @@ enum class BottomNavigationItem(
         R.drawable.icon_bottom_navigation_home,
         R.string.member_main_bottom_navigation_today_session_text
     ),
-    QR_AUTH("qr-auth", R.drawable.icon_qr, null),
+    PASSWORD("password", R.drawable.icon_qr, null),
     MEMBER_SCORE(
         "member-score",
         R.drawable.icon_bottom_navigation_check,
