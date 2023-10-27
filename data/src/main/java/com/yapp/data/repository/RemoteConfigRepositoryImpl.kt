@@ -125,4 +125,18 @@ class RemoteConfigRepositoryImpl @Inject constructor(
             }
         )
     }
+
+    override suspend fun getSessionPassword(): Result<String> {
+        return runCatching {
+            firebaseRemoteConfigDataSource.getSessionPassword()
+        }.fold(
+            onSuccess = { sessionPassword: String ->
+                Result.success(sessionPassword)
+            },
+            onFailure = { exception ->
+                Result.failure(exception)
+            }
+        )
+    }
+
 }

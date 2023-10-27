@@ -26,6 +26,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.NonRestartableComposable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -58,9 +59,15 @@ import com.yapp.presentation.ui.member.signup.password.PasswordContract.Password
 import com.yapp.presentation.ui.member.signup.password.PasswordContract.PasswordUiState.Companion.PasswordDigit
 import kotlinx.coroutines.flow.collectLatest
 
+@Stable
+internal enum class PasswordType {
+    SignUp, Session
+}
+
 @Composable
 internal fun Password(
     viewModel: PassWordViewModel = hiltViewModel(),
+    type: PasswordType,
     onClickBackButton: () -> Unit,
     onClickNextButton: () -> Unit
 ) {
@@ -119,15 +126,23 @@ internal fun Password(
             Column(
                 modifier = Modifier.padding(horizontal = 24.dp)
             ) {
+                val title = when(type) {
+                    PasswordType.SignUp -> stringResource(id = R.string.member_signup_password_title)
+                    PasswordType.Session -> stringResource(id = R.string.member_session_password_title, DateUtil.parseDate(AttendanceBundle.upComingSession?.date.orEmpty(), "MM월 dd일"))
+                }
+                val subTitle = when(type) {
+                    PasswordType.SignUp -> stringResource(id = R.string.member_signup_password_subtitle)
+                    PasswordType.Session -> stringResource(id = R.string.member_session_password_subtitle)
+                }
                 Spacer(modifier = Modifier.padding(top = 40.dp))
                 Text(
-                    text = stringResource(id = R.string.member_signup_password_title, DateUtil.parseDate(AttendanceBundle.upComingSession?.date.orEmpty(), "MM월 dd일")),
+                    text = title,
                     color = AttendanceTheme.colors.grayScale.Gray1200,
                     style = AttendanceTypography.h1
                 )
                 Spacer(modifier = Modifier.padding(top = 12.dp))
                 Text(
-                    text = stringResource(id = R.string.member_signup_password_subtitle),
+                    text = subTitle,
                     color = AttendanceTheme.colors.grayScale.Gray800,
                     style = AttendanceTypography.body1
                 )
@@ -165,7 +180,7 @@ internal fun Password(
                     modifier = Modifier.align(Alignment.BottomCenter),
                     enabled = uiState.inputPassword.length == PasswordDigit,
                     onClickNextBtn = {
-                        viewModel.setEvent(PasswordUiEvent.OnNextButtonClick)
+                        viewModel.setEvent(PasswordUiEvent.OnNextButtonClick(type))
                     },
                 )
             }

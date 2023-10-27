@@ -49,6 +49,7 @@ import com.yapp.presentation.ui.member.score.detail.SessionDetail
 import com.yapp.presentation.ui.member.setting.MemberSetting
 import com.yapp.presentation.ui.member.signup.name.Name
 import com.yapp.presentation.ui.member.signup.password.Password
+import com.yapp.presentation.ui.member.signup.password.PasswordType
 import com.yapp.presentation.ui.member.signup.position.Position
 import com.yapp.presentation.ui.member.signup.team.Team
 import com.yapp.presentation.ui.splash.Splash
@@ -97,7 +98,7 @@ fun AttendanceScreen(
                     }
                 },
                 navigateToSignUpScreen = {
-                    navController.navigate(AttendanceScreenRoute.SIGNUP_NAME.route) {
+                    navController.navigate(AttendanceScreenRoute.SIGNUP_PASSWORD.route) {
                         popUpTo(AttendanceScreenRoute.LOGIN.route) { inclusive = true }
                     }
                 },
@@ -178,6 +179,7 @@ fun AttendanceScreen(
         ) {
             SetStatusBarColorByRoute(it.destination.route)
             Password(
+                type = PasswordType.Session,
                 onClickBackButton = { navController.popBackStack() },
                 onClickNextButton = { viewModel.setEvent(MainUiEvent.OnValidatePassword) }
             )
@@ -257,6 +259,7 @@ fun AttendanceScreen(
         ) {
             SetStatusBarColorByRoute(it.destination.route)
             Password(
+                type = PasswordType.SignUp,
                 onClickBackButton = {
                     navController.navigate(AttendanceScreenRoute.LOGIN.route) {
                         popUpTo(AttendanceScreenRoute.SIGNUP_PASSWORD.route) { inclusive = true }
@@ -266,7 +269,8 @@ fun AttendanceScreen(
                     navController.navigate(AttendanceScreenRoute.SIGNUP_NAME.route) {
                         popUpTo(AttendanceScreenRoute.SIGNUP_PASSWORD.route) { inclusive = true }
                     }
-                })
+                }
+            )
         }
 
         composable(

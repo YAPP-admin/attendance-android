@@ -15,4 +15,5 @@ interface FirebaseRemoteConfigDataSource {
     suspend fun shouldShowGuestButton(): Boolean
     suspend fun getVersionInfo(): VersionEntity
     suspend fun getSignUpPassword(): String
+    suspend fun getSessionPassword(): String
 }

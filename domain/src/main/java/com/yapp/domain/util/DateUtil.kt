@@ -2,6 +2,7 @@ package com.yapp.domain.util
 
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 object DateUtil {
@@ -37,14 +38,14 @@ object DateUtil {
     }
 
     fun parseDate(date: String, format: String): String {
-        if(date.isEmpty()) {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+
+        if (date.isEmpty()) {
             val now = LocalDateTime.now()
-            val currentDate = SimpleDateFormat(now.toString(), Locale.KOREA)
-            return SimpleDateFormat(format, Locale.KOREA).format(currentDate)
+            return formatter.format(now)
         }
 
-        val currentDate = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA).parse(date).time
-
-        return SimpleDateFormat(format, Locale.KOREA).format(currentDate)
+        val currentDate = formatter.parse(date)
+        return DateTimeFormatter.ofPattern(format).format(currentDate)
     }
 }
