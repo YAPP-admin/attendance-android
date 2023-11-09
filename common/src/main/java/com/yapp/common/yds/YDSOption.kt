@@ -1,28 +1,31 @@
 package com.yapp.common.yds
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun YDSOption(types: List<String>, selectedType: String?, onTypeClicked: (String) -> Unit) {
-    val rowNum = 2
-    Column {
-        repeat(types.size / rowNum) { row ->
-            Row {
-                repeat(rowNum) { index ->
-                    val type = types[rowNum * row + index]
-                    YDSChoiceButton(
-                        text = type,
-                        modifier = Modifier.padding(end = 12.dp, bottom = 12.dp),
-                        state = if (selectedType == type) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
-                        onClick = { onTypeClicked(type) }
-                    )
-                }
-            }
+fun YDSOption(
+    modifier: Modifier = Modifier,
+    horizontalArrangement: Arrangement.Horizontal = Arrangement.spacedBy(12.dp),
+    types: List<String>,
+    selectedType: String?,
+    onTypeClicked: (String) -> Unit
+) {
+    FlowRow(
+        modifier = modifier,
+        horizontalArrangement = horizontalArrangement,
+    ) {
+        repeat(types.size) { index ->
+            val type = types[index]
+            YDSChoiceButton(
+                text = type,
+                modifier = Modifier.padding(bottom = 12.dp),
+                state = if (selectedType == type) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
+                onClick = { onTypeClicked(type) }
+            )
         }
     }
 }
