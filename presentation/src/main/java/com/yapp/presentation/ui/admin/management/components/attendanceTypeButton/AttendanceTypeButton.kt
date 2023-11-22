@@ -6,8 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yapp.common.R
@@ -57,12 +54,17 @@ private fun AttendanceTypeButtonPreview() {
 internal fun AttendanceTypeButton(
     modifier: Modifier = Modifier,
     state: AttendanceTypeButtonState,
-    onClick: () -> Unit
+    selected: Boolean = false,
+    onClick: () -> Unit,
 ) {
+    val (backgroundColor, textColor) = when (selected) {
+        true -> AttendanceTheme.colors.etcColors.EtcYellow to AttendanceTheme.colors.grayScale.Gray1200
+        false -> AttendanceTheme.colors.grayScale.Gray200 to AttendanceTheme.colors.grayScale.Gray800
+    }
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
-            .background(AttendanceTheme.colors.grayScale.Gray200)
+            .background(backgroundColor)
             .clickable(onClick = onClick)
             .padding(start = 8.dp, end = 12.dp, top = 8.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -84,7 +86,7 @@ internal fun AttendanceTypeButton(
             Text(
                 text = it,
                 style = AttendanceTypography.subtitle2,
-                color = AttendanceTheme.colors.grayScale.Gray800,
+                color = textColor,
             )
         }
     }

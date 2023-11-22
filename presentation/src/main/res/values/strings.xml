@@ -8,6 +8,7 @@
     <string name="Cancel">취소</string>
     <string name="Ok">확인</string>
     <string name="Exit">종료</string>
+    <string name="complete">완료</string>
 
     <string name="required_update_title">업데이트가 필요해요!</string>
     <string name="required_update_content">더 멋진 기능을 사용하기 위해\n지금 바로 업데이트를 진행해 주세요</string>
