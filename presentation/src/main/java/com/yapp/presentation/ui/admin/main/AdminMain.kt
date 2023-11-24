@@ -68,10 +68,12 @@ fun AdminMain(
                 is AdminMainUiSideEffect.NavigateToAdminTotalScore -> navigateToAdminTotalScore(
                     effect.lastSessionId
                 )
+
                 is AdminMainUiSideEffect.NavigateToManagement -> navigateToManagement(
                     effect.sessionId,
                     effect.sessionTitle
                 )
+
                 is AdminMainUiSideEffect.NavigateToLogin -> navigateToLogin()
             }
         }
@@ -104,6 +106,7 @@ fun AdminMain(
                     )
                 }
             )
+
             AdminMainUiState.LoadState.Error -> YDSEmptyScreen()
         }
     }
@@ -128,7 +131,7 @@ fun AdminMainScreen(
             setOnUserScoreCardClickedEvent = { onUserScoreCardClicked() }
         )
         GraySpacing(Modifier.height(12.dp))
-        ManagementTitle()
+        ManagementTitleWithCreateSession()
         uiState.upcomingSession?.let { UpcomingSession(it, onSessionClicked) }
             ?: FinishAllSessions()
         Spacing()
@@ -226,17 +229,32 @@ fun LazyListScope.YappuUserScoreCard(
     }
 }
 
-fun LazyListScope.ManagementTitle() {
+fun LazyListScope.ManagementTitleWithCreateSession() {
     item {
-        Text(
-            text = stringResource(id = string.admin_main_attend_management_text),
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(AttendanceTheme.colors.backgroundColors.background)
-                .padding(horizontal = 24.dp, vertical = 28.dp),
-            style = AttendanceTypography.h1,
-            color = AttendanceTheme.colors.grayScale.Gray1200
-        )
+                .padding(horizontal = 24.dp, vertical = 28.dp)
+                .background(AttendanceTheme.colors.backgroundColors.background),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(id = string.admin_main_attend_management_text),
+                modifier = Modifier
+                    .weight(1f),
+                style = AttendanceTypography.h1,
+                color = AttendanceTheme.colors.grayScale.Gray1200
+            )
+
+            // TODO 임시 버튼으로, 디자인 대기 중
+            YDSButtonSmall(
+                text = stringResource(id = string.create_session),
+                state = YdsButtonState.ENABLED,
+                onClick = {
+
+                }
+            )
+        }
     }
 }
 
