@@ -34,6 +34,9 @@ class AdminMainViewModel @Inject constructor(
             is AdminMainUiEvent.OnUserScoreCardClicked -> setEffect(
                 AdminMainUiSideEffect.NavigateToAdminTotalScore(event.lastSessionId)
             )
+            is AdminMainUiEvent.OnCreateSessionClicked -> setEffect(
+                AdminMainUiSideEffect.NavigateToCreateSession
+            )
             is AdminMainUiEvent.OnSessionClicked -> setEffect(
                 AdminMainUiSideEffect.NavigateToManagement(event.sessionId, event.sessionTitle)
             )

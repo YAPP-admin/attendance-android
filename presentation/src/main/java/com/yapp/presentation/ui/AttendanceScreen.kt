@@ -36,6 +36,7 @@ import com.yapp.presentation.ui.MainContract.MainUiSideEffect
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_LAST_SESSION_ID
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_ID
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_TITLE
+import com.yapp.presentation.ui.admin.createsession.CreateSession
 import com.yapp.presentation.ui.admin.main.AdminMain
 import com.yapp.presentation.ui.admin.management.AttendanceManagement
 import com.yapp.presentation.ui.admin.totalscore.AdminTotalScore
@@ -44,7 +45,6 @@ import com.yapp.presentation.ui.member.help.Help
 import com.yapp.presentation.ui.member.main.BottomNavigationItem
 import com.yapp.presentation.ui.member.main.MemberMain
 import com.yapp.presentation.ui.member.privacyPolicy.PrivacyPolicyScreen
-import com.yapp.presentation.ui.member.qrcodescanner.QrCodeScanner
 import com.yapp.presentation.ui.member.score.detail.SessionDetail
 import com.yapp.presentation.ui.member.setting.MemberSetting
 import com.yapp.presentation.ui.member.signup.name.Name
@@ -139,6 +139,9 @@ fun AttendanceScreen(
                             .plus("/${upcomingSessionId}")
                     )
                 },
+                navigateToCreateSession = {
+                    navController.navigate(AttendanceScreenRoute.CREATE_SESSION.route)
+                },
                 navigateToManagement = { sessionId, sessionTitle ->
                     navController.navigate(
                         AttendanceScreenRoute.ADMIN_ATTENDANCE_MANAGEMENT.route
@@ -183,6 +186,13 @@ fun AttendanceScreen(
                 onClickBackButton = { navController.popBackStack() },
                 onClickNextButton = { viewModel.setEvent(MainUiEvent.OnValidatePassword) }
             )
+        }
+
+        composable(
+            route = AttendanceScreenRoute.CREATE_SESSION.route
+        ) {
+            SetStatusBarColorByRoute(it.destination.route)
+            CreateSession()
         }
 
         composable(
@@ -362,6 +372,7 @@ enum class AttendanceScreenRoute(val route: String) {
     SIGNUP_PASSWORD("signup-password"),
     HELP("help"),
     ADMIN_TOTAL_SCORE("admin-total-score"),
+    CREATE_SESSION("create_session"),
     SESSION_DETAIL("session-detail"),
     PRIVACY_POLICY("privacy-policy"),
     PASSWORD("password"),

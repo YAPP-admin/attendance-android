@@ -57,6 +57,7 @@ import com.yapp.presentation.ui.admin.main.AdminMainContract.AdminMainUiState
 fun AdminMain(
     viewModel: AdminMainViewModel = hiltViewModel(),
     navigateToAdminTotalScore: (Int) -> Unit,
+    navigateToCreateSession: () -> Unit,
     navigateToManagement: (Int, String) -> Unit,
     navigateToLogin: () -> Unit,
 ) {
@@ -68,6 +69,8 @@ fun AdminMain(
                 is AdminMainUiSideEffect.NavigateToAdminTotalScore -> navigateToAdminTotalScore(
                     effect.lastSessionId
                 )
+
+                is AdminMainUiSideEffect.NavigateToCreateSession -> navigateToCreateSession()
 
                 is AdminMainUiSideEffect.NavigateToManagement -> navigateToManagement(
                     effect.sessionId,
@@ -95,6 +98,11 @@ fun AdminMain(
                         AdminMainUiEvent.OnUserScoreCardClicked(uiState.lastSessionId)
                     )
                 },
+                onCreateSessionClicked = {
+                     viewModel.setEvent(
+                         AdminMainUiEvent.OnCreateSessionClicked
+                     )
+                },
                 onSessionClicked = { sessionId, sessionTitle ->
                     viewModel.setEvent(
                         AdminMainUiEvent.OnSessionClicked(sessionId, sessionTitle)
@@ -117,6 +125,7 @@ fun AdminMainScreen(
     modifier: Modifier,
     uiState: AdminMainUiState,
     onUserScoreCardClicked: () -> Unit,
+    onCreateSessionClicked: () -> Unit,
     onSessionClicked: (Int, String) -> Unit,
     onLogoutClicked: () -> Unit,
 ) {
@@ -131,7 +140,7 @@ fun AdminMainScreen(
             setOnUserScoreCardClickedEvent = { onUserScoreCardClicked() }
         )
         GraySpacing(Modifier.height(12.dp))
-        ManagementTitleWithCreateSession()
+        ManagementTitleWithCreateSession(onCreateSessionClicked)
         uiState.upcomingSession?.let { UpcomingSession(it, onSessionClicked) }
             ?: FinishAllSessions()
         Spacing()
@@ -229,7 +238,9 @@ fun LazyListScope.YappuUserScoreCard(
     }
 }
 
-fun LazyListScope.ManagementTitleWithCreateSession() {
+fun LazyListScope.ManagementTitleWithCreateSession(
+    onCreateSessionClicked: () -> Unit
+) {
     item {
         Row(
             modifier = Modifier
@@ -250,9 +261,7 @@ fun LazyListScope.ManagementTitleWithCreateSession() {
             YDSButtonSmall(
                 text = stringResource(id = string.create_session),
                 state = YdsButtonState.ENABLED,
-                onClick = {
-
-                }
+                onClick = onCreateSessionClicked
             )
         }
     }
