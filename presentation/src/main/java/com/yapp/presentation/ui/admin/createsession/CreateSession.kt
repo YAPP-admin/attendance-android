@@ -7,7 +7,6 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,7 +28,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -67,7 +65,7 @@ fun CreateSession(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CreateSessionScreen(
     uiState: CreateSessionUiState,
@@ -79,10 +77,18 @@ fun CreateSessionScreen(
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val focusManager = LocalFocusManager.current
     val isKeyboardVisible by rememberKeyboardVisible()
+    var showDialog by remember { mutableStateOf(false) }
+
+    if (showDialog) {
+        CreateSessionDateWriterDialog(
+            onDismissRequest = { showDialog = false },
+            onClickConfirm = { }
+        )
+    }
 
     ModalBottomSheetLayout(
         sheetContent = {
-            CreateSessionBottomSheet(
+            CreateSessionTypeBottomSheet(
                 sessionStates = NeedToAttendType.values(),
                 onClickItem = {
                     coroutineScope.launch {
@@ -114,38 +120,60 @@ fun CreateSessionScreen(
             },
             backgroundColor = AttendanceTheme.colors.backgroundColors.background
         ) { innerPadding ->
-            Column(
-                modifier = Modifier.padding(innerPadding),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
             ) {
-                CreateSessionTitleTextField(
-                    modifier = Modifier.padding(top = 16.dp),
-                    input = title,
-                    onValueChange = { title = it },
-                )
-                CreateSessionTypeSelector(
-                    selectedType = null,
-                    onClickSelector = {
-                        coroutineScope.launch {
-                            if (isKeyboardVisible) {
-                                focusManager.clearFocus()
-                                delay(300) // 어떻게 수정해야 할까요..
-                            }
+                Column(
+                    modifier = Modifier.padding(horizontal = 28.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    CreateSessionTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
+                        input = title,
+                        onValueChange = { title = it },
+                    )
+                    CreateSessionSelector(
+                        content = "",
+                        placeHolderTitle = "세션 타입을 선택해주세요.",
+                        onClickSelector = {
+                            coroutineScope.launch {
+                                if (isKeyboardVisible) {
+                                    focusManager.clearFocus()
+                                    delay(300)
+                                }
 
-                            sheetState.show()
+                                sheetState.show()
+                            }
                         }
-                    }
-                )
-                CreateSessionDescriptionTextField(
-                    input = description,
-                    onValueChange = { description = it },
-                    maxLength = 100
-                )
-                Spacer(modifier = Modifier.padding(vertical = 18.dp))
+                    )
+                    CreateSessionSelector(
+                        content = "",
+                        placeHolderTitle = "날짜를 입력해주세요.",
+                        onClickSelector = {
+                            coroutineScope.launch {
+                                if (isKeyboardVisible) {
+                                    focusManager.clearFocus()
+                                    delay(300)
+                                }
+
+                                showDialog = true
+                            }
+                        },
+                    )
+                    CreateSessionDescriptionTextField(
+                        description = description,
+                        onValueChange = { description = it },
+                        maxLength = 100
+                    )
+                }
                 YDSButtonLarge(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth(),
                     text = "세션 생성하기",
                     state = YdsButtonState.ENABLED
                 ) {
@@ -157,7 +185,7 @@ fun CreateSessionScreen(
 }
 
 @Composable
-fun CreateSessionBottomSheet(
+fun CreateSessionTypeBottomSheet(
     modifier: Modifier = Modifier,
     sessionStates: Array<NeedToAttendType>,
     onClickItem: (NeedToAttendType) -> Unit,
@@ -185,7 +213,7 @@ fun CreateSessionBottomSheet(
 }
 
 @Composable
-fun CreateSessionTitleTextField(
+fun CreateSessionTextField(
     modifier: Modifier = Modifier,
     input: String,
     onValueChange: (String) -> Unit,
@@ -195,8 +223,6 @@ fun CreateSessionTitleTextField(
         onValueChange = { onValueChange(it) },
         singleLine = true,
         modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 28.dp)
             .background(
                 color = AttendanceTheme.colors.grayScale.Gray200,
                 shape = RoundedCornerShape(50.dp)
@@ -221,16 +247,16 @@ fun CreateSessionTitleTextField(
 }
 
 @Composable
-fun CreateSessionTypeSelector(
+fun CreateSessionSelector(
     modifier: Modifier = Modifier,
-    selectedType: NeedToAttendType?,
+    content: String,
+    placeHolderTitle: String? = null,
     onClickSelector: () -> Unit,
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = TextFieldDefaults.MinHeight)
-            .padding(horizontal = 28.dp)
             .clip(shape = RoundedCornerShape(50.dp))
             .background(color = AttendanceTheme.colors.grayScale.Gray200)
             .clickable { onClickSelector() },
@@ -238,13 +264,8 @@ fun CreateSessionTypeSelector(
     ) {
         Text(
             modifier = Modifier.padding(start = 16.dp),
-            text =
-                if (selectedType == null) "세션 타입을 선택해주세요."
-                else selectedType.value
-            ,
-            color =
-                if (selectedType == null) AttendanceTheme.colors.grayScale.Gray400
-                else AttendanceTheme.colors.grayScale.Gray800,
+            text = content.ifEmpty { placeHolderTitle ?: "" },
+            color = if (content.isBlank()) AttendanceTheme.colors.grayScale.Gray400 else AttendanceTheme.colors.grayScale.Gray800,
             style = AttendanceTypography.body1,
         )
     }
@@ -253,26 +274,26 @@ fun CreateSessionTypeSelector(
 @Composable
 fun CreateSessionDescriptionTextField(
     modifier: Modifier = Modifier,
-    input: String,
+    description: String,
     onValueChange: (String) -> Unit,
     maxLength: Int,
 ) {
     TextField(
-        value = input,
-        onValueChange = {
-            if (it.length <= maxLength)
-                onValueChange(it)
-        },
         modifier = modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = 140.dp)
-            .padding(horizontal = 28.dp)
             .background(AttendanceTheme.colors.backgroundColors.background)
             .border(
                 width = 1.dp,
                 color = AttendanceTheme.colors.grayScale.Gray200,
                 shape = RoundedCornerShape(8.dp)
             ),
+        value = description,
+        onValueChange = {
+            if (it.length <= maxLength)
+                onValueChange(it)
+        },
+        maxLines = 6,
         placeholder = {
             Text(
                 text = "세션 설명을 입력해주세요.",
