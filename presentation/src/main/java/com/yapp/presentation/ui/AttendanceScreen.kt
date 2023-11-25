@@ -192,7 +192,9 @@ fun AttendanceScreen(
             route = AttendanceScreenRoute.CREATE_SESSION.route
         ) {
             SetStatusBarColorByRoute(it.destination.route)
-            CreateSession()
+            CreateSession(
+                onBackButtonClicked = { navController.popBackStack() }
+            )
         }
 
         composable(
