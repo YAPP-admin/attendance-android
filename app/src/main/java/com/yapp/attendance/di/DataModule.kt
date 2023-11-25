@@ -6,10 +6,12 @@ import com.yapp.data.datasource.*
 import com.yapp.data.repository.LocalRepositoryImpl
 import com.yapp.data.repository.MemberRepositoryImpl
 import com.yapp.data.repository.RemoteConfigRepositoryImpl
+import com.yapp.data.repository.SessionRepositoryImpl
 import com.yapp.data.repository.TeamRepositoryImpl
 import com.yapp.domain.repository.LocalRepository
 import com.yapp.domain.repository.MemberRepository
 import com.yapp.domain.repository.RemoteConfigRepository
+import com.yapp.domain.repository.SessionRepository
 import com.yapp.domain.repository.TeamRepository
 import dagger.Module
 import dagger.Provides
@@ -54,6 +56,14 @@ object DataModule {
 
     @Provides
     @Singleton
+    fun provideSessionRepository(
+        sessionDataSource: SessionRemoteDataSource
+    ): SessionRepository {
+        return SessionRepositoryImpl(sessionDataSource)
+    }
+
+    @Provides
+    @Singleton
     fun provideRemoteConfigRepository(
         remoteConfigDataSource: FirebaseRemoteConfigDataSource,
     ): RemoteConfigRepository {
@@ -72,6 +82,14 @@ object DataModule {
         fireStore: FirebaseFirestore
     ): MemberRemoteDataSource {
         return MemberRemoteDataSourceImpl(fireStore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSessionRemoteDataSource(
+        fireStore: FirebaseFirestore
+    ): SessionRemoteDataSource {
+        return SessionRemoteDataSourceImpl(fireStore)
     }
 
     @Provides
