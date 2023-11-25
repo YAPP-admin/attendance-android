@@ -13,6 +13,7 @@ data class SessionEntity(
     val type: String? = null,
     val date: String? = null,
     val description: String? = null,
+    val code: String? = null
 )
 
 fun SessionEntity.toDomain(): Session {
@@ -21,6 +22,18 @@ fun SessionEntity.toDomain(): Session {
         title = title!!,
         date = date!!,
         description = description!!,
-        type = NeedToAttendType.valueOf(type!!)
+        type = NeedToAttendType.valueOf(type!!),
+        code = code ?: ""
+    )
+}
+
+fun Session.toData(): SessionEntity {
+    return SessionEntity(
+        sessionId = sessionId,
+        title = title,
+        date = date,
+        description = description,
+        type = type.name,
+        code = code
     )
 }
