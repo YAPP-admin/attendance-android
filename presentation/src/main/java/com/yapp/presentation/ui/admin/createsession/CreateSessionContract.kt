@@ -15,6 +15,15 @@ class CreateSessionContract {
         val code: String = "",
         val description: String = "",
     ) : UiState {
+        val enableCreate: Boolean
+            get() {
+                if (title.isNotBlank() and (type != null) and startTime.isNotBlank() and code.isNotBlank()) {
+                    return true
+                }
+
+                return false
+            }
+
         enum class LoadState {
             Loading, Idle
         }
@@ -34,7 +43,7 @@ class CreateSessionContract {
         data class InputTitle(val title: String) : CreateSessionUiEvent()
         object OnSessionTypeButtonClick : CreateSessionUiEvent()
         data class OnSessionTypeClick(val type: NeedToAttendType) : CreateSessionUiEvent()
-        object OnDialogDismissRequest: CreateSessionUiEvent()
+        object OnDialogDismissRequest : CreateSessionUiEvent()
         object OnDateButtonClick : CreateSessionUiEvent()
         data class OnDateWriterConfirmClick(val date: String) : CreateSessionUiEvent()
         data class InputDescription(val description: String) : CreateSessionUiEvent()

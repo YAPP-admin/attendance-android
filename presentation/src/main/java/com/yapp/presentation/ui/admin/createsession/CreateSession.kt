@@ -211,7 +211,7 @@ fun CreateSessionScreen(
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth(),
                     text = "세션 생성하기",
-                    state = YdsButtonState.ENABLED,
+                    state = if (uiState.enableCreate) YdsButtonState.ENABLED else YdsButtonState.DISABLED,
                     onClick = onCreateButtonClicked
                 )
             }
