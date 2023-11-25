@@ -54,6 +54,8 @@ import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.presentation.R
 import com.yapp.presentation.ui.admin.createsession.CreateSessionContract.*
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -135,6 +137,7 @@ fun CreateSessionScreen(
 ) {
     if (uiState.showDialog) {
         CreateSessionDateWriterDialog(
+            date = uiState.startTime.parseToLocalDateTime(),
             onDismissRequest = onDialogDismissRequest,
             onClickConfirm = onDateWriterConfirmButtonClicked
         )
@@ -369,4 +372,11 @@ fun CreateSessionDescriptionTextField(
             disabledIndicatorColor = Color.Transparent
         )
     )
+}
+
+private fun String.parseToLocalDateTime(): LocalDateTime? {
+    return runCatching {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        LocalDateTime.parse(this, formatter)
+    }.getOrNull()
 }

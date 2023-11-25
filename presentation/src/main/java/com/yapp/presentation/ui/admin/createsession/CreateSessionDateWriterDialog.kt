@@ -41,15 +41,16 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun CreateSessionDateWriterDialog(
+    modifier: Modifier = Modifier,
+    date: LocalDateTime? = null,
     onDismissRequest: () -> Unit,
     onClickConfirm: (String) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
-    var year by remember { mutableStateOf("") }
-    var month by remember { mutableStateOf("") }
-    var day by remember { mutableStateOf("") }
-    var hour by remember { mutableStateOf("") }
-    var minute by remember { mutableStateOf("") }
+    var year by remember { mutableStateOf(date?.year?.toString() ?: "") }
+    var month by remember { mutableStateOf(date?.monthValue?.toString() ?: "") }
+    var day by remember { mutableStateOf(date?.dayOfMonth?.toString() ?: "") }
+    var hour by remember { mutableStateOf(date?.hour?.toString() ?: "") }
+    var minute by remember { mutableStateOf(date?.minute?.toString() ?: "") }
 
     Dialog(
         onDismissRequest = { onDismissRequest() },
