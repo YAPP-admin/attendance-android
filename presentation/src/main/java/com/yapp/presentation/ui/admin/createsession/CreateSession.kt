@@ -1,5 +1,6 @@
 package com.yapp.presentation.ui.admin.createsession
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -23,16 +25,15 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -47,44 +48,95 @@ import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.util.rememberKeyboardVisible
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSButtonLarge
+import com.yapp.common.yds.YDSProgressBar
 import com.yapp.common.yds.YdsButtonState
 import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.presentation.R
-import com.yapp.presentation.ui.admin.createsession.CreateSessionContract.CreateSessionUiState
-import kotlinx.coroutines.delay
+import com.yapp.presentation.ui.admin.createsession.CreateSessionContract.*
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CreateSession(
     viewModel: CreateSessionViewModel = hiltViewModel(),
     onBackButtonClicked: (() -> Unit)? = null,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val focusManager = LocalFocusManager.current
+    val isKeyboardVisible by rememberKeyboardVisible()
+    val coroutineScope = rememberCoroutineScope()
 
     CreateSessionScreen(
         uiState = uiState,
-        onBackButtonClicked = { onBackButtonClicked?.invoke() }
+        sheetState = sheetState,
+        onScreenClicked = { viewModel.setEvent(CreateSessionUiEvent.OnScreenClick) },
+        onDialogDismissRequest = { viewModel.setEvent(CreateSessionUiEvent.OnDialogDismissRequest) },
+        onBackButtonClicked = { viewModel.setEvent(CreateSessionUiEvent.OnBackButtonClick) },
+        onInputTitleChanged = { title -> viewModel.setEvent(CreateSessionUiEvent.InputTitle(title)) },
+        onSessionTypeButtonClicked = { viewModel.setEvent(CreateSessionUiEvent.OnSessionTypeButtonClick) },
+        onSessionTypeClicked = { type ->
+            viewModel.setEvent(CreateSessionUiEvent.OnSessionTypeClick(type))
+        },
+        onDateButtonClicked = { viewModel.setEvent(CreateSessionUiEvent.OnDateButtonClick) },
+        onDateWriterConfirmButtonClicked = { date ->
+            viewModel.setEvent(CreateSessionUiEvent.OnDateWriterConfirmClick(date))
+        },
+        onInputDescriptionChanged = { description ->
+            viewModel.setEvent(CreateSessionUiEvent.InputDescription(description))
+        },
+        onCreateButtonClicked = { viewModel.setEvent(CreateSessionUiEvent.OnCreateButtonClick) },
     )
+
+    if (uiState.loadState == CreateSessionUiState.LoadState.Loading) {
+        YDSProgressBar()
+    }
+
+    LaunchedEffect(key1 = viewModel.effect) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is CreateSessionUiSideEffect.NavigateToPreviousScreen ->
+                    onBackButtonClicked?.invoke()
+
+                is CreateSessionUiSideEffect.KeyboardHide -> {
+                    if (isKeyboardVisible)
+                        focusManager.clearFocus()
+                }
+
+                is CreateSessionUiSideEffect.ShowBottomSheet ->
+                    coroutineScope.launch { sheetState.show() }
+
+                is CreateSessionUiSideEffect.HideBottomSheet ->
+                    coroutineScope.launch { sheetState.hide() }
+
+                is CreateSessionUiSideEffect.ShowToast ->
+                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CreateSessionScreen(
     uiState: CreateSessionUiState,
-    onBackButtonClicked: (() -> Unit),
+    sheetState: ModalBottomSheetState,
+    onScreenClicked: () -> Unit,
+    onDialogDismissRequest: () -> Unit,
+    onBackButtonClicked: () -> Unit,
+    onInputTitleChanged: (String) -> Unit,
+    onSessionTypeButtonClicked: () -> Unit,
+    onSessionTypeClicked: (NeedToAttendType) -> Unit,
+    onDateButtonClicked: () -> Unit,
+    onDateWriterConfirmButtonClicked: (String) -> Unit,
+    onInputDescriptionChanged: (String) -> Unit,
+    onCreateButtonClicked: () -> Unit,
 ) {
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    val coroutineScope = rememberCoroutineScope()
-    val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-    val focusManager = LocalFocusManager.current
-    val isKeyboardVisible by rememberKeyboardVisible()
-    var showDialog by remember { mutableStateOf(false) }
-
-    if (showDialog) {
+    if (uiState.showDialog) {
         CreateSessionDateWriterDialog(
-            onDismissRequest = { showDialog = false },
-            onClickConfirm = { showDialog = false }
+            onDismissRequest = onDialogDismissRequest,
+            onClickConfirm = onDateWriterConfirmButtonClicked
         )
     }
 
@@ -92,11 +144,7 @@ fun CreateSessionScreen(
         sheetContent = {
             CreateSessionTypeBottomSheet(
                 sessionStates = NeedToAttendType.values(),
-                onClickItem = {
-                    coroutineScope.launch {
-                        sheetState.hide()
-                    }
-                }
+                onClickItem = onSessionTypeClicked
             )
         },
         sheetState = sheetState,
@@ -108,7 +156,7 @@ fun CreateSessionScreen(
                 .systemBarsPadding()
                 .pointerInput(Unit) {
                     detectTapGestures(onTap = {
-                        focusManager.clearFocus()
+                        onScreenClicked()
                     })
                 },
             topBar = {
@@ -117,7 +165,7 @@ fun CreateSessionScreen(
                         .background(AttendanceTheme.colors.backgroundColors.background)
                         .padding(horizontal = 4.dp),
                     title = stringResource(id = R.string.create_session),
-                    onClickBackButton = { onBackButtonClicked.invoke() }
+                    onClickBackButton = onBackButtonClicked
                 )
             },
             backgroundColor = AttendanceTheme.colors.backgroundColors.background
@@ -135,41 +183,23 @@ fun CreateSessionScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 16.dp),
-                        input = title,
-                        onValueChange = { title = it },
+                        input = uiState.title,
+                        onValueChange = onInputTitleChanged,
                     )
-                    CreateSessionSelector(
-                        content = "",
+                    CreateSessionTextFieldButton(
+                        content = uiState.type?.value ?: "",
                         placeHolderTitle = "세션 타입을 선택해주세요.",
-                        onClickSelector = {
-                            coroutineScope.launch {
-                                if (isKeyboardVisible) {
-                                    focusManager.clearFocus()
-                                    delay(300)
-                                }
-
-                                sheetState.show()
-                            }
-                        }
+                        onClickSelector = onSessionTypeButtonClicked
                     )
-                    CreateSessionSelector(
-                        content = "",
+                    CreateSessionTextFieldButton(
+                        content = uiState.startTime,
                         placeHolderTitle = "날짜를 입력해주세요.",
-                        onClickSelector = {
-                            coroutineScope.launch {
-                                if (isKeyboardVisible) {
-                                    focusManager.clearFocus()
-                                    delay(300)
-                                }
-
-                                showDialog = true
-                            }
-                        },
+                        onClickSelector = onDateButtonClicked
                     )
                     CreateSessionCode(code = uiState.code)
                     CreateSessionDescriptionTextField(
-                        description = description,
-                        onValueChange = { description = it },
+                        description = uiState.description,
+                        onValueChange = onInputDescriptionChanged,
                         maxLength = 100
                     )
                 }
@@ -178,10 +208,9 @@ fun CreateSessionScreen(
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth(),
                     text = "세션 생성하기",
-                    state = YdsButtonState.ENABLED
-                ) {
-                    // TODO 세션 생성
-                }
+                    state = YdsButtonState.ENABLED,
+                    onClick = onCreateButtonClicked
+                )
             }
         }
     }
@@ -252,7 +281,7 @@ fun CreateSessionTextField(
 }
 
 @Composable
-fun CreateSessionSelector(
+fun CreateSessionTextFieldButton(
     modifier: Modifier = Modifier,
     content: String,
     placeHolderTitle: String? = null,
