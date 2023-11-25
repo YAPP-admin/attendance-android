@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -25,6 +26,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -46,11 +48,6 @@ fun CreateSessionDateWriterDialog(
     var day by remember { mutableStateOf("") }
     var hour by remember { mutableStateOf("") }
     var minute by remember { mutableStateOf("") }
-    val yearFocusRequester = remember { FocusRequester() }
-    val monthFocusRequester = remember { FocusRequester() }
-    val dayFocusRequester = remember { FocusRequester() }
-    val hourFocusRequester = remember { FocusRequester() }
-    val minuteFocusRequester = remember { FocusRequester() }
 
     Dialog(
         onDismissRequest = { onDismissRequest() },
@@ -60,6 +57,11 @@ fun CreateSessionDateWriterDialog(
     ) {
         // 다이얼로그 내부에 위치해야만 다이얼로그의 포커스 추적 가능
         val focusManager = LocalFocusManager.current
+        val yearFocusRequester = FocusRequester()
+        val monthFocusRequester = FocusRequester()
+        val dayFocusRequester = FocusRequester()
+        val hourFocusRequester = FocusRequester()
+        val minuteFocusRequester = FocusRequester()
 
         Column(
             modifier = modifier
@@ -129,12 +131,16 @@ fun CreateSessionDateWriterDialog(
                     input = minute,
                     focusRequester = minuteFocusRequester,
                     isError = isValidMinute(minute).not(),
+                    imeAction = ImeAction.Done,
                     maxLength = 2,
                     onValueChange = {
                         if (it.length == 2)
                             focusManager.clearFocus()
 
                         minute = it
+                    },
+                    onKeyboardAction = {
+                        focusManager.clearFocus()
                     }
                 )
                 Spacer(modifier = Modifier.padding(horizontal = 1.dp))
@@ -159,7 +165,11 @@ fun CreateSessionDateTextField(
     isError: Boolean,
     input: String,
     maxLength: Int = Int.MAX_VALUE,
+    imeAction: ImeAction = ImeAction.Next,
     onValueChange: (String) -> Unit,
+    onKeyboardAction: () -> Unit = {
+        nextFocusRequester?.requestFocus()
+    }
 ) {
     TextField(
         modifier = modifier
@@ -179,7 +189,13 @@ fun CreateSessionDateTextField(
                 onValueChange(it)
         },
         singleLine = true,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number,
+            imeAction = imeAction
+        ),
+        keyboardActions = KeyboardActions {
+            onKeyboardAction()
+        },
         textStyle = AttendanceTypography.body2.copy(
             color = if (isError.not()) AttendanceTheme.colors.grayScale.Gray800 else AttendanceTheme.colors.grayScale.Gray200
         ),
