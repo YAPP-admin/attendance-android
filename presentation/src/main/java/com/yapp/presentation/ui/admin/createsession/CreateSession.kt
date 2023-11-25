@@ -84,7 +84,7 @@ fun CreateSessionScreen(
     if (showDialog) {
         CreateSessionDateWriterDialog(
             onDismissRequest = { showDialog = false },
-            onClickConfirm = { }
+            onClickConfirm = { showDialog = false }
         )
     }
 

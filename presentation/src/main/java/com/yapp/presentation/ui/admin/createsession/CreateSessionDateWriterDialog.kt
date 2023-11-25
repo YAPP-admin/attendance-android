@@ -36,6 +36,8 @@ import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.YDSButtonSmall
 import com.yapp.common.yds.YdsButtonState
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun CreateSessionDateWriterDialog(
@@ -151,7 +153,16 @@ fun CreateSessionDateWriterDialog(
                 state =
                 if (isValidDate(year, month, day, hour, minute)) YdsButtonState.ENABLED
                 else YdsButtonState.DISABLED,
-                onClick = { onClickConfirm("$year-$month-$day $hour:$minute") }
+                onClick = {
+                    val dateTime = LocalDateTime.of(
+                        year.toInt(),
+                        month.toInt(),
+                        day.toInt(),
+                        hour.toInt(),
+                        minute.toInt()
+                    )
+                    onClickConfirm(dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                }
             )
         }
     }
@@ -169,7 +180,7 @@ fun CreateSessionDateTextField(
     onValueChange: (String) -> Unit,
     onKeyboardAction: () -> Unit = {
         nextFocusRequester?.requestFocus()
-    }
+    },
 ) {
     TextField(
         modifier = modifier
