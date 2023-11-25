@@ -209,6 +209,8 @@ fun CreateSessionTypeBottomSheet(
                     .clickable { onClickItem(needToAttendType) }
                     .padding(vertical = 8.dp),
                 text = needToAttendType.value,
+                color = AttendanceTheme.colors.grayScale.Gray800,
+                style = AttendanceTypography.body1,
                 textAlign = TextAlign.Center
             )
         }
