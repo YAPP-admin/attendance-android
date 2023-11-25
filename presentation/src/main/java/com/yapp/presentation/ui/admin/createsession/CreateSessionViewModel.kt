@@ -2,6 +2,7 @@ package com.yapp.presentation.ui.admin.createsession
 
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
+import com.yapp.domain.usecases.SetSessionUseCase
 import com.yapp.presentation.ui.admin.createsession.CreateSessionContract.CreateSessionUiEvent
 import com.yapp.presentation.ui.admin.createsession.CreateSessionContract.CreateSessionUiSideEffect
 import com.yapp.presentation.ui.admin.createsession.CreateSessionContract.CreateSessionUiState
@@ -14,6 +15,7 @@ import kotlin.random.nextInt
 
 @HiltViewModel
 class CreateSessionViewModel @Inject constructor(
+    private val setSessionUseCase: SetSessionUseCase,
 ) : BaseViewModel<CreateSessionUiState, CreateSessionUiSideEffect, CreateSessionUiEvent>(
     CreateSessionUiState()
 ) {
@@ -66,14 +68,34 @@ class CreateSessionViewModel @Inject constructor(
                 setState { copy(description = event.description) }
 
             is CreateSessionUiEvent.OnCreateButtonClick -> {
-                setState { copy(loadState = CreateSessionUiState.LoadState.Loading) }
-
-                delay(500)
-                setState { copy(loadState = CreateSessionUiState.LoadState.Idle) }
-                setEffect(CreateSessionUiSideEffect.ShowToast("세션 생성이 완료되었습니다."))
-                setEffect(CreateSessionUiSideEffect.NavigateToPreviousScreen)
+                if (currentState.enableCreate)
+                    setSession()
             }
 
+        }
+    }
+
+    private suspend fun setSession() {
+        setState { copy(loadState = CreateSessionUiState.LoadState.Loading) }
+
+        currentState.type?.let { type ->
+            setSessionUseCase(
+                title = currentState.title,
+                type = type,
+                date = currentState.startTime,
+                description = currentState.description,
+                code = currentState.code,
+            ).onSuccess {
+                setEffect(CreateSessionUiSideEffect.ShowToast("세션 생성이 완료되었습니다."))
+                setEffect(CreateSessionUiSideEffect.NavigateToPreviousScreen)
+            }.onFailure {
+                setEffect(CreateSessionUiSideEffect.ShowToast("알 수 없는 오류가 발생했습니다.\n다시 시도해주세요."))
+            }.also {
+                setState { copy(loadState = CreateSessionUiState.LoadState.Idle) }
+            }
+        } ?: run {
+            setState { copy(loadState = CreateSessionUiState.LoadState.Idle) }
+            setEffect(CreateSessionUiSideEffect.ShowToast("세션 타입을 선택해주세요."))
         }
     }
 
