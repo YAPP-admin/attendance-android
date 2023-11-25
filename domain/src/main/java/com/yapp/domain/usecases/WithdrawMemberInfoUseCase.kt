@@ -4,9 +4,14 @@ import com.yapp.domain.repository.LocalRepository
 import com.yapp.domain.repository.MemberRepository
 import javax.inject.Inject
 
-class DeleteMemberInfoUseCase @Inject constructor(
+/**
+ * 멤버 **스스로** 회원 탈퇴 기능을 사용할때의 UseCase
+ *
+ * 로컬에 저장된 Kakao MemberId를 제거 -> FireStore에 존재하는 데이터를 제거합니다.
+ */
+class WithdrawMemberInfoUseCase @Inject constructor(
     private val localRepository: LocalRepository,
-    private val memberRepository: MemberRepository,
+    private val memberRepository: MemberRepository
 ) {
 
     suspend operator fun invoke(memberId: Long): Result<Boolean> {
