@@ -128,7 +128,7 @@ fun CreateSessionDateWriterDialog(
                     modifier = Modifier.width(52.dp),
                     input = minute,
                     focusRequester = minuteFocusRequester,
-                    isError = isValidHour(minute).not(),
+                    isError = isValidMinute(minute).not(),
                     maxLength = 2,
                     onValueChange = {
                         if (it.length == 2)
