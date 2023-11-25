@@ -7,6 +7,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -164,6 +166,7 @@ fun CreateSessionScreen(
                             }
                         },
                     )
+                    CreateSessionCode(code = uiState.code)
                     CreateSessionDescriptionTextField(
                         description = description,
                         onValueChange = { description = it },
@@ -267,6 +270,27 @@ fun CreateSessionSelector(
             text = content.ifEmpty { placeHolderTitle ?: "" },
             color = if (content.isBlank()) AttendanceTheme.colors.grayScale.Gray400 else AttendanceTheme.colors.grayScale.Gray800,
             style = AttendanceTypography.body1,
+        )
+    }
+}
+
+@Composable
+fun CreateSessionCode(
+    modifier: Modifier = Modifier,
+    code: String,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+    ) {
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = "코드 : $code",
+            textAlign = TextAlign.End,
+            color = AttendanceTheme.colors.grayScale.Gray800,
+            style = AttendanceTypography.body1.copy(
+                fontWeight = FontWeight.Bold
+            ),
         )
     }
 }

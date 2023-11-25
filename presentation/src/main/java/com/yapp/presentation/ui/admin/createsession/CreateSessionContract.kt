@@ -7,6 +7,7 @@ import com.yapp.common.base.UiState
 class CreateSessionContract {
     data class CreateSessionUiState(
         val loadState: LoadState = LoadState.Idle,
+        val code: String = ""
     ) : UiState {
         enum class LoadState {
             Loading, Idle
