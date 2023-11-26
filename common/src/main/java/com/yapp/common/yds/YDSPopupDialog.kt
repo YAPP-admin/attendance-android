@@ -3,10 +3,10 @@ package com.yapp.common.yds
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -28,6 +28,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -131,6 +133,7 @@ fun YDSPopupDialog(
                         Button(
                             onClick = onClickNegativeButton,
                             modifier = Modifier
+                                .width(0.dp)
                                 .weight(1f)
                                 .height(46.dp)
                                 .padding(end = 6.dp),
@@ -143,7 +146,8 @@ fun YDSPopupDialog(
                             Text(
                                 text = negativeButtonText,
                                 style = AttendanceTypography.body1,
-                                color = AttendanceTheme.colors.grayScale.Gray800
+                                color = AttendanceTheme.colors.grayScale.Gray800,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
                     }
@@ -156,6 +160,7 @@ fun YDSPopupDialog(
                     Button(
                         onClick = onClickPositiveButton,
                         modifier = Modifier
+                            .width(0.dp)
                             .weight(1f)
                             .height(46.dp)
                             .then(positiveButtonPadding),
@@ -168,11 +173,29 @@ fun YDSPopupDialog(
                         Text(
                             text = positiveButtonText,
                             style = AttendanceTypography.body1,
-                            color = Color.White
+                            color = Color.White,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
             }
         }
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Preview(device = "spec:width=480px,height=800px,dpi=240")
+@Composable
+fun YDSPopupDialogPreview() {
+    AttendanceTheme {
+        YDSPopupDialog(
+            title = "팀을 선택해 주세요",
+            content = "원활한 출석체크를 위해\\n팀과 직무 선택이 꼭 필요해요!",
+            negativeButtonText = "취소",
+            positiveButtonText = "팀 선택하기",
+            onClickNegativeButton = { },
+            onClickPositiveButton = {  },
+            onDismiss = {  }
+        )
     }
 }
