@@ -40,5 +40,7 @@ class ManagementContract {
         class OnTeamTypeHeaderItemClicked(val teamName: String, val teamNumber: Int) : ManagementEvent()
     }
 
-    sealed class ManagementSideEffect : UiSideEffect
+    sealed class ManagementSideEffect : UiSideEffect {
+        class ShowToast(val description: String) : ManagementSideEffect()
+    }
 }

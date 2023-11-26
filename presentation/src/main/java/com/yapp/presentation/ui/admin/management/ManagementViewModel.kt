@@ -4,11 +4,12 @@ import FoldableHeaderItemState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
+import com.yapp.domain.common.KakaoSdkProviderInterface
 import com.yapp.domain.model.Attendance
 import com.yapp.domain.model.Member
 import com.yapp.domain.model.Team
 import com.yapp.domain.model.types.PositionType
-import com.yapp.domain.usecases.DeleteMemberInfoUseCase
+import com.yapp.domain.repository.MemberRepository
 import com.yapp.domain.usecases.GetAllMemberUseCase
 import com.yapp.domain.usecases.SetMemberAttendanceUseCase
 import com.yapp.presentation.ui.admin.AdminConstants.KEY_SESSION_ID
@@ -43,7 +44,7 @@ class ManagementViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     getAllMemberUseCase: GetAllMemberUseCase,
     private val setMemberAttendanceUseCase: SetMemberAttendanceUseCase,
-    private val deleteMemberInfoUseCase: DeleteMemberInfoUseCase
+    private val memberRepository: MemberRepository
 ) : BaseViewModel<ManagementState, ManagementSideEffect, ManagementEvent>(ManagementState()) {
 
     companion object {
@@ -103,7 +104,13 @@ class ManagementViewModel @Inject constructor(
             }
 
             is ManagementEvent.OnDeleteMemberClicked -> {
-                deleteMemberInfoUseCase(event.memberId)
+                memberRepository.deleteMember(event.memberId).also { result ->
+                    if (result.isSuccess) {
+                        setEffect(ManagementSideEffect.ShowToast("멤버를 삭제하는데 실패했습니다"))
+                    } else {
+                        setEffect(ManagementSideEffect.ShowToast("멤버를 성공적으로 제거했습니다"))
+                    }
+                }
             }
 
             is ManagementEvent.OnPositionTypeHeaderItemClicked -> {
