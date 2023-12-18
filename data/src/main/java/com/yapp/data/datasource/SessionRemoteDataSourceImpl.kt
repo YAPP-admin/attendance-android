@@ -15,7 +15,7 @@ class SessionRemoteDataSourceImpl @Inject constructor(
     override suspend fun setSession(session: SessionEntity) {
         return suspendCancellableCoroutine { cancellableContinuation ->
             fireStore.sessionRef()
-                .document() // TODO 세션 ID값을 어떻게 지정할 것인지?
+                .document(session.sessionId.toString())
                 .set(session)
                 .addOnSuccessListener {
                     cancellableContinuation.resume(Unit)

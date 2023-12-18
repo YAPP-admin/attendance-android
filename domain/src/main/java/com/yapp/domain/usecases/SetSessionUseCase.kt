@@ -8,7 +8,6 @@ import javax.inject.Inject
 class SetSessionUseCase @Inject constructor(
     private val sessionRepository: SessionRepository,
 ) {
-
     suspend operator fun invoke(
         title: String,
         type: NeedToAttendType,
@@ -16,15 +15,23 @@ class SetSessionUseCase @Inject constructor(
         description: String,
         code: String,
     ): Result<Unit> {
-        return sessionRepository.setSession(
-            session = Session(
-                sessionId = 6,
-                title = title,
-                type = type,
-                startTime = startTime,
-                description = description,
-                code = code
+        return sessionRepository.getAllSession().mapCatching { sessions: List<Session> ->
+            val lastSessionId = sessions.last().sessionId
+            val newSessionId = lastSessionId + 1
+
+            // 새롭게 생성할 세션의 ID는 현재 DB 내에 존재하지 않아야 한다.
+            check(sessions.any { it.sessionId == newSessionId }.not())
+
+            sessionRepository.setSession(
+                session = Session(
+                    sessionId = newSessionId,
+                    title = title,
+                    type = type,
+                    startTime = startTime,
+                    description = description,
+                    code = code
+                )
             )
-        )
+        }
     }
 }
