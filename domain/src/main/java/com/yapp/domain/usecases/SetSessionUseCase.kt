@@ -12,7 +12,7 @@ class SetSessionUseCase @Inject constructor(
     suspend operator fun invoke(
         title: String,
         type: NeedToAttendType,
-        date: String,
+        startTime: String,
         description: String,
         code: String,
     ): Result<Unit> {
@@ -21,7 +21,7 @@ class SetSessionUseCase @Inject constructor(
                 sessionId = 6,
                 title = title,
                 type = type,
-                date = date,
+                startTime = startTime,
                 description = description,
                 code = code
             )

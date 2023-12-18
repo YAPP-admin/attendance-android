@@ -346,7 +346,7 @@ private fun AttendUserSession(
         date = SimpleDateFormat(
             "MM.dd",
             Locale.KOREA
-        ).format(SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA).parse(session.date)?.time),
+        ).format(SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA).parse(session.startTime)?.time),
         title = session.title,
         description = session.description,
     ) {

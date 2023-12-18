@@ -115,7 +115,7 @@ fun SessionDetailScreen(
             }
             if (session != null) {
                 val sessionDate =
-                    SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA).parse(session.date)?.time
+                    SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA).parse(session.startTime)?.time
                 Text(
                     text = SimpleDateFormat("MM.dd", Locale.KOREA).format(sessionDate),
                     style = AttendanceTypography.body1,

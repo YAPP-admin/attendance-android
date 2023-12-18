@@ -80,27 +80,6 @@ class TodaySessionViewModel @Inject constructor(
             }
     }
 
-    private suspend fun getMemberAttendances() = coroutineScope {
-        setState { copy(loadState = LoadState.Loading) }
-        getMemberAttendancesUseCase()
-            .onSuccess { attendances ->
-                val attendance = attendances?.first { it.sessionId == uiState.value.sessionId }
-                val attendanceStatus = attendance?.status ?: Attendance.Status.ABSENT
-
-                AttendanceBundle.isAbsent = attendanceStatus == Attendance.Status.ABSENT
-
-                setState {
-                    copy(
-                        loadState = LoadState.Idle,
-                        attendanceType = attendanceStatus
-                    )
-                }
-            }
-            .onFailure {
-                setState { copy(loadState = LoadState.Error) }
-            }
-    }
-
     private suspend fun getUpcomingSession() = coroutineScope {
         setState { this.copy(loadState = LoadState.Loading) }
         getUpcomingSessionUseCase()
@@ -121,6 +100,25 @@ class TodaySessionViewModel @Inject constructor(
                 setState { copy(loadState = LoadState.Error) }
             }
     }
+
+    private suspend fun getMemberAttendances() = coroutineScope {
+        setState { copy(loadState = LoadState.Loading) }
+        getMemberAttendancesUseCase()
+            .onSuccess { attendances ->
+                val attendance = attendances?.firstOrNull { it.sessionId == uiState.value.sessionId }
+                val attendanceStatus = attendance?.status ?: Attendance.Status.ABSENT
+
+                AttendanceBundle.isAbsent = attendanceStatus == Attendance.Status.ABSENT
+
+                setState {
+                    copy(
+                        loadState = LoadState.Idle,
+                        attendanceType = attendanceStatus
+                    )
+                }
+            }
+            .onFailure {
+                setState { copy(loadState = LoadState.Error) }
+            }
+    }
 }
-
-

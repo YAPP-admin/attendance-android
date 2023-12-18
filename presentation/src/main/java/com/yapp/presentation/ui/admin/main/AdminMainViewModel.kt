@@ -50,7 +50,7 @@ class AdminMainViewModel @Inject constructor(
         getSessionListUseCase()
             .onSuccess { sessions ->
                 val upcomingSession =
-                    sessions.firstOrNull { DateUtil.isUpcomingSession(it.date) }
+                    sessions.firstOrNull { DateUtil.isUpcomingSession(it.startTime) }
 
                 upcomingSession?.let {
                     var lastSessionId = if (isUpcomingSessionIsStarted(it)) it.sessionId else it.sessionId - 1
@@ -72,6 +72,6 @@ class AdminMainViewModel @Inject constructor(
     }
 
     private fun isUpcomingSessionIsStarted(upcomingSession: Session): Boolean {
-        return DateUtil.isPastSession(upcomingSession.date)
+        return DateUtil.isPastSession(upcomingSession.startTime)
     }
 }

@@ -6,7 +6,7 @@ data class Session(
     val sessionId: Int,
     val title: String,
     val type: NeedToAttendType,
-    val date: String,
+    val startTime: String,
     val description: String,
     val code: String,
 )

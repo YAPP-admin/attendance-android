@@ -301,8 +301,8 @@ fun LazyListScope.UpcomingSession(
                 .padding(horizontal = 24.dp)
         ) {
             Text(
-                text = upcomingSession.date.substring(MONTH_RANGE) +
-                        "." + upcomingSession.date.substring(DAY_RANGE),
+                text = upcomingSession.startTime.substring(MONTH_RANGE) +
+                        "." + upcomingSession.startTime.substring(DAY_RANGE),
                 color = AttendanceTheme.colors.grayScale.Gray600,
                 style = AttendanceTypography.body2,
             )
@@ -404,7 +404,7 @@ private fun SessionItem(
 
         Text(
             modifier = Modifier.width(64.dp),
-            text = "${session.date.substring(MONTH_RANGE)}.${session.date.substring(DAY_RANGE)}",
+            text = "${session.startTime.substring(MONTH_RANGE)}.${session.startTime.substring(DAY_RANGE)}",
             color = textColor,
             style = AttendanceTypography.body1,
         )

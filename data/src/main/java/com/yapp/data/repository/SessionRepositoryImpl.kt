@@ -38,7 +38,9 @@ class SessionRepositoryImpl @Inject constructor(
 
     override suspend fun getAllSession(): Result<List<Session>> {
         return runCatching {
-            sessionRemoteDataSource.getAllSession().map { it.toDomain() }
+            sessionRemoteDataSource.getAllSession().map {
+                it.toDomain()
+            }
         }.fold(
             onSuccess = {
                 Result.success(it)
