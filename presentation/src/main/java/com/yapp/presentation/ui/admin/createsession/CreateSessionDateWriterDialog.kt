@@ -35,7 +35,6 @@ import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.YDSButtonSmall
 import com.yapp.common.yds.YdsButtonState
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -46,11 +45,17 @@ fun CreateSessionDateWriterDialog(
     onDismissRequest: () -> Unit,
     onClickConfirm: (String) -> Unit,
 ) {
-    var year by remember { mutableStateOf(date?.year?.toString() ?: "") }
-    var month by remember { mutableStateOf(date?.monthValue?.toString() ?: "") }
-    var day by remember { mutableStateOf(date?.dayOfMonth?.toString() ?: "") }
-    var hour by remember { mutableStateOf(date?.hour?.toString() ?: "") }
-    var minute by remember { mutableStateOf(date?.minute?.toString() ?: "") }
+    var state by remember {
+        mutableStateOf(
+            CreateSessionDateWriterDialogState(
+                year = date?.year?.toString() ?: "",
+                month = date?.month?.toString() ?: "",
+                day = date?.dayOfMonth?.toString() ?: "",
+                hour = date?.hour?.toString() ?: "",
+                minute = date?.minute?.toString() ?: ""
+            )
+        )
+    }
 
     Dialog(
         onDismissRequest = { onDismissRequest() },
@@ -80,36 +85,36 @@ fun CreateSessionDateWriterDialog(
             ) {
                 CreateSessionDateTextField(
                     modifier = Modifier.width(80.dp),
-                    input = year,
+                    input = state.year,
                     focusRequester = yearFocusRequester,
                     nextFocusRequester = monthFocusRequester,
-                    isError = isValidYear(year).not(),
+                    isError = state.isValidYear.not(),
                     maxLength = 4,
-                    onValueChange = { year = it }
+                    onValueChange = { state = state.copy(year = it) }
                 )
                 Spacer(modifier = Modifier.padding(horizontal = 1.dp))
                 CreateSessionDateText(text = "년")
                 Spacer(modifier = Modifier.padding(horizontal = 4.dp))
                 CreateSessionDateTextField(
                     modifier = Modifier.width(52.dp),
-                    input = month,
+                    input = state.month,
                     focusRequester = monthFocusRequester,
                     nextFocusRequester = dayFocusRequester,
-                    isError = isValidMonth(month).not(),
+                    isError = state.isValidMonth.not(),
                     maxLength = 2,
-                    onValueChange = { month = it }
+                    onValueChange = { state = state.copy(month = it) }
                 )
                 Spacer(modifier = Modifier.padding(horizontal = 1.dp))
                 CreateSessionDateText(text = "월")
                 Spacer(modifier = Modifier.padding(horizontal = 4.dp))
                 CreateSessionDateTextField(
                     modifier = Modifier.width(52.dp),
-                    input = day,
+                    input = state.day,
                     focusRequester = dayFocusRequester,
                     nextFocusRequester = hourFocusRequester,
-                    isError = isValidDay(year, month, day).not(),
+                    isError = state.isValidDay.not(),
                     maxLength = 2,
-                    onValueChange = { day = it }
+                    onValueChange = { state = state.copy(day = it) }
                 )
                 Spacer(modifier = Modifier.padding(horizontal = 1.dp))
                 CreateSessionDateText(text = "일")
@@ -119,28 +124,28 @@ fun CreateSessionDateWriterDialog(
             ) {
                 CreateSessionDateTextField(
                     modifier = Modifier.width(52.dp),
-                    input = hour,
+                    input = state.hour,
                     focusRequester = hourFocusRequester,
                     nextFocusRequester = minuteFocusRequester,
-                    isError = isValidHour(hour).not(),
+                    isError = state.isValidHour.not(),
                     maxLength = 2,
-                    onValueChange = { hour = it }
+                    onValueChange = { state = state.copy(hour = it) }
                 )
                 Spacer(modifier = Modifier.padding(horizontal = 1.dp))
                 CreateSessionDateText(text = "시")
                 Spacer(modifier = Modifier.padding(horizontal = 4.dp))
                 CreateSessionDateTextField(
                     modifier = Modifier.width(52.dp),
-                    input = minute,
+                    input = state.minute,
                     focusRequester = minuteFocusRequester,
-                    isError = isValidMinute(minute).not(),
+                    isError = state.isValidMinute.not(),
                     imeAction = ImeAction.Done,
                     maxLength = 2,
                     onValueChange = {
                         if (it.length == 2)
                             focusManager.clearFocus()
 
-                        minute = it
+                        state = state.copy(minute = it)
                     },
                     onKeyboardAction = {
                         focusManager.clearFocus()
@@ -152,15 +157,15 @@ fun CreateSessionDateWriterDialog(
             YDSButtonSmall(
                 text = "확인",
                 state =
-                if (isValidDate(year, month, day, hour, minute)) YdsButtonState.ENABLED
+                if (state.isValidDate) YdsButtonState.ENABLED
                 else YdsButtonState.DISABLED,
                 onClick = {
                     val dateTime = LocalDateTime.of(
-                        year.toInt(),
-                        month.toInt(),
-                        day.toInt(),
-                        hour.toInt(),
-                        minute.toInt()
+                        state.year.toInt(),
+                        state.month.toInt(),
+                        state.day.toInt(),
+                        state.hour.toInt(),
+                        state.minute.toInt()
                     )
                     onClickConfirm(dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 }
@@ -234,49 +239,4 @@ fun CreateSessionDateText(
         color = AttendanceTheme.colors.grayScale.Gray800,
         style = AttendanceTypography.body1
     )
-}
-
-private fun isValidDate(
-    year: String,
-    month: String,
-    day: String,
-    hour: String,
-    minute: String,
-): Boolean {
-    return isValidYear(year) and
-            isValidMonth(month) and
-            isValidDay(year, month, day) and
-            isValidHour(hour) and
-            isValidMinute(minute)
-}
-
-private fun isValidYear(year: String): Boolean {
-    return runCatching {
-        year.toInt() in 1000..9999
-    }.getOrDefault(false)
-}
-
-private fun isValidMonth(month: String): Boolean {
-    return runCatching {
-        month.toInt() in 1..12
-    }.getOrDefault(false)
-}
-
-private fun isValidDay(year: String, month: String, day: String): Boolean {
-    return runCatching {
-        LocalDate.of(year.toInt(), month.toInt(), day.toInt())
-        true
-    }.getOrDefault(false)
-}
-
-private fun isValidHour(hour: String): Boolean {
-    return runCatching {
-        hour.toInt() in 0..23
-    }.getOrDefault(false)
-}
-
-private fun isValidMinute(minute: String): Boolean {
-    return runCatching {
-        minute.toInt() in 0..59
-    }.getOrDefault(false)
 }
