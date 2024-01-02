@@ -117,4 +117,8 @@
 
     <string name="admin_total_score_title">누적 출결 점수</string>
     <string name="admin_total_score_box_text">점수가 실시간으로 반영되고 있어요</string>
+    <string name="reject">반려</string>
+    <string name="approve">승인</string>
+    <string name="process_complete">처리 완료</string>
+    <string name="normal_attendance">정상 출석</string>
 </resources>
