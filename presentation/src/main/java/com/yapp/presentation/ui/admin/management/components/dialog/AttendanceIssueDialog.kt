@@ -110,15 +110,17 @@ private fun AttendanceIssueDialogPreview() {
         )
     }.toList().toImmutableList()
     val selectedIndex = remember { mutableStateOf(0) }
-    AttendanceIssueDialog(
-        title = "박예령님의 출결이 보고와 다른가요?",
-        content = "실제 출결 상태로 수정해주세요.",
-        attendanceTypes = attendanceTypes,
-        onClickAttendanceType = {
-            selectedIndex.value = it
-        },
-        selectedIndex = selectedIndex.value,
-        onDismiss = {},
-        onClickCompleteButton = {}
-    )
+    AttendanceTheme {
+        AttendanceIssueDialog(
+            title = "박예령님의 출결이 보고와 다른가요?",
+            content = "실제 출결 상태로 수정해주세요.",
+            attendanceTypes = attendanceTypes,
+            onClickAttendanceType = {
+                selectedIndex.value = it
+            },
+            selectedIndex = selectedIndex.value,
+            onDismiss = {},
+            onClickCompleteButton = {}
+        )
+    }
 }

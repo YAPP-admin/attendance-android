@@ -25,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTheme.colors
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.util.Spacer
@@ -224,31 +225,33 @@ internal fun AttendanceReportTaskItem(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun AttendanceReportTaskItemPreview() {
-    LazyColumn(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        items(TaskType.values()) {
-            AttendanceReportTaskItem(
-                member = Member(
-                    0,
-                    "상록상록",
-                    position = PositionType.DEV_ANDROID,
-                    team = Team(TeamType.ANDROID, 2),
-                    attendances = AttendanceList.from(
-                        emptyList()
-                    )
-                ),
-                time = "2:00am",
-                contents = "개인사정으로 지각했는데 봐주세요ㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠ제발유",
-                attendanceType = AttendanceTypeButtonState(
-                    "지각",
-                    iconType = AttendanceTypeButtonState.IconType.TARDY
-                ),
-                taskType = it,
-                onClickReject = { },
-                onClickApprove = {}
-            )
+    AttendanceTheme {
+        LazyColumn(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            items(TaskType.values()) {
+                AttendanceReportTaskItem(
+                    member = Member(
+                        0,
+                        "상록상록",
+                        position = PositionType.DEV_ANDROID,
+                        team = Team(TeamType.ANDROID, 2),
+                        attendances = AttendanceList.from(
+                            emptyList()
+                        )
+                    ),
+                    time = "2:00am",
+                    contents = "개인사정으로 지각했는데 봐주세요ㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠ제발유",
+                    attendanceType = AttendanceTypeButtonState(
+                        "지각",
+                        iconType = AttendanceTypeButtonState.IconType.TARDY
+                    ),
+                    taskType = it,
+                    onClickReject = { },
+                    onClickApprove = {}
+                )
+            }
         }
     }
 }
