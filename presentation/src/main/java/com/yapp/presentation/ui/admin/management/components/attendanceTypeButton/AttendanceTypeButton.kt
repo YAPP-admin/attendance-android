@@ -58,7 +58,7 @@ internal fun AttendanceTypeButton(
     onClick: () -> Unit,
 ) {
     val (backgroundColor, textColor) = when (selected) {
-        true -> AttendanceTheme.colors.etcColors.EtcYellow to AttendanceTheme.colors.grayScale.Gray1200
+        true -> AttendanceTheme.colors.mainColors.YappOrangeAlpha to AttendanceTheme.colors.grayScale.Gray1200
         false -> AttendanceTheme.colors.grayScale.Gray200 to AttendanceTheme.colors.grayScale.Gray800
     }
     Row(
