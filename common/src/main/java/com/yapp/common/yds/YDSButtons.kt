@@ -105,7 +105,7 @@ fun YDSButtonMedium(
 fun YDSButtonRegular(
     text: String,
     state: YdsButtonState,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
     Button(
