@@ -326,7 +326,7 @@ private fun YDSPopupDialogPreview() {
     AttendanceTheme {
         YDSPopupDialog(
             title = "팀을 선택해 주세요",
-            content = "원활한 출석체크를 위해\\n팀과 직무 선택이 꼭 필요해요!",
+            content = "원활한 출석체크를 위해\n팀과 직무 선택이 꼭 필요해요!",
             negativeButtonText = "취소",
             positiveButtonText = "팀 선택하기",
             onClickNegativeButton = { },
