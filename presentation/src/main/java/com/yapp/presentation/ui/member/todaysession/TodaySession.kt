@@ -38,6 +38,7 @@ import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSEmptyScreen
 import com.yapp.common.yds.YDSPopupDialog
 import com.yapp.common.yds.YDSProgressBar
+import com.yapp.common.yds.YDSSingleButtonPopupDialog
 import com.yapp.domain.model.Attendance
 import com.yapp.domain.model.Session
 import com.yapp.presentation.R
@@ -86,11 +87,11 @@ fun TodaySession(
         DialogState.NONE -> Unit
 
         DialogState.REQUIRE_UPDATE -> {
-            YDSPopupDialog(
+            YDSSingleButtonPopupDialog(
                 title = stringResource(R.string.required_update_title),
                 content = stringResource(R.string.required_update_content),
-                positiveButtonText = stringResource(R.string.update_confirm),
-                onClickPositiveButton = { viewModel.setEvent(TodaySessionUiEvent.OnUpdateButtonClicked) },
+                buttonText = stringResource(R.string.update_confirm),
+                onClickButton = { viewModel.setEvent(TodaySessionUiEvent.OnUpdateButtonClicked) },
                 onDismiss = { }
             )
         }
@@ -108,11 +109,11 @@ fun TodaySession(
         }
 
         DialogState.FAIL_INIT_LOAD -> {
-            YDSPopupDialog(
+            YDSSingleButtonPopupDialog(
                 title = stringResource(R.string.fail_load_version_title),
                 content = stringResource(R.string.fail_load_version_content),
-                positiveButtonText = stringResource(R.string.Exit),
-                onClickPositiveButton = { viewModel.setEvent(TodaySessionUiEvent.OnExitButtonClicked) },
+                buttonText = stringResource(R.string.Exit),
+                onClickButton = { viewModel.setEvent(TodaySessionUiEvent.OnExitButtonClicked) },
                 onDismiss = { }
             )
         }
