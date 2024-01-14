@@ -2,13 +2,13 @@ package com.yapp.domain.usecases
 
 import com.yapp.domain.model.Session
 import com.yapp.domain.repository.RemoteConfigRepository
-import com.yapp.domain.util.RenewDateUtil
+import com.yapp.domain.util.DateUtil
 import javax.inject.Inject
 
 
 class CheckQrAuthTimeUseCase @Inject constructor(
     private val remoteConfigRepository: RemoteConfigRepository,
-    private val dateUtil: RenewDateUtil
+    private val dateUtil: DateUtil
 ) {
 
     companion object {

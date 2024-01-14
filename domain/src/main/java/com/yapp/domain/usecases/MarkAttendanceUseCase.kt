@@ -4,13 +4,13 @@ import com.yapp.domain.model.Attendance
 import com.yapp.domain.model.Session
 import com.yapp.domain.repository.LocalRepository
 import com.yapp.domain.repository.MemberRepository
-import com.yapp.domain.util.RenewDateUtil
+import com.yapp.domain.util.DateUtil
 import javax.inject.Inject
 
 class MarkAttendanceUseCase @Inject constructor(
     private val localRepository: LocalRepository,
     private val memberRepository: MemberRepository,
-    private val dateUtil: RenewDateUtil
+    private val dateUtil: DateUtil
 ) {
 
     suspend operator fun invoke(checkedSession: Session): Result<Unit> {

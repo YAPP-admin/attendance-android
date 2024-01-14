@@ -29,7 +29,7 @@ import com.yapp.common.yds.YDSAttendanceType
 import com.yapp.common.yds.YDSEmptyScreen
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.domain.model.Session
-import com.yapp.domain.util.RenewDateUtil
+import com.yapp.domain.util.DateUtil
 import com.yapp.presentation.util.attendance.checkSessionAttendance
 
 @Composable
@@ -37,7 +37,7 @@ fun SessionDetail(
     viewModel: SessionDetailViewModel = hiltViewModel(),
     onClickBackButton: () -> Unit,
 ) {
-    val dateUtil = remember { RenewDateUtil() }
+    val dateUtil = remember { DateUtil() }
     val uiState by viewModel.uiState.collectAsState()
     val session: Session? = uiState.session?.first
     val attendance = checkSessionAttendance(session!!, uiState.session!!.second, isPastSession = dateUtil.isPastDate(session.date))
