@@ -59,7 +59,7 @@ import com.yapp.common.yds.YDSProgressBar
 import com.yapp.domain.model.Attendance
 import com.yapp.domain.model.Session
 import com.yapp.domain.model.types.NeedToAttendType
-import com.yapp.domain.util.RenewDateUtil
+import com.yapp.domain.util.DateUtil
 import com.yapp.presentation.R
 import com.yapp.presentation.util.attendance.checkSessionAttendance
 
@@ -337,7 +337,7 @@ private fun AttendUserSession(
     attendanceInfo: Pair<Session, Attendance>,
     navigateToSessionDetail: (Int) -> Unit
 ) {
-    val dateUtil = remember { RenewDateUtil() }
+    val dateUtil = remember { DateUtil() }
     val session = attendanceInfo.first
     val attendance = attendanceInfo.second
 

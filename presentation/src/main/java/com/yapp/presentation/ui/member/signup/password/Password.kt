@@ -51,7 +51,6 @@ import com.yapp.common.theme.Light_Gray_200
 import com.yapp.common.util.rememberKeyboardVisible
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.domain.util.DateParser
-import com.yapp.domain.util.RenewDateUtil
 import com.yapp.presentation.R
 import com.yapp.presentation.common.AttendanceBundle
 import com.yapp.presentation.ui.member.signup.name.OnKeyboardNextButton

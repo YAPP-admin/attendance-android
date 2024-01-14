@@ -2,11 +2,10 @@ package com.yapp.presentation.ui.admin.main
 
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
-import com.yapp.domain.model.Session
 import com.yapp.domain.model.collections.AttendanceList
 import com.yapp.domain.usecases.GetSessionListUseCase
 import com.yapp.domain.usecases.GetUpcomingSessionUseCase
-import com.yapp.domain.util.RenewDateUtil
+import com.yapp.domain.util.DateUtil
 import com.yapp.presentation.ui.admin.main.AdminMainContract.AdminMainUiEvent
 import com.yapp.presentation.ui.admin.main.AdminMainContract.AdminMainUiSideEffect
 import com.yapp.presentation.ui.admin.main.AdminMainContract.AdminMainUiState
@@ -18,7 +17,7 @@ import javax.inject.Inject
 class AdminMainViewModel @Inject constructor(
     private val getSessionListUseCase: GetSessionListUseCase,
     private val getUpcomingSessionUseCase: GetUpcomingSessionUseCase,
-    private val dateUtil: RenewDateUtil
+    private val dateUtil: DateUtil
 ) : BaseViewModel<AdminMainUiState, AdminMainUiSideEffect, AdminMainUiEvent>(
     AdminMainUiState()
 ) {

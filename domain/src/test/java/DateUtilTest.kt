@@ -1,11 +1,11 @@
 import com.yapp.domain.util.DateParser
-import com.yapp.domain.util.RenewDateUtil
+import com.yapp.domain.util.DateUtil
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 
 class DateUtilTest : BehaviorSpec({
     val dateParser = DateParser()
-    val dateUtil = RenewDateUtil()
+    val dateUtil = DateUtil()
 
     given("[세션시간]과 그로 부터 [30분 전 시간]이 주어진 경우") {
         val currentTime = dateParser.parse(rawDate = "2024-01-04 14:00:00")

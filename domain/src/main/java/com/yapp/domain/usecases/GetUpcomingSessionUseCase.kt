@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class GetUpcomingSessionUseCase @Inject constructor(
     private val remoteConfigRepository: RemoteConfigRepository,
-    private val dateUtil: RenewDateUtil
+    private val dateUtil: DateUtil
 ) {
 
     suspend operator fun invoke(): Result<Session?> {

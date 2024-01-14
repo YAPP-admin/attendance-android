@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 typealias Minute = Long
 
-class RenewDateUtil @Inject constructor() {
+class DateUtil @Inject constructor() {
 
     fun getCurrentTime(): LocalDateTime {
         return LocalDateTime.now()
