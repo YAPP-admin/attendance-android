@@ -15,130 +15,170 @@ class ExampleUnitTest {
     val json = """
         
         [{
-            "session_id": 0,
+            "sessionId": 0,
             "title": "YAPP 오리엔테이션",
+            "type": "NEED_ATTENDACE"
+            "startTime": "2023-10-28 14:00:00"
             "description": "오리엔테이션 입니다",
-            "date": "2022-04-23"
+            "code": "1234"
           },
           {
-            "session_id": 1,
-            "title": "전체 세션",
-            "description": "모든 팀들이 같이 하는 시간입니다.",
-            "date": "2022-04-09"
-          },
-          {
-            "session_id": 2,
+            "sessionId": 1,
             "title": "팀 세션",
-            "description": "팀 세션 입니다.",
-            "date": "2022-04-16"
+            "type": "DONT_NEED_ATTENDACE"
+            "startTime": "2023-11-04 14:00:00"
+            "description": "팀으로 모여 함께 의견을 공유하고 작업합니다.",
+            "code": "1234"
           },
           {
-            "session_id": 3,
-            "title": "중간고사 휴얍",
-            "description": "시험 잘보세요",
-            "date": "2022-04-23"
+            "sessionId": 2,
+            "title": "전체 직군 세션",
+            "type": "NEED_ATTENDACE"
+            "startTime": "2023-11-11 14:00:00"
+            "description": "같은 직군 멤버들과 소통하고 진행 상황을 공유하는 시간입니다.",
+            "code": "1234"
           },
           {
-            "session_id": 4,
-            "title": "기획 세션",
-            "description": "기획 세션입니다.",
-            "date": "2022-04-30"
-          },
-          {
-            "session_id": 5,
-            "title": "1차 Dev. Camp",
-            "description": "1차 데브캠프입니다.",
-            "date": "2022-05-07"
-          },
-          {
-            "session_id": 6,
+            "sessionId": 3,
             "title": "팀 세션",
-            "description": "팀세션 입니다.",
-            "date": "2022-05-14"
+            "type": "DONT_NEED_ATTENDACE"
+            "startTime": "2023-11-18 14:00:00"
+            "description": "팀으로 모여 함께 의견을 공유하고 작업합니다.",
+            "code": "1234"
           },
           {
-            "session_id": 7,
+            "sessionId": 4,
+            "title": "YAPP 1차 Dev. Camp",
+            "type": "NEED_ATTENDACE"
+            "startTime": "2023-12-02 13:00:00"
+            "description": "1차 Dev. Camp까지 1차 프로토타입을 완성해주세요.",
+            "code": "1234"
+          },
+          {
+            "sessionId": 5,
+            "title": "휴얍",
+            "type": "DAY_OFF"
+            "startTime": "2023-12-09 14:00:00"
+            "description": "팀으로 모여 함께 의견을 공유하고 작업합니다.",
+            "code": "1234"
+          },
+          {
+            "sessionId": 6,
+            "title": "팀 세션",
+            "type": "DONT_NEED_ATTENDACE"
+            "startTime": "2023-12-16 14:00:00"
+            "description": "팀으로 모여 함께 의견을 공유하고 작업합니다.",
+            "code": "1234"
+          },
+          {
+            "sessionId": 7,
             "title": "디자인 세션",
-            "description": "디자인 세션 입니다.",
-            "date": "2022-05-21"
+            "type": "DONT_NEED_ATTENDACE"
+            "startTime": "2023-12-23 14:00:00"
+            "description": "디자인 직군 멤버들이 소통하고 진행 상황을 공유하는 시간입니다.",
+            "code": "1234"
           },
           {
-            "session_id": 8,
+            "sessionId": 9,
             "title": "팀 세션",
-            "description": "팀 세션입니다.",
-            "date": "2022-05-28"
+            "type": "DONT_NEED_ATTENDACE"
+            "startTime": "2023-12-30 14:00:00"
+            "description": "팀으로 모여 함께 의견을 공유하고 작업합니다.",
+            "code": "1234"
           },
           {
-            "session_id": 9,
-            "title": "2차 Dev. Camp",
-            "description": "너무 신나는 2차 데브캠프",
-            "date": "2022-06-04"
-          },
-          {
-            "session_id": 10,
-            "title": "기말고사 휴얍",
-            "description": "시험 잘보세요",
-            "date": "2022-06-11"
-          },
-          {
-            "session_id": 11,
-            "title": "팀 세션",
-            "description": "팀 세션입니다.",
-            "date": "2022-06-18"
-          },
-          {
-            "session_id": 12,
-            "title": "팀 세션",
-            "description": "팀 세션입니다.",
-            "date": "2022-06-25"
-          },
-          {
-            "session_id": 13,
+            "sessionId": 10,
             "title": "개발 세션",
-            "description": "개발 세션입니다.",
-            "date": "2022-07-02"
+            "type": "DONT_NEED_ATTENDACE"
+            "startTime": "2023-01-07 14:00:00"
+            "description": "개발 직군 멤버들이 소통하고 진행 상황을 공유하는 시간입니다.",
+            "code": "1234"
           },
           {
-            "session_id": 14,
+            "sessionId": 11,
+            "title": "전체 직군 세션",
+            "type": "NEED_ATTENDACE"
+            "startTime": "2023-01-14 14:00:00"
+            "description": "같은 직군 멤버들과 소통하고 진행 상황을 공유하는 시간입니다.",
+            "code": "1234"
+          },
+          {
+            "sessionId": 12,
             "title": "팀 세션",
-            "description": "팀 세션입니다.",
-            "date": "2022-07-09"
+            "type": "DONT_NEED_ATTENDACE"
+            "startTime": "2023-01-21 14:00:00"
+            "description": "팀으로 모여 함께 의견을 공유하고 작업합니다",
+            "code": "1234"
           },
           {
-            "session_id": 15,
-            "title": "3차 Dev. Camp",
-            "description": "완성 못하면 지상렬",
-            "date": "2022-07-16"
+            "sessionId": 13,
+            "title": "YAPP 2차 Dev. Camp",
+            "type": "NEED_ATTENDACE"
+            "startTime": "2023-01-28 14:00:00"
+            "description": "2차 Dev. Camp까지 2차 프로토타입을 완성해 주세요.",
+            "code": "1234"
           },
           {
-            "session_id": 16,
+            "sessionId": 14,
             "title": "팀 세션",
-            "description": "팀 세션입니다.",
-            "date": "2022-07-23"
+            "type": "DONT_NEED_ATTENDACE"
+            "startTime": "2023-02-03 14:00:00"
+            "description": "팀으로 모여 함께 의견을 공유하고 작업합니다",
+            "code": "1234"
           },
           {
-            "session_id": 17,
-            "title": "전체 세션",
-            "description": "전체 세션입니다.",
-            "date": "2022-07-30"
+            "sessionId": 15,
+            "title": "팀 세션",
+            "type": "DONT_NEED_ATTENDACE"
+            "startTime": "2023-02-10 14:00:00"
+            "description": "팀으로 모여 함께 의견을 공유하고 작업합니다",
+            "code": "1234"
           },
           {
-            "session_id": 18,
+            "sessionId": 16,
+            "title": "팀 세션",
+            "type": "DONT_NEED_ATTENDACE"
+            "startTime": "2023-02-17 14:00:00"
+            "description": "팀으로 모여 함께 의견을 공유하고 작업합니다",
+            "code": "1234"
+          },
+          {
+            "sessionId": 17,
+            "title": "팀 세션",
+            "type": "DONT_NEED_ATTENDACE"
+            "startTime": "2023-02-24 14:00:00"
+            "description": "팀으로 모여 함께 의견을 공유하고 작업합니다",
+            "code": "1234"
+          },
+          {
+            "sessionId": 18,
+            "title": "팀 세션",
+            "type": "DONT_NEED_ATTENDACE"
+            "startTime": "2023-03-02 14:00:00"
+            "description": "팀으로 모여 함께 의견을 공유하고 작업합니다",
+            "code": "1234"
+          },
+          {
+            "sessionId": 19,
             "title": "성과공유회",
-            "description": "성과공유회 입니다.",
-            "date": "2022-08-06"
+            "type": "NEED_ATTENDACE"
+            "startTime": "2023-03-09 14:00:00"
+            "description": "YAPP 활동을 마무리짓는 성과 공유회 시간입니다.\n지금까지 하나의 팀으로 작업한 결과를 YAPP 전원에게 보여주세요 🎉",
+            "code": "1234"
           }]
        
     """.trimIndent()
 
     val singleJson = """
-        
+       
         {
-            "session_id": 0,
+            "sessionId": 0,
             "title": "YAPP 오리엔테이션",
-            "description": "오리엔테이션 입니다",
-            "date": "2022-04-23"
-          }
+            "type": "NEED_ATTENDACE"
+            "startTime": "2023-04-23 14:00:00"
+            "description": "오리엔테이션 입니다.",
+            "code": "1234"
+        }
           
     """.trimIndent()
 
