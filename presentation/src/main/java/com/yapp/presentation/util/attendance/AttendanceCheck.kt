@@ -7,13 +7,11 @@ import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.domain.util.DateUtil
 
 fun checkSessionAttendance(
-    session: Session?,
-    attendance: Attendance?
+    session: Session,
+    attendance: Attendance,
+    isPastSession: Boolean
 ): YDSAttendanceType? {
-    if ((session == null) or (attendance == null)) {
-        return null
-    }
-    if (!DateUtil.isPastSession(session!!.startTime)) {
+    if (isPastSession.not()) {
         return YDSAttendanceType.TBD
     }
     if (session.type == NeedToAttendType.DONT_NEED_ATTENDANCE) {
@@ -22,7 +20,7 @@ fun checkSessionAttendance(
     if (session.type == NeedToAttendType.DAY_OFF) {
         return YDSAttendanceType.NO_YAPP
     }
-    return when (attendance!!.status) {
+    return when (attendance.status) {
         Attendance.Status.ABSENT -> YDSAttendanceType.ABSENT
         Attendance.Status.ADMIT -> YDSAttendanceType.ATTEND
         Attendance.Status.LATE -> YDSAttendanceType.TARDY

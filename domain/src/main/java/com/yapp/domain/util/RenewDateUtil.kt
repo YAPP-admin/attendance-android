@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 typealias Minute = Long
 
-class RenewDateUtil {
+class RenewDateUtil @Inject constructor() {
 
     fun getCurrentTime(): LocalDateTime {
         return LocalDateTime.now()
@@ -54,6 +54,15 @@ class DateParser @Inject constructor() {
         date: LocalDateTime,
         formatter: DateTimeFormatter = DATE_FORMAT_WITH_TIME
     ): String {
+        return formatter.format(date)
+    }
+
+    fun format(
+        date: LocalDateTime,
+        format: String
+    ): String {
+        val formatter = DateTimeFormatter.ofPattern(format)
+
         return formatter.format(date)
     }
 

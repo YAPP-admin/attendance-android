@@ -7,6 +7,7 @@ import com.yapp.domain.model.collections.AttendanceList
 import com.yapp.domain.usecases.GetSessionListUseCase
 import com.yapp.domain.usecases.GetUpcomingSessionUseCase
 import com.yapp.domain.util.DateUtil
+import com.yapp.domain.util.RenewDateUtil
 import com.yapp.presentation.ui.admin.main.AdminMainContract.AdminMainUiEvent
 import com.yapp.presentation.ui.admin.main.AdminMainContract.AdminMainUiSideEffect
 import com.yapp.presentation.ui.admin.main.AdminMainContract.AdminMainUiState
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class AdminMainViewModel @Inject constructor(
     private val getSessionListUseCase: GetSessionListUseCase,
     private val getUpcomingSessionUseCase: GetUpcomingSessionUseCase,
+    private val dateUtil: RenewDateUtil
 ) : BaseViewModel<AdminMainUiState, AdminMainUiSideEffect, AdminMainUiEvent>(
     AdminMainUiState()
 ) {
@@ -49,11 +51,10 @@ class AdminMainViewModel @Inject constructor(
     private suspend fun getSessions() {
         getSessionListUseCase()
             .onSuccess { sessions ->
-                val upcomingSession =
-                    sessions.firstOrNull { DateUtil.isUpcomingSession(it.startTime) }
+                val upcomingSession = getUpcomingSessionUseCase().getOrThrow()
 
                 upcomingSession?.let {
-                    var lastSessionId = if (isUpcomingSessionIsStarted(it)) it.sessionId else it.sessionId - 1
+                    var lastSessionId = if (dateUtil.isPastDate(upcomingSession.date)) it.sessionId else it.sessionId - 1
                     if (lastSessionId < 0) lastSessionId = AttendanceList.DEFAULT_UPCOMING_SESSION_ID
                     setState { copy(lastSessionId = lastSessionId) }
                 }
@@ -69,9 +70,5 @@ class AdminMainViewModel @Inject constructor(
             .onFailure {
                 setState { copy(loadState = AdminMainUiState.LoadState.Error) }
             }
-    }
-
-    private fun isUpcomingSessionIsStarted(upcomingSession: Session): Boolean {
-        return DateUtil.isPastSession(upcomingSession.startTime)
     }
 }
