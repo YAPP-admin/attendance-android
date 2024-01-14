@@ -5,8 +5,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.common.KakaoSdkProviderInterface
 import com.yapp.domain.model.Team
-import com.yapp.domain.model.types.TeamType
-import com.yapp.domain.usecases.DeleteMemberInfoUseCase
+import com.yapp.domain.usecases.WithdrawMemberInfoUseCase
 import com.yapp.domain.usecases.GetConfigUseCase
 import com.yapp.domain.usecases.GetCurrentMemberInfoUseCase
 import com.yapp.domain.usecases.GetMemberIdUseCase
@@ -20,7 +19,7 @@ class MemberSettingViewModel @Inject constructor(
     private val kakaoSdkProvider: KakaoSdkProviderInterface,
     private val getMemberIdUseCase: GetMemberIdUseCase,
     private val getCurrentMemberInfoUseCase: GetCurrentMemberInfoUseCase,
-    private val deleteMemberInfoUseCase: DeleteMemberInfoUseCase,
+    private val withdrawMemberInfoUseCase: WithdrawMemberInfoUseCase,
     private val getConfigUseCase: GetConfigUseCase,
     private val shouldShowGuestButtonUseCase: ShouldShowGuestButtonUseCase,
 ) :
@@ -82,7 +81,7 @@ class MemberSettingViewModel @Inject constructor(
                 .onSuccess { memberId ->
                     require(memberId != null)
 
-                    deleteMemberInfoUseCase(memberId).getOrDefault(defaultValue = false).also { isSuccess ->
+                    withdrawMemberInfoUseCase(memberId).getOrDefault(defaultValue = false).also { isSuccess ->
                             if (!isSuccess) {
                                 setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
                                 setEffect(MemberSettingContract.MemberSettingUiSideEffect.ShowToast)
@@ -141,7 +140,7 @@ class MemberSettingViewModel @Inject constructor(
             getMemberIdUseCase()
                 .onSuccess { memberId ->
                     require(memberId != null)
-                    deleteMemberInfoUseCase(memberId).getOrDefault(false).also { isSuccess ->
+                    withdrawMemberInfoUseCase(memberId).getOrDefault(false).also { isSuccess ->
                         if (!isSuccess) {
                             setState { copy(loadState = MemberSettingContract.LoadState.Idle) }
                             setEffect(MemberSettingContract.MemberSettingUiSideEffect.ShowToast)

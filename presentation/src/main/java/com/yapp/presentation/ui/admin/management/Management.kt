@@ -2,6 +2,7 @@ package com.yapp.presentation.ui.admin.management
 
 import FoldableHeaderItemState
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -72,6 +74,7 @@ fun AttendanceManagement(
     onBackButtonClicked: (() -> Unit)? = null
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     when (uiState.loadState) {
         Loading -> YDSProgressBar()
@@ -91,6 +94,9 @@ fun AttendanceManagement(
     LaunchedEffect(key1 = viewModel.effect, key2 = lifeCycleOwner) {
         lifeCycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.effect.collect { effect ->
+                if (effect is ManagementContract.ManagementSideEffect.ShowToast) {
+                    Toast.makeText(context, effect.description, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
