@@ -4,7 +4,6 @@ import com.yapp.common.yds.YDSAttendanceType
 import com.yapp.domain.model.Attendance
 import com.yapp.domain.model.Session
 import com.yapp.domain.model.types.NeedToAttendType
-import com.yapp.domain.util.DateUtil
 
 fun checkSessionAttendance(
     session: Session,

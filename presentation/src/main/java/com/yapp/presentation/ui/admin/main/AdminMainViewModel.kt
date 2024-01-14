@@ -6,7 +6,6 @@ import com.yapp.domain.model.Session
 import com.yapp.domain.model.collections.AttendanceList
 import com.yapp.domain.usecases.GetSessionListUseCase
 import com.yapp.domain.usecases.GetUpcomingSessionUseCase
-import com.yapp.domain.util.DateUtil
 import com.yapp.domain.util.RenewDateUtil
 import com.yapp.presentation.ui.admin.main.AdminMainContract.AdminMainUiEvent
 import com.yapp.presentation.ui.admin.main.AdminMainContract.AdminMainUiSideEffect
