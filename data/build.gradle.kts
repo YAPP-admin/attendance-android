@@ -22,6 +22,10 @@ android {
         release {
             buildConfigField("String", "COLLECTION_NAME", "\"release-member\"")
         }
+
+        all {
+            buildConfigField("String", "SESSION_COLLECTION_NAME", "\"session\"")
+        }
     }
 }
 

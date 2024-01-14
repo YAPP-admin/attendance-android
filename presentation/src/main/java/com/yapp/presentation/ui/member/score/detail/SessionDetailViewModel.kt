@@ -53,5 +53,4 @@ class SessionDetailViewModel @Inject constructor(
     override suspend fun handleEvent(event: SessionDetailContract.SessionDetailUiEvent) {
         TODO("Not yet implemented")
     }
-
 }

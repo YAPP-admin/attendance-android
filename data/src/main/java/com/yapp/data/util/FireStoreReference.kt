@@ -8,3 +8,7 @@ import com.yapp.data.BuildConfig
 fun FirebaseFirestore.memberRef(): CollectionReference {
     return this.collection(BuildConfig.COLLECTION_NAME)
 }
+
+fun FirebaseFirestore.sessionRef(): CollectionReference {
+    return this.collection(BuildConfig.SESSION_COLLECTION_NAME)
+}

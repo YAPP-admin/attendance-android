@@ -9,12 +9,12 @@ import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.domain.model.types.PositionType
 import com.yapp.domain.repository.LocalRepository
 import com.yapp.domain.repository.MemberRepository
-import com.yapp.domain.repository.RemoteConfigRepository
+import com.yapp.domain.repository.SessionRepository
 import javax.inject.Inject
 
 
 class SignUpMemberUseCase @Inject constructor(
-    private val remoteConfigRepository: RemoteConfigRepository,
+    private val sessionRepository: SessionRepository,
     private val localRepository: LocalRepository,
     private val memberRepository: MemberRepository,
 ) {
@@ -23,7 +23,7 @@ class SignUpMemberUseCase @Inject constructor(
         return localRepository.getMemberId().mapCatching { currentMemberId: Long? ->
             require(currentMemberId != null)
 
-            val sessionList = remoteConfigRepository.getSessionList().getOrThrow()
+            val sessionList = sessionRepository.getAllSession().getOrThrow()
             val editedSessionList = createAttendanceEntities(sessionList)
 
             val memberEntity = createMember(
