@@ -201,7 +201,7 @@ private fun SessionDescriptionModal(session: Session?, modifier: Modifier) {
             .background(AttendanceTheme.colors.backgroundColors.background)
             .padding(24.dp),
     ) {
-        val sessionDate = session?.date?.substring(5, 10)?.replace("-", ".")
+        val sessionDate = session?.startTime?.substring(5, 10)?.replace("-", ".")
         Text(
             text = sessionDate ?: "",
             style = AttendanceTypography.body1,

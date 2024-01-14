@@ -13,7 +13,7 @@ fun checkSessionAttendance(
     if ((session == null) or (attendance == null)) {
         return null
     }
-    if (!DateUtil.isPastSession(session!!.date)) {
+    if (!DateUtil.isPastSession(session!!.startTime)) {
         return YDSAttendanceType.TBD
     }
     if (session.type == NeedToAttendType.DONT_NEED_ATTENDANCE) {

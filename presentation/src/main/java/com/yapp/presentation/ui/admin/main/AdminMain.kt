@@ -57,6 +57,7 @@ import com.yapp.presentation.ui.admin.main.AdminMainContract.AdminMainUiState
 fun AdminMain(
     viewModel: AdminMainViewModel = hiltViewModel(),
     navigateToAdminTotalScore: (Int) -> Unit,
+    navigateToCreateSession: () -> Unit,
     navigateToManagement: (Int, String) -> Unit,
     navigateToLogin: () -> Unit,
 ) {
@@ -68,10 +69,14 @@ fun AdminMain(
                 is AdminMainUiSideEffect.NavigateToAdminTotalScore -> navigateToAdminTotalScore(
                     effect.lastSessionId
                 )
+
+                is AdminMainUiSideEffect.NavigateToCreateSession -> navigateToCreateSession()
+
                 is AdminMainUiSideEffect.NavigateToManagement -> navigateToManagement(
                     effect.sessionId,
                     effect.sessionTitle
                 )
+
                 is AdminMainUiSideEffect.NavigateToLogin -> navigateToLogin()
             }
         }
@@ -93,6 +98,11 @@ fun AdminMain(
                         AdminMainUiEvent.OnUserScoreCardClicked(uiState.lastSessionId)
                     )
                 },
+                onCreateSessionClicked = {
+                     viewModel.setEvent(
+                         AdminMainUiEvent.OnCreateSessionClicked
+                     )
+                },
                 onSessionClicked = { sessionId, sessionTitle ->
                     viewModel.setEvent(
                         AdminMainUiEvent.OnSessionClicked(sessionId, sessionTitle)
@@ -104,6 +114,7 @@ fun AdminMain(
                     )
                 }
             )
+
             AdminMainUiState.LoadState.Error -> YDSEmptyScreen()
         }
     }
@@ -114,6 +125,7 @@ fun AdminMainScreen(
     modifier: Modifier,
     uiState: AdminMainUiState,
     onUserScoreCardClicked: () -> Unit,
+    onCreateSessionClicked: () -> Unit,
     onSessionClicked: (Int, String) -> Unit,
     onLogoutClicked: () -> Unit,
 ) {
@@ -128,7 +140,7 @@ fun AdminMainScreen(
             setOnUserScoreCardClickedEvent = { onUserScoreCardClicked() }
         )
         GraySpacing(Modifier.height(12.dp))
-        ManagementTitle()
+        ManagementTitleWithCreateSession(onCreateSessionClicked)
         uiState.upcomingSession?.let { UpcomingSession(it, onSessionClicked) }
             ?: FinishAllSessions()
         Spacing()
@@ -226,17 +238,32 @@ fun LazyListScope.YappuUserScoreCard(
     }
 }
 
-fun LazyListScope.ManagementTitle() {
+fun LazyListScope.ManagementTitleWithCreateSession(
+    onCreateSessionClicked: () -> Unit
+) {
     item {
-        Text(
-            text = stringResource(id = string.admin_main_attend_management_text),
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(AttendanceTheme.colors.backgroundColors.background)
-                .padding(horizontal = 24.dp, vertical = 28.dp),
-            style = AttendanceTypography.h1,
-            color = AttendanceTheme.colors.grayScale.Gray1200
-        )
+                .padding(horizontal = 24.dp, vertical = 28.dp)
+                .background(AttendanceTheme.colors.backgroundColors.background),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(id = string.admin_main_attend_management_text),
+                modifier = Modifier
+                    .weight(1f),
+                style = AttendanceTypography.h1,
+                color = AttendanceTheme.colors.grayScale.Gray1200
+            )
+
+            // TODO 임시 버튼으로, 디자인 대기 중
+            YDSButtonSmall(
+                text = stringResource(id = string.create_session),
+                state = YdsButtonState.ENABLED,
+                onClick = onCreateSessionClicked
+            )
+        }
     }
 }
 
@@ -274,8 +301,8 @@ fun LazyListScope.UpcomingSession(
                 .padding(horizontal = 24.dp)
         ) {
             Text(
-                text = upcomingSession.date.substring(MONTH_RANGE) +
-                        "." + upcomingSession.date.substring(DAY_RANGE),
+                text = upcomingSession.startTime.substring(MONTH_RANGE) +
+                        "." + upcomingSession.startTime.substring(DAY_RANGE),
                 color = AttendanceTheme.colors.grayScale.Gray600,
                 style = AttendanceTypography.body2,
             )
@@ -377,7 +404,7 @@ private fun SessionItem(
 
         Text(
             modifier = Modifier.width(64.dp),
-            text = "${session.date.substring(MONTH_RANGE)}.${session.date.substring(DAY_RANGE)}",
+            text = "${session.startTime.substring(MONTH_RANGE)}.${session.startTime.substring(DAY_RANGE)}",
             color = textColor,
             style = AttendanceTypography.body1,
         )
