@@ -4,7 +4,6 @@ import com.yapp.domain.model.Attendance
 import com.yapp.domain.model.Session
 import com.yapp.domain.repository.LocalRepository
 import com.yapp.domain.repository.MemberRepository
-import com.yapp.domain.util.DateUtil
 import com.yapp.domain.util.RenewDateUtil
 import javax.inject.Inject
 
