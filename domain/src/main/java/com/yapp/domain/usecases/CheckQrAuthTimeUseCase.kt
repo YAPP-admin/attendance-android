@@ -1,13 +1,14 @@
 package com.yapp.domain.usecases
 
 import com.yapp.domain.model.Session
-import com.yapp.domain.repository.SessionRepository
-import com.yapp.domain.util.DateUtil
+import com.yapp.domain.repository.RemoteConfigRepository
+import com.yapp.domain.util.RenewDateUtil
 import javax.inject.Inject
 
 
 class CheckQrAuthTimeUseCase @Inject constructor(
-    private val sessionRepository: SessionRepository,
+    private val remoteConfigRepository: RemoteConfigRepository,
+    private val dateUtil: RenewDateUtil
 ) {
 
     companion object {
@@ -16,9 +17,9 @@ class CheckQrAuthTimeUseCase @Inject constructor(
     }
 
     suspend operator fun invoke(): Result<Boolean> {
-        return sessionRepository.getAllSession().mapCatching { sessionList: List<Session> ->
-            val upCommingSession = sessionList.firstOrNull { DateUtil.isUpcomingSession(it.startTime) } ?: return@mapCatching false
-            val elapsedTime = DateUtil.getElapsedTime(upCommingSession.startTime)
+        return remoteConfigRepository.getSessionList().mapCatching { sessionList: List<Session> ->
+            val upComingSession = sessionList.firstOrNull { dateUtil.isUpcomingDate(it.date) } ?: return@mapCatching false
+            val elapsedTime = dateUtil.getElapsedTimeInMinute(target = upComingSession.date)
 
             return@mapCatching elapsedTime in BEFORE_5_MINUTE..AFTER_30_MINUTE
         }

@@ -3,7 +3,7 @@ package com.yapp.presentation.ui.member.score
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.usecases.GetMemberAttendanceListUseCase
-import com.yapp.domain.util.DateUtil
+import com.yapp.domain.util.RenewDateUtil
 import com.yapp.presentation.ui.member.score.MemberScoreContract.MemberScoreUiEvent
 import com.yapp.presentation.ui.member.score.MemberScoreContract.MemberScoreUiSideEffect
 import com.yapp.presentation.ui.member.score.MemberScoreContract.MemberScoreUiState
@@ -15,6 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MemberScoreViewModel @Inject constructor(
     private val getMemberAttendanceListUseCase: GetMemberAttendanceListUseCase,
+    private val dateUtil: RenewDateUtil
 ) : BaseViewModel<MemberScoreUiState, MemberScoreUiSideEffect, MemberScoreUiEvent>(initialState = MemberScoreUiState()) {
 
     init {
@@ -36,7 +37,7 @@ class MemberScoreViewModel @Inject constructor(
                         loadState = MemberScoreUiState.LoadState.Idle,
                         attendanceList = attendanceList,
                         lastAttendanceList = attendanceList.filter {
-                            DateUtil.isPastSession(it.first.startTime)
+                            dateUtil.isPastDate(it.first.date)
                         }
                     )
                 }

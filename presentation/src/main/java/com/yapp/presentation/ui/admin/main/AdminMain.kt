@@ -280,7 +280,8 @@ fun LazyListScope.GraySpacing(modifier: Modifier) {
 fun LazyListScope.GrayDivider(modifier: Modifier) {
     item {
         Divider(
-            modifier = modifier.fillMaxWidth()
+            modifier = modifier
+                .fillMaxWidth()
                 .padding(horizontal = 24.dp)
                 .background(AttendanceTheme.colors.grayScale.Gray300)
         )
@@ -291,9 +292,6 @@ fun LazyListScope.UpcomingSession(
     upcomingSession: Session,
     onManagementButtonClicked: (Int, String) -> Unit,
 ) {
-    val MONTH_RANGE = 5..6
-    val DAY_RANGE = 8..9
-
     item {
         Column(
             modifier = Modifier
@@ -301,8 +299,7 @@ fun LazyListScope.UpcomingSession(
                 .padding(horizontal = 24.dp)
         ) {
             Text(
-                text = upcomingSession.startTime.substring(MONTH_RANGE) +
-                        "." + upcomingSession.startTime.substring(DAY_RANGE),
+                text = upcomingSession.monthAndDay,
                 color = AttendanceTheme.colors.grayScale.Gray600,
                 style = AttendanceTypography.body2,
             )
@@ -404,7 +401,7 @@ private fun SessionItem(
 
         Text(
             modifier = Modifier.width(64.dp),
-            text = "${session.startTime.substring(MONTH_RANGE)}.${session.startTime.substring(DAY_RANGE)}",
+            text = session.monthAndDay,
             color = textColor,
             style = AttendanceTypography.body1,
         )

@@ -50,7 +50,9 @@ import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.theme.Light_Gray_200
 import com.yapp.common.util.rememberKeyboardVisible
 import com.yapp.common.yds.YDSAppBar
+import com.yapp.domain.util.DateParser
 import com.yapp.domain.util.DateUtil
+import com.yapp.domain.util.RenewDateUtil
 import com.yapp.presentation.R
 import com.yapp.presentation.common.AttendanceBundle
 import com.yapp.presentation.ui.member.signup.name.OnKeyboardNextButton
@@ -76,6 +78,7 @@ internal fun Password(
     val focusRequester = remember { FocusRequester() }
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
+    val dateParser = remember { DateParser() }
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -128,7 +131,7 @@ internal fun Password(
             ) {
                 val title = when(type) {
                     PasswordType.SignUp -> stringResource(id = R.string.member_signup_password_title)
-                    PasswordType.Session -> stringResource(id = R.string.member_session_password_title, DateUtil.parseDate(AttendanceBundle.upComingSession?.startTime.orEmpty(), "MM월 dd일"))
+                    PasswordType.Session -> stringResource(id = R.string.member_session_password_title, AttendanceBundle.upComingSession?.date?.let { dateParser.format(it, "MM월 dd일") } ?: "")
                 }
                 val subTitle = when(type) {
                     PasswordType.SignUp -> stringResource(id = R.string.member_signup_password_subtitle)

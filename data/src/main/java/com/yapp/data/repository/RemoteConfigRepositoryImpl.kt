@@ -10,12 +10,15 @@ import com.yapp.domain.model.Config
 import com.yapp.domain.model.Session
 import com.yapp.domain.model.Team
 import com.yapp.domain.model.Version
+import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.domain.repository.RemoteConfigRepository
+import com.yapp.domain.util.DateParser
 import javax.inject.Inject
 
 
 class RemoteConfigRepositoryImpl @Inject constructor(
     private val firebaseRemoteConfigDataSource: FirebaseRemoteConfigDataSource,
+    private val dateParser: DateParser
 ) : RemoteConfigRepository {
 
     private var isAlreadyRequestUpdate = false
@@ -38,7 +41,17 @@ class RemoteConfigRepositoryImpl @Inject constructor(
             firebaseRemoteConfigDataSource.getSessionList()
         }.fold(
             onSuccess = { entities: List<SessionEntity> ->
-                Result.success(entities.map { it.toDomain() })
+                Result.success(
+                    entities.map { entity ->
+                        Session(
+                            sessionId = entity.sessionId!!,
+                            title = entity.title!!,
+                            date = dateParser.parse(entity.date!!),
+                            description = entity.description!!,
+                            type = NeedToAttendType.valueOf(entity.type!!)
+                        )
+                    }
+                )
             },
             onFailure = { exception ->
                 Result.failure(exception)
