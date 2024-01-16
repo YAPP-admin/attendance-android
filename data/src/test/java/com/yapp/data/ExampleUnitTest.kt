@@ -90,7 +90,7 @@ class ExampleUnitTest {
             "sessionId": 10,
             "title": "개발 세션",
             "type": "DONT_NEED_ATTENDACE"
-            "startTime": "2023-01-07 14:00:00"
+            "startTime": "2024-01-07 14:00:00"
             "description": "개발 직군 멤버들이 소통하고 진행 상황을 공유하는 시간입니다.",
             "code": "1234"
           },
@@ -98,7 +98,7 @@ class ExampleUnitTest {
             "sessionId": 11,
             "title": "전체 직군 세션",
             "type": "NEED_ATTENDACE"
-            "startTime": "2023-01-14 14:00:00"
+            "startTime": "2024-01-14 14:00:00"
             "description": "같은 직군 멤버들과 소통하고 진행 상황을 공유하는 시간입니다.",
             "code": "1234"
           },
@@ -106,7 +106,7 @@ class ExampleUnitTest {
             "sessionId": 12,
             "title": "팀 세션",
             "type": "DONT_NEED_ATTENDACE"
-            "startTime": "2023-01-21 14:00:00"
+            "startTime": "2024-01-21 14:00:00"
             "description": "팀으로 모여 함께 의견을 공유하고 작업합니다",
             "code": "1234"
           },
@@ -114,7 +114,7 @@ class ExampleUnitTest {
             "sessionId": 13,
             "title": "YAPP 2차 Dev. Camp",
             "type": "NEED_ATTENDACE"
-            "startTime": "2023-01-28 14:00:00"
+            "startTime": "2024-01-28 14:00:00"
             "description": "2차 Dev. Camp까지 2차 프로토타입을 완성해 주세요.",
             "code": "1234"
           },
@@ -122,7 +122,7 @@ class ExampleUnitTest {
             "sessionId": 14,
             "title": "팀 세션",
             "type": "DONT_NEED_ATTENDACE"
-            "startTime": "2023-02-03 14:00:00"
+            "startTime": "2024-02-03 14:00:00"
             "description": "팀으로 모여 함께 의견을 공유하고 작업합니다",
             "code": "1234"
           },
@@ -130,7 +130,7 @@ class ExampleUnitTest {
             "sessionId": 15,
             "title": "팀 세션",
             "type": "DONT_NEED_ATTENDACE"
-            "startTime": "2023-02-10 14:00:00"
+            "startTime": "2024-02-10 14:00:00"
             "description": "팀으로 모여 함께 의견을 공유하고 작업합니다",
             "code": "1234"
           },
@@ -138,7 +138,7 @@ class ExampleUnitTest {
             "sessionId": 16,
             "title": "팀 세션",
             "type": "DONT_NEED_ATTENDACE"
-            "startTime": "2023-02-17 14:00:00"
+            "startTime": "2024-02-17 14:00:00"
             "description": "팀으로 모여 함께 의견을 공유하고 작업합니다",
             "code": "1234"
           },
@@ -146,7 +146,7 @@ class ExampleUnitTest {
             "sessionId": 17,
             "title": "팀 세션",
             "type": "DONT_NEED_ATTENDACE"
-            "startTime": "2023-02-24 14:00:00"
+            "startTime": "2024-02-24 14:00:00"
             "description": "팀으로 모여 함께 의견을 공유하고 작업합니다",
             "code": "1234"
           },
@@ -154,7 +154,7 @@ class ExampleUnitTest {
             "sessionId": 18,
             "title": "팀 세션",
             "type": "DONT_NEED_ATTENDACE"
-            "startTime": "2023-03-02 14:00:00"
+            "startTime": "2024-03-02 14:00:00"
             "description": "팀으로 모여 함께 의견을 공유하고 작업합니다",
             "code": "1234"
           },
@@ -162,7 +162,7 @@ class ExampleUnitTest {
             "sessionId": 19,
             "title": "성과공유회",
             "type": "NEED_ATTENDACE"
-            "startTime": "2023-03-09 14:00:00"
+            "startTime": "2024-03-09 14:00:00"
             "description": "YAPP 활동을 마무리짓는 성과 공유회 시간입니다.\n지금까지 하나의 팀으로 작업한 결과를 YAPP 전원에게 보여주세요 🎉",
             "code": "1234"
           }]
