@@ -32,6 +32,8 @@ import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.YDSPopupDialog
 import com.yapp.common.yds.YDSProgressBar
+import com.yapp.common.yds.YDSSingleButtonPopupDialog
+import com.yapp.common.yds.YDSTextFieldPopupDialog
 import com.yapp.presentation.R
 import com.yapp.presentation.ui.login.LoginContract.DialogState
 import com.yapp.presentation.ui.login.LoginContract.LoginUiEvent
@@ -114,11 +116,11 @@ fun Login(
         DialogState.NONE -> Unit
 
         DialogState.REQUIRE_UPDATE -> {
-            YDSPopupDialog(
+            YDSSingleButtonPopupDialog(
                 title = stringResource(R.string.required_update_title),
                 content = stringResource(R.string.required_update_content),
-                positiveButtonText = stringResource(R.string.update_confirm),
-                onClickPositiveButton = { viewModel.setEvent(LoginUiEvent.OnUpdateButtonClicked) },
+                buttonText = stringResource(R.string.update_confirm),
+                onClickButton = { viewModel.setEvent(LoginUiEvent.OnUpdateButtonClicked) },
                 onDismiss = { }
             )
         }
@@ -136,18 +138,18 @@ fun Login(
         }
 
         DialogState.FAIL_INIT_LOAD -> {
-            YDSPopupDialog(
+            YDSSingleButtonPopupDialog(
                 title = stringResource(R.string.fail_load_version_title),
                 content = stringResource(R.string.fail_load_version_content),
-                positiveButtonText = stringResource(R.string.Exit),
-                onClickPositiveButton = { viewModel.setEvent(LoginUiEvent.OnExitButtonClicked) },
+                buttonText = stringResource(R.string.Exit),
+                onClickButton = { viewModel.setEvent(LoginUiEvent.OnExitButtonClicked) },
                 onDismiss = { }
             )
         }
 
         DialogState.INSERT_CODE_NUMBER -> {
             var password by remember { mutableStateOf("") }
-            YDSPopupDialog(
+            YDSTextFieldPopupDialog(
                 title = stringResource(id = R.string.login_admin_title),
                 modifier = Modifier.imePadding(),
                 content = stringResource(id = R.string.login_admin_content),
@@ -155,9 +157,9 @@ fun Login(
                 positiveButtonText = stringResource(id = R.string.Ok),
                 onClickPositiveButton = { viewModel.adminLogin(password) },
                 onClickNegativeButton = { viewModel.setEvent(LoginUiEvent.OnCancelButtonClicked) },
-                editTextInitValue = password,
-                editTextChangedListener = { password = it },
-                editTextHint = stringResource(id = R.string.login_admin_password_placeholder),
+                textFieldInitValue = password,
+                textFieldChangedListener = { password = it },
+                textFieldHint = stringResource(id = R.string.login_admin_password_placeholder),
                 onDismiss = { }
             )
         }
