@@ -21,7 +21,7 @@ class MarkAttendanceUseCase @Inject constructor(
 
             currentMemberInfo!!.attendances.changeAttendanceType(
                 sessionId = checkedSession.sessionId,
-                changingAttendance = checkAttendanceState(dateUtil.getElapsedTimeInMinute(checkedSession.date))
+                changingAttendance = checkAttendanceState(dateUtil.getElapsedTimeInMinute(checkedSession.startTime))
             ).also { updatedAttendanceList ->
                 memberRepository.setMember(member = currentMemberInfo.copy(attendances = updatedAttendanceList))
             }

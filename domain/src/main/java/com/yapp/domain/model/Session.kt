@@ -7,12 +7,13 @@ data class Session(
     val sessionId: Int,
     val title: String,
     val type: NeedToAttendType,
-    val date: LocalDateTime,
-    val description: String
+    val startTime: LocalDateTime,
+    val description: String,
+    val code: String
 ) {
 
     val monthAndDay: String
-        get() = String.format(TWO_DIGIT, date.month.value) + "." + String.format(TWO_DIGIT, date.dayOfMonth)
+        get() = String.format(TWO_DIGIT, startTime.month.value) + "." + String.format(TWO_DIGIT, startTime.dayOfMonth)
 
     companion object {
         private const val TWO_DIGIT = "%02d"

@@ -18,8 +18,8 @@ class CheckQrAuthTimeUseCase @Inject constructor(
 
     suspend operator fun invoke(): Result<Boolean> {
         return remoteConfigRepository.getSessionList().mapCatching { sessionList: List<Session> ->
-            val upComingSession = sessionList.firstOrNull { dateUtil.isUpcomingDate(it.date) } ?: return@mapCatching false
-            val elapsedTime = dateUtil.getElapsedTimeInMinute(target = upComingSession.date)
+            val upComingSession = sessionList.firstOrNull { dateUtil.isUpcomingDate(it.startTime) } ?: return@mapCatching false
+            val elapsedTime = dateUtil.getElapsedTimeInMinute(target = upComingSession.startTime)
 
             return@mapCatching elapsedTime in BEFORE_5_MINUTE..AFTER_30_MINUTE
         }
