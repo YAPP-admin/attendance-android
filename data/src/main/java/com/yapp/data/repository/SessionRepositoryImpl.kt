@@ -25,7 +25,7 @@ class SessionRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun getSession(id: Long): Result<Session?> {
+    override suspend fun getSession(id: Int): Result<Session?> {
         return runCatching {
             sessionRemoteDataSource.getSession(id)?.toDomain(dateParser)
         }.fold(
