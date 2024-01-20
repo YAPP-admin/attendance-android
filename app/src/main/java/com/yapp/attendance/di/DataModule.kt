@@ -58,9 +58,10 @@ object DataModule {
     @Provides
     @Singleton
     fun provideSessionRepository(
-        sessionDataSource: SessionRemoteDataSource
+        sessionDataSource: SessionRemoteDataSource,
+        dateParser: DateParser
     ): SessionRepository {
-        return SessionRepositoryImpl(sessionDataSource)
+        return SessionRepositoryImpl(sessionDataSource, dateParser)
     }
 
     @Provides

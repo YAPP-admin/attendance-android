@@ -37,7 +37,7 @@ class MemberScoreViewModel @Inject constructor(
                         loadState = MemberScoreUiState.LoadState.Idle,
                         attendanceList = attendanceList,
                         lastAttendanceList = attendanceList.filter {
-                            dateUtil.isPastDate(it.first.date)
+                            dateUtil.isPastDate(it.first.startTime)
                         }
                     )
                 }

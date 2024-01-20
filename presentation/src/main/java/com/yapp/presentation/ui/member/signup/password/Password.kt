@@ -129,7 +129,7 @@ internal fun Password(
             ) {
                 val title = when(type) {
                     PasswordType.SignUp -> stringResource(id = R.string.member_signup_password_title)
-                    PasswordType.Session -> stringResource(id = R.string.member_session_password_title, AttendanceBundle.upComingSession?.date?.let { dateParser.format(it, "MM월 dd일") } ?: "")
+                    PasswordType.Session -> stringResource(id = R.string.member_session_password_title, AttendanceBundle.upComingSession?.startTime?.let { dateParser.format(it, "MM월 dd일") } ?: "")
                 }
                 val subTitle = when(type) {
                     PasswordType.SignUp -> stringResource(id = R.string.member_signup_password_subtitle)

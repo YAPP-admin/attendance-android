@@ -46,9 +46,10 @@ class RemoteConfigRepositoryImpl @Inject constructor(
                         Session(
                             sessionId = entity.sessionId!!,
                             title = entity.title!!,
-                            date = dateParser.parse(entity.date!!),
+                            startTime = dateParser.parse(entity.startTime!!),
                             description = entity.description!!,
-                            type = NeedToAttendType.valueOf(entity.type!!)
+                            type = NeedToAttendType.valueOf(entity.type!!),
+                            code = entity.code!!
                         )
                     }
                 )
