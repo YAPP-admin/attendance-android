@@ -42,21 +42,6 @@ class FirebaseRemoteConfigDataSourceImpl @Inject constructor() : FirebaseRemoteC
         }
     }
 
-    override suspend fun getSessionList(): List<SessionEntity> {
-        return suspendCancellableCoroutine { cancellableContinuation ->
-            firebaseRemoteConfig.fetchAndActivate().addOnSuccessListener {
-                val entities = firebaseRemoteConfig.getString(RemoteConfigData.SessionList.key)
-                    .let { jsonString ->
-                        Json.decodeFromString<List<SessionEntity>>(jsonString)
-                    }
-
-                cancellableContinuation.resume(value = entities, onCancellation = null)
-            }.addOnFailureListener { exception ->
-                cancellableContinuation.resumeWithException(exception)
-            }
-        }
-    }
-
     override suspend fun getConfig(): ConfigEntity {
         return suspendCancellableCoroutine { cancellableContinuation ->
             firebaseRemoteConfig.fetchAndActivate().addOnSuccessListener {

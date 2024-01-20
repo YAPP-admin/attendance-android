@@ -67,10 +67,9 @@ object DataModule {
     @Provides
     @Singleton
     fun provideRemoteConfigRepository(
-        remoteConfigDataSource: FirebaseRemoteConfigDataSource,
-        dateParser: DateParser
+        remoteConfigDataSource: FirebaseRemoteConfigDataSource
     ): RemoteConfigRepository {
-        return RemoteConfigRepositoryImpl(remoteConfigDataSource, dateParser)
+        return RemoteConfigRepositoryImpl(remoteConfigDataSource)
     }
 
     @Provides
