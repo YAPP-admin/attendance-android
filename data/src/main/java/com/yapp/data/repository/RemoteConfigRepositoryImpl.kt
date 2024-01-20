@@ -17,8 +17,7 @@ import javax.inject.Inject
 
 
 class RemoteConfigRepositoryImpl @Inject constructor(
-    private val firebaseRemoteConfigDataSource: FirebaseRemoteConfigDataSource,
-    private val dateParser: DateParser
+    private val firebaseRemoteConfigDataSource: FirebaseRemoteConfigDataSource
 ) : RemoteConfigRepository {
 
     private var isAlreadyRequestUpdate = false
@@ -29,30 +28,6 @@ class RemoteConfigRepositoryImpl @Inject constructor(
         }.fold(
             onSuccess = { maginotlineTime: String ->
                 Result.success(maginotlineTime)
-            },
-            onFailure = { exception ->
-                Result.failure(exception)
-            }
-        )
-    }
-
-    override suspend fun getSessionList(): Result<List<Session>> {
-        return runCatching {
-            firebaseRemoteConfigDataSource.getSessionList()
-        }.fold(
-            onSuccess = { entities: List<SessionEntity> ->
-                Result.success(
-                    entities.map { entity ->
-                        Session(
-                            sessionId = entity.sessionId!!,
-                            title = entity.title!!,
-                            startTime = dateParser.parse(entity.startTime!!),
-                            description = entity.description!!,
-                            type = NeedToAttendType.valueOf(entity.type!!),
-                            code = entity.code!!
-                        )
-                    }
-                )
             },
             onFailure = { exception ->
                 Result.failure(exception)

@@ -8,7 +8,6 @@ import com.yapp.data.model.VersionEntity
 
 interface FirebaseRemoteConfigDataSource {
     suspend fun getMaginotlineTime(): String
-    suspend fun getSessionList(): List<SessionEntity>
     suspend fun getConfig(): ConfigEntity
     suspend fun getTeamList(): List<TeamEntity>
     suspend fun getQrPassword(): String
