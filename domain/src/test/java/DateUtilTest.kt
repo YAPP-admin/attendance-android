@@ -18,13 +18,13 @@ class DateUtilTest : BehaviorSpec({
         }
 
         `when`("곧 앞으로 다가올 Date인지 확인 했을때") {
-            val result = dateUtil.isUpcomingDate(target = sessionTime, current = currentTime)
+            val result = dateUtil.isUpcomingDateFromCurrentTime(target = sessionTime, current = currentTime)
 
             then("앞으로 다가올 Date 이다") { result shouldBe true }
         }
 
         `when`("이미 지난 Date인지 확인 했을때") {
-            val result = dateUtil.isPastDate(target = sessionTime, current = currentTime)
+            val result = dateUtil.isPastDateFromCurrentTime(target = sessionTime, current = currentTime)
 
             then("이미 지난 Date가 아니다") { result shouldBe false }
         }
@@ -41,13 +41,13 @@ class DateUtilTest : BehaviorSpec({
         }
 
         `when`("앞으로 다가올 Date인지 확인 했을때") {
-            val result = dateUtil.isUpcomingDate(target = sessionTime, current = currentTime)
+            val result = dateUtil.isUpcomingDateFromCurrentTime(target = sessionTime, current = currentTime)
 
             then("앞으로 다가올 세션이 아니다") { result shouldBe false }
         }
 
         `when`("이미 지난 Date인지 확인 했을때") {
-            val result = dateUtil.isPastDate(target = sessionTime, current = currentTime)
+            val result = dateUtil.isPastDateFromCurrentTime(target = sessionTime, current = currentTime)
 
             then("이미 지난 Date 이다") { result shouldBe true }
         }
@@ -58,13 +58,13 @@ class DateUtilTest : BehaviorSpec({
         val sessionTime = dateParser.parse(rawDate = "2024-01-05 14:00:00")
 
         `when`("앞으로 다가올 Date인지 확인 했을때") {
-            val result = dateUtil.isUpcomingDate(target = sessionTime, current = currentTime)
+            val result = dateUtil.isUpcomingDateFromCurrentTime(target = sessionTime, current = currentTime)
 
             then("앞으로 다가올 Date이다") { result shouldBe true }
         }
 
         `when`("이미 지난 Date인지 확인 했을때") {
-            val result = dateUtil.isPastDate(target = sessionTime, current = currentTime)
+            val result = dateUtil.isPastDateFromCurrentTime(target = sessionTime, current = currentTime)
 
             then("이미 지난 Date가 아니다") { result shouldBe false }
         }

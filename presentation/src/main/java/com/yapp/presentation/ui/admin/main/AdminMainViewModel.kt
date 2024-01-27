@@ -52,7 +52,7 @@ class AdminMainViewModel @Inject constructor(
                 val upcomingSession = getUpcomingSessionUseCase().getOrThrow()
 
                 upcomingSession?.let {
-                    var lastSessionId = if (dateUtil.isPastDate(upcomingSession.startTime)) it.sessionId else it.sessionId - 1
+                    var lastSessionId = if (dateUtil.isPastDateFromCurrentTime(upcomingSession.startTime)) it.sessionId else it.sessionId - 1
                     if (lastSessionId < 0) lastSessionId = AttendanceList.DEFAULT_UPCOMING_SESSION_ID
                     setState { copy(lastSessionId = lastSessionId) }
                 }
