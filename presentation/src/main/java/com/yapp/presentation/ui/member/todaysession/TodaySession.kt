@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -41,6 +42,7 @@ import com.yapp.common.yds.YDSProgressBar
 import com.yapp.common.yds.YDSSingleButtonPopupDialog
 import com.yapp.domain.model.Attendance
 import com.yapp.domain.model.Session
+import com.yapp.domain.util.DateParser
 import com.yapp.presentation.R
 import com.yapp.presentation.ui.AttendanceScreenRoute
 import com.yapp.presentation.ui.member.todaysession.TodaySessionContract.DialogState
@@ -192,6 +194,7 @@ private fun TodaysAttendance(attendanceType: Attendance.Status) {
 
 @Composable
 private fun SessionDescriptionModal(session: Session?, modifier: Modifier) {
+
     Column(
         modifier = modifier
             .layoutId("modal", "modal")
@@ -201,9 +204,8 @@ private fun SessionDescriptionModal(session: Session?, modifier: Modifier) {
             .background(AttendanceTheme.colors.backgroundColors.background)
             .padding(24.dp),
     ) {
-        val sessionDate = session?.startTime?.substring(5, 10)?.replace("-", ".")
         Text(
-            text = sessionDate ?: "",
+            text = session?.monthAndDay ?: "",
             style = AttendanceTypography.body1,
             color = AttendanceTheme.colors.grayScale.Gray600
         )

@@ -8,6 +8,7 @@ import javax.inject.Inject
 
 class CheckQrAuthTimeUseCase @Inject constructor(
     private val sessionRepository: SessionRepository,
+    private val dateUtil: DateUtil
 ) {
 
     companion object {
@@ -17,8 +18,10 @@ class CheckQrAuthTimeUseCase @Inject constructor(
 
     suspend operator fun invoke(): Result<Boolean> {
         return sessionRepository.getAllSession().mapCatching { sessionList: List<Session> ->
-            val upCommingSession = sessionList.firstOrNull { DateUtil.isUpcomingSession(it.startTime) } ?: return@mapCatching false
-            val elapsedTime = DateUtil.getElapsedTime(upCommingSession.startTime)
+            val upComingSession = sessionList.firstOrNull { session ->
+                with(dateUtil) { currentTime isBeforeFrom session.startTime }
+            } ?: return@mapCatching false
+            val elapsedTime = with(dateUtil) { currentTime elapsedFrom upComingSession.startTime }
 
             return@mapCatching elapsedTime in BEFORE_5_MINUTE..AFTER_30_MINUTE
         }

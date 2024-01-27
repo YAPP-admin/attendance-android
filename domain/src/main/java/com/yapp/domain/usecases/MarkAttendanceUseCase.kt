@@ -10,6 +10,7 @@ import javax.inject.Inject
 class MarkAttendanceUseCase @Inject constructor(
     private val localRepository: LocalRepository,
     private val memberRepository: MemberRepository,
+    private val dateUtil: DateUtil
 ) {
 
     suspend operator fun invoke(checkedSession: Session): Result<Unit> {
@@ -20,15 +21,17 @@ class MarkAttendanceUseCase @Inject constructor(
 
             currentMemberInfo!!.attendances.changeAttendanceType(
                 sessionId = checkedSession.sessionId,
-                changingAttendance = checkAttendanceState(checkedSession.startTime)
+                changingAttendance = checkAttendanceState(
+                    elapsedTime = with(dateUtil) { currentTime elapsedFrom checkedSession.startTime}
+                )
             ).also { updatedAttendanceList ->
                 memberRepository.setMember(member = currentMemberInfo.copy(attendances = updatedAttendanceList))
             }
         }
     }
 
-    private fun checkAttendanceState(sessionDate: String): Attendance.Status {
-        return when (DateUtil.getElapsedTime(sessionDate)) {
+    private fun checkAttendanceState(elapsedTime: Long): Attendance.Status {
+        return when (elapsedTime) {
             in -5..5 -> Attendance.Status.NORMAL
             in 6..30 -> Attendance.Status.LATE
             else -> Attendance.Status.ABSENT

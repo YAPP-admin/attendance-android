@@ -13,6 +13,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,25 +29,28 @@ import com.yapp.common.yds.YDSAttendanceType
 import com.yapp.common.yds.YDSEmptyScreen
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.domain.model.Session
+import com.yapp.domain.util.DateUtil
 import com.yapp.presentation.util.attendance.checkSessionAttendance
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 @Composable
 fun SessionDetail(
     viewModel: SessionDetailViewModel = hiltViewModel(),
     onClickBackButton: () -> Unit,
 ) {
-
+    val dateUtil = remember { DateUtil() }
     val uiState by viewModel.uiState.collectAsState()
     val session: Session? = uiState.session?.first
-    val attendance = checkSessionAttendance(session, uiState.session?.second)
+    val attendance = checkSessionAttendance(
+        session = session!!,
+        attendance = uiState.session!!.second,
+        isPastSession = with(dateUtil) { currentTime isAfterFrom session.startTime }
+    )
 
     Scaffold(
         topBar = {
             YDSAppBar(
                 modifier = Modifier.background(AttendanceTheme.colors.backgroundColors.background),
-                title = session?.title ?: "",
+                title = session.title,
                 onClickBackButton = onClickBackButton
             )
         },
@@ -114,10 +118,8 @@ fun SessionDetailScreen(
                 )
             }
             if (session != null) {
-                val sessionDate =
-                    SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA).parse(session.startTime)?.time
                 Text(
-                    text = SimpleDateFormat("MM.dd", Locale.KOREA).format(sessionDate),
+                    text = session.monthAndDay,
                     style = AttendanceTypography.body1,
                     color = AttendanceTheme.colors.grayScale.Gray600
                 )

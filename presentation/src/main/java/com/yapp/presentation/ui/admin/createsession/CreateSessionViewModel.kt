@@ -82,7 +82,7 @@ class CreateSessionViewModel @Inject constructor(
             setSessionUseCase(
                 title = currentState.title,
                 type = type,
-                startTime = currentState.startTime,
+                rawDate = currentState.startTime,
                 description = currentState.description,
                 code = currentState.code,
             ).onSuccess {

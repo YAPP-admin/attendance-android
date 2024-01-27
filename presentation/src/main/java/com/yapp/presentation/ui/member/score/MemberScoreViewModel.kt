@@ -8,12 +8,14 @@ import com.yapp.presentation.ui.member.score.MemberScoreContract.MemberScoreUiEv
 import com.yapp.presentation.ui.member.score.MemberScoreContract.MemberScoreUiSideEffect
 import com.yapp.presentation.ui.member.score.MemberScoreContract.MemberScoreUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MemberScoreViewModel @Inject constructor(
     private val getMemberAttendanceListUseCase: GetMemberAttendanceListUseCase,
+    private val dateUtil: DateUtil
 ) : BaseViewModel<MemberScoreUiState, MemberScoreUiSideEffect, MemberScoreUiEvent>(initialState = MemberScoreUiState()) {
 
     init {
@@ -22,7 +24,7 @@ class MemberScoreViewModel @Inject constructor(
 
     private suspend fun fetchMemberScore() {
         setState { copy(loadState = MemberScoreUiState.LoadState.Loading) }
-        getMemberAttendanceListUseCase().collect { result ->
+        getMemberAttendanceListUseCase().collectLatest { result ->
             result.onSuccess { (sessions, attendances) ->
                 if (attendances.isEmpty()) {
                     setState { copy(loadState = MemberScoreUiState.LoadState.Error) }
@@ -34,8 +36,8 @@ class MemberScoreViewModel @Inject constructor(
                     copy(
                         loadState = MemberScoreUiState.LoadState.Idle,
                         attendanceList = attendanceList,
-                        lastAttendanceList = attendanceList.filter {
-                            DateUtil.isPastSession(it.first.startTime)
+                        lastAttendanceList = attendanceList.filter { (session, _) ->
+                            with(dateUtil) { currentTime isAfterFrom session.startTime }
                         }
                     )
                 }

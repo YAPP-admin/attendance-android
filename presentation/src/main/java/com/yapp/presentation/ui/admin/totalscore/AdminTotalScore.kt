@@ -143,7 +143,7 @@ fun AdminTotalScoreScreen(
                     FoldableHeaderItem(
                         modifier = Modifier.animateItemPlacement(),
                         state = itemState,
-                        onExpandClicked = { isExpanded, teamName, teamNumber ->
+                        onExpandClicked = { _, teamName, teamNumber ->
                             onEvent(AdminTotalScoreUiEvent.OnTeamTypeHeaderItemClicked(teamName, teamNumber))
                         }
                     )
@@ -156,7 +156,7 @@ fun AdminTotalScoreScreen(
                     FoldableHeaderItem(
                         modifier = Modifier.animateItemPlacement(),
                         state = itemState,
-                        onExpandClicked = { isExpanded, position ->
+                        onExpandClicked = { _, position ->
                             onEvent(AdminTotalScoreUiEvent.OnPositionTypeHeaderItemClicked(positionName = position))
                         }
                     )

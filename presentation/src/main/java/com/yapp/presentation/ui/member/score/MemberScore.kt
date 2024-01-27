@@ -59,10 +59,9 @@ import com.yapp.common.yds.YDSProgressBar
 import com.yapp.domain.model.Attendance
 import com.yapp.domain.model.Session
 import com.yapp.domain.model.types.NeedToAttendType
+import com.yapp.domain.util.DateUtil
 import com.yapp.presentation.R
 import com.yapp.presentation.util.attendance.checkSessionAttendance
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 @Composable
 fun MemberScore(
@@ -338,15 +337,17 @@ private fun AttendUserSession(
     attendanceInfo: Pair<Session, Attendance>,
     navigateToSessionDetail: (Int) -> Unit
 ) {
+    val dateUtil = remember { DateUtil() }
     val session = attendanceInfo.first
     val attendance = attendanceInfo.second
 
     YDSAttendanceList(
-        attendanceType = checkSessionAttendance(session, attendance)!!,
-        date = SimpleDateFormat(
-            "MM.dd",
-            Locale.KOREA
-        ).format(SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA).parse(session.startTime)?.time),
+        attendanceType = checkSessionAttendance(
+            session = session,
+            attendance = attendance,
+            isPastSession = with(dateUtil) { currentTime isAfterFrom session.startTime }
+        ),
+        date = session.monthAndDay,
         title = session.title,
         description = session.description,
     ) {

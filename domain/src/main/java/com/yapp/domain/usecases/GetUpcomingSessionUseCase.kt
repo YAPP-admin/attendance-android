@@ -7,12 +7,16 @@ import javax.inject.Inject
 
 class GetUpcomingSessionUseCase @Inject constructor(
     private val sessionRepository: SessionRepository,
+    private val dateUtil: DateUtil
 ) {
 
     suspend operator fun invoke(): Result<Session?> {
         // 세션 당일 밤 12시까지
         return sessionRepository.getAllSession().mapCatching { sessionList ->
-            sessionList.firstOrNull { session -> DateUtil.isUpcomingSession(session.startTime) }
+            sessionList.firstOrNull { session ->
+                with(dateUtil) { currentTime isBeforeFrom session.startTime }
+            }
         }
+
     }
 }

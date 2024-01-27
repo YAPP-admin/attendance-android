@@ -5,14 +5,16 @@ import com.yapp.data.model.toData
 import com.yapp.data.model.toDomain
 import com.yapp.domain.model.Session
 import com.yapp.domain.repository.SessionRepository
+import com.yapp.domain.util.DateParser
 import javax.inject.Inject
 
 class SessionRepositoryImpl @Inject constructor(
     private val sessionRemoteDataSource: SessionRemoteDataSource,
+    private val dateParser: DateParser
 ) : SessionRepository {
     override suspend fun setSession(session: Session): Result<Unit> {
         return runCatching {
-            sessionRemoteDataSource.setSession(session.toData())
+            sessionRemoteDataSource.setSession(session.toData(dateParser))
         }.fold(
             onSuccess = {
                 Result.success(Unit)
@@ -23,9 +25,9 @@ class SessionRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun getSession(id: Long): Result<Session?> {
+    override suspend fun getSession(id: Int): Result<Session?> {
         return runCatching {
-            sessionRemoteDataSource.getSession(id)?.toDomain()
+            sessionRemoteDataSource.getSession(id)?.toDomain(dateParser)
         }.fold(
             onSuccess = {
                 Result.success(it)
@@ -38,9 +40,7 @@ class SessionRepositoryImpl @Inject constructor(
 
     override suspend fun getAllSession(): Result<List<Session>> {
         return runCatching {
-            sessionRemoteDataSource.getAllSession().map {
-                it.toDomain()
-            }
+            sessionRemoteDataSource.getAllSession().map { entity -> entity.toDomain(dateParser) }
         }.fold(
             onSuccess = {
                 Result.success(it)

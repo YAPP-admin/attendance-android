@@ -26,7 +26,7 @@ class SessionRemoteDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getSession(id: Long): SessionEntity? {
+    override suspend fun getSession(id: Int): SessionEntity? {
         return suspendCancellableCoroutine { cancellableContinuation ->
             fireStore.sessionRef()
                 .document(id.toString())

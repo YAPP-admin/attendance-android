@@ -3,15 +3,17 @@ package com.yapp.domain.usecases
 import com.yapp.domain.model.Session
 import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.domain.repository.SessionRepository
+import com.yapp.domain.util.DateParser
 import javax.inject.Inject
 
 class SetSessionUseCase @Inject constructor(
     private val sessionRepository: SessionRepository,
+    private val dateParser: DateParser
 ) {
     suspend operator fun invoke(
         title: String,
         type: NeedToAttendType,
-        startTime: String,
+        rawDate: String,
         description: String,
         code: String,
     ): Result<Unit> {
@@ -27,7 +29,7 @@ class SetSessionUseCase @Inject constructor(
                     sessionId = newSessionId,
                     title = title,
                     type = type,
-                    startTime = startTime,
+                    startTime = dateParser.parse(rawDate = rawDate),
                     description = description,
                     code = code
                 )
