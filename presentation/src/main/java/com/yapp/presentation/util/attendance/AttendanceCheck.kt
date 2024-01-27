@@ -9,7 +9,7 @@ fun checkSessionAttendance(
     session: Session,
     attendance: Attendance,
     isPastSession: Boolean
-): YDSAttendanceType? {
+): YDSAttendanceType {
     if (isPastSession.not()) {
         return YDSAttendanceType.TBD
     }
