@@ -40,7 +40,11 @@ fun SessionDetail(
     val dateUtil = remember { DateUtil() }
     val uiState by viewModel.uiState.collectAsState()
     val session: Session? = uiState.session?.first
-    val attendance = checkSessionAttendance(session!!, uiState.session!!.second, isPastSession = dateUtil.isPastDateFromCurrentTime(session.startTime))
+    val attendance = checkSessionAttendance(
+        session = session!!,
+        attendance = uiState.session!!.second,
+        isPastSession = with(dateUtil) { currentTime isAfterFrom session.startTime }
+    )
 
     Scaffold(
         topBar = {

@@ -13,7 +13,10 @@ class GetUpcomingSessionUseCase @Inject constructor(
     suspend operator fun invoke(): Result<Session?> {
         // 세션 당일 밤 12시까지
         return sessionRepository.getAllSession().mapCatching { sessionList ->
-            sessionList.firstOrNull { session -> dateUtil.isUpcomingDateFromCurrentTime(session.startTime) }
+            sessionList.firstOrNull { session ->
+                with(dateUtil) { currentTime isBeforeFrom session.startTime }
+            }
         }
+
     }
 }
