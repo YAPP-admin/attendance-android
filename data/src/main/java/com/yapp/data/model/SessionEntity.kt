@@ -33,7 +33,7 @@ fun SessionEntity.toDomain(dateParser: DateParser): Session {
     )
 }
 
-fun Session.toDate(dateParser: DateParser): SessionEntity {
+fun Session.toData(dateParser: DateParser): SessionEntity {
     return SessionEntity(
         sessionId = sessionId,
         title = title,

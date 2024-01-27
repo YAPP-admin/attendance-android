@@ -1,7 +1,7 @@
 package com.yapp.data.repository
 
 import com.yapp.data.datasource.SessionRemoteDataSource
-import com.yapp.data.model.toDate
+import com.yapp.data.model.toData
 import com.yapp.data.model.toDomain
 import com.yapp.domain.model.Session
 import com.yapp.domain.repository.SessionRepository
@@ -14,7 +14,7 @@ class SessionRepositoryImpl @Inject constructor(
 ) : SessionRepository {
     override suspend fun setSession(session: Session): Result<Unit> {
         return runCatching {
-            sessionRemoteDataSource.setSession(session.toDate(dateParser))
+            sessionRemoteDataSource.setSession(session.toData(dateParser))
         }.fold(
             onSuccess = {
                 Result.success(Unit)
