@@ -117,7 +117,7 @@ internal fun YDSTabLayout(
             val widthList = mutableListOf<Int>()
 
             val tabLabelPlaceables = measurables.filter { it.layoutId == LAYOUT_ID_SELECTED_TAB_LABEL || it.layoutId == LAYOUT_ID_UNSELECTED_TAB_LABEL }
-                .mapIndexed { index, tabLabelMeasurable ->
+                .mapIndexed { _, tabLabelMeasurable ->
                     tabLabelMeasurable.measure(constraints).also { placeable ->
                         tabLabelMaxHeight = max(tabLabelMaxHeight, placeable.height)
 
