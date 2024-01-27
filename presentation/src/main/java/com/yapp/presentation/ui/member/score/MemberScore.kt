@@ -342,7 +342,7 @@ private fun AttendUserSession(
     val attendance = attendanceInfo.second
 
     YDSAttendanceList(
-        attendanceType = checkSessionAttendance(session, attendance, isPastSession = dateUtil.isPastDateFromCurrentTime(session.startTime))!!,
+        attendanceType = checkSessionAttendance(session, attendance, isPastSession = dateUtil.isPastDateFromCurrentTime(session.startTime)),
         date = session.monthAndDay,
         title = session.title,
         description = session.description,

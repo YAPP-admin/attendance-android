@@ -61,14 +61,14 @@ private fun FoldableItemHeaderLayoutPreview() {
         Column(modifier = Modifier) {
             FoldableHeaderItem(
                 state = teamState,
-                onExpandClicked = { a, b, c ->
+                onExpandClicked = { _, _, _ ->
 
                 }
             )
 
             FoldableHeaderItem(
                 state = positionState,
-                onExpandClicked = { a, b ->
+                onExpandClicked = { _, _ ->
 
                 }
             )

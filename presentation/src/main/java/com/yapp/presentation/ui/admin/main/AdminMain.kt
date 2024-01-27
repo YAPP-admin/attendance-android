@@ -380,9 +380,6 @@ private fun SessionItem(
     session: Session,
     onSessionItemClicked: (Int, String) -> Unit,
 ) {
-    val MONTH_RANGE = 5..6
-    val DAY_RANGE = 8..9
-
     Row(
         modifier = Modifier
             .fillMaxWidth()

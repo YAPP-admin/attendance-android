@@ -246,7 +246,7 @@ internal fun ManagementScreen(
                                 FoldableHeaderItem(
                                     modifier = Modifier.animateItemPlacement(),
                                     state = itemState,
-                                    onExpandClicked = { isExpanded, teamName, teamNumber ->
+                                    onExpandClicked = { _, teamName, teamNumber ->
                                         onEvent(ManagementEvent.OnTeamTypeHeaderItemClicked(teamName, teamNumber))
                                     }
                                 )
@@ -259,7 +259,7 @@ internal fun ManagementScreen(
                                 FoldableHeaderItem(
                                     modifier = Modifier.animateItemPlacement(),
                                     state = itemState,
-                                    onExpandClicked = { isExpanded, position ->
+                                    onExpandClicked = { _, position ->
                                         onEvent(ManagementEvent.OnPositionTypeHeaderItemClicked(positionName = position))
                                     }
                                 )
