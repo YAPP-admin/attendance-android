@@ -4,25 +4,26 @@ import com.yapp.domain.model.Attendance
 import com.yapp.domain.model.Session
 import com.yapp.domain.repository.LocalRepository
 import com.yapp.domain.repository.MemberRepository
-import com.yapp.domain.util.DateUtil
+import java.time.Duration
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 class MarkAttendanceUseCase @Inject constructor(
     private val localRepository: LocalRepository,
-    private val memberRepository: MemberRepository,
-    private val dateUtil: DateUtil
+    private val memberRepository: MemberRepository
 ) {
 
     suspend operator fun invoke(checkedSession: Session): Result<Unit> {
         return localRepository.getMemberId().mapCatching { currentUserId: Long? ->
             require(currentUserId != null)
 
+            val currentTime = LocalDateTime.now()
             val currentMemberInfo = memberRepository.getMember(currentUserId).getOrThrow()
 
             currentMemberInfo!!.attendances.changeAttendanceType(
                 sessionId = checkedSession.sessionId,
                 changingAttendance = checkAttendanceState(
-                    elapsedTime = with(dateUtil) { currentTime elapsedFrom checkedSession.startTime}
+                    elapsedTime = Duration.between(checkedSession.startTime, currentTime).toMinutes()
                 )
             ).also { updatedAttendanceList ->
                 memberRepository.setMember(member = currentMemberInfo.copy(attendances = updatedAttendanceList))
