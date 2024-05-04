@@ -2,8 +2,9 @@ package com.yapp.presentation.ui.member.score
 
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
+import com.yapp.domain.usecases.GetCurrentTimeUseCase
 import com.yapp.domain.usecases.GetMemberAttendanceListUseCase
-import com.yapp.domain.util.DateUtil
+import com.yapp.presentation.common.AttendanceTypeMapper
 import com.yapp.presentation.ui.member.score.MemberScoreContract.MemberScoreUiEvent
 import com.yapp.presentation.ui.member.score.MemberScoreContract.MemberScoreUiSideEffect
 import com.yapp.presentation.ui.member.score.MemberScoreContract.MemberScoreUiState
@@ -15,7 +16,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MemberScoreViewModel @Inject constructor(
     private val getMemberAttendanceListUseCase: GetMemberAttendanceListUseCase,
-    private val dateUtil: DateUtil
+    private val getCurrentTimeUseCase: GetCurrentTimeUseCase,
+    private val attendanceTypeMapper: AttendanceTypeMapper
 ) : BaseViewModel<MemberScoreUiState, MemberScoreUiSideEffect, MemberScoreUiEvent>(initialState = MemberScoreUiState()) {
 
     init {
@@ -31,13 +33,23 @@ class MemberScoreViewModel @Inject constructor(
                     return@onSuccess
                 }
 
-                val attendanceList = sessions zip attendances
+                val currentTime = getCurrentTimeUseCase()
+                val attendanceList = (sessions zip attendances).map { (session, attendance) ->
+                    val attendanceType = attendanceTypeMapper.map(
+                        sessionType = session.type,
+                        attendanceStatus = attendance.status,
+                        isPastSession = currentTime.isAfter(session.startTime)
+                    )
+
+                    session to attendanceType
+                }
+
                 setState {
                     copy(
                         loadState = MemberScoreUiState.LoadState.Idle,
                         attendanceList = attendanceList,
-                        lastAttendanceList = attendanceList.filter { (session, _) ->
-                            with(dateUtil) { currentTime isAfterFrom session.startTime }
+                        lastAttendanceList = (sessions zip attendances).filter { (session, _) ->
+                            currentTime.isAfter(session.startTime)
                         }
                     )
                 }
