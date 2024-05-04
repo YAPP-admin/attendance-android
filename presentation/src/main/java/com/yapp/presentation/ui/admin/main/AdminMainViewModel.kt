@@ -3,9 +3,9 @@ package com.yapp.presentation.ui.admin.main
 import androidx.lifecycle.viewModelScope
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.model.collections.AttendanceList
+import com.yapp.domain.usecases.GetCurrentTimeUseCase
 import com.yapp.domain.usecases.GetSessionListUseCase
 import com.yapp.domain.usecases.GetUpcomingSessionUseCase
-import com.yapp.domain.util.DateUtil
 import com.yapp.presentation.ui.admin.main.AdminMainContract.AdminMainUiEvent
 import com.yapp.presentation.ui.admin.main.AdminMainContract.AdminMainUiSideEffect
 import com.yapp.presentation.ui.admin.main.AdminMainContract.AdminMainUiState
@@ -17,10 +17,8 @@ import javax.inject.Inject
 class AdminMainViewModel @Inject constructor(
     private val getSessionListUseCase: GetSessionListUseCase,
     private val getUpcomingSessionUseCase: GetUpcomingSessionUseCase,
-    private val dateUtil: DateUtil
-) : BaseViewModel<AdminMainUiState, AdminMainUiSideEffect, AdminMainUiEvent>(
-    AdminMainUiState()
-) {
+    private val getCurrentTimeUseCase: GetCurrentTimeUseCase
+) : BaseViewModel<AdminMainUiState, AdminMainUiSideEffect, AdminMainUiEvent>(AdminMainUiState()) {
 
     init {
         viewModelScope.launch {
@@ -31,18 +29,13 @@ class AdminMainViewModel @Inject constructor(
 
     override suspend fun handleEvent(event: AdminMainUiEvent) {
         when (event) {
-            is AdminMainUiEvent.OnUserScoreCardClicked -> setEffect(
-                AdminMainUiSideEffect.NavigateToAdminTotalScore(event.lastSessionId)
-            )
-            is AdminMainUiEvent.OnCreateSessionClicked -> setEffect(
-                AdminMainUiSideEffect.NavigateToCreateSession
-            )
-            is AdminMainUiEvent.OnSessionClicked -> setEffect(
-                AdminMainUiSideEffect.NavigateToManagement(event.sessionId, event.sessionTitle)
-            )
-            is AdminMainUiEvent.OnLogoutClicked -> setEffect(
-                AdminMainUiSideEffect.NavigateToLogin
-            )
+            is AdminMainUiEvent.OnUserScoreCardClicked -> setEffect(AdminMainUiSideEffect.NavigateToAdminTotalScore(event.lastSessionId))
+
+            is AdminMainUiEvent.OnCreateSessionClicked -> setEffect(AdminMainUiSideEffect.NavigateToCreateSession)
+
+            is AdminMainUiEvent.OnSessionClicked -> setEffect(AdminMainUiSideEffect.NavigateToManagement(event.sessionId, event.sessionTitle))
+
+            is AdminMainUiEvent.OnLogoutClicked -> setEffect(AdminMainUiSideEffect.NavigateToLogin)
         }
     }
 
@@ -50,9 +43,10 @@ class AdminMainViewModel @Inject constructor(
         getSessionListUseCase()
             .onSuccess { sessions ->
                 val upcomingSession = getUpcomingSessionUseCase().getOrThrow()
+                val currentTime = getCurrentTimeUseCase()
 
                 upcomingSession?.let {
-                    var lastSessionId = if (with(dateUtil) { currentTime isAfterFrom upcomingSession.startTime }) it.sessionId else it.sessionId - 1
+                    var lastSessionId = if (currentTime.isAfter(upcomingSession.startTime)) it.sessionId else it.sessionId - 1
                     if (lastSessionId < 0) lastSessionId = AttendanceList.DEFAULT_UPCOMING_SESSION_ID
                     setState { copy(lastSessionId = lastSessionId) }
                 }
