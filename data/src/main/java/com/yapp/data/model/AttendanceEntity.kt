@@ -32,3 +32,7 @@ fun Attendance.toData(): AttendanceEntity {
         status = status.toData()
     )
 }
+
+fun Attendance.Status.toData(): String {
+    return this.name.uppercase()
+}
