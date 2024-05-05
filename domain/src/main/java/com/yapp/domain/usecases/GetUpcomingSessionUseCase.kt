@@ -10,11 +10,23 @@ class GetUpcomingSessionUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(): Result<Session?> {
-        // 세션 당일 밤 12시까지
         return sessionRepository.getAllSession().mapCatching { sessionList ->
             val currentTime = LocalDateTime.now()
-            sessionList.firstOrNull { session -> currentTime.isBefore(session.startTime) }
-        }
 
+            // 세션 당일 밤 12시까지 노출을 위해, 현재 시간의 일자와 일치하는 세션이 있는경우 Early Return
+            sessionList
+                .firstOrNull { session ->
+                    session.startTime.year == currentTime.year &&
+                        session.startTime.month == currentTime.month &&
+                        session.startTime.dayOfMonth == currentTime.dayOfMonth
+                }?.let { todaySession ->
+                    return@mapCatching todaySession
+                }
+
+            sessionList.firstOrNull { session -> currentTime.isBefore(session.startTime) }
+                ?.let { nextSession ->
+                    return@mapCatching nextSession
+                }
+        }
     }
 }
