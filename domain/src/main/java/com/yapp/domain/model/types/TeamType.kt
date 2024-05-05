@@ -4,7 +4,9 @@ package com.yapp.domain.model.types
 enum class TeamType(val value: String) {
     ANDROID("Android"),
     IOS("iOS"),
+    APP("APP"),
     WEB("Web"),
+    FLUTTER("Flutter"),
     BASECAMP("BASECAMP"),
     NONE("None");
 
@@ -14,7 +16,9 @@ enum class TeamType(val value: String) {
                 "NONE" -> NONE
                 "ANDROID" -> ANDROID
                 "IOS" -> IOS
+                "APP" -> APP
                 "WEB" -> WEB
+                "FLUTTER" -> FLUTTER
                 "BASECAMP" -> BASECAMP
                 else -> error("$rawValue 에 해당하는 TeamType이 없습니다.")
             }

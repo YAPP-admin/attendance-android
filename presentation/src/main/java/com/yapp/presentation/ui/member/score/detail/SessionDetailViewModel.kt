@@ -6,6 +6,7 @@ import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.usecases.GetMemberAttendanceListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -24,24 +25,21 @@ class SessionDetailViewModel @Inject constructor(
 
         if (sessionId != null) {
             viewModelScope.launch {
-                withContext(Dispatchers.IO) {
-                    getMemberAttendanceListUseCase().collect { result ->
-                        result.onSuccess { (sessions, attendances) ->
-                            if (attendances.isEmpty()) {
-                                setState { copy(loadState = SessionDetailContract.SessionDetailUiState.LoadState.Error) }
-                                return@onSuccess
-                            }
-
-                            setState {
-                                copy(
-                                    loadState = SessionDetailContract.SessionDetailUiState.LoadState.Idle,
-                                    session = sessions[sessionId] to attendances[sessionId]
-                                )
-                            }
+                getMemberAttendanceListUseCase().collectLatest { result ->
+                    result.onSuccess { (sessions, attendances) ->
+                        if (attendances.isEmpty()) {
+                            setState { copy(loadState = SessionDetailContract.SessionDetailUiState.LoadState.Error) }
+                            return@onSuccess
                         }
-                            .onFailure {
-                                setState { copy(loadState = SessionDetailContract.SessionDetailUiState.LoadState.Error) }
-                            }
+
+                        setState {
+                            copy(
+                                loadState = SessionDetailContract.SessionDetailUiState.LoadState.Idle,
+                                session = sessions[sessionId] to attendances[sessionId]
+                            )
+                        }
+                    }.onFailure {
+                        setState { copy(loadState = SessionDetailContract.SessionDetailUiState.LoadState.Error) }
                     }
                 }
             }
