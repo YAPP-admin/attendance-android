@@ -8,6 +8,7 @@ import com.yapp.presentation.ui.member.score.MemberScoreContract.MemberScoreUiEv
 import com.yapp.presentation.ui.member.score.MemberScoreContract.MemberScoreUiSideEffect
 import com.yapp.presentation.ui.member.score.MemberScoreContract.MemberScoreUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,7 +23,7 @@ class MemberScoreViewModel @Inject constructor(
 
     private suspend fun fetchMemberScore() {
         setState { copy(loadState = MemberScoreUiState.LoadState.Loading) }
-        getMemberAttendanceListUseCase().collect { result ->
+        getMemberAttendanceListUseCase().collectLatest { result ->
             result.onSuccess { (sessions, attendances) ->
                 if (attendances.isEmpty()) {
                     setState { copy(loadState = MemberScoreUiState.LoadState.Error) }
