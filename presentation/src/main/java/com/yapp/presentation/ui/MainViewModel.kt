@@ -1,7 +1,7 @@
 package com.yapp.presentation.ui
 
 import com.yapp.common.base.BaseViewModel
-import com.yapp.domain.usecases.CheckQrAuthTimeUseCase
+import com.yapp.domain.usecases.CheckAttendanceTimeUseCase
 import com.yapp.domain.usecases.MarkAttendanceUseCase
 import com.yapp.presentation.R
 import com.yapp.presentation.common.AttendanceBundle
@@ -14,7 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val resourcesProvider: ResourceProvider,
-    private val checkQrAuthTime: CheckQrAuthTimeUseCase,
+    private val checkAttendanceTime: CheckAttendanceTimeUseCase,
     private val markAttendanceUseCase: MarkAttendanceUseCase
 ) : BaseViewModel<MainContract.MainUiState, MainContract.MainUiSideEffect, MainUiEvent>(
     MainContract.MainUiState()

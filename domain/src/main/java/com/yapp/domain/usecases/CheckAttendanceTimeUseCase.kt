@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 
 
-class CheckQrAuthTimeUseCase @Inject constructor(
+class CheckAttendanceTimeUseCase @Inject constructor(
     private val getUpcomingSessionUseCase: GetUpcomingSessionUseCase
 ) {
 
