@@ -7,17 +7,19 @@ enum class PositionType(val value: String) {
     DEV_ANDROID("Android"),
     DEV_IOS("iOS"),
     DEV_WEB("Web"),
-    DEV_SERVER("Server");
+    DEV_SERVER("Server"),
+    DEV_FLUTTER("Flutter"),;
 
     companion object {
         fun of(value: String): PositionType {
             return when (value) {
-                "DEV_ANDROID" -> DEV_ANDROID
-                "DEV_WEB" -> DEV_WEB
-                "DEV_IOS" -> DEV_IOS
-                "DEV_SERVER" -> DEV_SERVER
-                "DESIGNER" -> DESIGNER
                 "PROJECT_MANAGER" -> PROJECT_MANAGER
+                "DESIGNER" -> DESIGNER
+                "DEV_ANDROID" -> DEV_ANDROID
+                "DEV_IOS" -> DEV_IOS
+                "DEV_WEB" -> DEV_WEB
+                "DEV_SERVER" -> DEV_SERVER
+                "DEV_FLUTTER" -> DEV_FLUTTER
                 else -> error("잘못된 PositionType 입니다.")
             }
         }
