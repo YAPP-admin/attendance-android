@@ -29,7 +29,7 @@ class MainViewModel @Inject constructor(
 
     private suspend fun checkAttendanceValidate() = coroutineScope {
         if (AttendanceBundle.isAbsent) {
-            checkQrAuthTime()
+            checkAttendanceTime()
                 .onSuccess { isQRCheckEnable ->
                     if (isQRCheckEnable) {
                         setEffect(MainContract.MainUiSideEffect.NavigateToPassword)
