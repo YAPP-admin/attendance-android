@@ -5,6 +5,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -54,15 +55,13 @@ import com.yapp.common.theme.AttendanceTheme
 import com.yapp.common.theme.AttendanceTypography
 import com.yapp.common.yds.YDSAppBar
 import com.yapp.common.yds.YDSAttendanceList
+import com.yapp.common.yds.YDSAttendanceType
 import com.yapp.common.yds.YDSEmptyScreen
 import com.yapp.common.yds.YDSProgressBar
 import com.yapp.domain.model.Attendance
 import com.yapp.domain.model.Session
 import com.yapp.domain.model.types.NeedToAttendType
 import com.yapp.presentation.R
-import com.yapp.presentation.util.attendance.checkSessionAttendance
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 @Composable
 fun MemberScore(
@@ -93,7 +92,6 @@ fun MemberScore(
                 navigateToSessionDetail = navigateToSessionDetail
             )
         }
-
     }
 }
 
@@ -131,8 +129,13 @@ fun MemberScoreScreen(
                     .background(AttendanceTheme.colors.backgroundColors.background)
             )
         }
-        items(uiState.attendanceList) { attendanceInfo ->
-            AttendUserSession(attendanceInfo, navigateToSessionDetail)
+
+        items(uiState.attendanceList) { (session, attendanceType) ->
+            AttendUserSession(
+                session = session,
+                attendanceType = attendanceType,
+                navigateToSessionDetail = navigateToSessionDetail,
+            )
         }
     }
 }
@@ -156,9 +159,7 @@ private fun HelpIcon(navigateToHelpScreen: () -> Unit) {
                 .align(Alignment.TopEnd)
                 .padding(top = 18.dp, end = 14.dp)
                 .clip(CircleShape)
-                .clickable {
-                    navigateToHelpScreen()
-                }
+                .clickable { navigateToHelpScreen() }
                 .padding(10.dp),
         )
     }
@@ -194,23 +195,15 @@ fun SemiCircleProgressBar(score: Int) {
     Column(
         verticalArrangement = Arrangement.Center,
     ) {
-        BoxWithConstraints(
-            modifier = Modifier
-                .padding(start = 64.dp, end = 64.dp),
-        ) {
-
+        BoxWithConstraints(modifier = Modifier.padding(start = 64.dp, end = 64.dp)) {
             val gray200 = AttendanceTheme.colors.grayScale.Gray200
             val etcGreen = AttendanceTheme.colors.etcColors.EtcGreen
             val etcYellow = AttendanceTheme.colors.etcColors.EtcYellow
             val etcRed = AttendanceTheme.colors.etcColors.EtcRed
 
-            androidx.compose.foundation.Canvas(
-                modifier = Modifier
-                    .size(maxWidth, (maxWidth.value / 2).dp)
-            ) {
-
+            Canvas(modifier = Modifier.size(maxWidth, (maxWidth.value / 2).dp)) {
                 val arcColor = fillColorByUserScore(score).let { score ->
-                    when(score) {
+                    when (score) {
                         Score.GOOD -> etcGreen
                         Score.NORMAL -> etcYellow
                         Score.DANGEROUS -> etcRed
@@ -225,7 +218,6 @@ fun SemiCircleProgressBar(score: Int) {
                     size = Size(constraints.maxWidth.toFloat(), constraints.maxWidth.toFloat()),
                     style = Stroke(width = 25f, cap = StrokeCap.Round)
                 )
-
 
                 drawArc(
                     color = arcColor,
@@ -335,18 +327,13 @@ fun RowScope.AttendanceCell(
 
 @Composable
 private fun AttendUserSession(
-    attendanceInfo: Pair<Session, Attendance>,
+    session: Session,
+    attendanceType: YDSAttendanceType,
     navigateToSessionDetail: (Int) -> Unit
 ) {
-    val session = attendanceInfo.first
-    val attendance = attendanceInfo.second
-
     YDSAttendanceList(
-        attendanceType = checkSessionAttendance(session, attendance)!!,
-        date = SimpleDateFormat(
-            "MM.dd",
-            Locale.KOREA
-        ).format(SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA).parse(session.startTime)?.time),
+        attendanceType = attendanceType,
+        date = session.monthAndDay,
         title = session.title,
         description = session.description,
     ) {

@@ -4,6 +4,6 @@ import com.yapp.data.model.SessionEntity
 
 interface SessionRemoteDataSource {
     suspend fun setSession(session: SessionEntity)
-    suspend fun getSession(id: Long): SessionEntity?
+    suspend fun getSession(id: Int): SessionEntity?
     suspend fun getAllSession(): List<SessionEntity>
 }

@@ -78,6 +78,11 @@ object Dependencies {
         const val JUNIT = "junit:junit:4.+"
         const val ANDROID_JUNIT = "androidx.test.ext:junit:1.1.3"
         const val ESPRESSO_CORE = "androidx.test.espresso:espresso-core:3.4.0"
+
+        private const val kotest_version = "5.8.0"
+        const val KOTEST_RUNNER = "io.kotest:kotest-runner-junit5:${kotest_version}"
+        const val KOTEST_ASSERTION = "io.kotest:kotest-assertions-core:${kotest_version}"
+        const val KOTEST_PROPERTY = "io.kotest:kotest-property:${kotest_version}"
     }
 
     object Firebase {

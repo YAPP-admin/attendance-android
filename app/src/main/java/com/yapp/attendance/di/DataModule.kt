@@ -13,6 +13,7 @@ import com.yapp.domain.repository.MemberRepository
 import com.yapp.domain.repository.RemoteConfigRepository
 import com.yapp.domain.repository.SessionRepository
 import com.yapp.domain.repository.TeamRepository
+import com.yapp.domain.util.DateParser
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -57,15 +58,16 @@ object DataModule {
     @Provides
     @Singleton
     fun provideSessionRepository(
-        sessionDataSource: SessionRemoteDataSource
+        sessionDataSource: SessionRemoteDataSource,
+        dateParser: DateParser
     ): SessionRepository {
-        return SessionRepositoryImpl(sessionDataSource)
+        return SessionRepositoryImpl(sessionDataSource, dateParser)
     }
 
     @Provides
     @Singleton
     fun provideRemoteConfigRepository(
-        remoteConfigDataSource: FirebaseRemoteConfigDataSource,
+        remoteConfigDataSource: FirebaseRemoteConfigDataSource
     ): RemoteConfigRepository {
         return RemoteConfigRepositoryImpl(remoteConfigDataSource)
     }

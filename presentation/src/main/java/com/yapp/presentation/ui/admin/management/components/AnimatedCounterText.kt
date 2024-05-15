@@ -42,18 +42,17 @@ internal fun AnimatedCounterText(
         for (i in countString.indices) {
             val oldChar = oldCountString.getOrNull(i)
             val newChar = countString[i]
-            val char = if (oldChar == newChar) {
+            val updatedChar = if (oldChar == newChar) {
                 oldCountString[i]
             } else {
                 countString[i]
             }
             AnimatedContent(
-                targetState = char,
+                targetState = updatedChar,
                 transitionSpec = {
                     slideInVertically { it } with slideOutVertically { -it }
-                }
+                }, label = ""
             ) { char ->
-
                 Text(
                     text = char.toString(),
                     style = style,

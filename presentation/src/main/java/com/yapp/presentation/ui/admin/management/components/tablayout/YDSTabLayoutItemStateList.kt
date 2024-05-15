@@ -18,7 +18,7 @@ data class YDSTabLayoutItemStateList(
 
     fun select(targetIndex: Int): YDSTabLayoutItemStateList {
         return this.copy(
-            value = value.mapIndexed { index, itemState ->
+            value = value.mapIndexed { _, itemState ->
                 if (itemState.isSelected) {
                     return@mapIndexed itemState.unSelect()
                 }

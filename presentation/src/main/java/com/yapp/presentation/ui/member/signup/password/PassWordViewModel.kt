@@ -5,6 +5,7 @@ import com.google.firebase.FirebaseNetworkException
 import com.yapp.common.base.BaseViewModel
 import com.yapp.domain.usecases.CheckSessionPasswordUseCase
 import com.yapp.domain.usecases.CheckSignUpPasswordUseCase
+import com.yapp.presentation.common.AttendanceBundle
 import com.yapp.presentation.ui.member.signup.password.PasswordContract.PasswordSideEffect
 import com.yapp.presentation.ui.member.signup.password.PasswordContract.PasswordUiEvent
 import com.yapp.presentation.ui.member.signup.password.PasswordContract.PasswordUiState
@@ -70,7 +71,11 @@ internal class PassWordViewModel @Inject constructor(
 
     private fun checkSessionPassword(password: String) = viewModelScope.launch {
         setEffect(PasswordSideEffect.KeyboardHide)
-        checkSessionPasswordUseCase(password)
+
+        // TODO AttendanceBundle을 사용하지 않고 Navagation의 Argument로 넘어온 Id를 사용하도록 수정할것
+        val sessionId = AttendanceBundle.upComingSession!!.sessionId
+
+        checkSessionPasswordUseCase(sessionId = sessionId, inputPassword = password)
             .onSuccess { isPasswordValid ->
                 when (isPasswordValid) {
                     true -> {
@@ -91,5 +96,5 @@ internal class PassWordViewModel @Inject constructor(
                 }
             }
     }
-    
+
 }
