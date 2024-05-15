@@ -11,16 +11,16 @@ class CheckQrAuthTimeUseCase @Inject constructor(
 ) {
 
     companion object {
-        private const val BEFORE_5_MINUTE = -5
-        private const val AFTER_30_MINUTE = 30
+        private const val BEFORE_10_MINUTE = -10
+        private const val AFTER_120_MINUTE = 120
     }
 
     suspend operator fun invoke(): Result<Boolean> {
         return remoteConfigRepository.getSessionList().mapCatching { sessionList: List<Session> ->
-            val upCommingSession = sessionList.firstOrNull { DateUtil.isUpcomingSession(it.date) } ?: return@mapCatching false
-            val elapsedTime = DateUtil.getElapsedTime(upCommingSession.date)
+            val upComingSession = sessionList.firstOrNull { DateUtil.isUpcomingSession(it.date) } ?: return@mapCatching false
+            val elapsedTime = DateUtil.getElapsedTime(upComingSession.date)
 
-            return@mapCatching elapsedTime in BEFORE_5_MINUTE..AFTER_30_MINUTE
+            return@mapCatching elapsedTime in BEFORE_10_MINUTE..AFTER_120_MINUTE
         }
     }
 

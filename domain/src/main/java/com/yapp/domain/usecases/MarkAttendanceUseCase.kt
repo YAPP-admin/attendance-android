@@ -29,8 +29,8 @@ class MarkAttendanceUseCase @Inject constructor(
 
     private fun checkAttendanceState(sessionDate: String): Attendance.Status {
         return when (DateUtil.getElapsedTime(sessionDate)) {
-            in -5..5 -> Attendance.Status.NORMAL
-            in 6..30 -> Attendance.Status.LATE
+            in -10..10 -> Attendance.Status.NORMAL
+            in 11..120 -> Attendance.Status.LATE
             else -> Attendance.Status.ABSENT
         }
     }
