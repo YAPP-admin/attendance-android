@@ -10,6 +10,8 @@ object Configs {
     const val HILT_ANDROID_PLUGIN       = "dagger.hilt.android.plugin"
     const val GOOGLE_SERVICE            = "com.google.gms.google-services"
     const val CRASHLYTICS               = "com.google.firebase.crashlytics"
+    const val KT_LINT                   = "org.jlleitschuh.gradle.ktlint"
+    const val KT_LINT_VERSION           = "12.1.1"
 
     //Android Config
     const val COMPILE_SDK               = 33

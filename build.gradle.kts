@@ -1,3 +1,6 @@
+plugins {
+    id(Configs.KT_LINT) version Configs.KT_LINT_VERSION
+}
 
 buildscript {
     repositories {
@@ -25,4 +28,8 @@ allprojects {
 
 tasks.register("clean", Delete::class) {
     delete(rootProject.buildDir)
+}
+
+subprojects {
+    apply(plugin = Configs.KT_LINT)
 }
