@@ -10,8 +10,8 @@ class CheckAttendanceTimeUseCase @Inject constructor(
 ) {
 
     companion object {
-        private const val BEFORE_5_MINUTE = -5
-        private const val AFTER_30_MINUTE = 30
+        private const val BEFORE_10_MINUTE = -10
+        private const val AFTER_120_MINUTE = 120
     }
 
     suspend operator fun invoke(): Result<Boolean> {
@@ -24,7 +24,7 @@ class CheckAttendanceTimeUseCase @Inject constructor(
 
             val elapsedTimeInMinutes = Duration.between(upComingSession.startTime, currentTime).toMinutes()
 
-            elapsedTimeInMinutes in BEFORE_5_MINUTE..AFTER_30_MINUTE
+            elapsedTimeInMinutes in BEFORE_10_MINUTE..AFTER_120_MINUTE
         }
     }
 
