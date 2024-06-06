@@ -1,16 +1,14 @@
 package com.yapp.domain.usecases
 
-import com.yapp.domain.repository.SessionRepository
+import com.yapp.domain.repository.RemoteConfigRepository
 import javax.inject.Inject
 
 class CheckSessionPasswordUseCase @Inject constructor(
-    private val sessionRepository: SessionRepository
+    private val remoteConfigRepository: RemoteConfigRepository
 ) {
-    suspend operator fun invoke(sessionId: Int, inputPassword: String): Result<Boolean> {
-        return sessionRepository.getSession(id = sessionId).mapCatching { session ->
-            check(session != null) { "${sessionId}에 해당하는 Session이 존재하지 않습니다" }
-
-            inputPassword == session.code
+    suspend operator fun invoke(inputPassword: String): Result<Boolean> {
+        return remoteConfigRepository.getSessionPassword().mapCatching { sessionPassword ->
+            inputPassword == sessionPassword
         }
     }
 }
