@@ -31,7 +31,6 @@ class SetSessionUseCase @Inject constructor(
                     type = type,
                     startTime = dateParser.parse(rawDate = rawDate),
                     description = description,
-                    code = code
                 )
             )
         }
